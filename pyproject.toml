@@ -12,29 +12,23 @@ dependencies = [
     "matplotlib>=3.9.2",
     "seaborn>=0.13.2",
     "scikit-learn>=1.5.2",
-
     # Testing
     "pytest>=8.3.3",
     "pytest-cov>=5.0.0",
     "pytest-mock>=3.14.0",
     "hypothesis>=6.115.3",
-
     # Development tools
     "ruff>=0.6.9",
     "codespell>=2.4.1",
     "pre-commit>=4.2.0",
     "jupytext>=1.16.4",
-
     # Book building
     "mystmd>=1.7.0",
     "linkcheckmd>=1.4.0",
-
     # LLM/AI
     "anthropic>=0.61.0",
-
     # Neuroimaging
     "nibabel>=5.3.2",
-
     # Single-cell RNA-seq
     "anndata>=0.12.7",
     "scanpy>=1.11.5",
@@ -42,20 +36,16 @@ dependencies = [
     "gseapy>=1.1.11",
     "leidenalg>=0.11.0",
     "harmonypy>=0.0.10",
-
     # Databases
     "pymongo[srv]>=4.15.4",
     "neo4j>=6.0.3",
     "chromadb>=1.3.5",
-
     # Bioinformatics
     "biopython>=1.86",
     "gprofiler-official>=1.0.0",
     "ols-client>=0.2.1",
-
     # Data formats
     "h5py>=3.15.1",
-
     # Utilities
     "python-dotenv>=1.0.1",
     "tqdm>=4.66.5",

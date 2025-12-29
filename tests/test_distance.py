@@ -14,7 +14,10 @@ def test_distance_negative_coordinates():
     assert distance((-1, -2), (-4, -6)) == 5
 
 def test_distance_mixed_coordinates():
-    assert distance((1, -2), (-4, 6)) == math.sqrt(125)
+# this is the version used for the error example
+#    assert distance((1, -2), (-4, 6)) == math.sqrt(125)
+    # this is the correct version
+    assert distance((1, -2), (-4, 6)) == math.sqrt(89)
 
 def test_distance_same_x():
     assert distance((3, 4), (3, 8)) == 4
