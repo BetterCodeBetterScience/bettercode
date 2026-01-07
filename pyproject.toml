@@ -51,6 +51,12 @@ dependencies = [
     "tqdm>=4.66.5",
     "requests>=2.32.0",
     "wonderwords>=2.2.0",
+    "pymc>=5.27.0",
+    "arviz>=0.23.0",
+    "ipywidgets>=8.1.8",
+    "pgmpy>=1.0.0",
+    "pygraphviz>=1.14",
+    "tigramite>=5.2.9.4",
 ]
 
 [build-system]
