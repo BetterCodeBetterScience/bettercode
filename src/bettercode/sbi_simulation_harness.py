@@ -300,7 +300,7 @@ class SBISimulationHarness:
 
         # Generate training data
         theta, x = generate_training_data(
-            ricker_simulator, prior, n_simulations, n_time_steps, self.device
+            prior, ricker_simulator, n_simulations, self.device
         )
 
         # Build embedding network
