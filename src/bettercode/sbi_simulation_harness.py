@@ -291,10 +291,10 @@ class SBISimulationHarness:
 
         prior = BoxUniform(
             low=torch.tensor(
-                [b[0] for b in prior_bounds], dtype=torch.float32
+                [b[0] for b in prior_bounds], dtype=torch.float32, device=self.device
             ),
             high=torch.tensor(
-                [b[1] for b in prior_bounds], dtype=torch.float32
+                [b[1] for b in prior_bounds], dtype=torch.float32, device=self.device
             ),
         )
 
