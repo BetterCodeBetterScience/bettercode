@@ -6,6 +6,7 @@ __pycache__
 .env
 ._*
 .snakemake
+uv.lock
 
 # Workflow output directories
 **/simple_workflow/*/output/
