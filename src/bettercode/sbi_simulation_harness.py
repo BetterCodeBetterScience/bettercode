@@ -309,18 +309,19 @@ class SBISimulationHarness:
         )
 
         # Train NPE
-        inference = train_npe(
-            theta,
-            x,
-            prior,
-            embedding_net,
-            batch_size=50,
-            max_num_epochs=max_num_epochs,
+        inference, posterior = train_npe(
+            prior=prior,
+            thetas=theta,
+            xs=x,
+            embedding_net=embedding_net,
             device=self.device,
+            training_batch_size=50,
+            max_num_epochs=max_num_epochs,
         )
-
+        
+        # Note: posterior is already built by train_npe
         # Build posterior
-        posterior = inference.build_posterior()
+        # posterior = inference.build_posterior()
 
         if verbose:
             print('  Training complete!')
@@ -357,6 +358,7 @@ class SBISimulationHarness:
         self,
         sim_id: int,
         true_params: torch.Tensor,
+        inference,
         posterior,
         n_posterior_samples: int = 5000,
         n_time_steps: int = 250,
@@ -371,6 +373,8 @@ class SBISimulationHarness:
             Simulation identifier.
         true_params : torch.Tensor
             True parameters [r, sigma, phi].
+        inference
+            Trained inference object.
         posterior
             Pre-trained posterior object.
         n_posterior_samples : int
@@ -397,7 +401,7 @@ class SBISimulationHarness:
 
         # Sample from posterior
         posterior_samples = sample_posterior(
-            posterior, x_obs, n_posterior_samples, self.device
+            inference, posterior, x_obs, n_posterior_samples
         )
 
         # Compute credible intervals
@@ -547,6 +551,7 @@ class SBISimulationHarness:
             verbose=verbose,
         )
 
+        inference = model_data['inference']
         posterior = model_data['posterior']
         print(f'\nUsing trained posterior for all {n_experiments} experiments')
         print('=' * 70)
@@ -572,6 +577,7 @@ class SBISimulationHarness:
                 result = self.run_single_ricker_simulation(
                     sim_id=i,
                     true_params=true_params,
+                    inference=inference,
                     posterior=posterior,
                     n_posterior_samples=n_posterior_samples,
                     n_time_steps=n_time_steps,
