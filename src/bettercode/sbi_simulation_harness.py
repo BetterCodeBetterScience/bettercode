@@ -13,7 +13,11 @@ from typing import Optional, Dict, List, Tuple
 from datetime import datetime
 import json
 
-from .sbi_timeseries import run_ricker_sbi, run_damped_oscillator_sbi
+# Support both relative import (when used as module) and direct execution
+try:
+    from .sbi_timeseries import run_ricker_sbi, run_damped_oscillator_sbi
+except ImportError:
+    from sbi_timeseries import run_ricker_sbi, run_damped_oscillator_sbi
 
 
 class SBISimulationHarness:
