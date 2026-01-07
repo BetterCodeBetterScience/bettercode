@@ -12,12 +12,31 @@ from pathlib import Path
 from typing import Optional, Dict, List, Tuple
 from datetime import datetime
 import json
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Support both relative import (when used as module) and direct execution
 try:
-    from .sbi_timeseries import run_ricker_sbi, run_damped_oscillator_sbi
+    from .sbi_timeseries import (
+        run_ricker_sbi, run_damped_oscillator_sbi,
+        ricker_simulator, generate_training_data,
+        build_embedding_network, train_npe, sample_posterior,
+        compute_credible_intervals
+    )
 except ImportError:
-    from sbi_timeseries import run_ricker_sbi, run_damped_oscillator_sbi
+    from sbi_timeseries import (
+        run_ricker_sbi, run_damped_oscillator_sbi,
+        ricker_simulator, generate_training_data,
+        build_embedding_network, train_npe, sample_posterior,
+        compute_credible_intervals
+    )
+
+import pickle
+from sbi.inference import NPE
+from sbi.utils import BoxUniform
 
 
 class SBISimulationHarness:
@@ -28,6 +47,7 @@ class SBISimulationHarness:
     def __init__(
         self,
         output_dir: Optional[str] = None,
+        models_dir: Optional[str] = None,
         device: Optional[torch.device] = None,
         random_seed: Optional[int] = None
     ):
@@ -38,6 +58,9 @@ class SBISimulationHarness:
         -----------
         output_dir : str or None
             Directory to save results. If None, creates 'sbi_simulations' in current directory.
+        models_dir : str or None
+            Directory to save trained models. If None, checks MODELS_DIR environment variable,
+            then falls back to 'trained_models' subdirectory in output_dir.
         device : torch.device or None
             Device to use. If None, auto-selects CUDA or CPU.
         random_seed : int or None
@@ -45,6 +68,16 @@ class SBISimulationHarness:
         """
         self.output_dir = Path(output_dir) if output_dir else Path("sbi_simulations")
         self.output_dir.mkdir(exist_ok=True, parents=True)
+        
+        # Determine models directory from: explicit arg > env var > output_dir/trained_models
+        if models_dir:
+            self.models_dir = Path(models_dir)
+        elif os.getenv('MODELS_DIR'):
+            self.models_dir = Path(os.getenv('MODELS_DIR'))
+        else:
+            self.models_dir = self.output_dir / "trained_models"
+        
+        self.models_dir.mkdir(exist_ok=True, parents=True)
         
         if device is None:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -56,9 +89,12 @@ class SBISimulationHarness:
             np.random.seed(random_seed)
         
         self.results = []
+        self.trained_posterior = None
+        self.model_metadata = None
         
         print(f"Simulation harness initialized")
         print(f"  Output directory: {self.output_dir}")
+        print(f"  Models directory: {self.models_dir}")
         print(f"  Device: {self.device}")
         
     def generate_random_ricker_params(
@@ -119,20 +155,178 @@ class SBISimulationHarness:
         
         return torch.tensor([omega_0, gamma, amplitude], dtype=torch.float32)
     
+    def _get_model_filepath(self, embedding_type: str, n_simulations: int, 
+                           n_time_steps: int, prior_bounds: List) -> Path:
+        """Generate consistent filepath for saved model."""
+        model_name = f"ricker_npe_{embedding_type}_{n_simulations}sims_{n_time_steps}steps.pkl"
+        return self.models_dir / model_name
+    
+    def save_trained_model(self, posterior, inference, embedding_net,
+                          prior_bounds, embedding_type, n_simulations,
+                          n_time_steps, max_num_epochs):
+        """Save trained posterior and associated objects."""
+        filepath = self._get_model_filepath(embedding_type, n_simulations, 
+                                           n_time_steps, prior_bounds)
+        
+        model_data = {
+            'posterior': posterior,
+            'inference': inference,
+            'embedding_net': embedding_net,
+            'prior_bounds': prior_bounds,
+            'embedding_type': embedding_type,
+            'n_simulations': n_simulations,
+            'n_time_steps': n_time_steps,
+            'max_num_epochs': max_num_epochs,
+            'device': str(self.device),
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        with open(filepath, 'wb') as f:
+            pickle.dump(model_data, f)
+        
+        print(f"Trained model saved to: {filepath}")
+        return filepath
+    
+    def load_trained_model(self, embedding_type: str, n_simulations: int,
+                          n_time_steps: int, prior_bounds: List):
+        """Load previously trained posterior if it exists."""
+        filepath = self._get_model_filepath(embedding_type, n_simulations,
+                                           n_time_steps, prior_bounds)
+        
+        if not filepath.exists():
+            return None
+        
+        print(f"Loading trained model from: {filepath}")
+        with open(filepath, 'rb') as f:
+            model_data = pickle.load(f)
+        
+        # Move models to correct device
+        model_data['embedding_net'].to(self.device)
+        
+        print(f"  Model trained on {model_data['n_simulations']} simulations")
+        print(f"  Embedding type: {model_data['embedding_type']}")
+        print(f"  Original training date: {model_data['timestamp']}")
+        
+        return model_data
+    
+    def train_or_load_posterior(self, 
+                               prior_bounds: List[Tuple[float, float]],
+                               n_simulations: int = 2000,
+                               embedding_type: str = 'cnn',
+                               n_time_steps: int = 250,
+                               max_num_epochs: int = 100,
+                               force_retrain: bool = False,
+                               verbose: bool = True):
+        """Train a new posterior or load existing one.
+        
+        Parameters:
+        -----------
+        prior_bounds : List[Tuple[float, float]]
+            Prior bounds for [r, sigma, phi].
+        n_simulations : int
+            Number of training simulations.
+        embedding_type : str
+            'cnn' or 'transformer'.
+        n_time_steps : int
+            Number of time steps.
+        max_num_epochs : int
+            Maximum training epochs.
+        force_retrain : bool
+            If True, retrain even if saved model exists.
+        verbose : bool
+            Print progress.
+            
+        Returns:
+        --------
+        model_data : dict
+            Dictionary with posterior, inference, and embedding_net.
+        """
+        # Try to load existing model
+        if not force_retrain:
+            model_data = self.load_trained_model(
+                embedding_type, n_simulations, n_time_steps, prior_bounds
+            )
+            if model_data is not None:
+                self.trained_posterior = model_data['posterior']
+                self.model_metadata = model_data
+                return model_data
+        
+        # Train new model
+        if verbose:
+            print("\nTraining new posterior...")
+            print(f"  Prior bounds: {prior_bounds}")
+            print(f"  Training simulations: {n_simulations}")
+            print(f"  Embedding type: {embedding_type}")
+        
+        prior = BoxUniform(
+            low=torch.tensor([b[0] for b in prior_bounds], dtype=torch.float32),
+            high=torch.tensor([b[1] for b in prior_bounds], dtype=torch.float32)
+        )
+        
+        # Generate training data
+        theta, x = generate_training_data(
+            ricker_simulator,
+            prior,
+            n_simulations,
+            n_time_steps,
+            self.device
+        )
+        
+        # Build embedding network
+        embedding_net = build_embedding_network(
+            embedding_type,
+            n_time_steps,
+            self.device
+        )
+        
+        # Train NPE
+        inference = train_npe(
+            theta, x, prior, embedding_net,
+            batch_size=50,
+            max_num_epochs=max_num_epochs,
+            device=self.device
+        )
+        
+        # Build posterior
+        posterior = inference.build_posterior()
+        
+        if verbose:
+            print("  Training complete!")
+        
+        # Save the trained model
+        model_data = {
+            'posterior': posterior,
+            'inference': inference,
+            'embedding_net': embedding_net,
+            'prior_bounds': prior_bounds,
+            'embedding_type': embedding_type,
+            'n_simulations': n_simulations,
+            'n_time_steps': n_time_steps,
+            'max_num_epochs': max_num_epochs
+        }
+        
+        self.save_trained_model(
+            posterior, inference, embedding_net,
+            prior_bounds, embedding_type, n_simulations,
+            n_time_steps, max_num_epochs
+        )
+        
+        self.trained_posterior = posterior
+        self.model_metadata = model_data
+        
+        return model_data
+    
     def run_single_ricker_simulation(
         self,
         sim_id: int,
         true_params: torch.Tensor,
-        n_simulations: int = 2000,
+        posterior,
         n_posterior_samples: int = 5000,
-        embedding_type: str = 'cnn',
         n_time_steps: int = 250,
-        max_num_epochs: int = 100,
-        verbose: bool = False,
-        **kwargs
+        verbose: bool = False
     ) -> Dict:
         """
-        Run single SBI simulation for Ricker model.
+        Run single SBI simulation for Ricker model using pre-trained posterior.
         
         Parameters:
         -----------
@@ -140,20 +334,14 @@ class SBISimulationHarness:
             Simulation identifier.
         true_params : torch.Tensor
             True parameters [r, sigma, phi].
-        n_simulations : int
-            Number of training simulations.
+        posterior
+            Pre-trained posterior object.
         n_posterior_samples : int
             Number of posterior samples.
-        embedding_type : str
-            'cnn' or 'transformer'.
         n_time_steps : int
             Number of time steps to simulate.
-        max_num_epochs : int
-            Maximum training epochs.
         verbose : bool
             Print detailed progress.
-        **kwargs : dict
-            Additional arguments for run_ricker_sbi.
             
         Returns:
         --------
@@ -164,27 +352,27 @@ class SBISimulationHarness:
             print(f"\nSimulation {sim_id}")
             print(f"  True params: r={true_params[0]:.3f}, sigma={true_params[1]:.3f}, phi={true_params[2]:.3f}")
         
-        # Run SBI
-        sbi_results = run_ricker_sbi(
-            true_params=true_params,
-            n_simulations=n_simulations,
-            n_posterior_samples=n_posterior_samples,
-            embedding_type=embedding_type,
-            n_time_steps=n_time_steps,
-            max_num_epochs=max_num_epochs,
-            device=self.device,
-            verbose=verbose,
-            **kwargs
+        # Generate observation from true parameters
+        x_obs = ricker_simulator(true_params, n_time_steps)
+        x_obs = x_obs.to(self.device)
+        
+        # Sample from posterior
+        posterior_samples = sample_posterior(
+            posterior, x_obs, n_posterior_samples, self.device
+        )
+        
+        # Compute credible intervals
+        credible_intervals = compute_credible_intervals(
+            posterior_samples, true_params
         )
         
         # Extract results
-        posterior_samples = sbi_results['posterior_samples'].cpu().numpy()
-        credible_intervals = sbi_results['credible_intervals']
+        posterior_samples_np = posterior_samples.cpu().numpy()
         
         # Compute estimates
-        estimates_mean = posterior_samples.mean(axis=0)
-        estimates_median = np.median(posterior_samples, axis=0)
-        estimates_std = posterior_samples.std(axis=0)
+        estimates_mean = posterior_samples_np.mean(axis=0)
+        estimates_median = np.median(posterior_samples_np, axis=0)
+        estimates_std = posterior_samples_np.std(axis=0)
         
         # Compute errors
         true_params_np = true_params.cpu().numpy()
@@ -225,11 +413,8 @@ class SBISimulationHarness:
             'coverage_sigma': bool(coverage['sigma']),
             'coverage_phi': bool(coverage['phi']),
             'coverage_all': bool(all(coverage.values())),
-            'n_simulations': n_simulations,
             'n_posterior_samples': n_posterior_samples,
-            'embedding_type': embedding_type,
-            'n_time_steps': n_time_steps,
-            'max_num_epochs': max_num_epochs
+            'n_time_steps': n_time_steps
         }
         
         if verbose:
@@ -248,6 +433,7 @@ class SBISimulationHarness:
         embedding_type: str = 'cnn',
         n_time_steps: int = 250,
         max_num_epochs: int = 100,
+        force_retrain: bool = False,
         verbose: bool = True,
         save_results: bool = True,
         **kwargs
@@ -263,7 +449,7 @@ class SBISimulationHarness:
             Dictionary with 'r', 'sigma', 'phi' keys mapping to (min, max) tuples.
             If None, uses default ranges.
         n_simulations : int
-            Number of training simulations per experiment.
+            Number of training simulations (only used if training new model).
         n_posterior_samples : int
             Number of posterior samples per experiment.
         embedding_type : str
@@ -271,13 +457,15 @@ class SBISimulationHarness:
         n_time_steps : int
             Number of time steps to simulate.
         max_num_epochs : int
-            Maximum training epochs per experiment.
+            Maximum training epochs (only used if training new model).
+        force_retrain : bool
+            Force retraining even if saved model exists.
         verbose : bool
             Print progress.
         save_results : bool
             Save results to CSV.
         **kwargs : dict
-            Additional arguments for SBI.
+            Additional arguments.
             
         Returns:
         --------
@@ -299,6 +487,27 @@ class SBISimulationHarness:
         print(f"Device: {self.device}")
         print("=" * 70)
         
+        # Train or load the posterior ONCE
+        prior_bounds = [
+            param_ranges['r'],
+            param_ranges['sigma'],
+            param_ranges['phi']
+        ]
+        
+        model_data = self.train_or_load_posterior(
+            prior_bounds=prior_bounds,
+            n_simulations=n_simulations,
+            embedding_type=embedding_type,
+            n_time_steps=n_time_steps,
+            max_num_epochs=max_num_epochs,
+            force_retrain=force_retrain,
+            verbose=verbose
+        )
+        
+        posterior = model_data['posterior']
+        print(f"\nUsing trained posterior for all {n_experiments} experiments")
+        print("=" * 70)
+        
         results = []
         
         for i in range(n_experiments):
@@ -312,18 +521,15 @@ class SBISimulationHarness:
             if verbose:
                 print(f"\n[{i+1}/{n_experiments}] Running experiment...")
             
-            # Run simulation
+            # Run simulation using pre-trained posterior
             try:
                 result = self.run_single_ricker_simulation(
                     sim_id=i,
                     true_params=true_params,
-                    n_simulations=n_simulations,
+                    posterior=posterior,
                     n_posterior_samples=n_posterior_samples,
-                    embedding_type=embedding_type,
                     n_time_steps=n_time_steps,
-                    max_num_epochs=max_num_epochs,
-                    verbose=False,
-                    **kwargs
+                    verbose=False
                 )
                 results.append(result)
                 
@@ -408,12 +614,14 @@ class SBISimulationHarness:
 def run_ricker_recovery_experiment(
     n_experiments: int = 10,
     output_dir: Optional[str] = None,
+    models_dir: Optional[str] = None,
     n_simulations: int = 2000,
     n_posterior_samples: int = 5000,
     embedding_type: str = 'cnn',
     n_time_steps: int = 250,
     max_num_epochs: int = 100,
     param_ranges: Optional[Dict[str, Tuple[float, float]]] = None,
+    force_retrain: bool = False,
     device: Optional[torch.device] = None,
     random_seed: Optional[int] = None,
     verbose: bool = True
@@ -421,14 +629,20 @@ def run_ricker_recovery_experiment(
     """
     Convenience function to run Ricker parameter recovery experiments.
     
+    Note: The neural network is trained once and reused for all experiments,
+    since it learns the relationship between parameters and observations across
+    the entire prior range.
+    
     Parameters:
     -----------
     n_experiments : int
         Number of experiments to run.
     output_dir : str or None
         Directory to save results.
+    models_dir : str or None
+        Directory to save trained models. If None, checks MODELS_DIR environment variable.
     n_simulations : int
-        Number of training simulations per experiment.
+        Number of training simulations (only used if training new model).
     n_posterior_samples : int
         Number of posterior samples per experiment.
     embedding_type : str
@@ -436,9 +650,11 @@ def run_ricker_recovery_experiment(
     n_time_steps : int
         Number of time steps to simulate.
     max_num_epochs : int
-        Maximum training epochs per experiment.
+        Maximum training epochs (only used if training new model).
     param_ranges : dict or None
         Custom parameter ranges.
+    force_retrain : bool
+        Force retraining even if saved model exists.
     device : torch.device or None
         Device to use.
     random_seed : int or None
@@ -454,6 +670,7 @@ def run_ricker_recovery_experiment(
     # Create harness
     harness = SBISimulationHarness(
         output_dir=output_dir,
+        models_dir=models_dir,
         device=device,
         random_seed=random_seed
     )
@@ -464,6 +681,13 @@ def run_ricker_recovery_experiment(
         param_ranges=param_ranges,
         n_simulations=n_simulations,
         n_posterior_samples=n_posterior_samples,
+        embedding_type=embedding_type,
+        n_time_steps=n_time_steps,
+        max_num_epochs=max_num_epochs,
+        force_retrain=force_retrain,
+        verbose=verbose,
+        save_results=True
+    )
         embedding_type=embedding_type,
         n_time_steps=n_time_steps,
         max_num_epochs=max_num_epochs,
