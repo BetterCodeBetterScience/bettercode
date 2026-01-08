@@ -780,13 +780,13 @@ if __name__ == '__main__':
     print('=' * 70)
 
     results = run_ricker_recovery_experiment(
-        n_experiments=5,
+        n_experiments=1000,
         output_dir='sbi_simulations',
-        n_simulations=5000,
+        n_simulations=1000000,
         n_posterior_samples=10000,
         embedding_type='cnn',
         n_time_steps=250,
-        max_num_epochs=100,  # Reduced for faster testing
+        max_num_epochs=10000,  # Reduced for faster testing
         random_seed=42,
         verbose=False,
     )
