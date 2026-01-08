@@ -405,8 +405,9 @@ class SBISimulationHarness:
         )
 
         # Compute credible intervals
+        param_names = ['r (growth rate)', 'sigma (growth noise)', 'phi (sampling noise)']
         credible_intervals = compute_credible_intervals(
-            posterior_samples, true_params
+            posterior_samples, true_params, param_names
         )
 
         # Extract results

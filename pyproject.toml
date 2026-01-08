@@ -58,6 +58,7 @@ dependencies = [
     "pygraphviz>=1.14",
     "tigramite>=5.2.9.4",
     "torch>=2.9.1",
+    "blue>=0.9.1",
 ]
 
 [build-system]
