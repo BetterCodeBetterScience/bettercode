@@ -57,6 +57,7 @@ dependencies = [
     "pgmpy>=1.0.0",
     "pygraphviz>=1.14",
     "tigramite>=5.2.9.4",
+    "blue>=0.9.1",
 ]
 
 [build-system]
