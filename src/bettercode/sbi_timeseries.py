@@ -107,6 +107,7 @@ def ricker_simulator(
     t: Optional[torch.Tensor] = None,
     n_time_steps: int = 250,
     starting_n: float = 100,
+    device: Optional[torch.device] = None,
 ) -> torch.Tensor:
     """
     Simulate Ricker population dynamics model.
@@ -124,6 +125,8 @@ def ricker_simulator(
         Number of time steps to simulate.
     starting_n : float
         Initial population size.
+    device : torch.device or None
+        Device to place output tensor on. If None, uses params.device.
 
     Returns:
     --------
@@ -140,7 +143,9 @@ def ricker_simulator(
         N, y = ricker_model(N, r, sigma, phi)
         timeseries.append(y)
 
-    return torch.as_tensor(np.array(timeseries), dtype=torch.float32)
+    if device is None:
+        device = params.device
+    return torch.as_tensor(np.array(timeseries), dtype=torch.float32, device=device)
 
 
 # ============================================================================
@@ -272,8 +277,12 @@ def generate_training_data(
         print(f'Generating {n_simulations} simulations for training...')
         print(f'Using device: {device}')
 
-    thetas = prior.sample((n_simulations,))
-    xs = torch.stack([simulator(theta) for theta in thetas]).to(device)
+    thetas = prior.sample((n_simulations,)).to(device)
+    # Pass device to simulator if it's ricker_simulator
+    if hasattr(simulator, '__name__') and simulator.__name__ == 'ricker_simulator':
+        xs = torch.stack([simulator(theta, device=device) for theta in thetas])
+    else:
+        xs = torch.stack([simulator(theta) for theta in thetas]).to(device)
 
     if verbose:
         print(f'Training data shape: {xs.shape}')

@@ -231,10 +231,18 @@ class SBISimulationHarness:
 
         # Move models to correct device
         model_data['embedding_net'].to(self.device)
+        # Also ensure the posterior's neural net is on the correct device
+        if hasattr(model_data['posterior'], '_neural_net'):
+            model_data['posterior']._neural_net.to(self.device)
+        
+        # Update the inference device
+        if hasattr(model_data['inference'], '_device'):
+            model_data['inference']._device = self.device
 
         print(f"  Model trained on {model_data['n_simulations']} simulations")
         print(f"  Embedding type: {model_data['embedding_type']}")
         print(f"  Original training date: {model_data['timestamp']}")
+        print(f"  Moved model to device: {self.device}")
 
         return model_data
 
@@ -396,8 +404,13 @@ class SBISimulationHarness:
             )
 
         # Generate observation from true parameters
-        x_obs = ricker_simulator(true_params, n_time_steps)
-        x_obs = x_obs.to(self.device)
+        # Move params to device first, then simulate on that device
+        true_params = true_params.to(self.device)
+        x_obs = ricker_simulator(true_params, n_time_steps=n_time_steps, device=self.device)
+
+        # Ensure inference device is set correctly
+        if hasattr(inference, '_device'):
+            inference._device = self.device
 
         # Sample from posterior
         posterior_samples = sample_posterior(
@@ -560,7 +573,7 @@ class SBISimulationHarness:
         results = []
 
         for i in range(n_experiments):
-            # Generate random parameters
+            # Generate random parameters on the correct device
             true_params = torch.tensor(
                 [
                     np.random.uniform(*param_ranges['r']),
@@ -568,6 +581,7 @@ class SBISimulationHarness:
                     np.random.uniform(*param_ranges['phi']),
                 ],
                 dtype=torch.float32,
+                device=self.device,
             )
 
             if verbose:
@@ -780,15 +794,16 @@ if __name__ == '__main__':
     print('=' * 70)
 
     results = run_ricker_recovery_experiment(
-        n_experiments=1000,
+        n_experiments=100000,
         output_dir='sbi_simulations',
         n_simulations=1000000,
         n_posterior_samples=10000,
         embedding_type='cnn',
         n_time_steps=250,
-        max_num_epochs=10000,  # Reduced for faster testing
+        max_num_epochs=100,  # Reduced for faster testing
         random_seed=42,
         verbose=False,
+        device=torch.device('cpu'),  # Force CPU for testing
     )
 
     print('\n' + '=' * 70)
