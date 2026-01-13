@@ -59,6 +59,9 @@ dependencies = [
     "tigramite>=5.2.9.4",
     "torch>=2.9.1",
     "blue>=0.9.1",
+    "sdv>=1.32.1",
+    "fastparquet>=2025.12.0",
+    "pyarrow==18.1.0",
 ]
 
 [build-system]
