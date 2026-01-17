@@ -15,6 +15,7 @@ Refactored for modularity and reusability.
 """
 
 import pandas as pd
+from pathlib import Path
 
 
 # Column names consistent across all datasets
@@ -46,21 +47,40 @@ DATA_URLS = {
     'adelie': 'http://pasta.lternet.edu/package/data/eml/knb-lter-pal/219/5/002f3893385f710df69eeebe893144ff',
     'gentoo': 'http://pasta.lternet.edu/package/data/eml/knb-lter-pal/220/7/e03b43c924f226486f2f0ab6709d2381',
     'chinstrap': 'http://pasta.lternet.edu/package/data/eml/knb-lter-pal/221/8/fe853aa8f7a59aa84cdd3197619ef462',
-} 
+}
+
+# Package data directory for storing penguin CSV files
+DATA_DIR = Path(__file__).parent / 'data' / 'penguins'
 
 
-
-def load_penguin_data(url: str) -> pd.DataFrame:
+def _get_data_path(species: str) -> Path:
     """
-    Load penguin data from a URL and apply standard type coercion.
+    Get the data file path for a given species.
+    
+    Args:
+        species: Name of the penguin species (e.g., 'adelie', 'gentoo', 'chinstrap')
+        
+    Returns:
+        Path to the CSV file
+    """
+    return DATA_DIR / f'{species}_penguins.csv'
+
+
+def _download_and_save(url: str, species: str) -> pd.DataFrame:
+    """
+    Download penguin data from URL and save it as package data.
+    
+    This function is used during package setup to download the data files.
+    Normal users should not need to call this directly.
     
     Args:
         url: URL to the CSV data file
+        species: Name of the species for filename
         
     Returns:
-        DataFrame with properly typed columns
+        DataFrame with raw data
     """
-    # Load the data
+    # Download the data
     df = pd.read_csv(
         url,
         storage_options={'User-Agent': 'EDI_CodeGen'},
@@ -71,6 +91,64 @@ def load_penguin_data(url: str) -> pd.DataFrame:
         parse_dates=['Date_Egg'],
         na_values=NA_VALUES
     )
+    
+    # Create data directory if it doesn't exist
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Save to package data directory
+    data_path = _get_data_path(species)
+    df.to_csv(data_path, index=False)
+    print(f"Saved {species} penguin data to {data_path}")
+    
+    return df
+
+
+def load_penguin_data(species: str = None, url: str = None, force_download: bool = False) -> pd.DataFrame:
+    """
+    Load penguin data from package data or download from URL.
+    
+    By default, loads from the CSV files included with the package. 
+    Set force_download=True to download fresh data from the source URLs.
+    
+    Args:
+        species: Name of the species ('adelie', 'gentoo', or 'chinstrap')
+        url: URL to the CSV data file (optional, inferred from species if not provided)
+        force_download: If True, download from URL instead of using package data
+        
+    Returns:
+        DataFrame with properly typed columns
+    """
+    # Determine species name and URL
+    if species is None and url is not None:
+        # Try to infer species from URL
+        for sp, sp_url in DATA_URLS.items():
+            if sp_url == url:
+                species = sp
+                break
+        if species is None:
+            species = 'unknown'
+    elif species is None:
+        raise ValueError("Must provide either 'species' or 'url' parameter")
+    
+    # Set URL if not provided
+    if url is None and species in DATA_URLS:
+        url = DATA_URLS[species]
+    
+    # Check if package data file exists
+    data_path = _get_data_path(species)
+    
+    if data_path.exists() and not force_download:
+        # Load from package data
+        df = pd.read_csv(
+            data_path,
+            parse_dates=['Date_Egg'],
+            na_values=NA_VALUES
+        )
+    else:
+        # Download from URL
+        if url is None:
+            raise ValueError(f"No URL available for species '{species}' and data file not found")
+        df = _download_and_save(url, species)
     
     # Apply type coercion
     df = _coerce_types(df)
@@ -141,16 +219,21 @@ def print_data_summary(df: pd.DataFrame, species_name: str) -> None:
             print("-"*30)
 
 
-def load_all_species() -> pd.DataFrame:
+def load_all_species(force_download: bool = False) -> pd.DataFrame:
     """
     Load data for all three penguin species and merge into a single DataFrame.
+    
+    By default uses package data. Set force_download=True to download fresh data.
+    
+    Args:
+        force_download: If True, download from URLs instead of using package data
     
     Returns:
         DataFrame containing all penguin species combined
     """
-    adelie_df = load_penguin_data(DATA_URLS['adelie'])
-    gentoo_df = load_penguin_data(DATA_URLS['gentoo'])
-    chinstrap_df = load_penguin_data(DATA_URLS['chinstrap'])
+    adelie_df = load_penguin_data('adelie', force_download=force_download)
+    gentoo_df = load_penguin_data('gentoo', force_download=force_download)
+    chinstrap_df = load_penguin_data('chinstrap', force_download=force_download)
     
     # Merge all species into a single DataFrame
     merged_df = pd.concat([adelie_df, gentoo_df, chinstrap_df], ignore_index=True)
