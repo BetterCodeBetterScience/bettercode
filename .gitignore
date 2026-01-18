@@ -14,8 +14,6 @@ sbi-logs
 
 exports
 
-# Exception: include package data
-!src/bettercode/data/
 
 # MyST build outputs
 _build
