@@ -12,7 +12,6 @@ uv.lock
 **/simple_workflow/*/output/
 sbi-logs
 
-data
 exports
 
 # Exception: include package data
