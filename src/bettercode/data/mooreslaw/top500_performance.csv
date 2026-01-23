@@ -1,0 +1,27 @@
+Year,Supercomputer,Peak speed (Rmax),Power efficiency (GFLOPS per Watt),Location,,
+1993,Fujitsu Numerical Wind Tunnel,124.50 GFLOPS,,National Aerospace Laboratory, Tokyo, Japan
+1993,Intel Paragon XP/S 140,143.40 GFLOPS,,DoE-Sandia National Laboratories, New Mexico, USA
+1994,Fujitsu Numerical Wind Tunnel,170.40 GFLOPS,,National Aerospace Laboratory, Tokyo, Japan
+1996,Hitachi SR2201/1024,220.40 GFLOPS,,University of Tokyo, Japan,
+1996,Hitachi CP-PACS/2048,368.20 GFLOPS,,University of Tsukuba, Tsukuba, Japan
+1997,Intel ASCI Red/9152,1.338 TFLOPS,,DoE-Sandia National Laboratories, New Mexico, USA
+1999,Intel ASCI Red/9632,2.3796 TFLOPS,,,,
+2000,IBM ASCI White,7.226 TFLOPS,,DoE-Lawrence Livermore National Laboratory, California, USA
+2002,NEC Earth Simulator,35.860 TFLOPS,,Earth Simulator Center, Yokohama, Japan
+2004,IBM Blue Gene/L,70.720 TFLOPS,,DoE/IBM Rochester, Minnesota, USA
+2005,IBM Blue Gene/L,136.800 TFLOPS,,"DoE/U.S. National Nuclear Security Administration, Lawrence Livermore National Laboratory, California, USA",,
+2005,IBM Blue Gene/L,280.600 TFLOPS,,,,
+2007,IBM Blue Gene/L,478.200 TFLOPS,,,,
+2008,IBM Roadrunner,1.026 PFLOPS,,DoE-Los Alamos National Laboratory, New Mexico, USA
+2008,IBM Roadrunner,1.105 PFLOPS,0.445,,,
+2009,Cray Jaguar,1.759 PFLOPS,,DoE-Oak Ridge National Laboratory, Tennessee, USA
+2010,Tianhe-IA,2.566 PFLOPS,0.635,"National Supercomputing Center, Tianjin, China",,
+2011,Fujitsu K computer,10.510 PFLOPS,0.825,"Riken, Kobe, Japan",,
+2012,IBM Sequoia,16.320 PFLOPS,,"Lawrence Livermore National Laboratory, California, USA",,
+2012,Cray Titan,17.590 PFLOPS,,"Oak Ridge National Laboratory, Tennessee, USA",,
+2013,NUDT Tianhe-2,33.860 PFLOPS,2.215,"Guangzhou, China",,
+2016,Sunway TaihuLight,93.010 PFLOPS,6.051,"Wuxi, China",,
+2018,IBM Summit,122.300 PFLOPS,14.668,"DoE-Oak Ridge National Laboratory, Tennessee, USA",,
+2020,Fugaku,415.530 PFLOPS,15.418,"Riken, Kobe, Japan",,
+2021,Frontier,1.353 EFLOPS,,"Oak Ridge Leadership Computing Facility, Tennessee, USA",,
+2024,El Capitan,1.742 EFLOPS,,"Lawrence Livermore National Laboratory, California, USA",,
