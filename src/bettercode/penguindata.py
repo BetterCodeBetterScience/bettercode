@@ -40,7 +40,8 @@ COLUMN_NAMES = [
 ]
 
 # NA values mapping (same for all columns)
-NA_VALUES = {col: ['NULL'] for col in COLUMN_NAMES}
+# Include common missing value representations: NULL, ".", empty string, NA
+NA_VALUES = {col: ['NULL', '.', '', 'NA'] for col in COLUMN_NAMES}
 
 # Data URLs for each species
 DATA_URLS = {
