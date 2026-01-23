@@ -20,3 +20,6 @@ _build
 
 # backup files from latin checker
 *.md-e
+
+# profiler files
+*.lprof
