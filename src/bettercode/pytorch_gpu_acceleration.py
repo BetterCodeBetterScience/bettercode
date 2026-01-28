@@ -714,6 +714,9 @@ ax.legend()
 ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
+fig_path = OUTPUT_DIR / "training_curves.png"
+plt.savefig(fig_path, dpi=150, bbox_inches='tight')
+print(f"Saved training curves to: {fig_path}")
 plt.show()
 
 # %%
@@ -749,8 +752,11 @@ if gpu_history and gpu_optimized_history:
     ax.set_ylabel('Total Training Time (seconds)', fontsize=12)
     ax.set_title(f'Training Time Comparison\n({N_SAMPLES:,} samples, {N_EPOCHS} epochs)', fontsize=14)
     ax.set_ylim(0, max(times) * 1.25)
-    
+
     plt.tight_layout()
+    fig_path = OUTPUT_DIR / "training_time_comparison.png"
+    plt.savefig(fig_path, dpi=150, bbox_inches='tight')
+    print(f"Saved time comparison to: {fig_path}")
     plt.show()
 
 
@@ -892,6 +898,9 @@ if gpu_device is not None:
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
+    fig_path = OUTPUT_DIR / "batch_size_scaling.png"
+    plt.savefig(fig_path, dpi=150, bbox_inches='tight')
+    print(f"Saved batch size scaling plot to: {fig_path}")
     plt.show()
 
 # %% [markdown]
