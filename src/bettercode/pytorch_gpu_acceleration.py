@@ -31,14 +31,21 @@
 
 # %%
 import time
+from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
+# Create output directory for results
+OUTPUT_DIR = Path(__file__).parent.parent.parent / "data" / "gpu"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
 print(f"PyTorch version: {torch.__version__}")
+print(f"Results will be saved to: {OUTPUT_DIR}")
 
 
 # %%
@@ -518,7 +525,10 @@ else:
 # %% [markdown]
 # ## Train on GPU with Optimizations
 #
-# Now let's run the optimized version that pre-transfers data to GPU and uses AMP + torch.compile().
+# Now let's run the optimized version that pre-transfers data to GPU.
+# Note: AMP and torch.compile() are disabled because they add overhead for small
+# models and short training runs. The main optimization here is pre-transferring
+# the entire dataset to GPU memory to eliminate per-batch transfer overhead.
 
 # %%
 gpu_optimized_history = None
@@ -535,6 +545,9 @@ if gpu_device is not None:
     gpu_optimized_model = MLP(N_FEATURES, HIDDEN_SIZES, N_CLASSES)
     
     # Train on GPU with optimizations
+    # Note: AMP and torch.compile() disabled - they add overhead for small models
+    # and short training runs. Enable for larger models (millions of params) and
+    # longer training (100+ epochs) where compilation cost is amortized.
     gpu_optimized_history = train_model_optimized(
         gpu_optimized_model,
         X, y,  # Raw tensors - will be moved to GPU inside function
@@ -542,8 +555,8 @@ if gpu_device is not None:
         n_epochs=N_EPOCHS,
         lr=LEARNING_RATE,
         batch_size=BATCH_SIZE,
-        use_amp=True,      # Automatic Mixed Precision
-        use_compile=True,  # torch.compile()
+        use_amp=False,      # Disabled - overhead exceeds benefit for small models
+        use_compile=False,  # Disabled - compilation overhead not amortized in 10 epochs
     )
     
     print(f"\nGPU Optimized Total training time: {gpu_optimized_history['total_time']:.2f}s")
@@ -597,6 +610,63 @@ if gpu_history and gpu_optimized_history:
     print(f"  GPU Baseline:  {gpu_history['total_time']:.2f}s ({speedup_baseline:.1f}x faster than CPU)")
     print(f"  GPU Optimized: {gpu_optimized_history['total_time']:.2f}s ({speedup_optimized:.1f}x faster than CPU)")
     print(f"\nOptimizations gained {improvement_over_baseline:.2f}x additional speedup over baseline GPU!")
+
+# %%
+# Save main comparison results to CSV
+comparison_data = {
+    "method": ["CPU", "GPU_Baseline", "GPU_Optimized"],
+    "device": [
+        cpu_history["device"],
+        gpu_history["device"] if gpu_history else None,
+        gpu_optimized_history["device"] if gpu_optimized_history else None,
+    ],
+    "total_time_s": [
+        cpu_history["total_time"],
+        gpu_history["total_time"] if gpu_history else None,
+        gpu_optimized_history["total_time"] if gpu_optimized_history else None,
+    ],
+    "avg_epoch_time_s": [
+        np.mean(cpu_history["epoch_times"]),
+        np.mean(gpu_history["epoch_times"]) if gpu_history else None,
+        np.mean(gpu_optimized_history["epoch_times"]) if gpu_optimized_history else None,
+    ],
+    "final_accuracy": [
+        cpu_history["accuracy"][-1],
+        gpu_history["accuracy"][-1] if gpu_history else None,
+        gpu_optimized_history["accuracy"][-1] if gpu_optimized_history else None,
+    ],
+    "speedup_vs_cpu": [
+        1.0,
+        speedup_baseline if gpu_history else None,
+        speedup_optimized if gpu_optimized_history else None,
+    ],
+}
+
+comparison_df = pd.DataFrame(comparison_data)
+comparison_csv_path = OUTPUT_DIR / "training_comparison.csv"
+comparison_df.to_csv(comparison_csv_path, index=False)
+print(f"\nSaved comparison results to: {comparison_csv_path}")
+
+# Save epoch-by-epoch training history
+epoch_data = {
+    "epoch": list(range(1, N_EPOCHS + 1)),
+    "cpu_loss": cpu_history["loss"],
+    "cpu_accuracy": cpu_history["accuracy"],
+    "cpu_time_s": cpu_history["epoch_times"],
+}
+if gpu_history:
+    epoch_data["gpu_baseline_loss"] = gpu_history["loss"]
+    epoch_data["gpu_baseline_accuracy"] = gpu_history["accuracy"]
+    epoch_data["gpu_baseline_time_s"] = gpu_history["epoch_times"]
+if gpu_optimized_history:
+    epoch_data["gpu_optimized_loss"] = gpu_optimized_history["loss"]
+    epoch_data["gpu_optimized_accuracy"] = gpu_optimized_history["accuracy"]
+    epoch_data["gpu_optimized_time_s"] = gpu_optimized_history["epoch_times"]
+
+epoch_df = pd.DataFrame(epoch_data)
+epoch_csv_path = OUTPUT_DIR / "training_history.csv"
+epoch_df.to_csv(epoch_csv_path, index=False)
+print(f"Saved epoch history to: {epoch_csv_path}")
 
 # %%
 # Visualize results - all three methods
@@ -739,6 +809,20 @@ if gpu_device is not None:
     print("-" * 45)
     for cpu, gpu, speedup in zip(cpu_results, gpu_results, speedups):
         print(f"{cpu['batch_size']:>12} {cpu['total_time']:>10.2f}s {gpu['total_time']:>10.2f}s {speedup:>10.2f}x")
+
+    # Save batch size benchmark results to CSV
+    batch_benchmark_data = {
+        "batch_size": batch_sizes,
+        "cpu_total_time_s": [r["total_time"] for r in cpu_results],
+        "cpu_avg_epoch_time_s": [r["avg_epoch_time"] for r in cpu_results],
+        "gpu_total_time_s": [r["total_time"] for r in gpu_results],
+        "gpu_avg_epoch_time_s": [r["avg_epoch_time"] for r in gpu_results],
+        "speedup": speedups,
+    }
+    batch_benchmark_df = pd.DataFrame(batch_benchmark_data)
+    batch_csv_path = OUTPUT_DIR / "batch_size_benchmark.csv"
+    batch_benchmark_df.to_csv(batch_csv_path, index=False)
+    print(f"\nSaved batch size benchmark to: {batch_csv_path}")
 
 # %%
 if gpu_device is not None:
