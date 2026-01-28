@@ -1,0 +1,8 @@
+python array_growth_bad.py
+python array_growth_good.py
+python chunked_processing_bad.py
+python chunked_processing_good.py
+python memory_leak_bad.py
+python memory_leak_good.py
+python unnecessary_copies_bad.py
+python unnecessary_copies_good.py
