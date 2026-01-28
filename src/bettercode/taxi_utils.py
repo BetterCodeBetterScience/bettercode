@@ -128,24 +128,99 @@ def load_zone_mapping(zone_csv_path: Path) -> dict[int, str]:
 
 
 def preprocess_file(
-    input_path: Path, output_path: Path, zone_mapping: dict[int, str]
+    input_path: Path,
+    output_path: Path,
+    zone_mapping: dict[int, str],
+    overwrite: bool = False,
 ) -> None:
-    """Add PUBorough and DOBorough columns based on zone mapping, save to output."""
-    if output_path.exists():
+    """Preprocess parquet file: standardize schema, add borough columns, save to output.
+
+    This function:
+    - Selects columns needed for analysis (datetime, location, trip metrics, fares)
+    - Casts datetime to consistent nanosecond precision
+    - Casts location IDs to Int64 for consistency
+    - Maps location IDs to borough names
+
+    Args:
+        input_path: Path to input parquet file.
+        output_path: Path to save preprocessed file.
+        zone_mapping: Dict mapping LocationID to Borough name.
+        overwrite: If True, overwrite existing preprocessed files.
+    """
+    if output_path.exists() and not overwrite:
         return
 
-    df = pd.read_parquet(input_path)
+    # Use Polars for more efficient preprocessing
+    import polars as pl
 
-    # Map location IDs to boroughs
-    df["PUBorough"] = df["PULocationID"].map(zone_mapping).fillna("Unknown")
-    df["DOBorough"] = df["DOLocationID"].map(zone_mapping).fillna("Unknown")
+    # Columns needed for various analyses:
+    # - datetime columns for duration calculations
+    # - location IDs for geographic analysis
+    # - trip_distance for speed/distance analysis
+    # - fare columns for cost analysis
+    columns_to_keep = [
+        "tpep_pickup_datetime",
+        "tpep_dropoff_datetime",
+        "PULocationID",
+        "DOLocationID",
+        "trip_distance",
+        "fare_amount",
+        "tip_amount",
+        "total_amount",
+    ]
 
-    # Save to output path
-    df.to_parquet(output_path, index=False)
+    # Read with only the columns we need
+    df = pl.read_parquet(input_path, columns=columns_to_keep)
+
+    # Standardize schema: datetime to nanoseconds, location IDs to Int64
+    df = df.with_columns([
+        pl.col("tpep_pickup_datetime").cast(pl.Datetime("ns")),
+        pl.col("tpep_dropoff_datetime").cast(pl.Datetime("ns")),
+        pl.col("PULocationID").cast(pl.Int64),
+        pl.col("DOLocationID").cast(pl.Int64),
+        pl.col("trip_distance").cast(pl.Float64),
+        pl.col("fare_amount").cast(pl.Float64),
+        pl.col("tip_amount").cast(pl.Float64),
+        pl.col("total_amount").cast(pl.Float64),
+    ])
+
+    # Create mapping dataframe for joins
+    # Ensure all values are strings (no NaN)
+    zone_df = pl.DataFrame({
+        "LocationID": [k for k in zone_mapping.keys()],
+        "Borough": [str(v) for v in zone_mapping.values()]
+    }).cast({"LocationID": pl.Int64, "Borough": pl.String})
+
+    # Map location IDs to boroughs using joins (avoids replace issues with NaN)
+    df = (
+        df
+        .join(zone_df, left_on="PULocationID", right_on="LocationID", how="left")
+        .rename({"Borough": "PUBorough"})
+        .join(zone_df, left_on="DOLocationID", right_on="LocationID", how="left")
+        .rename({"Borough": "DOBorough"})
+        .with_columns([
+            pl.col("PUBorough").fill_null("Unknown"),
+            pl.col("DOBorough").fill_null("Unknown"),
+        ])
+    )
+
+    # Save to output path with compression
+    df.write_parquet(output_path, compression="snappy")
 
 
-def preprocess_all_files(datadir: Path) -> None:
-    """Preprocess all files in orig/ to preproc/ with borough columns."""
+def preprocess_all_files(datadir: Path, overwrite: bool = False) -> None:
+    """Preprocess all files in orig/ to preproc/ with standardized schema and borough columns.
+
+    This standardizes:
+    - Datetime precision (all to nanoseconds)
+    - Integer types (all location IDs to Int64)
+    - Column selection (datetime, location, trip metrics, fares)
+    - Adds borough name columns for analysis
+
+    Args:
+        datadir: Base data directory containing nyctaxi/orig/ files.
+        overwrite: If True, reprocess files even if they already exist.
+    """
     orig_dir, preproc_dir = get_data_dirs(datadir)
 
     # Load zone mapping
@@ -156,10 +231,21 @@ def preprocess_all_files(datadir: Path) -> None:
 
     # Process each file
     parquet_files = sorted(orig_dir.glob("yellow_tripdata_*.parquet"))
-    print(f"Preprocessing {len(parquet_files)} files...")
+
+    if not parquet_files:
+        print(f"No parquet files found in {orig_dir}")
+        return
+
+    print(f"Preprocessing {len(parquet_files)} files to standardize schemas...")
+    print("This ensures consistent datetime precision, integer types, and column sets.")
+    if overwrite:
+        print("Overwrite enabled - reprocessing all files.")
+
     for input_path in tqdm(parquet_files, desc="Preprocessing"):
         output_path = preproc_dir / input_path.name
-        preprocess_file(input_path, output_path, zone_mapping)
+        preprocess_file(input_path, output_path, zone_mapping, overwrite=overwrite)
+
+    print(f"✓ Preprocessed files saved to {preproc_dir}")
 
 
 def combine_preprocessed_files(datadir: Path) -> Path:
