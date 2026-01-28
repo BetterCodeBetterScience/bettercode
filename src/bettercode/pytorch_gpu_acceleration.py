@@ -761,29 +761,60 @@ if gpu_history and gpu_optimized_history:
 
 # %%
 def benchmark_batch_sizes(X, y, device, batch_sizes, n_epochs=3):
-    """Benchmark training with different batch sizes."""
+    """Benchmark baseline training with different batch sizes."""
     results = []
-    
+
     for batch_size in batch_sizes:
         dataset = TensorDataset(X, y)
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-        
+
         torch.manual_seed(42)
         model = MLP(N_FEATURES, HIDDEN_SIZES, N_CLASSES)
-        
+
         history = train_model(model, loader, device, n_epochs=n_epochs, verbose=False)
-        
+
         results.append({
             'batch_size': batch_size,
             'total_time': history['total_time'],
             'avg_epoch_time': np.mean(history['epoch_times']),
         })
-        
+
         # Clean up
         del model
         if device.type == 'cuda':
             torch.cuda.empty_cache()
-    
+
+    return results
+
+
+def benchmark_batch_sizes_optimized(X, y, device, batch_sizes, n_epochs=3):
+    """Benchmark optimized training (data pre-transferred to GPU) with different batch sizes."""
+    results = []
+
+    for batch_size in batch_sizes:
+        torch.manual_seed(42)
+        model = MLP(N_FEATURES, HIDDEN_SIZES, N_CLASSES)
+
+        history = train_model_optimized(
+            model, X, y, device,
+            n_epochs=n_epochs,
+            batch_size=batch_size,
+            use_amp=False,
+            use_compile=False,
+            verbose=False
+        )
+
+        results.append({
+            'batch_size': batch_size,
+            'total_time': history['total_time'],
+            'avg_epoch_time': np.mean(history['epoch_times']),
+        })
+
+        # Clean up
+        del model
+        if device.type == 'cuda':
+            torch.cuda.empty_cache()
+
     return results
 
 
@@ -791,33 +822,41 @@ def benchmark_batch_sizes(X, y, device, batch_sizes, n_epochs=3):
 if gpu_device is not None:
     print("Benchmarking different batch sizes...")
     print("(This may take a few minutes)\n")
-    
-    batch_sizes = [2**i for i in range(5, 17)]  # 32 to 16384
-    
+
+    batch_sizes = [2**i for i in range(5, 17)]  # 32 to 65536
+
     print("CPU benchmarks:")
     cpu_results = benchmark_batch_sizes(X, y, devices['cpu'], batch_sizes)
-    
-    print("\nGPU benchmarks:")
+
+    print("\nGPU Baseline benchmarks:")
     gpu_results = benchmark_batch_sizes(X, y, gpu_device, batch_sizes)
-    
+
+    print("\nGPU Optimized benchmarks:")
+    gpu_opt_results = benchmark_batch_sizes_optimized(X, y, gpu_device, batch_sizes)
+
     # Calculate speedups
-    speedups = [cpu['total_time'] / gpu['total_time'] 
-                for cpu, gpu in zip(cpu_results, gpu_results)]
-    
+    speedups_baseline = [cpu['total_time'] / gpu['total_time']
+                         for cpu, gpu in zip(cpu_results, gpu_results)]
+    speedups_optimized = [cpu['total_time'] / gpu_opt['total_time']
+                          for cpu, gpu_opt in zip(cpu_results, gpu_opt_results)]
+
     print("\nResults:")
-    print(f"{'Batch Size':>12} {'CPU Time':>10} {'GPU Time':>10} {'Speedup':>10}")
-    print("-" * 45)
-    for cpu, gpu, speedup in zip(cpu_results, gpu_results, speedups):
-        print(f"{cpu['batch_size']:>12} {cpu['total_time']:>10.2f}s {gpu['total_time']:>10.2f}s {speedup:>10.2f}x")
+    print(f"{'Batch Size':>12} {'CPU Time':>10} {'GPU Base':>10} {'GPU Opt':>10} {'Speedup Base':>14} {'Speedup Opt':>14}")
+    print("-" * 75)
+    for cpu, gpu, gpu_opt, sp_base, sp_opt in zip(cpu_results, gpu_results, gpu_opt_results, speedups_baseline, speedups_optimized):
+        print(f"{cpu['batch_size']:>12} {cpu['total_time']:>10.2f}s {gpu['total_time']:>10.2f}s {gpu_opt['total_time']:>10.2f}s {sp_base:>14.2f}x {sp_opt:>14.2f}x")
 
     # Save batch size benchmark results to CSV
     batch_benchmark_data = {
         "batch_size": batch_sizes,
         "cpu_total_time_s": [r["total_time"] for r in cpu_results],
         "cpu_avg_epoch_time_s": [r["avg_epoch_time"] for r in cpu_results],
-        "gpu_total_time_s": [r["total_time"] for r in gpu_results],
-        "gpu_avg_epoch_time_s": [r["avg_epoch_time"] for r in gpu_results],
-        "speedup": speedups,
+        "gpu_baseline_total_time_s": [r["total_time"] for r in gpu_results],
+        "gpu_baseline_avg_epoch_time_s": [r["avg_epoch_time"] for r in gpu_results],
+        "gpu_optimized_total_time_s": [r["total_time"] for r in gpu_opt_results],
+        "gpu_optimized_avg_epoch_time_s": [r["avg_epoch_time"] for r in gpu_opt_results],
+        "speedup_baseline": speedups_baseline,
+        "speedup_optimized": speedups_optimized,
     }
     batch_benchmark_df = pd.DataFrame(batch_benchmark_data)
     batch_csv_path = OUTPUT_DIR / "batch_size_benchmark.csv"
@@ -826,22 +865,24 @@ if gpu_device is not None:
 
 # %%
 if gpu_device is not None:
-    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
-    
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
     # Plot 1: Training time vs batch size
     ax = axes[0]
     ax.plot(batch_sizes, [r['total_time'] for r in cpu_results], 'b-o', label='CPU', markersize=6)
-    ax.plot(batch_sizes, [r['total_time'] for r in gpu_results], 'r-s', label='GPU', markersize=6)
+    ax.plot(batch_sizes, [r['total_time'] for r in gpu_results], 'r-s', label='GPU Baseline', markersize=6)
+    ax.plot(batch_sizes, [r['total_time'] for r in gpu_opt_results], 'g-^', label='GPU Optimized', markersize=6)
     ax.set_xlabel('Batch Size')
     ax.set_ylabel('Total Training Time (s)')
     ax.set_title('Training Time vs Batch Size')
     ax.set_xscale('log', base=2)
     ax.legend()
     ax.grid(True, alpha=0.3)
-    
+
     # Plot 2: Speedup vs batch size
     ax = axes[1]
-    ax.plot(batch_sizes, speedups, 'g-o', markersize=8, linewidth=2)
+    ax.plot(batch_sizes, speedups_baseline, 'r-s', label='GPU Baseline', markersize=6)
+    ax.plot(batch_sizes, speedups_optimized, 'g-^', label='GPU Optimized', markersize=6)
     ax.axhline(y=1, color='gray', linestyle='--', alpha=0.5, label='No speedup')
     ax.set_xlabel('Batch Size')
     ax.set_ylabel('Speedup (CPU time / GPU time)')
@@ -849,7 +890,7 @@ if gpu_device is not None:
     ax.set_xscale('log', base=2)
     ax.legend()
     ax.grid(True, alpha=0.3)
-    
+
     plt.tight_layout()
     plt.show()
 
