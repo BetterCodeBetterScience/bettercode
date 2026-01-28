@@ -834,13 +834,16 @@ if gpu_device is not None:
     batch_sizes = [2**i for i in range(5, 17)]  # 32 to 65536
 
     print("CPU benchmarks:")
-    cpu_results = benchmark_batch_sizes(X, y, devices['cpu'], batch_sizes)
+    cpu_results = benchmark_batch_sizes(X, y, devices['cpu'], batch_sizes, 
+        n_epochs=100)
 
     print("\nGPU Baseline benchmarks:")
-    gpu_results = benchmark_batch_sizes(X, y, gpu_device, batch_sizes)
+    gpu_results = benchmark_batch_sizes(X, y, gpu_device, batch_sizes,  
+        n_epochs=100)
 
     print("\nGPU Optimized benchmarks:")
-    gpu_opt_results = benchmark_batch_sizes_optimized(X, y, gpu_device, batch_sizes)
+    gpu_opt_results = benchmark_batch_sizes_optimized(X, y, gpu_device, 
+        batch_sizes, n_epochs=100)
 
     # Calculate speedups
     speedups_baseline = [cpu['total_time'] / gpu['total_time']
