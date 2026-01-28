@@ -120,7 +120,7 @@ def create_synthetic_dataset(n_samples=100000, n_features=784, n_classes=20, see
 N_SAMPLES = 500000
 N_FEATURES = 784
 N_CLASSES = 25
-BATCH_SIZE = 1024
+BATCH_SIZE = 5000 
 
 X, y = create_synthetic_dataset(N_SAMPLES, N_FEATURES, N_CLASSES)
 print(f"Dataset: {N_SAMPLES:,} samples, {N_FEATURES} features, {N_CLASSES} classes")
@@ -542,8 +542,8 @@ if gpu_device is not None:
         n_epochs=N_EPOCHS,
         lr=LEARNING_RATE,
         batch_size=BATCH_SIZE,
-        use_amp=True,      # Automatic Mixed Precision
-        use_compile=True,  # torch.compile()
+        use_amp=False,      # Automatic Mixed Precision
+        use_compile=False,  # torch.compile()
     )
     
     print(f"\nGPU Optimized Total training time: {gpu_optimized_history['total_time']:.2f}s")
