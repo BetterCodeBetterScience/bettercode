@@ -43,6 +43,8 @@ import matplotlib.pyplot as plt
 # Create output directory for results
 OUTPUT_DIR = Path(__file__).parent.parent.parent / "data" / "gpu"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+FIGURE_DIR = Path(__file__).parent.parent.parent.parent / 'book/book/images'
+assert FIGURE_DIR.exists()
 
 print(f"PyTorch version: {torch.__version__}")
 print(f"Results will be saved to: {OUTPUT_DIR}")
@@ -460,7 +462,7 @@ dataset = TensorDataset(X, y)
 train_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 # Training parameters
-N_EPOCHS = 10
+N_EPOCHS = 100
 LEARNING_RATE = 0.001
 
 print("="*60)
@@ -714,7 +716,7 @@ ax.legend()
 ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
-fig_path = OUTPUT_DIR / "training_curves.png"
+fig_path = FIGURE_DIR / "gpu_training_curves.png"
 plt.savefig(fig_path, dpi=150, bbox_inches='tight')
 print(f"Saved training curves to: {fig_path}")
 plt.show()
@@ -754,7 +756,7 @@ if gpu_history and gpu_optimized_history:
     ax.set_ylim(0, max(times) * 1.25)
 
     plt.tight_layout()
-    fig_path = OUTPUT_DIR / "training_time_comparison.png"
+    fig_path = FIGURE_DIR / "gpu_training_time_comparison.png"
     plt.savefig(fig_path, dpi=150, bbox_inches='tight')
     print(f"Saved time comparison to: {fig_path}")
     plt.show()
@@ -901,7 +903,7 @@ if gpu_device is not None:
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    fig_path = OUTPUT_DIR / "batch_size_scaling.png"
+    fig_path = FIGURE_DIR / "gpu_batch_size_scaling.png"
     plt.savefig(fig_path, dpi=150, bbox_inches='tight')
     print(f"Saved batch size scaling plot to: {fig_path}")
     plt.show()
