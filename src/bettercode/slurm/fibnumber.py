@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 def fibonacci(n):
     if n < 0:
@@ -12,6 +13,8 @@ def main():
     parser = argparse.ArgumentParser(description="Print the ith Fibonacci number.")
     parser.add_argument('-i', type=int, required=True, help="Index of the Fibonacci number (non-negative integer)")
     args = parser.parse_args()
+    sys.set_int_max_str_digits(10000000)
+
     print(fibonacci(args.i))
 
 if __name__ == "__main__":
