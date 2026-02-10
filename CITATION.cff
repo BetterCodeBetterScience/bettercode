@@ -1,0 +1,23 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: 'Better Code, Better Science'
+message: Code for examples in the book
+type: software
+authors:
+  - given-names: Russell
+    family-names: Poldrack
+    email: russpold@stanford.edu
+    affiliation: Stanford University
+    orcid: 'https://orcid.org/0000-0001-6755-0259'
+repository-code: 'https://github.com/BetterCodeBetterScience/bettercode'
+url: 'https://bettercodebetterscience.github.io/book/'
+abstract: >-
+  This is code used to generate examples for the book Better
+  Code, Better Science.
+keywords:
+  - software engineering
+  - AI
+  - scientific software
+license: MIT
