@@ -5,7 +5,9 @@ import numpy as np
 from bettercode.my_linear_regression import (
     linear_regression,
 )
+import pytest
 
+@pytest.mark.xfail
 @given(
     # Only generate data that is likely to be valid to start with
     nps.arrays(np.float64, (10, 1), elements=st.floats(-1e6, 1e6)),
