@@ -1,5 +1,7 @@
 ## Better Code, Better Science
 
+![Coverage](.github/badges/coverage.svg)
+
 https://doi.org/10.5281/zenodo.18603015
 
 [Better Code, Better Science](https://bettercodebetterscience.github.io/book/) is an open-source book on building better code for science using AI.  
