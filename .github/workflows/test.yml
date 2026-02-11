@@ -15,8 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -40,19 +38,20 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest --cov=src/bettercode --cov-report=term-missing --cov-report=xml
+          pytest --cov=src/bettercode --cov-report=term-missing --junitxml=report.xml
 
-      - name: Generate coverage badge
+      - name: Generate tests badge
+        if: always()
         run: |
-          uv pip install --system genbadge[coverage]
+          uv pip install --system genbadge[tests]
           mkdir -p .github/badges
-          genbadge coverage -i coverage.xml -o .github/badges/coverage.svg
+          genbadge tests -i report.xml -o .github/badges/tests.svg
 
       - name: Commit badge
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add .github/badges/coverage.svg
-          git diff --staged --quiet || git commit -m "Update coverage badge"
+          git add .github/badges/tests.svg
+          git diff --staged --quiet || git commit -m "Update tests badge"
           git push
