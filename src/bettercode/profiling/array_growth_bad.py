@@ -20,8 +20,19 @@ except ImportError:
 
 
 @profile
-def concatenate_with_append(n_iterations=1000):
-
+def concatenate_with_append(n_iterations: int = 1000) -> np.ndarray:
+    """Inefficiently build array by appending and concatenating.
+    
+    Parameters
+    ----------
+    n_iterations : int, default=1000
+        Number of batches to generate and concatenate
+    
+    Returns
+    -------
+    np.ndarray
+        Final concatenated array
+    """
     results = []
     
     for i in range(n_iterations):
@@ -33,7 +44,8 @@ def concatenate_with_append(n_iterations=1000):
     return final_array
 
 
-def main():
+def main() -> None:
+    """Run the bad array growth example and explain the issue."""
     print("\n" + "=" * 80)
     print("ARRAY GROWTH EXAMPLE (BAD VERSION)")
     print("=" * 80)

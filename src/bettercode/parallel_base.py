@@ -9,8 +9,23 @@ import multiprocessing as mp
 import time
 
 
-def get_mandelbrot_pixel(c_real, c_imag, max_iter):
-    """Calculates the escape time of a single point."""
+def get_mandelbrot_pixel(c_real: float, c_imag: float, max_iter: int) -> int:
+    """Calculate the escape time of a single point in the Mandelbrot set.
+    
+    Parameters
+    ----------
+    c_real : float
+        Real component of complex number c
+    c_imag : float
+        Imaginary component of complex number c
+    max_iter : int
+        Maximum number of iterations to test
+    
+    Returns
+    -------
+    int
+        Number of iterations until escape (or max_iter if no escape)
+    """
     z_real = 0
     z_imag = 0
     for i in range(max_iter):
@@ -23,14 +38,17 @@ def get_mandelbrot_pixel(c_real, c_imag, max_iter):
     return max_iter
 
 
-def compute_mandelbrot_rows(args):
-    """
-    Compute Mandelbrot set values for a range of rows.
+def compute_mandelbrot_rows(args: tuple) -> int:
+    """Compute Mandelbrot set values for a range of rows.
 
-    Args:
-        args: Tuple of (start_row, end_row, width, height, max_iter)
+    Parameters
+    ----------
+    args : tuple
+        Tuple of (start_row, end_row, width, height, max_iter)
 
-    Returns:
+    Returns
+    -------
+    int
         Sum of all escape times for these rows
     """
     start_row, end_row, width, height, max_iter = args
@@ -53,8 +71,19 @@ def compute_mandelbrot_rows(args):
     return total
 
 
-def run_serial(grid_size):
-    """Run computation serially (all rows processed sequentially)."""
+def run_serial(grid_size: tuple[int, int, int]) -> tuple[int, float]:
+    """Run computation serially (all rows processed sequentially).
+    
+    Parameters
+    ----------
+    grid_size : tuple[int, int, int]
+        Tuple of (width, height, max_iter)
+    
+    Returns
+    -------
+    tuple[int, float]
+        Tuple of (result sum, elapsed time in seconds)
+    """
     width, height, max_iter = grid_size
 
     start_time = time.time()
@@ -65,19 +94,24 @@ def run_serial(grid_size):
     return result, elapsed_time
 
 
-def run_parallel(grid_size, ncores=None, chunking_factor=1):
-    """
-    Run computation in parallel by splitting rows across workers.
+def run_parallel(grid_size: tuple[int, int, int], ncores: int | None = None, chunking_factor: int = 1) -> tuple[int, float, int]:
+    """Run computation in parallel by splitting rows across workers.
 
     Each worker processes a chunk of rows from the grid.
 
-    Args:
-        grid_size: Tuple of (width, height, max_iter)
-        ncores: Number of cores to use (default: cpu_count - 1)
-        chunking_factor: Multiplier for number of chunks (n_chunks = chunking_factor * ncores)
+    Parameters
+    ----------
+    grid_size : tuple[int, int, int]
+        Tuple of (width, height, max_iter)
+    ncores : int or None, default=None
+        Number of cores to use. If None, uses cpu_count - 1
+    chunking_factor : int, default=1
+        Multiplier for number of chunks (n_chunks = chunking_factor * ncores)
 
-    Returns:
-        Tuple of (result, elapsed_time, n_cores)
+    Returns
+    -------
+    tuple[int, float, int]
+        Tuple of (result sum, elapsed time in seconds, n_cores used)
     """
     width, height, max_iter = grid_size
 

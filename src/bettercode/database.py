@@ -1,12 +1,33 @@
+"""Database connection utilities for MongoDB, Neo4j, and ChromaDB.
+
+This module provides functions to establish connections to various databases
+used in the project.
+"""
+
 import os
+from typing import Any
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
+from pymongo.collection import Collection
 from chromadb import PersistentClient
-from neo4j import GraphDatabase
+from chromadb.api.models.Collection import Collection as ChromaCollection
+from neo4j import GraphDatabase, Session
 import chromadb.utils.embedding_functions as embedding_functions
 
 
-def get_neo4j_session():
+def get_neo4j_session() -> Session:
+    """Create and return a Neo4j database session.
+    
+    Returns
+    -------
+    Session
+        Neo4j database session
+        
+    Raises
+    ------
+    AssertionError
+        If NEO4J_PASSWORD environment variable is not set
+    """
     assert 'NEO4J_PASSWORD' in os.environ, 'NEO4J_PASSWORD should be set in .env'
     neo4j_driver = GraphDatabase.driver(
         'bolt://localhost:7687', auth=('neo4j', os.environ['NEO4J_PASSWORD'])
@@ -14,7 +35,7 @@ def get_neo4j_session():
     return neo4j_driver.session()
 
 
-def get_mongo_client(uri=None):
+def get_mongo_client(uri: str | None = None) -> MongoClient:
     from pymongo.errors import ServerSelectionTimeoutError
 
     assert (
@@ -41,11 +62,11 @@ def get_mongo_client(uri=None):
 
 
 def setup_mongo_collection(
-    collection_name,
-    uri=None,
-    db_name='research_database',
-    clear_existing=False,
-):
+    collection_name: str,
+    uri: str | None = None,
+    db_name: str = 'research_database',
+    clear_existing: bool = False,
+) -> Collection:
     assert (
         'MONGO_USERNAME' in os.environ and 'MONGO_PASSWORD' in os.environ
     ), 'MongoDB username and password should be set in .env'
@@ -72,10 +93,32 @@ def setup_mongo_collection(
     return collection
 
 
-def get_chromadb_collection(collection_name='pubmed_docs', 
-    path='../../data/chroma_data',
-    embedding: str = "text-embedding-3-large"):
-
+def get_chromadb_collection(
+    collection_name: str = 'pubmed_docs', 
+    path: str = '../../data/chroma_data',
+    embedding: str | None = "text-embedding-3-large"
+) -> ChromaCollection:
+    """Get or create a ChromaDB collection with embedding function.
+    
+    Parameters
+    ----------
+    collection_name : str, default='pubmed_docs'
+        Name of the ChromaDB collection
+    path : str, default='../../data/chroma_data'
+        Path to ChromaDB persistent storage
+    embedding : str or None, default="text-embedding-3-large"
+        Embedding model name. If None, uses SentenceTransformer.
+        
+    Returns
+    -------
+    ChromaCollection
+        ChromaDB collection object
+        
+    Raises
+    ------
+    AssertionError
+        If OPENAI environment variable is not set when using OpenAI embeddings
+    """
     assert 'OPENAI' in os.environ, 'OPENAI API key should be set in .env'
     if embedding is not None:
         embedding_function = embedding_functions.OpenAIEmbeddingFunction(

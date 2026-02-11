@@ -14,18 +14,42 @@ import io
 import json
 import tempfile
 import os
+from typing import List
 import numpy as np
+from numpy.typing import NDArray
 
 
-def fibonacci_recursive(n):
-    """Inefficient recursive implementation of fibonacci."""
+def fibonacci_recursive(n: int) -> int:
+    """Inefficient recursive implementation of fibonacci.
+    
+    Parameters
+    ----------
+    n : int
+        The Fibonacci number to compute
+    
+    Returns
+    -------
+    int
+        The nth Fibonacci number
+    """
     if n <= 1:
         return n
     return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
 
 
-def fibonacci_iterative(n):
-    """Efficient iterative implementation of fibonacci."""
+def fibonacci_iterative(n: int) -> int:
+    """Efficient iterative implementation of fibonacci.
+    
+    Parameters
+    ----------
+    n : int
+        The Fibonacci number to compute
+    
+    Returns
+    -------
+    int
+        The nth Fibonacci number
+    """
     if n <= 1:
         return n
     a, b = 0, 1
@@ -34,8 +58,14 @@ def fibonacci_iterative(n):
     return b
 
 
-def matrix_operations():
-    """Perform various matrix operations."""
+def matrix_operations() -> tuple[NDArray, NDArray, NDArray]:
+    """Perform various matrix operations.
+    
+    Returns
+    -------
+    tuple[NDArray, NDArray, NDArray]
+        Tuple of (matrix product, inverse matrix, eigenvalues)
+    """
     # Create large matrices
     size = 500
     A = np.random.rand(size, size)
@@ -53,8 +83,14 @@ def matrix_operations():
     return C, A_inv, eigenvalues
 
 
-def data_processing():
-    """Simulate data processing with loops."""
+def data_processing() -> List[float]:
+    """Simulate data processing with loops.
+    
+    Returns
+    -------
+    List[float]
+        List of processed values (square roots of even squares)
+    """
     data = []
     for i in range(10000):
         # Inefficient list operations
@@ -69,13 +105,22 @@ def data_processing():
     return result
 
 
-def find_duplicates_inefficient(data):
+def find_duplicates_inefficient(data: List) -> List:
     """Secretly expensive: repeated list membership checks.
     
     Using 'in' operator on lists is O(n), making this O(n²) overall.
     This is a common pattern that looks innocent but scales poorly.
+    
+    Parameters
+    ----------
+    data : List
+        List of items to check for duplicates
+    
+    Returns
+    -------
+    List
+        List of duplicate items
     """
-
     duplicates = []
     seen = []
     
@@ -89,12 +134,21 @@ def find_duplicates_inefficient(data):
     return duplicates
 
 
-def find_duplicates_efficient(data):
+def find_duplicates_efficient(data: List) -> List:
     """Efficient version using set for O(1) lookups.
     
     Using sets for membership testing is O(1), making this O(n) overall.
+    
+    Parameters
+    ----------
+    data : List
+        List of items to check for duplicates
+    
+    Returns
+    -------
+    List
+        List of duplicate items
     """
-
     duplicates = set()
     seen = set()
     

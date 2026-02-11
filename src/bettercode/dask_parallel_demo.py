@@ -59,7 +59,7 @@ logging.getLogger("distributed.worker").setLevel(logging.ERROR)
 logging.getLogger("distributed.scheduler").setLevel(logging.WARNING)
 
 
-def get_cluster_config() -> dict:
+def get_cluster_config() -> dict[str, int | str]:
     """Calculate optimal cluster configuration for distributed scheduler.
 
     Key principles for single-machine distributed:
@@ -67,8 +67,13 @@ def get_cluster_config() -> dict:
     - Single thread per worker (prevents concurrent memory spikes)
     - Generous memory limits (allows room for spilling)
 
-    Returns:
-        Dictionary with cluster configuration.
+    Returns
+    -------
+    dict[str, int | str]
+        Dictionary with cluster configuration containing:
+        - n_workers: Number of workers
+        - threads_per_worker: Threads per worker
+        - memory_limit: Memory limit string (e.g., '4GiB')
     """
     total_memory_gb = psutil.virtual_memory().total / (1024**3)
     available_memory_gb = psutil.virtual_memory().available / (1024**3)

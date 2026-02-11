@@ -15,7 +15,7 @@ import pandas as pd
 from bettercode.parallel_base import run_parallel, run_serial
 
 
-def main():
+def main() -> None:
     """Run chunking factor simulation and save results."""
     # Fixed grid size: 4096x4096 with 100 iterations
     grid_size = (4096, 4096, 100)

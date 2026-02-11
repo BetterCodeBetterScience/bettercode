@@ -19,11 +19,13 @@ import pandas as pd
 from bettercode.parallel_base import run_parallel, run_serial
 
 
-def main(chunking_factor=1):
+def main(chunking_factor: int = 1) -> None:
     """Compare serial and parallel execution with varying difficulty.
     
-    Args:
-        chunking_factor: Multiplier for number of chunks (n_chunks = chunking_factor * ncores)
+    Parameters
+    ----------
+    chunking_factor : int, default=1
+        Multiplier for number of chunks (n_chunks = chunking_factor * ncores)
     """
     # Test with different computational loads (powers of 2)
     # Format: (width, height, max_iterations)

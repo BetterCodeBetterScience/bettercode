@@ -20,8 +20,19 @@ except ImportError:
 
 
 @profile
-def preallocate_array(n_iterations=1000):
-
+def preallocate_array(n_iterations: int = 1000) -> np.ndarray:
+    """Efficiently build array by preallocating memory.
+    
+    Parameters
+    ----------
+    n_iterations : int, default=1000
+        Number of batches to generate
+    
+    Returns
+    -------
+    np.ndarray
+        Final array with all batches
+    """
     batch_size = 1000
     final_array = np.empty(n_iterations * batch_size)
     
@@ -33,7 +44,8 @@ def preallocate_array(n_iterations=1000):
     return final_array
 
 
-def main():
+def main() -> None:
+    """Run the good array growth example and explain the benefits."""
     print("\n" + "=" * 80)
     print("ARRAY GROWTH EXAMPLE (GOOD VERSION)")
     print("=" * 80)
