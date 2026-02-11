@@ -91,3 +91,5 @@ pre-commit run --all-files
 - Do not include *any* code in `__init__.py` files.
 - Use pytest for testing.
 - Use functions rather than classes for tests. Use pytest fixtures to share resources between tests.
+- Use numpy-style docstrings
+
