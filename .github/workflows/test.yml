@@ -35,4 +35,19 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest --cov=src/bettercode --cov-report=term-missing
+          pytest --cov=src/bettercode --cov-report=term-missing --cov-report=xml
+
+      - name: Generate coverage badge
+        run: |
+          uv pip install --system genbadge[coverage]
+          mkdir -p .github/badges
+          genbadge coverage -i coverage.xml -o .github/badges/coverage.svg
+
+      - name: Commit badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .github/badges/coverage.svg
+          git diff --staged --quiet || git commit -m "Update coverage badge"
+          git push
