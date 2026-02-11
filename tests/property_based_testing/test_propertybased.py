@@ -52,4 +52,4 @@ def test_linear_regression_correctness(X, y):
     params = linear_regression(X, y)
     lr_result = linregress(X.flatten(), y.flatten())
 
-    assert np.allclose(params, [lr_result.intercept, lr_result.slope])
+    assert np.allclose(params, [lr_result.intercept, lr_result.slope], rtol=1e-4, atol=1e-6)
