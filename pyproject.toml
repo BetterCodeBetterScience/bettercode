@@ -89,6 +89,15 @@ dependencies = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build]
+exclude = [
+    "tests/",
+    "data/",
+    "docker-example/",
+    "notebooks",
+    "*.pyc",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/bettercode"]
 
