@@ -144,7 +144,7 @@ def parse_pubmed_query_result(pubmed_records: dict) -> dict:
         try:
             parsed_record = parse_pubmed_record(i)
             pubs[parsed_record["PMID"]] = parsed_record
-        except Exception as e:
+        except Exception:
             print(f"Error parsing record {i}")
     return pubs
 

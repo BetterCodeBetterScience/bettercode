@@ -1,5 +1,4 @@
 # custom scaler class for testing example
-import numpy as np
 
 class SimpleScaler:
     def __init__(self):

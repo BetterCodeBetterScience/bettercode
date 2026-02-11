@@ -20,19 +20,9 @@
 # The question that we will ask in this analysis is: Can the biological similarity between two traits (estimated using pathway enrichment of genome-wide association study [GWAS] data) be estimated from the semantic similarity of published abstracts that mention that trait?
 
 # %%
-import pandas as pd
-import pymongo
 import dotenv
 import os
-from neo4j import GraphDatabase
-from chromadb import PersistentClient
-from tqdm.notebook import tqdm
 from pathlib import Path
-from database import (
-    setup_mongo_collection,
-    get_chromadb_collection,
-    get_neo4j_session,
-)
 from bettercode.database_example_funcs import (
     get_exploded_gwas_data,
     import_geneset_annotations_by_trait,
@@ -42,7 +32,6 @@ from bettercode.database_example_funcs import (
     compute_phenotype_similarities,
     compute_text_similarities,
 )
-from bettercode.database import get_mongo_client
 import seaborn as sns
 import matplotlib.pyplot as plt
 

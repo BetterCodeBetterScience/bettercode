@@ -19,7 +19,6 @@ if you run the script directly without defining it. This script handles both cas
 """
 
 import numpy as np
-import sys
 
 # Handle @profile decorator for both kernprof and direct execution
 try:
@@ -111,7 +110,7 @@ def main():
     result2 = find_duplicates_efficient(data)
     print(f"   Found {len(result2)} duplicates")
     
-    print(f"\n3. Testing nested data processing (matrix_size=1000x100)...")
+    print("\n3. Testing nested data processing (matrix_size=1000x100)...")
     result3 = process_nested_data(1000)
     print(f"   Processed {len(result3)} rows")
     

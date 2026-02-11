@@ -1,6 +1,5 @@
 # example for testing chapter
 
-import numpy as np
 from typing import List
 
 def find_outliers(data: List[float], threshold: float = 2.0) -> List[int]:

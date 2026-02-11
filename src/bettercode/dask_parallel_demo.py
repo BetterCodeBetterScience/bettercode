@@ -197,7 +197,7 @@ def example_streaming_aggregations(client: Client, ddf: dd.DataFrame) -> dict:
 
     logger.info(f"Processed {total_rows:,} rows in {elapsed:.2f} seconds")
     logger.info(f"Throughput: {total_rows / elapsed / 1e6:.1f} million rows/second")
-    logger.info(f"Statistics:")
+    logger.info("Statistics:")
     for k, v in results.items():
         if "count" in k:
             logger.info(f"  {k}: {v:,}")
@@ -247,7 +247,7 @@ def example_map_partitions(client: Client, ddf: dd.DataFrame) -> dict:
     elapsed = time.time() - start_time
 
     logger.info(f"Processed {total_trips:,.0f} valid trips in {elapsed:.2f} seconds")
-    logger.info(f"Combined Statistics:")
+    logger.info("Combined Statistics:")
     for k, v in combined_stats.items():
         if "trips" in k:
             logger.info(f"  {k}: {v:,.0f}")
@@ -287,7 +287,7 @@ def example_groupby_aggregations(client: Client, ddf: dd.DataFrame) -> pd.DataFr
     logger.info(f"GroupBy completed in {elapsed:.2f} seconds")
     logger.info(f"Found {len(location_stats)} unique pickup locations")
     logger.info(f"Total trips: {location_stats['trip_count'].sum():,}")
-    logger.info(f"Top 10 busiest pickup locations:")
+    logger.info("Top 10 busiest pickup locations:")
     top_10 = location_stats.nlargest(10, "trip_count")[
         ["trip_count", "trip_distance_mean", "fare_amount_mean"]
     ]
@@ -424,7 +424,7 @@ def example_bootstrap(client: Client, ddf: dd.DataFrame) -> pd.DataFrame:
 
     logger.info(f"Bootstrap completed in {boot_time:.2f} seconds")
     logger.info(f"Computed CIs for {len(bootstrap_results)} zones")
-    logger.info(f"\nTop 10 zones by mean daily trips:")
+    logger.info("\nTop 10 zones by mean daily trips:")
     top_zones = bootstrap_results.nlargest(10, "mean_daily_trips")
     logger.info(f"\n{top_zones.to_string(index=False)}")
 

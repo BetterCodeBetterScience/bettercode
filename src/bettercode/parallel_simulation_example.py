@@ -40,7 +40,7 @@ def main(chunking_factor=1):
     max_cores = mp.cpu_count()
     ncores_list = list(range(2, max(3, max_cores - 1), 2))
     
-    print(f"Computing Mandelbrot set with parallel row processing")
+    print("Computing Mandelbrot set with parallel row processing")
     print(f"Available cores: {max_cores}")
     print(f"Chunking factor: {chunking_factor}")
     print(f"Testing with: {ncores_list} cores\n")

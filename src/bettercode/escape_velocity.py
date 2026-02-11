@@ -1,6 +1,4 @@
 import math
-import numpy as np
-import pytest
 
 def escape_velocity(mass: float, radius: float, G=6.67430e-11):
     """
