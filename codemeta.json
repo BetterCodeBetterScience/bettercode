@@ -1,0 +1,66 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "type": "SoftwareSourceCode",
+    "applicationCategory": "Software engineering",
+    "author": [
+        {
+            "id": "https://orcid.org/0000-0001-6755-0259",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Department of Psychology, Stanford University"
+            },
+            "email": "russpold@stanford.edu",
+            "familyName": "Poldrack",
+            "givenName": "Russell"
+        }
+    ],
+    "codeRepository": "git+https://github.com/BetterCodeBetterScience/bettercode.git",
+    "contributor": [
+        {
+            "id": "https://orcid.org/0000-0003-3456-2493",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "Dartmouth University"
+            },
+            "email": "debian@onerussian.com",
+            "familyName": "Halchenko",
+            "givenName": "Yaroslav"
+        },
+        {
+            "id": "https://orcid.org/0000-0001-6270-6883",
+            "type": "Person",
+            "affiliation": {
+                "type": "Organization",
+                "name": "University of Padova"
+            },
+            "email": "giorgio.arcara@gmail.com",
+            "familyName": "Arcara",
+            "givenName": "Giorgio"
+        }
+    ],
+    "dateCreated": "2025-05-13",
+    "dateModified": "2026-02-10",
+    "datePublished": "2026-02-10",
+    "description": "This software package supports the examples used in the Better Code, Better Science book (https://bettercodebetterscience.github.io/book/).  ",
+    "downloadUrl": "https://github.com/BetterCodeBetterScience/bettercode/archive/refs/tags/v0.1.0.tar.gz",
+    "identifier": "10.5281/zenodo.18603014",
+    "keywords": [
+        "software engineering",
+        "AI",
+        "scientific software"
+    ],
+    "license": "https://spdx.org/licenses/MIT",
+    "name": "Better Code, Better Science",
+    "programmingLanguage": [
+        "Python 3",
+        "Rust",
+        "R"
+    ],
+    "relatedLink": "https://bettercodebetterscience.github.io/book/",
+    "schema:releaseNotes": "Initial release",
+    "version": "v0.1.0",
+    "developmentStatus": "active",
+    "issueTracker": "https://github.com/BetterCodeBetterScience/bettercode/issues"
+}
