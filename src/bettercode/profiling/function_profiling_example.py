@@ -186,7 +186,7 @@ def run_function_profiling():
     # Run JSON I/O (I/O bound)
     json_results = process_json_files_inefficient(50)
 
-    return result1, result2, matrix_results, processed_data, duplicates, json_results
+    return result1, result2, matrix_results, processed_data, json_results
 
 
 def profile_main_function():

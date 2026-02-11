@@ -442,7 +442,7 @@ def example_comparison(client: Client, ddf: dd.DataFrame, preproc_dir: Path) -> 
     # Dask distributed
     logger.info("Running Dask Distributed...")
     start_time = time.time()
-    dask_result = ddf.groupby("PULocationID")["trip_distance"].mean().compute()
+    _ = ddf.groupby("PULocationID")["trip_distance"].mean().compute()
     dask_time = time.time() - start_time
     logger.info(f"Dask Distributed: {dask_time:.2f} seconds")
 
@@ -454,7 +454,7 @@ def example_comparison(client: Client, ddf: dd.DataFrame, preproc_dir: Path) -> 
 
         logger.info("Running Polars (lazy)...")
         start_time = time.time()
-        pl_result = (
+        _ = (
             pl.scan_parquet(str(preproc_dir / "*.parquet"))
             .group_by("PULocationID")
             .agg(pl.col("trip_distance").mean().alias("mean_trip_distance"))

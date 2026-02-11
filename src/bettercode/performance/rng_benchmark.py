@@ -39,7 +39,7 @@ def main():
     
     start = time.perf_counter()
     for _ in range(iterations):
-        result = sum_of_squares(n, seed)
+        _ = sum_of_squares(n, seed)
     elapsed = time.perf_counter() - start
     avg_time = elapsed / iterations
 

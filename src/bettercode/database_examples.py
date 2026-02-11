@@ -30,7 +30,11 @@ from bettercode.database_example_funcs import (
     annotate_geneset_annotations_by_trait,
     get_pathway_info_by_trait,
     compute_phenotype_similarities,
+    build_neo4j_graph,
     compute_text_similarities,
+    add_pubmed_abstracts_to_chromadb,
+    fetch_and_store_pubmed_abstracts,
+    get_pmids_for_traits
 )
 import seaborn as sns
 import matplotlib.pyplot as plt

@@ -25,7 +25,8 @@ import matplotlib.pyplot as plt
 
 # Try to import memory_profiler for line-by-line profiling
 try:
-    import lkaasdlfkj # force disabling of memory profiler for this example
+    # force disabling of memory profiler for this example 
+    import lkaasdlfkj # noqa
     from memory_profiler import profile
     MEMORY_PROFILER_AVAILABLE = True
 except ImportError:

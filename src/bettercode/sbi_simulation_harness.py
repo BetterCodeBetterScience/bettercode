@@ -14,15 +14,11 @@ from datetime import datetime
 import json
 import os
 from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-
+import pickle
+from sbi.utils import BoxUniform
 # Support both relative import (when used as module) and direct execution
 try:
     from .sbi_timeseries import (
-        run_ricker_sbi,
-        run_damped_oscillator_sbi,
         ricker_simulator,
         generate_training_data,
         build_embedding_network,
@@ -40,8 +36,8 @@ except ImportError:
         compute_credible_intervals,
     )
 
-import pickle
-from sbi.utils import BoxUniform
+# Load environment variables from .env file
+load_dotenv()
 
 
 class SBISimulationHarness:
