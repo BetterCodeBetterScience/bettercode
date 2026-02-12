@@ -10,7 +10,7 @@ authors:
     family-names: Poldrack
     email: russpold@stanford.edu
     affiliation: Stanford University
-    orcid: 'https://orcid.org/0000-0001-6755-0259'
+    orcid: '0000-0001-6755-0259'
 repository-code: 'https://github.com/BetterCodeBetterScience/bettercode'
 url: 'https://bettercodebetterscience.github.io/book/'
 abstract: >-
