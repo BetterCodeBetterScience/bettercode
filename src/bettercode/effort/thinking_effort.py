@@ -24,18 +24,18 @@ import anthropic
 from pathlib import Path
 
 # Load the buggy module source
-MODULE_SOURCE = Path(__file__).parent / "resource_manager.py"
-TEST_SOURCE = Path(__file__).parent / "test_zombie.py"
+MODULE_SOURCE = Path(__file__).parent / "median.py"
+TEST_SOURCE = Path(__file__).parent / "test_median.py"
 
 PROMPT = """\
-I am implementing a reference-counting Resource Manager for a Python application. It allows systems to acquire and release resources. When a resource's reference count hits zero, it triggers a callback (on_destroy_callback) to notify listeners, and then deletes the resource from the internal dictionary.
+I'm building a latency tracking module. I used the standard "Two Heaps" method to find the running median. I implemented "Lazy Deletion" for the remove method to ensure it stays O(log N) instead of O(N).
 
-The Problem:
-My unit tests are failing in a specific edge case involving "Object Resurrection." If a listener decides to re-acquire the resource during the destroy callback, the manager ends up in an inconsistent state. It seems to delete the resource even though a new reference was just established.
+The Issue:
+The median calculation is wrong after I perform removals. It seems biased towards old values. I verified that _clean_top works (it removes deleted items from the root), so I don't understand why the result is still incorrect.
 
-Your task is to identify and fix the bug in the `resource_manager.py` module. Please return the complete fixed module code surround by code fences. Do not return just a snippet. 
+Your task is to identify and fix the bug in the `median.py` module. Please return the complete fixed module code surround by code fences. Do not return just a snippet. 
 
-## resource_manager.py
+## median.py
 
 ```python
 {module_source}
