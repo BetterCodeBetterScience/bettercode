@@ -24,26 +24,18 @@ import anthropic
 from pathlib import Path
 
 # Load the buggy module source
-MODULE_SOURCE = Path(__file__).parent / "rover.py"
-TEST_SOURCE = Path(__file__).parent / "test_rover.py"
+MODULE_SOURCE = Path(__file__).parent / "calendar_tree.py"
+TEST_SOURCE = Path(__file__).parent / "test_calendar.py"
 
 PROMPT = """\
-Below is a Python module (`rover.py`) that solves a "Mars Rover" pathfinding problem. The goal is to navigate an N x N grid from (0,0) to (N-1, N-1) with the minimum total "damage" (sum of cell values).  
-
-Rules:
-Movement: Up, Down, Left, Right. Each move consumes 1 unit of Battery.
-Battery: You start with max_battery. If battery hits 0, you cannot move (unless you are on a charger).
-Damage: Entering a cell adds its value to your total damage.
-Charging Stations: If a grid cell has a value of -1, it is a Charging Station.
-It instantly refills your battery to max_battery.
-It incurs 0 damage.
+I am building a custom, low-latency "Maintenance Scheduler" for a trading engine. We need to prevent any maintenance jobs from overlapping in time. Because performance is critical, I avoided using a standard O(N) list check and implemented a custom recursive tree (similar to a Segment Tree or BSP tree) to store time intervals.
 
 The Issue:
-I implemented the solution using Dijkstra's algorithm. It passes simple test cases, but I suspect there is a logical flaw in how I am pruning the search space (the min_damage memoization). The code seems to discard valid paths that are expensive but necessary to survive.
+The system is behaving erratically. In unit tests with random data, it occasionally allows two overlapping jobs to be scheduled without reporting a conflict. I suspect there is a logical flaw in how I am partitioning the time intervals in the TimeNode class.
 
-Your task is to identify and fix the bug in the `rover.py` module. Please return the complete fixed module code. Do not return just a snippet. 
+Your task is to identify and fix the bug in the `calendar_tree.py` module. Please return the complete fixed module code surround by code fences. Do not return just a snippet. 
 
-## rover.py
+## calendar_tree.py
 
 ```python
 {module_source}
@@ -67,21 +59,48 @@ def extract_python_code(text, original_module_path, verbose=False):
     Returns:
         Complete module code as a string, or None if extraction fails
     """
-    # Try to find Python code blocks
-    python_blocks = re.findall(r'```python\n(.*?)```', text, re.DOTALL)
-    if not python_blocks:
-        # Try generic code blocks if no python-specific ones found
-        python_blocks = re.findall(r'```\n(.*?)```', text, re.DOTALL)
+    # Try to find code blocks with any language identifier or none
+    # Matches: ```python\n, ```\n, ```plaintext\n, etc.
+    code_blocks = re.findall(r'```[\w]*\s*\n(.*?)```', text, re.DOTALL)
     
     if verbose:
-        print(f"  [extract] Found {len(python_blocks)} code blocks")
-        for i, block in enumerate(python_blocks):
-            print(f"    Block {i+1}: {len(block)} chars, "
-                  f"has class: {'class ' in block}, "
-                  f"has def: {'def ' in block}")
+        print(f"  [extract] Found {len(code_blocks)} code blocks (any language)")
+        for i, block in enumerate(code_blocks):
+            # Show first 50 chars of each block
+            preview = block[:50].replace('\n', ' ')
+            print(f"    Block {i+1}: {len(block)} chars, starts with: {preview}...")
+            print(f"      has class: {'class ' in block}, has def: {'def ' in block}")
+    
+    if not code_blocks:
+        if verbose:
+            print(f"  [extract] No code blocks found, trying to extract raw code...")
+        
+        # Fallback: Check if the entire response looks like Python code
+        # Look for class or function definitions at the start
+        lines = text.strip().split('\n')
+        if lines and (lines[0].startswith('class ') or lines[0].startswith('def ') or 
+                     lines[0].startswith('import ') or lines[0].startswith('from ')):
+            if verbose:
+                print(f"  [extract] Response appears to be raw Python code (starts with: {lines[0][:50]})")
+            # Use the entire response as code
+            return text.strip()
+        
+        return None
+    
+    # Filter to only Python-looking code blocks (have def, class, import, etc.)
+    python_blocks = [
+        block for block in code_blocks 
+        if 'def ' in block or 'class ' in block or 'import ' in block or 'from ' in block
+    ]
+    
+    if verbose:
+        print(f"  [extract] {len(python_blocks)} blocks look like Python code")
     
     if not python_blocks:
-        return None
+        # No Python-looking blocks, use all blocks and hope for the best
+        python_blocks = code_blocks
+        if verbose:
+            print(f"  [extract] No Python-specific blocks found, using all code blocks")
     
     # Get the longest block (likely the most complete)
     longest_code = max(python_blocks, key=len)
