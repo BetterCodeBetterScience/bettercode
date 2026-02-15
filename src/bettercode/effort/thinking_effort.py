@@ -24,18 +24,17 @@ import anthropic
 from pathlib import Path
 
 # Load the buggy module source
-MODULE_SOURCE = Path(__file__).parent / "median.py"
-TEST_SOURCE = Path(__file__).parent / "test_median.py"
+MODULE_SOURCE = Path(__file__).parent / "cluster_manager.py"
+TEST_SOURCE = Path(__file__).parent / "test_cluster.py"
 
 PROMPT = """\
-I'm building a latency tracking module. I used the standard "Two Heaps" method to find the running median. I implemented "Lazy Deletion" for the remove method to ensure it stays O(log N) instead of O(N).
+I am running a Python application using the attached code. The system is designed to monitor distinct groups of distributed nodes.
 
-The Issue:
-The median calculation is wrong after I perform removals. It seems biased towards old values. I verified that _clean_top works (it removes deleted items from the root), so I don't understand why the result is still incorrect.
+The issue is that instances of NodeCluster are not isolated from one another. When I register nodes in one cluster instance, they incorrectly appear in the node list of a completely different cluster instance. Additionally, metadata properties (like the cluster name) seem to be overwritten by the configuration of the most recently created instance.
 
-Your task is to identify and fix the bug in the `median.py` module. Please return the complete fixed module code surround by code fences. Do not return just a snippet. 
+Please analyze the code and correct it so that each NodeCluster instance maintains its own independent state. Do not change the public method signatures.
 
-## median.py
+## cluster_manager.py
 
 ```python
 {module_source}
