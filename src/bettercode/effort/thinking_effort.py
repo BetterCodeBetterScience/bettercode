@@ -24,18 +24,18 @@ import anthropic
 from pathlib import Path
 
 # Load the buggy module source
-MODULE_SOURCE = Path(__file__).parent / "calendar_tree.py"
-TEST_SOURCE = Path(__file__).parent / "test_calendar.py"
+MODULE_SOURCE = Path(__file__).parent / "resource_manager.py"
+TEST_SOURCE = Path(__file__).parent / "test_zombie.py"
 
 PROMPT = """\
-I am building a custom, low-latency "Maintenance Scheduler" for a trading engine. We need to prevent any maintenance jobs from overlapping in time. Because performance is critical, I avoided using a standard O(N) list check and implemented a custom recursive tree (similar to a Segment Tree or BSP tree) to store time intervals.
+I am implementing a reference-counting Resource Manager for a Python application. It allows systems to acquire and release resources. When a resource's reference count hits zero, it triggers a callback (on_destroy_callback) to notify listeners, and then deletes the resource from the internal dictionary.
 
-The Issue:
-The system is behaving erratically. In unit tests with random data, it occasionally allows two overlapping jobs to be scheduled without reporting a conflict. I suspect there is a logical flaw in how I am partitioning the time intervals in the TimeNode class.
+The Problem:
+My unit tests are failing in a specific edge case involving "Object Resurrection." If a listener decides to re-acquire the resource during the destroy callback, the manager ends up in an inconsistent state. It seems to delete the resource even though a new reference was just established.
 
-Your task is to identify and fix the bug in the `calendar_tree.py` module. Please return the complete fixed module code surround by code fences. Do not return just a snippet. 
+Your task is to identify and fix the bug in the `resource_manager.py` module. Please return the complete fixed module code surround by code fences. Do not return just a snippet. 
 
-## calendar_tree.py
+## resource_manager.py
 
 ```python
 {module_source}
