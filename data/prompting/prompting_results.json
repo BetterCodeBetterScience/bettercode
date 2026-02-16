@@ -1,0 +1,362 @@
+[
+  {
+    "response": "\n\nThere are actually a few ways to think about this. The most fundamental reason is that bilateral symmetry\u2014having mirror-image left and right sides\u2014is deeply ancient in animal evolution. It arose early in multicellular animal life and essentially locked in even numbers of limbs. Legs come in pairs because the basic body plan does.\n\nThree legs would also pose real biomechanical challenges. With two legs you can alternate them; with four you get stable diagonal gaits. Three is awkward for locomotion\u2014though not impossible, since tripod gaits (using three limbs at a time) are actually how insects walk. But having three legs as your total set makes balanced, efficient movement harder.\n\nThat said, some animals functionally use three limbs. Kangaroos use their tail as a \"third leg\" when moving slowly, and it bears significant weight. Parrots sometimes use their beak as a third point of contact when climbing.\n\nEvolution works by modifying existing body plans rather than designing from scratch, so breaking out of bilateral symmetry for limb number would require a pretty radical developmental change that apparently never provided enough advantage to arise.",
+    "time_seconds": 9.703758716583252,
+    "input_tokens": 285,
+    "output_tokens": 265,
+    "response_length": 1165,
+    "effort_level": "low",
+    "run_number": 1
+  },
+  {
+    "response": "\n\nThere are a few reasons. Bilateral symmetry is deeply embedded in animal body plans, going back to early evolutionary history. Once you have a body with a left and right side, you naturally get even numbers of limbs.\n\nThree legs also don't work as well as you might think for locomotion. Two legs allow alternating gait, four legs allow diagonal pairing, and six legs offer great stability\u2014but three legs create awkward biomechanical challenges for moving efficiently. Interestingly, animals with four legs already use a tripod-like support pattern when walking (two legs on one side plus one on the other), so three legs would offer less redundancy without much advantage.\n\nThat said, some animals functionally use three limbs\u2014kangaroos use their tail as a \"third leg\" when moving slowly, and some insects that have lost legs manage fine on three. But as an evolved body plan from scratch, three just never had a reason to emerge given the deep constraint of bilateral symmetry.",
+    "time_seconds": 8.393095254898071,
+    "input_tokens": 285,
+    "output_tokens": 239,
+    "response_length": 981,
+    "effort_level": "low",
+    "run_number": 2
+  },
+  {
+    "response": "\n\nEvolution works by modifying existing body plans, and the ancestral body plan for most animals we think of is bilaterally symmetric \u2014 a feature that dates back hundreds of millions of years. Bilateral symmetry (left-right mirroring) naturally produces even numbers of limbs. Three legs would require breaking that symmetry, and there's never been strong selective pressure to do so, especially since the existing even-numbered arrangements work well for locomotion.\n\nTwo legs and four legs both offer stable, efficient gaits. Three legs actually present a biomechanical challenge \u2014 though a tripod stance is stable (which is why animals often rest on three limbs), *moving* with three legs in a symmetrical gait is awkward. You'd always have an asymmetric stride.\n\nThat said, some animals functionally use three limbs for movement. Kangaroos use their tail as a sort of third leg when moving slowly, and some insects that have lost limbs get by on five. But as an evolved ground-up body plan, three just never had a reason to emerge given the deep evolutionary commitment to bilateral symmetry.",
+    "time_seconds": 9.438778162002563,
+    "input_tokens": 285,
+    "output_tokens": 261,
+    "response_length": 1096,
+    "effort_level": "low",
+    "run_number": 3
+  },
+  {
+    "response": "\n\nEvolution works by modifying existing body plans, and the ancestral body plan for most complex animals is bilateral symmetry \u2014 a left side and a right side. This deep developmental blueprint, established very early in animal evolution, makes even numbers of limbs the default (two, four, six, eight, etc.).\n\nThree legs would require breaking that symmetry, which would mean a fundamental reorganization of how the body develops from an embryo. That's an enormous evolutionary hurdle, not because three legs couldn't theoretically be useful, but because the genetic and developmental machinery for bilateral symmetry is so deeply entrenched that there's essentially no viable path to get there from here.\n\nThat said, some animals functionally use three points of contact \u2014 kangaroos use their tail as a \"third leg\" when moving slowly, and tripod gaits in insects effectively use three legs at a time. So three-point locomotion exists; it's just achieved within the bilateral framework rather than by evolving an odd number of limbs.",
+    "time_seconds": 8.17368221282959,
+    "input_tokens": 285,
+    "output_tokens": 237,
+    "response_length": 1033,
+    "effort_level": "low",
+    "run_number": 4
+  },
+  {
+    "response": "\n\nBilateral symmetry is deeply embedded in animal body plans, going back to early evolutionary history. Once the basic two-sided body plan was established in our distant ancestors, all descendants inherited that template. Legs come in pairs because of this symmetry.\n\nThree legs would also pose practical problems. Locomotion with bilateral pairs allows for efficient alternating gaits \u2014 think of how two-legged and four-legged animals walk and run. A three-legged arrangement would create asymmetric forces that complicate movement, though it's not impossible (kangaroos effectively use their tail as a \"third leg\" at slow speeds, and some insects use a tripod gait with three legs at a time).\n\nSo it's less that three legs couldn't work mechanically and more that evolution doesn't design from scratch \u2014 it modifies existing body plans. Since the bilateral template was locked in very early, there was never really a path to an odd-legged animal. Evolution would have to \"lose\" one leg from a pair, and an animal with one functional leg missing is usually just injured, not better adapted.",
+    "time_seconds": 9.566057920455933,
+    "input_tokens": 285,
+    "output_tokens": 256,
+    "response_length": 1091,
+    "effort_level": "low",
+    "run_number": 5
+  },
+  {
+    "response": "\n\nEvolution works by modifying existing body plans, and the ancestral body plan for most animals we think of is bilaterally symmetric \u2014 a basic two-sided mirror image. Legs come in pairs as a consequence of that symmetry. Going from two or four legs to three would require breaking that fundamental symmetry, which is a very unlikely developmental shift since the genetic architecture controlling limb formation operates on both sides simultaneously.\n\nThere's also a biomechanical issue: three legs create an asymmetric gait that's less efficient for most forms of locomotion. Two legs or four legs produce balanced, alternating movement patterns. A three-legged animal would need a fundamentally different way of moving.\n\nThat said, some animals functionally use three limbs \u2014 kangaroos use their tail as a \"third leg\" when walking slowly, and parrots sometimes use their beak as a third support point. But no lineage has evolved three true legs, because there's never been a plausible evolutionary pathway that would both break bilateral symmetry and produce a functional advantage over existing arrangements.",
+    "time_seconds": 8.92553186416626,
+    "input_tokens": 285,
+    "output_tokens": 250,
+    "response_length": 1111,
+    "effort_level": "low",
+    "run_number": 6
+  },
+  {
+    "response": "\n\nEvolution works by modifying existing body plans, and the ancestral body plan for most complex animals is bilateral symmetry \u2014 a left side and a right side. This deep developmental blueprint, established hundreds of millions of years ago, means limbs come in pairs. There's never been an evolutionary starting point from which a third leg could easily emerge.\n\nThree-legged locomotion is also biomechanically awkward for sustained movement. Two legs or four legs allow for efficient alternating gaits. A tripod stance is actually very stable (insects use a tripod gait, alternating three of their six legs), but having exactly three legs makes smooth continuous locomotion difficult \u2014 you'd need to hop or use some unusual gait.\n\nThat said, some animals functionally use three limbs. Kangaroos use their tail as a \"third leg\" when moving slowly, and it contributes significant propulsive force. Some primates brace with their tail. So nature has approximated it without ever producing a truly three-legged body plan.\n\nThe short answer is that bilateral symmetry is so deeply embedded in animal development that evolving an odd number of limbs would require a radical restructuring that has never been selected for, especially when existing even-numbered arrangements work well.",
+    "time_seconds": 10.332854986190796,
+    "input_tokens": 285,
+    "output_tokens": 290,
+    "response_length": 1279,
+    "effort_level": "low",
+    "run_number": 7
+  },
+  {
+    "response": "\n\nEvolution works by modifying existing body plans, and the ancestral body plan for most animals we think of is bilateral symmetry \u2014 a left side and a right side that mirror each other. That fundamental blueprint naturally produces even numbers of limbs. There's no easy developmental pathway to go from two sides to three legs, since it would require breaking that deep symmetry in a very specific and coordinated way.\n\nThere's also a biomechanical issue: three legs make for an awkward gait. Two legs or four legs work well for locomotion, but three creates an asymmetry that's hard to move efficiently with. A tripod is great for standing still (which is why many animals rest in tripod-like postures, using a tail as a third point), but not great for walking or running.\n\nThat said, some animals functionally use three limbs \u2014 kangaroos use their tail as a sort of third leg when moving slowly, and parrots sometimes use their beak as a third gripping point. But a truly three-legged body plan has just never been selected for, likely because bilateral symmetry is so deeply embedded and works so well.",
+    "time_seconds": 9.098057985305786,
+    "input_tokens": 285,
+    "output_tokens": 267,
+    "response_length": 1106,
+    "effort_level": "low",
+    "run_number": 8
+  },
+  {
+    "response": "\n\nThere are a few reasons, mostly rooted in how animal body plans evolved. Bilateral symmetry \u2014 having mirror-image left and right sides \u2014 is the dominant body plan for animals with legs, and it naturally produces even numbers of limbs. This symmetry arose very early in animal evolution and has been deeply conserved ever since.\n\nFrom a biomechanics standpoint, three legs can actually work fine for static stability (think of a tripod), and many animals effectively use three-point gaits when moving (like a dog lifting one leg). But for locomotion, paired limbs allow for efficient alternating gaits. A truly three-legged body plan would require breaking bilateral symmetry, which would mean a fundamentally different developmental blueprint \u2014 not something evolution easily stumbles into given the deep ancestral commitment to bilateral symmetry.\n\nSo it's less that three legs wouldn't work and more that there's no evolutionary pathway that easily gets there from the body plans that already exist.",
+    "time_seconds": 8.21081805229187,
+    "input_tokens": 285,
+    "output_tokens": 227,
+    "response_length": 1003,
+    "effort_level": "low",
+    "run_number": 9
+  },
+  {
+    "response": "\n\nEvolution works by modifying existing body plans, and the ancestral body plan for most animals we think of is bilaterally symmetric \u2014 a feature that dates back hundreds of millions of years. Bilateral symmetry means the left and right sides mirror each other, which naturally produces even numbers of limbs.\n\nThree legs would require breaking that symmetry, and there's no obvious selective pressure to do so. Two legs or four legs work well for stable locomotion \u2014 a tripod gait actually emerges naturally from six-legged insects using three legs at a time, getting the stability benefit without needing an odd number. For bipeds, two legs plus dynamic balance work fine.\n\nThere's also a practical issue: a central third leg would interfere with many basic biological functions like reproduction, waste elimination, and giving birth, since those tend to be located along the body's midline.\n\nSo it's less that three legs *couldn't* work mechanically and more that evolution had no reason or easy pathway to get there from the bilateral body plan that was locked in very early in animal history.",
+    "time_seconds": 8.650828838348389,
+    "input_tokens": 285,
+    "output_tokens": 249,
+    "response_length": 1097,
+    "effort_level": "low",
+    "run_number": 10
+  },
+  {
+    "response": "\n\nThis is a question that comes up a lot in biology, and there are a few complementary explanations.\n\nThe most fundamental reason is that bilateral symmetry is deeply embedded in animal body plans. Very early in animal evolution, a basic left-right symmetric architecture became established, and virtually all complex animals descend from that lineage. Legs, fins, and limbs develop in pairs as a consequence of this symmetry. Getting to three legs would require breaking that symmetry in a very specific way, which is a difficult evolutionary path to stumble into.\n\nThere's also a locomotion argument. Two legs and four legs both work well mechanically \u2014 with two, you alternate; with four (or six, or eight), you can maintain stable gaits. Three legs create an inherently asymmetric gait that's awkward to coordinate, though not impossible (think of how a kangaroo sometimes uses its tail as a \"fifth leg\" to create a tripod). A tripod stance is actually quite stable when standing still, but moving efficiently with three legs is biomechanically tricky.\n\nThat said, it's worth noting that evolution doesn't explore all possible designs \u2014 it only modifies what already exists. There's no reason to think three legs *couldn't* work in principle. It's more that the evolutionary starting point (bilateral symmetry) makes it extremely unlikely to ever arise. Evolution is a tinkerer, not an engineer, and it's constrained by the body plans it inherits.\n\nSome people point to the kangaroo's tail-as-leg arrangement or certain insects' tripod gaits as nature flirting with three-legged solutions, even if no animal has exactly three true legs.",
+    "time_seconds": 12.628812074661255,
+    "input_tokens": 285,
+    "output_tokens": 384,
+    "response_length": 1640,
+    "effort_level": "medium",
+    "run_number": 1
+  },
+  {
+    "response": "\n\nThis is a question that comes up a lot in biology, and there are a few complementary explanations.\n\nThe most fundamental reason is that bilateral symmetry is deeply embedded in animal body plans. Nearly all animals descend from a common ancestor that had a bilateral (two-sided) body plan, which naturally produces limbs in even numbers. Evolution works by modifying existing structures, so it's very difficult to \"add\" a single unpaired limb or lose one from an even-numbered set in a way that's stable and heritable.\n\nFrom a functional standpoint, bilateral symmetry works well for locomotion. Two legs or four legs allow for efficient gaits \u2014 walking, running, trotting \u2014 where the body alternates sides. Three legs create an asymmetry that would make smooth, efficient movement harder to evolve from scratch, though interestingly, many animals *use* a tripod-like strategy in practice (insects walk using three legs at a time, and kangaroos effectively use their tail as a third \"leg\" when moving slowly).\n\nThere's also a developmental constraint: animal bodies are built from a genetic toolkit that lays out symmetric left-right axes early in embryonic development. Producing an odd-numbered set of lateral appendages would require a significant reorganization of how body segments and limbs are patterned.\n\nSo it's less that three legs *couldn't* work mechanically and more that evolution had no easy path to get there given the body plans it had to work with.",
+    "time_seconds": 11.391870975494385,
+    "input_tokens": 285,
+    "output_tokens": 342,
+    "response_length": 1468,
+    "effort_level": "medium",
+    "run_number": 2
+  },
+  {
+    "response": "\n\nThis is a question that comes up a lot in biology, and there are a few complementary explanations.\n\nThe most fundamental reason is that bilateral symmetry is deeply ancestral in animals. Nearly all animals descend from a common ancestor that had a bilateral body plan \u2014 a left side mirroring a right side. This means limbs come in pairs. Getting to three legs would require breaking that symmetry, which is a very difficult evolutionary step since the entire developmental genetic toolkit (Hox genes, etc.) is built around producing paired structures.\n\nThere's also a locomotion argument. Two legs or four legs work well biomechanically \u2014 with an even number, you can alternate sides in a stable gait. Three legs would create an asymmetric gait that's harder to coordinate, though not impossible (tripod gaits do exist \u2014 insects effectively use a tripod stance by moving three of their six legs at a time).\n\nThat said, some animals functionally use three limbs. Kangaroos use their tail as a \"third leg\" when moving slowly, and it contributes significant propulsive force. Some primates use their tail for support. So three-point contact exists in nature, just not three true legs.\n\nThe short version: evolution works by modifying what already exists, and what already exists is a bilateral body plan. There's no easy developmental pathway from paired limbs to an odd number, and no strong enough selective pressure to drive such a radical reorganization.",
+    "time_seconds": 12.03446078300476,
+    "input_tokens": 285,
+    "output_tokens": 335,
+    "response_length": 1457,
+    "effort_level": "medium",
+    "run_number": 3
+  },
+  {
+    "response": "\n\nThis is a question that touches on some deep principles of evolutionary biology and physics.\n\nThe most fundamental reason is that bilateral symmetry \u2014 having a body plan that's mirrored along a central axis \u2014 is deeply embedded in animal evolution. Nearly all animals descend from a common ancestor that had bilateral symmetry, and that body plan naturally produces pairs of limbs. You get two, four, six, eight legs, but not three or five, because limbs develop in left-right pairs.\n\nThere's also a biomechanical angle. Two legs work well for bipedal locomotion (alternating balance). Four legs offer great stability and speed. But three legs arranged symmetrically (like a tripod) would create real problems for locomotion \u2014 it's hard to design a gait where you move one leg at a time while maintaining balance and forward momentum. Interestingly, four-legged animals often *use* a tripod stance while walking (three legs down, one moving), but that's different from only having three.\n\nIt's worth noting that some animals functionally use three points of contact. Kangaroos use their tail as a sort of third leg when moving slowly, and some insects prop themselves on tails or ovipositors. But no lineage has evolved to actually have just three limbs, likely because there was never a developmental pathway to get there from bilateral symmetry, and no strong selective pressure that would favor it over existing arrangements.\n\nSo it's a combination of evolutionary history (we're locked into bilateral symmetry) and the fact that three legs don't offer obvious advantages over two or four.",
+    "time_seconds": 11.94451093673706,
+    "input_tokens": 285,
+    "output_tokens": 365,
+    "response_length": 1594,
+    "effort_level": "medium",
+    "run_number": 4
+  },
+  {
+    "response": "\n\nThis is a fun question that gets at some deep principles of biology and physics.\n\nThe short answer is that bilateral symmetry \u2014 having mirror-image left and right sides \u2014 is deeply embedded in animal body plans going back hundreds of millions of years. Almost all animals descend from a common ancestor that had bilateral symmetry, so we're all working with that basic template. Legs come in pairs as a consequence.\n\nThere are also practical reasons why three legs would be problematic. Locomotion with an odd number of limbs creates asymmetric gaits that are mechanically awkward. Two legs or four legs allow for balanced, symmetric movement patterns. A three-legged animal would tend to veer to one side or need a more complex neural control system to walk straight.\n\nThat said, three points of contact is actually very *stable* statically \u2014 think of a tripod. Some animals effectively use three-point support by co-opting another body part: kangaroos use their tail as a \"fifth leg\" when moving slowly, creating a tripod with their hind legs. Some insects use a \"tripod gait,\" alternating sets of three legs at a time.\n\nSo the constraints are partly historical (evolution builds on what already exists rather than designing from scratch) and partly functional (symmetric pairs work well for locomotion). Evolution doesn't explore every theoretical possibility \u2014 it can only modify what's already there, and bilateral symmetry has been the foundation of animal body plans for over 500 million years.",
+    "time_seconds": 11.209235191345215,
+    "input_tokens": 285,
+    "output_tokens": 340,
+    "response_length": 1503,
+    "effort_level": "medium",
+    "run_number": 5
+  },
+  {
+    "response": "\n\nThis is a fun question that gets at some deep principles of biology and physics.\n\nThe most fundamental reason is that bilateral symmetry is deeply embedded in animal body plans. Nearly all animals descend from a common ancestor that had a bilateral (two-sided) body plan, established very early in evolutionary history. Limbs come in pairs because they're outgrowths of that symmetric structure. So you tend to get even numbers: two, four, six, eight.\n\nThere are also practical reasons why three legs would be awkward. Two-legged and four-legged locomotion work well because the body can alternate sides rhythmically \u2014 left, right, left, right. With three legs, you'd have an asymmetric gait that's harder to coordinate efficiently. A tripod stance is actually very stable (think of a camera tripod), but *moving* on three legs while maintaining balance is trickier than it sounds.\n\nThat said, there are some interesting near-exceptions. Kangaroos effectively use their tail as a third limb when moving slowly, forming a tripod with their hind legs. Some insects use a \"tripod gait\" where three of their six legs are on the ground at any time. And parrots sometimes use their beak as a third limb when climbing.\n\nBut evolving a truly three-legged body plan would require breaking the bilateral symmetry that's been conserved for over 500 million years. Evolution tends to work with what's already there rather than redesigning from scratch, so that's an enormous constraint to overcome \u2014 especially when two or four legs already work perfectly well.",
+    "time_seconds": 11.430732011795044,
+    "input_tokens": 285,
+    "output_tokens": 368,
+    "response_length": 1551,
+    "effort_level": "medium",
+    "run_number": 6
+  },
+  {
+    "response": "\n\nThis is a question that comes up a lot in biology, and there are a few complementary explanations.\n\nThe most fundamental reason is that bilateral symmetry is deeply embedded in animal body plans. Nearly all animals descend from a common ancestor that had a bilateral (two-sided) body plan, which naturally produces limbs in even numbers. Evolution works by modifying existing structures, so it's very hard to get from an even number of legs to an odd number \u2014 you'd have to lose one leg from a pair or sprout one from the midline, neither of which tends to be favored by selection.\n\nThere's also a locomotion problem. Two legs can alternate. Four legs offer many stable gaits. But three legs create an asymmetry that makes efficient, steady movement difficult. A tripod gait actually works well \u2014 insects use a triangular support pattern when walking \u2014 but they do it with six legs, alternating two sets of three. Having only three legs total would mean you'd need to move at least one leg while balancing on two, which is inherently less stable than what even or higher numbers allow.\n\nThat said, some animals functionally use three points of contact. Kangaroos use their tail as a \"fifth leg\" when moving slowly, effectively creating a tripod. Woodpeckers brace with their tail. So tripod support exists \u2014 it's just achieved by repurposing other structures rather than evolving three actual legs.\n\nThe short answer is really about evolutionary history: bilateral symmetry got locked in very early, and there's never been strong enough selective pressure to break out of it.",
+    "time_seconds": 12.309772968292236,
+    "input_tokens": 285,
+    "output_tokens": 365,
+    "response_length": 1577,
+    "effort_level": "medium",
+    "run_number": 7
+  },
+  {
+    "response": "\n\nThis is a question that comes up a lot in biology, and there are a few complementary explanations.\n\nThe most fundamental reason is that bilateral symmetry is deeply embedded in animal body plans. Very early in animal evolution, a basic two-sided body architecture emerged, and essentially all complex animals descended from that ancestor. Legs, fins, wings \u2014 they all come in pairs because they're produced by developmental programs that mirror structures across the body's midline. Getting an odd number of limbs would require breaking that symmetry in a fairly radical way.\n\nThere's also a locomotion argument. Two legs work. Four legs work very well. Six and eight legs work. But three legs turn out to be awkward for most styles of movement. When you walk or run, you're essentially managing a controlled fall, and bilateral pairs of limbs make it relatively straightforward to stay balanced while alternating sides. Three legs can work \u2014 a tripod gait is stable, which is actually how insects walk (using three of their six legs at a time) \u2014 but evolving three legs from scratch isn't something natural selection has found a path to, given the bilateral starting point.\n\nIt's worth noting that some animals functionally use three points of contact. Kangaroos use their tail as a \"third leg\" when moving slowly, and woodpeckers brace with their tail. So three-point support does show up, just not as three true legs.\n\nThe short version: evolution is constrained by history, and bilateral symmetry was locked in very early. Natural selection can only tinker with what already exists rather than redesign from scratch.",
+    "time_seconds": 13.09617304801941,
+    "input_tokens": 285,
+    "output_tokens": 365,
+    "response_length": 1622,
+    "effort_level": "medium",
+    "run_number": 8
+  },
+  {
+    "response": "\n\nThis is a question that comes up a lot in biology, and there are a few complementary explanations.\n\nThe most fundamental reason is that bilateral symmetry is deeply embedded in animal body plans. Very early in animal evolution, a basic left-right mirroring became the standard blueprint, likely because it offered straightforward advantages for directional movement. Once that symmetry was established, limbs naturally come in even numbers \u2014 pairs along the body axis. Getting to three legs would require breaking that symmetry in a way that evolution has never had a good reason to do.\n\nFrom a biomechanical standpoint, two legs and four legs both work well. Four-legged locomotion is inherently stable (a tripod of three legs supports the body while the fourth moves). Two-legged locomotion works with dynamic balancing. Three legs could theoretically work \u2014 a tripod is actually very stable statically \u2014 but there's no obvious evolutionary pathway to get there from the bilateral body plan. Evolution doesn't design from scratch; it modifies what already exists.\n\nIt's also worth noting that some animals functionally use three points of contact. Kangaroos use their tail as a sort of third leg when moving slowly, and some insects move using an alternating tripod gait. So three-legged locomotion exists in practice, just not as a distinct anatomical arrangement of three true limbs.\n\nThe short answer is really about developmental constraint: bilateral symmetry is so foundational to how animal bodies are built that a three-legged body plan would require a radical reorganization that has simply never been selected for.",
+    "time_seconds": 11.824678897857666,
+    "input_tokens": 285,
+    "output_tokens": 361,
+    "response_length": 1628,
+    "effort_level": "medium",
+    "run_number": 9
+  },
+  {
+    "response": "\n\nThis is a question that comes up in evolutionary biology quite a bit. There are a few complementary explanations.\n\nThe most fundamental reason is that bilateral symmetry is deeply embedded in animal body plans. Very early in animal evolution, a basic left-right symmetric architecture became established, and virtually all complex animals descended from that template. Legs, fins, wings, and other appendages come in pairs as a consequence of that symmetry. Getting an odd number of limbs would require breaking that symmetry in a fairly radical developmental way.\n\nThere's also a locomotion argument. Two legs and four legs both work well biomechanically \u2014 you can move efficiently with paired limbs alternating in various gaits. Three legs turns out to be an awkward number for stable, efficient movement. A tripod stance is actually very stable (insects use a tripod gait, alternating three of their six legs), but having only three legs total makes smooth locomotion difficult. You'd essentially need to hop or shuffle in an ungainly way.\n\nThat said, some animals functionally use three points of contact. Kangaroos use their tail as a \"third leg\" when moving slowly, and woodpeckers brace with their tail. So tripod-like arrangements do show up, just not as three actual legs.\n\nEvolution also can't design from scratch \u2014 it modifies what already exists. Since no lineage ever established a three-legged body plan, there's no starting point for natural selection to refine one, even if it could theoretically work.",
+    "time_seconds": 11.760149002075195,
+    "input_tokens": 285,
+    "output_tokens": 349,
+    "response_length": 1520,
+    "effort_level": "medium",
+    "run_number": 10
+  },
+  {
+    "response": "\n\nThe deepest reason is that nearly all animals are bilaterally symmetric \u2014 their body plan is organized around a central axis with matching left and right sides. This symmetry is ancient, dating back over 500 million years to early bilaterian ancestors, and it's deeply embedded in how animal bodies develop at the genetic level. Limbs emerge in pairs as a consequence of this left-right mirroring. Three legs would require breaking that symmetry in a very specific way that evolution has never stumbled into.\n\nBeyond that developmental constraint, there's the question of evolutionary pathway. Evolution works incrementally, and there's no obvious route from a paired-limb body plan to a three-legged one that offers advantages at each step. An animal that lost one of four legs would generally be worse off, not better, so natural selection wouldn't favor that transition.\n\nIt's worth noting that three-point support is actually very stable \u2014 insects effectively use a tripod gait, planting three of their six legs at a time. And kangaroos use their tail as a functional \"third leg\" when moving slowly. So the tripod concept works fine mechanically. The issue isn't that three support points are bad, it's that the deep architecture of animal development produces things in pairs, and there's never been sufficient evolutionary pressure to fundamentally restructure that.\n\nRadially symmetric animals like starfish sometimes have odd numbers of limbs (five arms), but they're organized around a completely different body plan that doesn't really map onto what we think of as \"legs.\"",
+    "time_seconds": 19.87444806098938,
+    "input_tokens": 285,
+    "output_tokens": 712,
+    "response_length": 1584,
+    "effort_level": "high",
+    "run_number": 1
+  },
+  {
+    "response": "\n\nThe deepest reason is that almost all animals are built on a bilaterally symmetric body plan \u2014 left side mirrors right side. This basic architecture was locked in very early in animal evolution, over 500 million years ago, and limbs develop in left-right pairs as a consequence. Getting to three legs would require breaking that fundamental symmetry in a way that evolution has never stumbled into.\n\nThere are a few layers to why it stays that way:\n\nDevelopmental biology makes it hard. The genetic machinery that builds limbs works by patterning structures on either side of a central axis. Producing an odd-numbered set of limbs would require a radically different developmental program, not just a small tweak.\n\nThere's also no obvious selective pressure toward three legs. Bilateral locomotion works well \u2014 you can alternate sides in a coordinated way. Three legs would create asymmetric gait challenges. Meanwhile, four legs already provide excellent stability (a tripod of support at any moment during walking), and two legs free up a pair of limbs for other uses.\n\nThat said, some animals effectively use three-limbed locomotion. Kangaroos use their muscular tail as a \"third leg\" when moving slowly, and insects walk using a tripod gait (three of their six legs at a time). So the tripod concept appears in nature \u2014 it's just always built on top of the underlying even-numbered, bilateral plan rather than replacing it.",
+    "time_seconds": 18.715253114700317,
+    "input_tokens": 285,
+    "output_tokens": 686,
+    "response_length": 1429,
+    "effort_level": "high",
+    "run_number": 2
+  },
+  {
+    "response": "\n\nThe short answer is that bilateral symmetry is deeply baked into animal evolution and development. Nearly all animals descend from a common ancestor that had a bilaterally symmetric body plan, and limbs develop in pairs along that left-right axis. The genetic toolkit that patterns limbs (Hox genes and related developmental pathways) operates symmetrically, so you naturally get even numbers of appendages \u2014 two, four, six, eight.\n\nTo get three legs, evolution would need to either lose one limb from a pair (creating an awkward asymmetry) or add a single unpaired midline limb. Neither is a simple or likely mutation, and even if it occurred, an asymmetric animal would face real locomotion challenges compared to its symmetric competitors.\n\nThere's an interesting wrinkle, though: functional tripedalism does exist. Kangaroos use their tail as a powerful \"fifth limb\" when moving slowly, effectively creating a tripod. Insects walk using a tripod gait, with three of their six legs on the ground at any time. So the tripod turns out to be a useful configuration \u2014 it's just achieved by repurposing existing even-numbered limbs rather than evolving three from scratch.\n\nIt's also worth noting that three-fold radial symmetry does appear in nature (some jellyfish larvae, for example), but radial body plans tend to be associated with sessile or drifting lifestyles rather than active locomotion, so they never developed into three walking legs.",
+    "time_seconds": 19.465657234191895,
+    "input_tokens": 285,
+    "output_tokens": 705,
+    "response_length": 1448,
+    "effort_level": "high",
+    "run_number": 3
+  },
+  {
+    "response": "\n\nThe short answer is that nearly all animals are locked into bilateral symmetry \u2014 a body plan with matching left and right sides \u2014 and this constraint runs extremely deep in our developmental biology. The genes that establish the body axis and pattern limb placement (like Hox genes) have been operating on a bilateral template for over half a billion years, since the earliest bilaterian ancestors. Getting an odd number of legs would require breaking that symmetry in a very specific and novel way, and evolution has simply never gone down that path.\n\nIt's worth noting that three legs wouldn't be *bad* functionally. A tripod is inherently stable \u2014 it's why camera tripods work. Insects actually use a \"tripod gait,\" keeping three of their six legs on the ground at any time. Kangaroos use their tail as a functional third leg when moving slowly. So the tripod concept shows up in function, just not in anatomy.\n\nThe deeper point is that evolution doesn't design from scratch. It modifies what already exists. And what has existed for the entire history of legged animals is a bilaterally symmetric body plan that produces limbs in pairs. Mutating your way from paired limbs to three limbs would require passing through developmental stages that are almost certainly less fit, with no clear incremental path to get there. So it's less that three legs are a bad idea and more that there's no plausible evolutionary route to reach them from where animal body plans started.",
+    "time_seconds": 19.06659197807312,
+    "input_tokens": 285,
+    "output_tokens": 674,
+    "response_length": 1475,
+    "effort_level": "high",
+    "run_number": 4
+  },
+  {
+    "response": "\n\nThe deepest reason is that animal body plans are built on bilateral symmetry \u2014 a left side mirroring a right side. This developmental blueprint is ancient, encoded in regulatory genes (like Hox genes) shared across nearly all complex animals, and it naturally produces limbs in pairs. Getting to three legs would require breaking that symmetry in a very specific way, and evolution has no mechanism for planning ahead \u2014 it can only modify what already exists.\n\nOn top of that constraint, there's no obvious selective pressure pushing toward three legs. A tripod is statically stable (think of a stool), but locomotion is dynamic. When you move, you need to lift legs and rebalance. Bilateral gaits \u2014 whether on two, four, six, or eight legs \u2014 handle this well because the symmetry makes coordination simpler. Three legs would create an inherently asymmetric gait without a clear speed or efficiency advantage.\n\nInterestingly, some animals approximate tripedal locomotion. Kangaroos use their muscular tail as a \"fifth limb\" when moving slowly, effectively creating a tripod with their forelimbs. Insects walk using a tripod gait, with three of their six legs on the ground at any time. So the tripod concept does show up \u2014 it's just achieved within the framework of bilateral symmetry rather than by evolving three actual legs.\n\nThe short version: evolution is constrained by history, and bilateral symmetry is so deeply embedded in animal development that a true three-legged animal would require a radical reorganization with no clear payoff.",
+    "time_seconds": 21.318594932556152,
+    "input_tokens": 285,
+    "output_tokens": 808,
+    "response_length": 1546,
+    "effort_level": "high",
+    "run_number": 5
+  },
+  {
+    "response": "\n\nThe deepest reason is that virtually all animals are bilaterally symmetric \u2014 their bodies are organized as mirror images of left and right halves. This is an ancient developmental pattern, controlled by fundamental genetic pathways going back over 500 million years, and it means limbs come in pairs. You get two, four, six, eight \u2014 but not odd numbers.\n\nTo get three legs, evolution would need to either break that left-right symmetry (dropping one leg from a pair) or produce a single midline limb. Neither has happened, likely for a few reinforcing reasons:\n\nBilateral symmetry is so deeply embedded in animal development (Hox genes, signaling gradients) that deviating from it is a very unlikely mutation to be viable. It's not that three legs couldn't work mechanically \u2014 insects actually walk using a tripod gait, alternating three of their six legs \u2014 but the developmental path to get a truly three-legged body plan doesn't really exist given the toolkit animals have.\n\nThere's also no obvious ecological pressure that would favor three legs over the alternatives. Two legs, four legs, and six legs all work well, and evolution can only modify what already exists rather than design from scratch.\n\nThat said, some animals come close functionally. Kangaroos use their tail as a \"third leg\" when moving slowly, pushing off the ground with real force. But it's a repurposed tail, not a true third limb \u2014 still built on a bilaterally symmetric body plan.",
+    "time_seconds": 22.8073627948761,
+    "input_tokens": 285,
+    "output_tokens": 848,
+    "response_length": 1459,
+    "effort_level": "high",
+    "run_number": 6
+  },
+  {
+    "response": "\n\nThe deepest reason is that animal body plans are built on bilateral symmetry \u2014 a left side mirroring the right. This basic architecture was established over 500 million years ago in early bilaterian ancestors, and virtually all animals since have inherited it. Bilateral symmetry naturally produces limbs in pairs, so you get two, four, six, eight \u2014 but not three.\n\nThis isn't just historical accident. Bilateral symmetry is very good for directional movement: it lets an animal move forward without veering to one side. A three-legged animal would be inherently asymmetric, which creates problems for straight-line locomotion.\n\nThere's also no easy evolutionary path to get there. You'd need a four-legged animal to lose exactly one leg, or a two-legged animal to gain one. Losing one leg creates a lopsided body that's worse at moving than the original. And the developmental machinery that builds limbs works along the left-right axis in pairs \u2014 there's no simple genetic tweak that produces a single midline leg.\n\nThat said, some animals approximate three-legged locomotion functionally. Kangaroos use their tail as a \"fifth leg\" when moving slowly, effectively creating a tripod. Insects use a tripod gait, moving three of their six legs at a time. So the tripod concept isn't absent from nature \u2014 it's just achieved with an even number of actual limbs.\n\nThe short answer: bilateral symmetry is so deeply embedded in animal development and so broadly useful that evolution has never found a reason or a viable route to break away from it in favor of three legs.",
+    "time_seconds": 19.659743070602417,
+    "input_tokens": 285,
+    "output_tokens": 727,
+    "response_length": 1568,
+    "effort_level": "high",
+    "run_number": 7
+  },
+  {
+    "response": "\n\nThe main reason is that animal body plans are built on bilateral symmetry \u2014 a left side mirroring the right. This pattern was established very early in animal evolution, over 500 million years ago, and is deeply embedded in how animal bodies develop. The same genetic toolkit patterns both sides of the body simultaneously. Limbs come in pairs as a consequence, giving you even numbers: two, four, six, eight.\n\nGetting to three legs would require breaking that fundamental symmetry, which is an enormously difficult evolutionary transition. It's not that three legs wouldn't work mechanically \u2014 a tripod is actually a very stable structure, and three-legged dogs get around fine. It's that evolution doesn't design from scratch. It modifies what already exists, and what exists is a bilateral body plan that has been reinforced for hundreds of millions of years of development.\n\nThere's also no obvious selective pressure that would favor three legs over two or four. Two legs work, four legs work very well, and both maintain the bilateral symmetry that simplifies development and locomotion.\n\nInterestingly, some animals approximate a tripod functionally. Kangaroos use their tail as a \"fifth leg\" when moving slowly, creating a tripod-like support. Insects use a tripod gait, with three of their six legs on the ground at any moment. So the tripod concept does show up in nature \u2014 it's just achieved within the constraints of bilateral symmetry rather than by having exactly three limbs.",
+    "time_seconds": 20.05807900428772,
+    "input_tokens": 285,
+    "output_tokens": 711,
+    "response_length": 1492,
+    "effort_level": "high",
+    "run_number": 8
+  },
+  {
+    "response": "\n\nThe short answer is that bilateral symmetry is deeply baked into animal body plans. The common ancestor of most animals \u2014 the bilaterians, dating back over 500 million years \u2014 had a body with left-right mirror symmetry, and limbs develop from that template in pairs. Getting three legs would mean breaking that symmetry in a very specific and novel way, and evolution has never stumbled into a situation where that was advantageous enough to override the existing developmental program.\n\nThere's also a locomotion argument. While a tripod is great for static stability (think of a camera tripod), it's actually awkward for movement. Bilateral pairs of limbs allow for efficient alternating gaits \u2014 walking, trotting, galloping. Even-numbered limb arrangements (2, 4, 6, 8) all pair naturally with bilateral symmetry and work well mechanically.\n\nThat said, some animals get close functionally. Kangaroos use their muscular tail as a \"fifth limb\" when moving slowly, pushing off the ground with real force. Some insects use a tripod gait, where three of their six legs are on the ground at any time. And parrots sometimes use their beak as a third support point when climbing. So tripodal *function* exists \u2014 it's tripodal *anatomy* that doesn't, because of how development is organized.\n\nIt's one of those cases where the answer is less \"three legs wouldn't work\" and more \"there's no plausible evolutionary path to get there from the body plan that all complex animals inherited.\"",
+    "time_seconds": 19.100961923599243,
+    "input_tokens": 285,
+    "output_tokens": 722,
+    "response_length": 1482,
+    "effort_level": "high",
+    "run_number": 9
+  },
+  {
+    "response": "\n\nThe short answer is that bilateral symmetry is so deeply baked into animal development that three-legged body plans essentially never arise.\n\nAlmost all animals descend from ancestors that established a two-sided body plan hundreds of millions of years ago. The genetic machinery that builds animal bodies \u2014 Hox genes and related developmental pathways \u2014 lays things out as mirror halves. Limbs come in pairs as a consequence. Producing three legs would require either a limb on the midline or an asymmetric arrangement, both of which would demand a radical rewiring of this deeply conserved developmental program. Evolution tends to modify what already exists rather than rebuild from scratch.\n\nThere's also no obvious locomotion advantage to three legs. A tripod is great for static stability (think camera tripods), but it's actually awkward for moving. You'd have to lift one leg while balancing on two, or lift two while hopping on one. Insects effectively solved the stability problem by using a \"tripod gait\" \u2014 but they need six legs to do it, keeping three on the ground while swinging the other three forward. Two legs and four legs both allow efficient alternating gaits, so three doesn't occupy a useful niche.\n\nThat said, some animals are functionally tripedal. Kangaroos use their tail as a third weight-bearing limb when moving slowly, and research has shown it contributes as much propulsive force as any single leg. So the tripod solution does appear in nature \u2014 it just gets achieved by repurposing a tail rather than evolving three legs from scratch.",
+    "time_seconds": 21.187133073806763,
+    "input_tokens": 285,
+    "output_tokens": 770,
+    "response_length": 1570,
+    "effort_level": "high",
+    "run_number": 10
+  },
+  {
+    "response": "\n\nThis comes down largely to the deep evolutionary commitment to bilateral symmetry in animals. The basic body plan of having mirror-image left and right halves was established very early in animal evolution \u2014 over half a billion years ago \u2014 and is baked into fundamental developmental genetics. Legs, fins, and limbs develop in pairs as a consequence of that symmetry. Getting to three legs would require breaking that mirrored blueprint in a way that evolution has never stumbled into, at least not as a stable outcome.\n\nThere's also a locomotion argument. Paired limbs allow for alternating gaits that are mechanically efficient. A three-legged animal isn't impossible to imagine \u2014 a tripod is actually a very stable structure \u2014 but there's no obvious evolutionary path from a bilateral ancestor to a three-legged descendant. Evolution can only modify what already exists; it doesn't design from scratch.\n\nThat said, some animals functionally approximate a third leg. Kangaroos use their tail as a weight-bearing limb when walking slowly, and woodpeckers brace with their tails. Insects use a tripod gait, planting three of their six legs at a time. So the tripod concept shows up in nature \u2014 just not as a three-legged body plan.\n\nThe deeper point is that evolution is path-dependent. Bilateral symmetry works well enough that there's been no selective pressure strong enough to break away from it in such a radical way.",
+    "time_seconds": 20.2883460521698,
+    "input_tokens": 285,
+    "output_tokens": 752,
+    "response_length": 1424,
+    "effort_level": "max",
+    "run_number": 1
+  },
+  {
+    "response": "\n\nIt mostly comes down to bilateral symmetry. Animal body plans are fundamentally built on a left-right mirror pattern, which is deeply embedded in how embryos develop \u2014 the genetic toolkit (Hox genes and related systems) essentially lays out one side and mirrors it. This naturally produces legs in even numbers: two, four, six, eight. Three would require breaking that symmetry in a very specific way that developmental biology doesn't easily produce.\n\nEvolution also works by modifying what already exists rather than designing from scratch. The vertebrate body plan descends from four-finned fish, insects from six-legged ancestors, and so on. Getting to three legs would mean losing one limb asymmetrically, and there's no obvious selective pressure that would favor that. An animal that lost one leg would generally just be worse at moving than its four-legged relatives.\n\nThat said, some animals are functionally tripedal. Kangaroos use their tail as a genuine \"third leg\" when moving slowly \u2014 it pushes off the ground and bears weight much like a limb. Woodpeckers brace with their stiff tail feathers. So nature has found ways to approximate three-point support without abandoning the underlying bilateral body plan.\n\nThe deeper point is that body plan symmetry isn't really \"chosen\" for being optimal \u2014 it's a deep evolutionary and developmental constraint that's been locked in for hundreds of millions of years.",
+    "time_seconds": 19.78070306777954,
+    "input_tokens": 285,
+    "output_tokens": 755,
+    "response_length": 1423,
+    "effort_level": "max",
+    "run_number": 2
+  },
+  {
+    "response": "\n\nThe deepest reason is that animals are built on a bilaterally symmetric body plan \u2014 basically a mirrored left and right side. This goes back to very early in animal evolution, probably over 500 million years, and it's baked into how embryos develop. Genes like the Hox genes lay out the body along an axis with paired structures on either side. Three legs would break that symmetry in a way that's very hard to reach through small developmental changes.\n\nThere's also a path-dependence issue. Evolution can only tinker with what already exists. Once bilateral symmetry was established and all locomotion systems were built around paired limbs, there was no plausible series of small, each-beneficial mutations that would produce a functional third leg in the middle. A half-formed central limb would likely just be a costly deformity.\n\nThat said, some animals approximate tripedal movement. Kangaroos use their tail as a functional \"third leg\" when moving slowly, and insects walk using alternating tripods of three legs at a time. So three-point support is actually a common strategy \u2014 it's just achieved within the framework of bilateral symmetry rather than by having literally three limbs.\n\nRadially symmetric animals like starfish show that other body plans are possible, but radial symmetry tends to suit sedentary or slow-moving lifestyles rather than the directed locomotion where legs are most useful.",
+    "time_seconds": 19.477763175964355,
+    "input_tokens": 285,
+    "output_tokens": 741,
+    "response_length": 1412,
+    "effort_level": "max",
+    "run_number": 3
+  },
+  {
+    "response": "\n\nThe main reason comes down to bilateral symmetry. Almost all complex animals descend from ancestors whose body plan is organized around a central axis with mirrored left and right sides. This symmetry is deeply embedded in how animal embryos develop \u2014 genes establish a midline and then duplicate structures on both sides. That process naturally produces appendages in even numbers: two, four, six, eight.\n\nGetting to three legs would require either breaking that fundamental symmetry (growing a limb on the midline, or losing one from an even number and keeping the asymmetry stable) \u2014 and both are developmentally difficult. Evolution doesn't design from scratch; it modifies existing body plans incrementally, and the bilateral template is ancient and deeply conserved.\n\nThere's also a locomotion argument. Pairs of legs allow alternating gaits that are efficient and stable. Three legs aren't necessarily unworkable \u2014 insects effectively use a tripod gait, planting three of their six legs at a time \u2014 but that still requires an even number of total limbs to alternate between sets.\n\nThat said, some animals approximate a three-legged arrangement functionally. Kangaroos use their tail as a genuine fifth limb when moving slowly, creating a tripod-like support. Woodpeckers brace with their tail. So \"three points of contact\" shows up in nature, just not as three actual legs.\n\nThe short version: bilateral symmetry is the deep constraint, and evolution has never found a reason compelling enough to break it in that particular way.",
+    "time_seconds": 22.140297889709473,
+    "input_tokens": 285,
+    "output_tokens": 801,
+    "response_length": 1538,
+    "effort_level": "max",
+    "run_number": 4
+  },
+  {
+    "response": "\n\nThe main reason comes down to bilateral symmetry \u2014 the body plan shared by nearly all animals with limbs. Our developmental biology builds bodies as mirror images along a central axis, left matching right. This naturally produces limbs in pairs: 2, 4, 6, 8. Three legs would require a limb on the midline that breaks that symmetry, which is a very deep developmental constraint going back hundreds of millions of years to early bilaterian ancestors.\n\nThis isn't just a frozen accident either. Bilateral symmetry is genuinely useful for locomotion because it makes moving in a straight line straightforward. An asymmetric body creates steering problems.\n\nThat said, a few animals come close to functional tripedality. Kangaroos use their muscular tail as a \"third leg\" when moving slowly \u2014 it actually bears more force than any individual leg. Woodpeckers brace with their stiff tail feathers. Some primates use their tail as a grasping limb. So nature has found ways to approximate a third support point without actually evolving a third leg.\n\nIt's also worth noting that insects walking on six legs typically use a tripod gait \u2014 three legs on the ground at any time \u2014 so the three-point support pattern clearly works well mechanically. Evolution just arrives at it through paired limbs rather than an odd number.",
+    "time_seconds": 18.33853006362915,
+    "input_tokens": 285,
+    "output_tokens": 731,
+    "response_length": 1315,
+    "effort_level": "max",
+    "run_number": 5
+  },
+  {
+    "response": "\n\nIt mostly comes down to bilateral symmetry. Nearly all complex animals have body plans that are symmetrical along a central axis, which naturally produces appendages in pairs \u2014 two, four, six, eight. This symmetry is deeply rooted in how animal embryos develop, governed by ancient genetic toolkits (like Hox genes) that lay out the body in mirrored halves. Three legs would require either breaking that symmetry or adding an unpaired midline limb, which isn't how these developmental programs work.\n\nThere's also an evolutionary path-dependency issue. Limbs in vertebrates evolved from paired fins. Once you're building on a paired-structure blueprint, getting to an odd number requires a fairly radical developmental change \u2014 and evolution tends to modify what already exists rather than reinvent from scratch.\n\nThat said, three-legged locomotion isn't inherently unworkable. Kangaroos use their tail as a functional \"third leg\" when moving slowly, and insects walk using a tripod gait (three legs on the ground at a time). So the physics is fine \u2014 it's the developmental biology that channels animals toward even numbers.\n\nRadially symmetric animals like starfish do have odd numbers of appendages (typically five arms), so the constraint is really specific to bilaterally symmetric animals, which includes most of what we think of when we picture legged creatures.",
+    "time_seconds": 22.84173011779785,
+    "input_tokens": 285,
+    "output_tokens": 845,
+    "response_length": 1370,
+    "effort_level": "max",
+    "run_number": 6
+  },
+  {
+    "response": "\n\nThe main reason traces back to bilateral symmetry, which is one of the most deeply conserved features of animal body plans. The genetic and developmental machinery that builds animal bodies is organized around a left-right axis \u2014 the same signals that grow a limb on one side also grow one on the other. Getting an odd number of limbs would require breaking that symmetry in a way that evolution has never had strong reason to do.\n\nThere's also no obvious evolutionary pathway to get there. You'd need a four-legged animal to lose exactly one leg, or a two-legged one to gain one, and in either case three legs would have to be meaningfully better than the alternative. It's hard to see when that would be the case \u2014 pairs of legs already work well for balance and locomotion.\n\nThat said, some animals get close in a functional sense. Kangaroos use their tail as a \"fifth leg\" when moving slowly, effectively pushing off with it. Woodpeckers brace with two feet and a stiff tail. So while no species has a three-legged body plan, three-point support does show up in nature as a behavioral adaptation layered on top of the standard bilateral blueprint.",
+    "time_seconds": 18.13602113723755,
+    "input_tokens": 285,
+    "output_tokens": 700,
+    "response_length": 1153,
+    "effort_level": "max",
+    "run_number": 7
+  },
+  {
+    "response": "\n\nThe main reason traces back to bilateral symmetry \u2014 the body plan shared by nearly all complex animals. Bodies that are mirror images along a central axis naturally produce structures in pairs: two eyes, two arms, four legs, six legs, eight legs, and so on. This symmetry was locked in very early in animal evolution, and virtually all subsequent body plans have been variations on it.\n\nThree legs would require either breaking that symmetry or placing one limb on the midline, which poses developmental and mechanical complications. Embryological development relies heavily on left-right patterning genes, and there's no easy pathway to produce a single unpaired limb.\n\nThere's also a locomotion argument. Even-numbered legs lend themselves to efficient gaits \u2014 think of how insects use a tripod gait, alternating sets of three legs from their six. With only three legs, you'd have to lift one while balancing on two, which is inherently less stable during movement than the options available to animals with paired limbs.\n\nThat said, some animals approximate a three-legged strategy. Kangaroos use their muscular tail as a functional \"fifth limb\" when moving slowly, creating a tripod with their forelimbs. Woodpeckers brace with their tail. But these are adaptations layered onto an underlying bilateral, even-numbered plan.\n\nSo it's less that three legs couldn't work in principle and more that evolution never had a plausible starting point to produce them, given the deep constraints of bilateral symmetry.",
+    "time_seconds": 19.507391929626465,
+    "input_tokens": 285,
+    "output_tokens": 732,
+    "response_length": 1514,
+    "effort_level": "max",
+    "run_number": 8
+  },
+  {
+    "response": "\n\nThe main reason comes down to bilateral symmetry \u2014 the body plan shared by nearly all complex animals, where the left and right sides mirror each other. This is an ancient developmental pattern controlled deep in animal genetics (Hox genes and related systems), and it naturally produces structures in pairs. Limbs evolved from paired fins in vertebrates and from paired segments in arthropods, so you get two, four, six, or eight legs, but not odd numbers.\n\nIt's not that three legs would be mechanically useless. A tripod is actually very stable \u2014 insects effectively use a tripod gait, moving three of their six legs at a time. And kangaroos use their tail as a functional \"fifth leg\" when moving slowly, creating something close to a tripod arrangement. But evolution doesn't design from scratch; it modifies existing body plans, and no lineage has stumbled into a viable path from paired limbs to a three-legged arrangement.\n\nBreaking bilateral symmetry would require a pretty radical developmental mutation, and such mutations are almost always catastrophic to the organism rather than beneficial. So it's less that three legs couldn't work and more that there's no plausible evolutionary route to get there from the body plans animals actually have.",
+    "time_seconds": 19.567227840423584,
+    "input_tokens": 285,
+    "output_tokens": 711,
+    "response_length": 1258,
+    "effort_level": "max",
+    "run_number": 9
+  },
+  {
+    "response": "\n\nThe main reason comes down to bilateral symmetry. Almost all animals have body plans that are symmetrical along a left-right axis, and this is deeply embedded in how embryos develop. Limbs form in pairs on either side of the body as a consequence of this symmetry, so you naturally end up with even numbers \u2014 two, four, six, eight, and so on.\n\nThree legs would require breaking that symmetry, and there's no obvious developmental pathway to get there. The genetic toolkit that builds limbs works by expressing the same genes on both sides of the body. You'd essentially need a mutation that adds or removes a limb on just one side, and that kind of asymmetry would more likely be a harmful defect than a useful adaptation.\n\nThere's also a locomotion argument. Paired limbs work well for balanced movement. That said, it's worth noting that some animals *functionally* use tripod arrangements \u2014 insects walk using a tripod gait (three legs on the ground at a time), and kangaroos sometimes use their tail as a sort of fifth limb, creating a three-point support system when moving slowly.\n\nSo it's not that three points of support can't work mechanically. It's that the deep developmental architecture of animals is built around bilateral pairs, and evolution has never stumbled onto a viable path from there to a truly three-legged body plan.",
+    "time_seconds": 19.185113191604614,
+    "input_tokens": 285,
+    "output_tokens": 708,
+    "response_length": 1343,
+    "effort_level": "max",
+    "run_number": 10
+  }
+]
