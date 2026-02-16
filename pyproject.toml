@@ -1,6 +1,6 @@
 [project]
 name = "bettercode"
-version = "0.1.0"
+version = "0.2.0"
 description = "Code for BetterCodeBetterScience book"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -83,26 +83,23 @@ dependencies = [
     "templateflow>=25.1.1",
     "flake8>=7.0.0",
     "blue>=0.9.0",
+    "datasets>=4.0.0",
+    "openai>=2.21.0",
 ]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.10.2,<0.11.0"]
+build-backend = "uv_build"
 
-[tool.hatch.build]
-exclude = [
+[tool.uv.build-backend]
+module-root = "src"
+source-exclude = [
     "tests/",
     "data/",
     "docker-example/",
-    "notebooks",
+    "notebooks/",
     "*.pyc",
 ]
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/bettercode"]
-
-[tool.hatch.build.targets.wheel.force-include]
-"src/bettercode/data" = "bettercode/data"
 
 # add script entry points here
 [project.scripts]
