@@ -1,5 +1,5 @@
 import time
-from typing import Dict, List, Optional
+from typing import Dict
 class AuditLogMixin:
     """Provides audit logging capabilities."""
     def log_event(self, event_type: str, data: dict):

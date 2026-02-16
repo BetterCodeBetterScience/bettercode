@@ -1,4 +1,3 @@
-import pytest
 from warehouse import InventoryManager
 def test_single_warehouse_operations():
     wh = InventoryManager("WH-01")

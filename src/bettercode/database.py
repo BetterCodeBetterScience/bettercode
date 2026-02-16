@@ -5,7 +5,6 @@ used in the project.
 """
 
 import os
-from typing import Any
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from pymongo.collection import Collection

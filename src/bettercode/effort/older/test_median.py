@@ -1,4 +1,3 @@
-import pytest
 from median import RollingMedian
 
 def test_basic_median():

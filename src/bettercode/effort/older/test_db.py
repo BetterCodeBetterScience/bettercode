@@ -1,5 +1,3 @@
-import pytest
-import threading
 from db import KVStore
 
 def test_basic_commit():

@@ -1,4 +1,3 @@
-import pytest
 from calendar_tree import MaintenanceScheduler
 
 def test_basic_non_overlap():

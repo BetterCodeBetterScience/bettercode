@@ -1,4 +1,3 @@
-import pytest
 from resolver import DependencyResolver
 
 def test_bi_directional_cycle_bug():

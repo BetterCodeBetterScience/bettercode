@@ -1,6 +1,5 @@
 # custom scaler class for testing example
 
-import numpy as np
 from numpy.typing import NDArray
 
 class SimpleScaler:

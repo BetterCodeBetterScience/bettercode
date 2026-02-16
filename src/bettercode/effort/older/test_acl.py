@@ -1,4 +1,3 @@
-import pytest
 from acl import Group, AccessControl
 
 def test_basic_access():

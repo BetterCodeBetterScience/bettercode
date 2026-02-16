@@ -1,4 +1,3 @@
-import pytest
 from resource_manager import ResourceManager
 
 def test_basic_lifecycle():

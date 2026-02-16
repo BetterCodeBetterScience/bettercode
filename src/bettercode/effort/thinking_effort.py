@@ -15,7 +15,6 @@ Requires: ANTHROPIC_API_KEY environment variable set.
 
 import sys
 import re
-import tempfile
 import subprocess
 import json
 import time
@@ -72,7 +71,7 @@ def extract_python_code(text, original_module_path, verbose=False):
     
     if not code_blocks:
         if verbose:
-            print(f"  [extract] No code blocks found, trying to extract raw code...")
+            print("  [extract] No code blocks found, trying to extract raw code...")
         
         # Fallback: Check if the entire response looks like Python code
         # Look for class or function definitions at the start
@@ -99,7 +98,7 @@ def extract_python_code(text, original_module_path, verbose=False):
         # No Python-looking blocks, use all blocks and hope for the best
         python_blocks = code_blocks
         if verbose:
-            print(f"  [extract] No Python-specific blocks found, using all code blocks")
+            print("  [extract] No Python-specific blocks found, using all code blocks")
     
     # Get the longest block (likely the most complete)
     longest_code = max(python_blocks, key=len)
@@ -126,13 +125,13 @@ def extract_python_code(text, original_module_path, verbose=False):
     # If it looks like a complete module, return it as-is
     if looks_complete:
         if verbose:
-            print(f"  [extract] Returning as complete module")
+            print("  [extract] Returning as complete module")
         return longest_code
     
     # Otherwise, it might be just a function fix - attempt to patch it into the original
     if 'def ' in longest_code:
         if verbose:
-            print(f"  [extract] Looks like a function snippet, attempting to patch into original")
+            print("  [extract] Looks like a function snippet, attempting to patch into original")
         
         # Read the original module
         original_code = Path(original_module_path).read_text()
@@ -180,7 +179,7 @@ def extract_python_code(text, original_module_path, verbose=False):
     
     # If we can't patch it, just return what we have and hope for the best
     if verbose:
-        print(f"  [extract] Returning longest block as-is (could not patch)")
+        print("  [extract] Returning longest block as-is (could not patch)")
     return longest_code
 
 
@@ -245,9 +244,9 @@ def test_solution(fixed_code, test_file_path, module_source_path, timestamp, eff
     # Check if any replacements were made
     if verbose:
         if modified_test != original_test:
-            print(f"  [test] Imports successfully replaced")
+            print("  [test] Imports successfully replaced")
         else:
-            print(f"  [test] WARNING: No imports were replaced!")
+            print("  [test] WARNING: No imports were replaced!")
     
     # Save the modified test
     test_path = test_dir / f"test_{module_name}.py"
@@ -486,23 +485,23 @@ def main():
     # Save summary diagnostic file
     summary_file = diagnostic_dir / f"{timestamp}_{effort}_SUMMARY.txt"
     with open(summary_file, 'w') as f:
-        f.write(f"THINKING EFFORT DIAGNOSTIC SUMMARY\n")
+        f.write("THINKING EFFORT DIAGNOSTIC SUMMARY\n")
         f.write(f"{'='*60}\n\n")
         f.write(f"Timestamp: {timestamp}\n")
         f.write(f"Effort Level: {effort}\n")
-        f.write(f"Model: claude-opus-4-6\n\n")
-        f.write(f"RESULTS:\n")
+        f.write("Model: claude-opus-4-6\n\n")
+        f.write("RESULTS:\n")
         f.write(f"  Tests Passed: {test_passed}\n")
         f.write(f"  Response Time: {response_time:.2f}s\n\n")
-        f.write(f"CONTENT SIZES:\n")
+        f.write("CONTENT SIZES:\n")
         f.write(f"  Thinking: {len(thinking_text)} chars\n")
         f.write(f"  Response: {len(response_text)} chars\n")
         f.write(f"  Extracted Code: {extracted_code_len or 0} chars\n\n")
-        f.write(f"TOKEN USAGE:\n")
+        f.write("TOKEN USAGE:\n")
         f.write(f"  Input: {response.usage.input_tokens}\n")
         f.write(f"  Output: {response.usage.output_tokens}\n")
         f.write(f"  Total: {response.usage.input_tokens + response.usage.output_tokens}\n\n")
-        f.write(f"FILES SAVED:\n")
+        f.write("FILES SAVED:\n")
         f.write(f"  - {timestamp}_{effort}_thinking.txt\n")
         f.write(f"  - {timestamp}_{effort}_response.txt\n")
         if extracted_code_len:
@@ -510,18 +509,18 @@ def main():
         if test_dir:
             f.write(f"  - {test_dir.name}/  (test directory with runnable code)\n")
         f.write(f"\n{'='*60}\n")
-        f.write(f"\nPROMPT EXCERPT:\n")
+        f.write("\nPROMPT EXCERPT:\n")
         f.write(f"{prompt[:500]}...\n\n")
         if test_dir:
-            f.write(f"TO MANUALLY RUN THE TEST:\n")
+            f.write("TO MANUALLY RUN THE TEST:\n")
             f.write(f"  cd {test_dir}\n")
-            f.write(f"  pytest -v\n\n")
+            f.write("  pytest -v\n\n")
         if not test_passed and test_output:
-            f.write(f"TEST FAILURE SUMMARY:\n")
+            f.write("TEST FAILURE SUMMARY:\n")
             f.write(f"{test_output[:1000]}...\n")
     
     print(f"📋 Summary saved to: {summary_file.name}")
-    print(f"\n💡 To inspect details, check the diagnostics/ folder")
+    print("\n💡 To inspect details, check the diagnostics/ folder")
 
 
 

@@ -1,4 +1,3 @@
-import pytest
 from security import PerimeterMonitor
 
 def test_basic_linear_sector():
