@@ -13,6 +13,8 @@ uv.lock
 sbi-logs
 
 exports
+setup_pypi.sh
+notebooks/deprecated
 
 # Thinking effort diagnostics
 src/bettercode/effort/diagnostics/
