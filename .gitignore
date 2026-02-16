@@ -14,6 +14,8 @@ sbi-logs
 
 exports
 
+# Thinking effort diagnostics
+src/bettercode/effort/diagnostics/
 
 # MyST build outputs
 _build
