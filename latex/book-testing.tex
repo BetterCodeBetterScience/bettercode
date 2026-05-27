@@ -95,6 +95,8 @@ For example, if we had mis-specified the expected value as 1186.0, we would have
 
 When testing for equality of numbers (except for integers), it is essential to use a comparison method that allows for a degree of tolerance in the comparison.\index{tolerance}  For example, it might seem like the following assertion should pass, but it doesn't:
 
+Throughout this book, interactive Python sessions are shown using the standard Python REPL prompts (\texttt{>>>} for input, \texttt{...} for continuation).
+
 \lstinputlisting[style=repl, numbers=none]{generated/testing/repl_float_assert_fail.txt}
 
 This happens because the result of \textit{0.1 + 0.2} is very close, but not exactly the same as \textit{0.3} due to the nature of how floating point numbers are represented:
