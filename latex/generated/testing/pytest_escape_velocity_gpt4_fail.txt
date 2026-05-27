@@ -1,0 +1,38 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/poldrack/Dropbox/code/BetterCodeBetterScience/bettercode
+configfile: pyproject.toml
+plugins: anyio-4.12.1, mock-3.15.1, fast-array-utils-1.3.1, Faker-40.4.0, order-1.3.0, hypothesis-6.151.5, zarr-3.1.5, cov-7.0.0
+collected 1 item
+
+tests/testing_chapter/_demos/test_escape_velocity_gpt4.py F              [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_escape_velocity_gpt4 ___________________________
+
+    def test_escape_velocity_gpt4():
+    
+        mass_earth = 5.972e24
+        radius_earth = 6.371e6
+        result = escape_velocity(mass_earth, radius_earth)
+        assert pytest.approx(result, rel=1e-3) == 11186.25
+    
+        mass_mars = 6.4171e23
+        radius_mars = 3.3895e6
+        result = escape_velocity(mass_mars, radius_mars)
+        assert pytest.approx(result, rel=1e-3) == 5027.34
+    
+        mass_jupiter = 1.8982e27
+        radius_jupiter = 6.9911e7
+        result = escape_velocity(mass_jupiter, radius_jupiter)
+>       assert pytest.approx(result, rel=1e-3) == 59564.97
+E       assert 60202.716344497014 ± 60.2027 == 59564.97
+E         
+E         comparison failed
+E         Obtained: 59564.97
+E         Expected: 60202.716344497014 ± 60.2027
+
+tests/testing_chapter/_demos/test_escape_velocity_gpt4.py:21: AssertionError
+=========================== short test summary info ============================
+FAILED tests/testing_chapter/_demos/test_escape_velocity_gpt4.py::test_escape_velocity_gpt4
+============================== 1 failed in X.XXs ===============================

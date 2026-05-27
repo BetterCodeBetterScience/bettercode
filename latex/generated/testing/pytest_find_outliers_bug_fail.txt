@@ -1,0 +1,56 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/poldrack/Dropbox/code/BetterCodeBetterScience/bettercode
+configfile: pyproject.toml
+plugins: anyio-4.12.1, mock-3.15.1, fast-array-utils-1.3.1, Faker-40.4.0, order-1.3.0, hypothesis-6.151.5, zarr-3.1.5, cov-7.0.0
+collected 2 items
+
+tests/testing_chapter/_demos/test_find_outliers_v1_buggy.py .F           [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_find_outliers_identical_values ______________________
+
+    def test_find_outliers_identical_values():
+        data = [5, 5, 5, 5, 5]  # All identical values
+        # This test fails against v1_buggy due to ZeroDivisionError
+>       outliers = find_outliers(data, threshold=2.0)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/testing_chapter/_demos/test_find_outliers_v1_buggy.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = [5, 5, 5, 5, 5], threshold = 2.0
+
+    def find_outliers(data: List[float], threshold: float = 2.0) -> List[int]:
+        """
+        Find outliers in a dataset using z-score method.
+    
+        Parameters
+        ----------
+        data : List[float]
+            List of numerical values.
+        threshold : float, default=2.0
+            Number of standard deviations from the mean to consider a value as an outlier.
+    
+        Returns
+        ----------
+        List[int]
+            List of indices of outliers in the data.
+        """
+    
+        mean = sum(data) / len(data)
+        variance = sum((x - mean) ** 2 for x in data) / len(data)
+        std = variance ** 0.5
+    
+        # Bug: division by zero when std is 0 (all values are identical)
+        # This only happens when all data points are the same
+        outliers = []
+        for i, value in enumerate(data):
+>           z_score = abs(value - mean) / std
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+E           ZeroDivisionError: float division by zero
+
+src/bettercode/testing/find_outliers_v1_buggy.py:29: ZeroDivisionError
+=========================== short test summary info ============================
+FAILED tests/testing_chapter/_demos/test_find_outliers_v1_buggy.py::test_find_outliers_identical_values
+========================= 1 failed, 1 passed in X.XXs ==========================

@@ -1,0 +1,34 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.11, pytest-9.0.2, pluggy-1.6.0 -- .venv/bin/python
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: /Users/poldrack/Dropbox/code/BetterCodeBetterScience/bettercode
+configfile: pyproject.toml
+plugins: anyio-4.12.1, mock-3.15.1, fast-array-utils-1.3.1, xdist-3.8.0, Faker-40.4.0, order-1.3.0, hypothesis-6.151.5, zarr-3.1.5, cov-7.0.0
+created: 16/N workers
+N workers [10 items]
+
+scheduling tests via LoadScheduling
+
+tests/testing_chapter/test_parallel.py::test_parallel[2] 
+tests/testing_chapter/test_parallel.py::test_parallel[6] 
+tests/testing_chapter/test_parallel.py::test_parallel[9] 
+tests/testing_chapter/test_parallel.py::test_parallel[7] 
+tests/testing_chapter/test_parallel.py::test_parallel[8] 
+tests/testing_chapter/test_parallel.py::test_parallel[4] 
+tests/testing_chapter/test_parallel.py::test_parallel[1] 
+tests/testing_chapter/test_parallel.py::test_parallel[3] 
+tests/testing_chapter/test_parallel.py::test_parallel[5] 
+tests/testing_chapter/test_parallel.py::test_parallel[0] 
+[gw2] [ 10%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[2] 
+[gw6] [ 20%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[9] 
+[gw1] [ 30%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[1] 
+[gw4] [ 40%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[3] 
+[gw3] [ 50%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[4] 
+[gw0] [ 60%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[0] 
+[gw9] [ 70%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[8] 
+[gw7] [ 80%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[6] 
+[gw8] [ 90%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[7] 
+[gw5] [100%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[5] 
+
+============================== 10 passed in X.XXs ==============================
