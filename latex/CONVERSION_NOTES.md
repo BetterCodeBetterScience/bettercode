@@ -177,3 +177,22 @@ produces **158 output lines** (79 `\begin` + 79 `\end`), representing
 
 Style counts verified by `grep "begin{lstlisting}" latex/book-testing.tex | grep -o "style=[^,\]]*" | sort | uniq -c`.
 Several blocks use `numbers=none` as an extra option; these are counted under their base style (shell or repl).
+
+---
+
+## External-importer pre-check (re-run 2026-05-27)
+
+Result of grep over `notebooks/` and `../example-*/` for each module being migrated:
+
+| Module | External importers | Safe to rename? |
+|--------|---------------------|-----------------|
+| escape_velocity | (none) | yes |
+| find_outliers | (none) | yes |
+| simple_scaler | (none) | yes |
+| dataframe_ops | (none) | yes |
+| distance | (none) | yes |
+| textmining | (none) | yes |
+| linear_regression | (none) | yes |
+| narps | (none) | yes |
+
+All modules are safe to rename/refactor. No external importers found in `notebooks/` or `example-*` directories.
