@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -59,6 +60,19 @@ def cmd_build(manifest: Manifest, only: str | None) -> int:
     return 0
 
 
+_PYTEST_TIMING_RE = re.compile(r"\b\d+\.\d+s\b")
+
+
+def _verify_canonicalize(text: str) -> str:
+    """Apply verify-only normalization for comparison.
+
+    Lets the committed output preserve volatile content (like wall-clock
+    pytest timings) while still flagging substantive drift. The committed
+    file shows actual seconds; verify masks them for the comparison only.
+    """
+    return _PYTEST_TIMING_RE.sub("X.XXs", text)
+
+
 def cmd_verify(manifest: Manifest, only: str | None) -> int:
     drift_count = 0
     for entry in manifest.outputs:
@@ -76,7 +90,7 @@ def cmd_verify(manifest: Manifest, only: str | None) -> int:
             drift_count += 1
             continue
         committed = out_path.read_text()
-        if committed != regenerated:
+        if _verify_canonicalize(committed) != _verify_canonicalize(regenerated):
             diff = "".join(
                 difflib.unified_diff(
                     committed.splitlines(keepends=True),

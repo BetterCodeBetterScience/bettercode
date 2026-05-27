@@ -173,3 +173,53 @@ def test_verify_fails_when_output_file_missing(tmp_repo):
     result = _run_cli(["verify", "testing"], cwd=tmp_repo)
     assert result.returncode != 0
     assert "missing" in (result.stdout + result.stderr).lower()
+
+
+def test_verify_ignores_pytest_timing_only_drift(tmp_repo):
+    """Verify should pass when only pytest-style timing values differ.
+
+    Each run regenerates output with the current wall-clock time. We
+    don't want that natural variation to count as drift.
+    """
+    manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
+    manifest.write_text(
+        "chapter: testing\n"
+        "outputs:\n"
+        "  - id: timed\n"
+        "    description: timed pytest-style output\n"
+        '    command: ["python", "-c", "print(\'1 passed in 0.20s\')"]\n'
+        '    output_file: "latex/generated/testing/timed.txt"\n'
+        "    expected_exit_code: 0\n"
+        "    normalize: []\n"
+    )
+    # Committed output has a different timing; everything else identical.
+    (tmp_repo / "latex" / "generated" / "testing" / "timed.txt").write_text(
+        "1 passed in 0.14s\n"
+    )
+    result = _run_cli(["verify", "testing"], cwd=tmp_repo)
+    assert result.returncode == 0, (
+        f"expected verify to ignore timing-only drift; stderr:\n{result.stderr}"
+    )
+
+
+def test_verify_still_fails_on_substantive_drift_with_timings(tmp_repo):
+    """Verify should still fail when non-timing content differs."""
+    manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
+    manifest.write_text(
+        "chapter: testing\n"
+        "outputs:\n"
+        "  - id: timed\n"
+        "    description: timed pytest-style output\n"
+        '    command: ["python", "-c", "print(\'2 passed in 0.20s\')"]\n'
+        '    output_file: "latex/generated/testing/timed.txt"\n'
+        "    expected_exit_code: 0\n"
+        "    normalize: []\n"
+    )
+    # Committed says "1 passed", regenerated says "2 passed" — substantive.
+    (tmp_repo / "latex" / "generated" / "testing" / "timed.txt").write_text(
+        "1 passed in 0.14s\n"
+    )
+    result = _run_cli(["verify", "testing"], cwd=tmp_repo)
+    assert result.returncode != 0
+    output = result.stdout + result.stderr
+    assert "DRIFT" in output
