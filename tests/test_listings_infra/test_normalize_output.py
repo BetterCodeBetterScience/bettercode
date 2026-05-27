@@ -48,6 +48,14 @@ def test_file_paths_leaves_non_repo_paths_alone(tmp_path, monkeypatch):
     assert NORMALIZERS["file_paths"](text) == text
 
 
+def test_file_paths_replaces_standalone_cwd_with_dot(tmp_path, monkeypatch):
+    """pytest's `rootdir:` line shows cwd without a trailing slash."""
+    monkeypatch.chdir(tmp_path)
+    text = f"rootdir: {tmp_path}\nconfigfile: pyproject.toml"
+    result = NORMALIZERS["file_paths"](text)
+    assert result == "rootdir: .\nconfigfile: pyproject.toml"
+
+
 def test_temp_paths_normalizes_macos_temp():
     text = "wrote /var/folders/aa/bb/T/tmpXYZ.txt"
     result = NORMALIZERS["temp_paths"](text)

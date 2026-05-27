@@ -37,12 +37,19 @@ def memory_addresses(text: str) -> str:
 
 @register("file_paths")
 def file_paths(text: str) -> str:
-    """Rewrite absolute paths under the current working directory to be repo-relative."""
+    """Rewrite absolute paths under the current working directory to be repo-relative.
+
+    Two cases:
+    - `<cwd>/<rest>` becomes `<rest>` (e.g. pytest traceback file paths)
+    - `<cwd>` standing alone becomes `.` (e.g. pytest's `rootdir:` line)
+    """
     cwd = os.getcwd()
-    # Use a regex that matches quoted or unquoted absolute paths under cwd.
-    # cwd may contain regex metachars; escape it.
-    pattern = re.compile(re.escape(cwd) + r"/")
-    return pattern.sub("", text)
+    escaped = re.escape(cwd)
+    # Strip cwd prefix from paths that continue with `/`
+    text = re.sub(escaped + r"/", "", text)
+    # Replace standalone cwd (not followed by anything path-like) with `.`
+    text = re.sub(escaped + r"(?![/\w])", ".", text)
+    return text
 
 
 @register("temp_paths")

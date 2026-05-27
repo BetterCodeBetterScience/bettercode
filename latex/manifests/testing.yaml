@@ -7,7 +7,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_escape_velocity.py::test_escape_velocity"]
     output_file: "latex/generated/testing/pytest_escape_velocity_pass.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 5: failing pytest run — ev_expected typo
   - id: pytest_escape_velocity_typo_fail
@@ -15,7 +15,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_escape_velocity_typo.py"]
     output_file: "latex/generated/testing/pytest_escape_velocity_typo_fail.txt"
     expected_exit_code: 1
-    normalize: [pytest_timings, file_paths, memory_addresses, terminal_width]
+    normalize: [file_paths, memory_addresses, terminal_width]
 
   # Block 6: REPL — assert 0.1 + 0.2 == 0.3 raises AssertionError
   - id: repl_float_assert_fail
@@ -23,7 +23,7 @@ outputs:
     driver: "scripts/repl_drivers/testing/float_assert_fail.py"
     output_file: "latex/generated/testing/repl_float_assert_fail.txt"
     expected_exit_code: 0
-    normalize: []
+    normalize: [file_paths]
 
   # Block 7: REPL — 0.1 + 0.2 = 0.30000000000000004
   - id: repl_float_value
@@ -55,7 +55,7 @@ outputs:
     driver: "scripts/repl_drivers/testing/find_outliers_zero_div.py"
     output_file: "latex/generated/testing/repl_find_outliers_zero_div.txt"
     expected_exit_code: 0
-    normalize: []
+    normalize: [file_paths]
 
   # Block 15: failing pytest run — ZeroDivisionError against v1 buggy
   - id: pytest_find_outliers_bug_fail
@@ -63,7 +63,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_find_outliers_v1_buggy.py"]
     output_file: "latex/generated/testing/pytest_find_outliers_bug_fail.txt"
     expected_exit_code: 1
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 17: passing pytest run — find_outliers v2 fixed (Q2: corrected path)
   - id: pytest_find_outliers_fixed_pass
@@ -71,7 +71,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_find_outliers.py"]
     output_file: "latex/generated/testing/pytest_find_outliers_fixed_pass.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 27: failing pytest run — distance test with sqrt(125) wrong value
   - id: pytest_distance_fail
@@ -79,7 +79,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_distance_v1_failing.py"]
     output_file: "latex/generated/testing/pytest_distance_fail.txt"
     expected_exit_code: 1
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 28: passing pytest run — distance test with sqrt(89) correct value
   - id: pytest_distance_pass
@@ -87,7 +87,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_distance.py"]
     output_file: "latex/generated/testing/pytest_distance_pass.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 30: failing pytest run — GPT-4 generated test with wrong Jupiter value
   - id: pytest_escape_velocity_gpt4_fail
@@ -95,7 +95,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_escape_velocity_gpt4.py"]
     output_file: "latex/generated/testing/pytest_escape_velocity_gpt4_fail.txt"
     expected_exit_code: 1
-    normalize: [pytest_timings, file_paths, memory_addresses, terminal_width]
+    normalize: [file_paths, memory_addresses, terminal_width]
 
   # Block 36: coverage report for textmining module
   - id: pytest_textmining_coverage
@@ -105,7 +105,7 @@ outputs:
               "--no-header", "-q"]
     output_file: "latex/generated/testing/pytest_textmining_coverage.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 51: parametrized year-parsing test (Q7: mocked, offline-safe)
   - id: pytest_textmining_parametric
@@ -115,7 +115,7 @@ outputs:
               "-v"]
     output_file: "latex/generated/testing/pytest_textmining_parametric.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 56: failing hypothesis smoke test — singular matrix (Q8: seeded + temp_paths)
   - id: pytest_property_based_smoke_fail
@@ -123,7 +123,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_property_based_smoke.py"]
     output_file: "latex/generated/testing/pytest_property_based_smoke_fail.txt"
     expected_exit_code: 1
-    normalize: [pytest_timings, file_paths, memory_addresses, terminal_width, temp_paths]
+    normalize: [file_paths, memory_addresses, terminal_width, temp_paths]
 
   # Block 63: cherry-picking a single named test
   - id: pytest_cherry_pick_single
@@ -133,7 +133,7 @@ outputs:
               "-v"]
     output_file: "latex/generated/testing/pytest_cherry_pick_single.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 65: natural test ordering (second before first)
   - id: pytest_ordering_natural_order
@@ -141,7 +141,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_ordering_v1_natural.py", "-v"]
     output_file: "latex/generated/testing/pytest_ordering_natural_order.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 67: controlled test ordering with pytest-order marks
   - id: pytest_ordering_controlled_order
@@ -149,7 +149,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_ordering.py", "-v"]
     output_file: "latex/generated/testing/pytest_ordering_controlled_order.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 71: all 3 marker tests passing
   - id: pytest_markers_all
@@ -157,7 +157,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_markers.py", "-v"]
     output_file: "latex/generated/testing/pytest_markers_all.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 72: only unit tests selected with -m unit
   - id: pytest_markers_unit_only
@@ -165,7 +165,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_markers.py", "-m", "unit", "-v"]
     output_file: "latex/generated/testing/pytest_markers_unit_only.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 73: integration test only with -m "not unit"
   - id: pytest_markers_not_unit
@@ -173,7 +173,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_markers.py", "-m", "not unit", "-v"]
     output_file: "latex/generated/testing/pytest_markers_not_unit.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 75: --durations=0 output (long-running ~9s, slow)
   - id: pytest_duration_report
@@ -181,7 +181,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_duration.py", "--durations=0", "-v"]
     output_file: "latex/generated/testing/pytest_duration_report.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 78: serial parallel test run (~10s, slow)
   - id: pytest_parallel_serial
@@ -189,7 +189,7 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_parallel.py", "-v"]
     output_file: "latex/generated/testing/pytest_parallel_serial.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width]
+    normalize: [file_paths, terminal_width]
 
   # Block 79: xdist parallel run (~2s, machine-specific worker count)
   - id: pytest_parallel_xdist
@@ -197,4 +197,4 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_parallel.py", "-n", "auto", "-v"]
     output_file: "latex/generated/testing/pytest_parallel_xdist.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width, worker_count, xdist_schedule]
+    normalize: [file_paths, terminal_width, worker_count, xdist_schedule]
