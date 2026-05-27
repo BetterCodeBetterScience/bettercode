@@ -1,0 +1,660 @@
+\chapter{Essential tools and techniques}
+
+\section{The tools and why we use them}
+
+I hope that the principles and strategies outlined in this book will transcend any particular software platform or programming language, but for the purposes of explication I will focus on a particular language (Python) and a particular set of tools for software development/engineering and AI coding assistance.\index{Python}
+Here I briefly outline our motivation for these particular tools.
+
+\subsection{Why Python?}
+
+For the coding examples in this book I will use the Python programming language.
+I have chosen Python first and foremost because it is a language that I know well, as well as being one of the most popular languages today in science.
+Python is a relatively high level programming language, which means that it can be understandable (if written correctly) even by someone with relatively little experience.
+It is also free and open source, which means that anyone with a computer can download it and run it at no cost.\index{open source}
+In addition, Python is a language that has exceptionally good support from AI coding assistants, which have usually been trained on a huge corpus of Python code (along with code from many other languages as well).
+Python also has a large and growing ecosystem of packages and tools that make it possible to solve many different problems easily.
+Across many different domains of science there are specialized Python packages to solve domain-specific problems: Examples include \href{https://www.astropy.org/}{astropy} (astronomy), \href{https://geopandas.org/en/stable/getting\_started/introduction.html}{geopandas} (geospatial sciences), \href{https://quantecon.org/}{quantecon} (economics), \href{https://sunpy.org/}{sunpy} (solar physics), and \href{https://www.psychopy.org/}{psychopy} (psychology), just to name a few.
+If you are interested in working on machine learning or AI, the tools in Python are especially good.\index{machine learning}
+
+I should note that different scientific communities have often converged on particular high-level languages.
+The above are some examples of Python packages, but in some fields the ecosystem is much more elaborated in R, Julia, Perl or Matlab.\index{Julia}\index{Matlab}
+I hope that most of the lessons in this book will be relevant to these other languages as well, though some of these other languages do not provide the same level of software engineering tools as Python.
+
+It would be unfair to not also mention Python's weaknesses. A major limitation is performance: As I will discuss in more detail in Chapter 10, Python is substantially slower than languages such as C/C++ or Rust, though I will discuss methods to improve its performance.  Python also struggles with parallelism, though recent changes in  Python aim to address this.  Another pain point for Python is its fragmented ecosystem for package and environment management; I discuss some of these challenges in Chapter 2.
+
+If you don't already know Python, then I suggest that you try to follow along with the examples anyway; my aim is to write them in a way that anyone with a general knowledge of programming should be able to read and understand them.
+In some cases I will use programming constructs that are specific to Python; if you are coming from another language and you see something you don't understand, then I would recommend asking an AI assistant to explain it to you, since current AI tools are very good at explaining the intent of Python code! Learning a new programming language is also a great way to expand your programming skills, and Python is currently a great language to learn.
+
+\section{Version control}\index{version control}
+
+Scientists in many fields have traditionally kept a \textit{lab notebook} to record their experimentation.
+This is still the case in domains such as biology where the work often involves manual experimentation at a lab bench.
+Many such labs have moved to using electronic lab notebooks, making it much easier to search and find relevant information.
+However, an increasing amount of scientific work is now computational, and for this work it would seem somewhat inefficient to record information about the software development process separately from the code that is being written.
+There is in fact a tool that can provide the computational researcher with an integrated way to record the history their work, known as \textit{version control.} While there are many tools that can be used to perform version control, \textit{\href{https://git-scm.com/}{git}} has become by far the most prevalent within the scientific computing ecosystem, largely due to the popularity of the \href{http://github.com}{GitHub} website that enables the hosting and sharing of git repositories.\index{GitHub}
+
+In this section I will assume that the researcher has a basic knowledge of the \textit{git} software tool; for researchers looking to learn \textit{git}, there are numerous resources online, which we will not duplicate; see the suggested resources at the end of this chapter.
+Here I will focus on the ways in which version control tools like \textit{git} can serve as important tools to improve scientific coding.
+While there are numerous graphical user interfaces (GUIs) for \textit{git} (including those offered by various IDEs), I will focus on its use via the command line interface (CLI).
+Every researcher should have a basic knowledge of the \textit{git} CLI, since this is a ubiquitous interface available across all OSes and environments.
+The CLI is sometimes the only interface that is available to the researcher, e.g., in a remote session on an HPC system or in the cloud.
+Moreover, the CLI provides an immediate exposure to available commands (see \texttt{git --help}) and options for each command (see \texttt{git COMMAND --help}), allowing users to discover a command or option that might not (yet) be exposed by any particular GUI tool.
+
+\subsection{How version control works}
+
+The goal of a version control system is to provide an annotated history of all changes that occur to the tracked files.
+Here I will provide a brief overview of the conceptual structure of version control, using \textit{git} system as the example.
+
+The general workflow for version control using \textit{git} is as follows:
+
+\begin{itemize}
+\item Initial check-in: A file is added to the database.
+\item The file is \textit{modified} by the user, but the changes are not added to the database.
+\item The file is \textit{added} to the staging area, which tracks the changes in the file and marks the new version to be added to the database.\index{Git!staging area}
+\item The file is \textit{committed}, which stores it in the base along with a \textit{commit message} that describes the changes.
+\end{itemize}
+
+Here is an example using \textit{git}.
+We first create a test directory (outside of our current \textit{git} repository) and initialize it as a \textit{git} repository:
+
+\begin{lstlisting}[style=shell]
+$ cd /tmp
+$ mkdir git-test
+$ cd git-test
+$ git init
+$ echo "test file" > test_file.txt
+$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	test_file.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+\end{lstlisting}
+
+\noindent{Note that throughout the book the symbol ``\$'' refers to the UNIX command line. 
+So far our new file is not being tracked, but we can add it to the database:}
+
+\begin{lstlisting}[style=shell]
+$ git add test_file.txt
+$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm - -cached <file>..." to unstage)
+	new file:   test_file.txt
+\end{lstlisting}
+
+\noindent{It's now in the staging area, but hasn't yet been committed to the database, as we can see if we print the log:}
+
+\begin{lstlisting}[style=shell, numbers=none]
+$ git log
+fatal: your current branch 'main' does not have any commits yet
+\end{lstlisting}
+
+\noindent{We can commit the items in the staging area (in this case, just our single added file) to the database and provide a message that labels the commit:}
+
+\begin{lstlisting}[style=shell]
+$ git commit -m"initial add"
+[main (root -commit) 752ca80] initial add
+ 1 file changed, 1 insertion(+)
+ create mode 100644 test_file.txt
+$ git status
+On branch main
+nothing to commit, working tree clean
+\end{lstlisting}
+
+Now that all changes have been committed, we are ``clean'', meaning that the files in the directory match exactly to those in the database.
+We can see the commit in the git log:
+
+\begin{lstlisting}[style=shell]
+$ git log
+commit 752ca809cd662f846434dcb2c81f3000db640b4e (HEAD -> main)
+Author: Russell Poldrack <poldrack@gmail.com>
+Date:   Mon Feb 17 07:42:35 2025 -0800
+
+    initial add
+\end{lstlisting}
+
+\noindent{The long string (starting with ``752'') is the \textit{hash} for this commit.
+This is a value (generated by a cryptographic algorithm called SHA-1) that uniquely represents all of the changes that were made in this commit.
+For example, if we had used a different commit message then the hash would be different.
+The commit hash is the way that we refer to commits - for example, if we wanted to change the state of our repository back to an earlier commit we would use the hash of that earlier commit.\index{Git!commit hash}
+We usually don't need to use the entire hash; the first {\textasciitilde}8 letters are usually sufficient.}
+
+The most important role for version control is to track changes in a file, along with notes about those changes.
+That is, it can serve as a digital version of a lab notebook! Let's make a change to the file to see this in action:
+
+\begin{lstlisting}[style=shell]
+$ echo "another line" >> test_file.txt # add another line of text
+$ git diff test_file.txt
+diff --git a/test_file.txt b/test_file.txt
+index 16b14f5..0db3737 100644
+ - - - a/test_file.txt
++++ b/test_file.txt
+@@ -1 +1,2 @@
+ test file
++another line
+\end{lstlisting}
+
+\noindent{This provides us with a (somewhat cryptic) description of the changes to the file; the line starting with a ``+'' denotes the content that was added (in the console this would also be color-coded in green).
+We can then add and commit the file and then view the new commit in the log:}
+
+\begin{lstlisting}[style=shell]
+$ git add test_file.txt
+$ git commit -m"added a second line"
+[main 5e8c41a] added a second line
+ 1 file changed, 1 insertion(+)
+$ git log
+
+commit 5e8c41a075b2ab2d954d59cab6530d924c5e3e6a (HEAD -> main)
+Author: Russell Poldrack <poldrack@gmail.com>
+Date:   Mon Feb 17 07:56:09 2025 -0800
+
+    added a second line
+
+commit 752ca809cd662f846434dcb2c81f3000db640b4e
+Author: Russell Poldrack <poldrack@gmail.com>
+Date:   Mon Feb 17 07:42:35 2025 -0800
+
+    initial add
+\end{lstlisting}
+
+\noindent{Now we can see our latest commit at the top of the list.
+If I were to push our repository to GitHub, then we could also see a much more user-friendly graphical view of commit history and the changes that occurred in each commit.
+Most IDEs also have an interface to work directly with \textit{git}; for example, within VSCode there is a \textbf{Source Control} panel that would allow one to do everything that I did above using the command line.\index{VSCode}}
+
+\subsection{Version control as a lab notebook}
+
+It is essential for a researcher to keep track of their work as it proceeds, and traditionally this has been done using a written lab notebook.
+This has several drawbacks; it's impossible to search easily, and for researchers with terrible handwriting (like author RP, as seen in Figure~\ref{LabNotebook-fig}) it can often be impossible to later decipher what the notes actually mean.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{files/lab_notebook_scan-9b129b911f015b08e42c75f271b2e514.png}
+\caption[Scan of lab notebook]{Scan of a page from Russ's lab notebook circa 2000.}
+\label{LabNotebook-fig}
+\end{figure}
+
+\subsection{Version control best practices}
+
+Version control systems like \textit{git} can serve as an outstanding alternative to a written lab notebook for the computational researcher, but only if it used well.
+Here are a few best practices for ensuring good record-keeping:
+
+\subsubsection{Use a consistent standard format for commit messages}
+
+Using a particular format consistently will make it much easier to understand and search your history later on.
+Here is one simple format that one might use for commit messages:
+
+\begin{lstlisting}[style=transcript]
+<type>: <summary>
+
+<optional longer description>
+\end{lstlisting}
+
+The \textit{type} tag describes the type of change, which could include tags like \textit{feature}, \textit{bugfix}, \textit{refactor}, \textit{doc}, \textit{test}, and \textit{cleanup}.
+
+The \textit{summary} should include a brief summary (usually less than 72 characters) that summarizes what was done.
+You should avoid using generic or vague summaries such as ``update'' or ``fix bug''.
+
+By \textit{git} convention, commit messages should be written in imperative mood, as if one is giving a command.
+For example, the message might say ``add test for infinite edge case'' rather than ``added test for infinite edge case''.
+
+Here is a example:
+
+\begin{lstlisting}[style=transcript]
+refactor: Make crossvalidation function cleaner
+
+Rename loop indices from `i`/`j` to `feature_idx`/`sample_idx`
+\end{lstlisting}
+
+\subsubsection{Explain intent rather than code}
+
+A good commit message should explain what problem was being solved and why the change was necessary, rather than detailing the specific code changes.
+The code changes are already evident from the change log, so the message should focus instead on details that are not evident from looking at the code itself.
+For example:
+
+\begin{lstlisting}[style=transcript]
+feature: Enable use of multiple APIs
+
+Previously the function only worked with the OpenAI API.
+This change generalizes it to allow any endpoint that 
+follows the OpenAI API conventions.
+\end{lstlisting}
+
+\subsubsection{A single commit should reflect solution of a particular problem}
+
+One of the tricky aspects of learning to use version control is learning when to commit.
+One rule of thumb is that a commit should reflect a group of changes that solve a particular problem.
+For example, say that we have modified three source files to add the multiple API functionality listed above.
+We could, on the one hand, add and commit the changes from each file separately, leading to three separate commits.
+This is too granular; if we later decide that we want to roll back those changes (which could be difficult depending on commit messages and our memory), we have to identify the three separate commits and then roll back each one separately.
+At the other extreme, it's not uncommon for users to check in all of the work that was done in a day, with a commit message like ``all work from Tuesday''.
+If one were to later decide that part of the work from that day needed to be rolled back, it would require a lot of extra work to isolate just those changes.
+The sweet spot for committing is to commit changes that represent a functional bundle, or that solve a particular problem.
+Thinking about the commit message can be helpful in considering when to commit; if it's difficult to give a concise functional description to the specific set of changes being committed, then the commit may be either too narrow or too broad.
+
+\subsubsection{Avoid blanket add/commit operations}
+
+Another common \textit{git} ``anti-pattern'' (i.e., a commonly used but bad solution to a common problem) is to simply add all files using \texttt{git add .} (which adds all files in the current directory, including those that have not been added) or \texttt{git add -A} (which does the similar thing recursively for the entire directory tree).\index{anti-pattern}
+This kind of ``blanket add/commit'' is problematic for at least two reasons.
+First, there are often files that we don't want to add to version control, such as files containing credentials or files with details about the local system configuration.
+While we would usually want to add these files to our \texttt{.gitignore} file (which prevents them from being seen by \textit{git}), it's best practice to explicitly add files that we are working on.
+A second reason to avoid blanket add/commit is that if we are working on more than one problem at a time, the resulting commit will bundle together files that address different problems and thus prevent writing a clean commit message as well as prevent a clean reversion of that code later.
+It would also require knowing exactly which files have been added in order to create an accurate commit message.
+The only time that I can imagine a blanket add/commit being reasonable is when one is initially creating a repository using a large number of files.
+
+A better practice is to explicitly name all files being added, which forces one to think about exactly what problem the commit is solving.
+If one is certain that they know exactly which code files have been changed, then a useful alternative can be to only add modified files (using \texttt{git add -u}), which can save a bit of time if there are numerous files being added.
+However, it's important to make sure that the commit message always faithfully reflects the totality of the changes.
+
+\subsection{Version control as developer productivity tool}
+
+So far I have discussed version control primarily as a way to record the history of software development.
+But an arguably even more powerful aspect of version control is the way that it enables developer productivity by allowing one to try out new changes and easily revert to a previous version.
+It's useful to first examine how this might be done without version control.
+Suppose a developer has a codebase and wants to try out a major change, such as changing the database backend used in the project.
+They would usually save a copy of all of the source files (perhaps with a timestamped label), and then start working on the problem.
+If at some point they wish to completely abandon the new project, they can always go back to the copy of the original.
+But what if they want to abandon the latest part (e.g., a specific database) without necessarily abandoning the rest of the work that it took to get there? Unless they are saving copies at every step (which quickly becomes a bookkeeping nightmare), this will be very challenging to pull off.
+On the other hand, with a solid version control workflow these problems are trivial to solve, because version control is designed exactly in order to solve this bookkeeping problem.
+
+\subsubsection{Falling back on previous commits}
+
+I will start first with a simple example that only involves the \texttt{main} branch of the repository; if you don't know what a ``branch'' is, this would be a good time to seek out your favorite \textit{git} resource and learn about that concept.\index{Git!branching}
+Later I will suggest that working directly in the main branch is not optimal, but it's common for many research projects with a single developer so I will start there, fitting with the mantra that we should never let the perfect be the enemy of the good.
+
+Let's say that we wish to try changing out the database backend for our project, which will require changes to several of the source files.
+Starting with a clean working tree (i.e., no uncommitted changes or untracked files not included in \texttt{.gitignore}), we would first create a new tag so that we can easily find the last commit in case we decide that we want to revert back to it:
+
+\begin{lstlisting}[style=shell]
+git tag v0.2-pre-db-change
+\end{lstlisting}
+
+We then start developing on the new code, committing as usual.
+Let's say that we make a few commits on the new code, but then go down a road that we decide to abandon.
+It's easy to get back to the last commit simply by typing \texttt{git reset --hard HEAD}, which takes the code back to the state it was in at the last commit (known as ``HEAD'').
+In the case that we decide to abandon the entire project and want to go back to the state of the code when we started (which is denoted by the tag we created), we simply need to find the hash for that commit and then check out that version of the repository:
+
+\begin{lstlisting}[style=shell]
+$ git show v0.2-pre-db-change
+commit 5e8c41a075b2ab2d954d59cab6530d924c5e3e6a (HEAD -> main, tag: v0.2 -pre -db -change, tag: v0.2)
+$ git checkout 5e8c41a07 .
+$ git commit -m"""
+cleanup: Revert attempted database backend switch
+
+We tried to replace the database backend but realized after some
+development that this would not solve our problem, so we are reverting
+back to the original code."""
+
+On branch main
+nothing to commit, working tree clean
+\end{lstlisting}
+
+A look at the output of \texttt{git log} will now show that the HEAD matches the hash for the tagged commit.
+
+\subsubsection{Using branches}
+
+All \textit{git} repositories start with a single default branch, usually called ``main'' (or sometimes the previous convention, ``master'').
+While it's possible to develop completely within the main branch of a repository, I generally prefer to use \textit{development branches}, which can be thought of as different versions of the repository.
+In my preferred workflow, whenever I want to modify code I first create and then check out a new branch, in which I will do that work.
+One great benefit of this is that if the main branch was working when I created the development branch, it will remain in a working state even as I make our changes in the new branch.
+This provides much greater freedom to try out changes with no concern about breaking existing code, and also allows development to proceed without interfering with production code.
+
+It's important to name branches in way that makes clear what their purpose is.
+It is customary to use a prefix that states the general purpose of the branch; common prefixes including ``feature/'' (for new features), ``bugfix/'' (for bug fixes), ``release/'' (for a new package release), ``docs/'' (for documentation changes), and ``test/'' (for testing-related changes).
+The prefix should be followed by a description of the purpose of the branch.
+For example, for our example above we might use ``feature/swap-db-backend''.
+
+We can create a new branch and check it out (making it the current branch) using \texttt{git checkout}:
+
+\begin{lstlisting}[style=shell]
+$ git branch
+* main
+$ git checkout -b feature/swap-db-backend
+Switched to a new branch 'feature/swap-db-backend'
+$ git branch
+* feature/swap-db-backend
+  main
+\end{lstlisting}
+
+We can now go about our development work, committing as usual to the branch.
+If I were to later decide to abandon the new branch, I would simply check out the main branch and be right back where I left off before creating the new branch.
+I could then either delete the feature branch (to keep the repository clean), or keep it around in case I wish to go back later and look at it again.
+
+\subsection{Collaborative development using GitHub}
+
+While git is very useful for the individual developer, it becomes even more powerful when used for collaborative development amongst a group of developers.
+For \textit{git} users this is enabled by the popular \href{http://github.com}{GitHub} web platform for version control.
+I will assume a basic familiarity with the use of GitHub: see the Suggested Resources at the end of the chapter for resources to learn how to use GitHub.
+
+Collaborative development requires choosing a workflow that the team will adhere to; a commonly used workflow for GitHub users is the ``\href{https://docs.github.com/en/get-started/using-github/github-flow}{GitHub flow}'', which goes as follows.
+Let's say that we have two developers on our team, and one of them wants to attempt the database backend project that we described above.
+The process would be:
+
+\begin{enumerate}
+\item The developer creates a branch within the repo, giving it a a clear and expressive name such as ``feature/swap-db-backend''. They develop their code within this branch.
+\item If the user doesn't have write access to the repo, they first create a \textit{fork} of the repo, which copies it to their own account and thus allows write access.
+\item Once the feature is complete, they commit and push all of their changes to the repository on GitHub.
+\item They then create a \textit{pull request}, which requests that the code in their branch be merged into the main branch of the primary repository.\index{pull request}
+\item Another developer on the team reviews the pull request, and provides comments suggesting changes to the code.
+\item Once the reviewer's comments are addressed, the code from the branch is merged into the main branch, so that the changes are now incorporated there.
+\item After merging, the branch is deleted to keep the repository clean.
+\end{enumerate}
+
+This type of collaborative development process powers many of the large open source projects that are commonly used today, but can be equally transformative for small groups such as a individual research lab.
+
+\section{Virtual environments}
+
+When developing software, it is essential to have a way to manage the many dependencies and software versions that are necessary, particularly for a language like Python that has a broad landscape of packages.
+This problem is generally solved using \textit{virtual environments}, which provide a way to isolate a specific set of software dependencies necessary for a project.
+
+This is important for several reasons.
+First, it allows different projects to use different versions of specific packages without interfering with one another.
+One often finds the need to install an older version of a particular dependency, or an older version of Python, in order to use a specific tool.
+Without virtual environments, managing different dependencies across projects can become impossible.
+If one project requires Python $\leq$3.9 while another needs Python $\geq$3.12, conflicts arise that virtual environments can easily resolve.
+Second, because the virtual environment specifies the exact version of each dependency and allows these to be exported, it is possible for other users on different machines to exactly recreate the package environment required by the author (assuming that those package versions are available for the users's operating system and that the exact package versions have been exported and stored in version control).
+This can greatly enhance the reproducibility of computational analyses across systems, and can also ease the implementation of software across multiple machines (e.g., when one wants to move code from a local machine into the cloud).\index{reproducibility}
+On shared computing systems (such as academic computing clusters), virtual environments let users install their own packages without needing admin access.
+
+A virtual environment is at its heart simply a directory structure that contains a specified set of executables and software dependencies.
+When the virtual environment is \textit{activated} using a special command, these directories are added to the system paths, allowing them to be accessed just like any software installed centrally on the system.
+They can be easily removed from the path by deactivating the environment.
+
+There are numerous tools within the Python ecosystem for package management and virtual environments, to the degree that some have called it an \href{https://dublog.net/blog/so-many-python-package-managers/}{``inexcusable pain in the ass''}.
+I will focus on two solutions here (\textit{uv} and \textit{conda}), realizing that things will change over time and these recommendations will likely need to be updated (living textbooks FTW!).
+
+\subsection{Environment management using \textit{uv}}
+
+\textit{\href{https://docs.astral.sh/uv/}{uv}} is a relatively new package management tool that has quickly gained momentum in the Python community, in large part because of its speed (particularly when resolving package dependencies) and its efficient use of disk space.
+To start, we simply initialize a new project, marking it as a package so that it will create the appropriate code structure:
+
+\begin{lstlisting}[style=shell]
+$ uv init --package uv-example
+Initialized project `uv-example` at `uv-example`
+$ tree uv-example
+uv-example
+|-- pyproject.toml
+|-- README.md
+`-- src
+    `-- uv_example
+        `-- __init__.py
+\end{lstlisting}
+
+
+We can then create a new virtual environment using the command \texttt{uv venv}.\index{uv}
+This is stored within the directory \texttt{.venv}.
+
+\begin{lstlisting}[style=shell]
+$ cd uv-example
+$ uv venv
+Using CPython 3.13.1
+Creating virtual environment at: .venv
+Activate with: source .venv/bin/activate
+$ tree .venv
+.venv
+|-- bin
+|   |-- activate
+|   |-- activate_this.py
+|   |-- activate.bat
+|   |-- activate.csh
+|   |-- activate.fish
+|   |-- activate.nu
+|   |-- activate.ps1
+|   |-- deactivate.bat
+|   |-- pydoc.bat
+|   |-- python -> .../cpython-3.13.1-macos-aarch64-none/bin/python3.13
+|   |-- python3 -> python
+|   `-- python3.13 -> python
+|-- CACHEDIR.TAG
+|-- lib
+|   `-- python3.13
+|       `-- site-packages
+|           |-- _virtualenv.pth
+|           `-- _virtualenv.py
+`-- pyvenv.cfg
+\end{lstlisting}
+
+One thing to note here is that the \texttt{python} executable is actually a symbolic link to a version that is in a central cache (under \texttt{.local/share/uv}).
+This means that we can create numerous virtual environments, but there will only be one copy of that particular version of Python, saving space on disk.
+
+We can activate the environment by running its activation script, after which we see that the system path will point to the virtual environment:
+
+\begin{lstlisting}[style=shell]
+$ which python
+python not found
+$ source .venv/bin/activate
+$ which python
+python is /private/tmp/uvtest/uv_example/.venv/bin/python
+\end{lstlisting}
+
+If we wish to add dependencies, we can simply do this using \texttt{uv add}:
+
+\begin{lstlisting}[style=shell]
+$ uv add numpy
+Resolved 2 packages in 394ms
+   Built uv -example @ file:///private/tmp/uvtest/uv_example
+Prepared 2 packages in 431ms
+Installed 2 packages in 8ms
+ + numpy==2.2.3
+ + uv -example==0.1.0 (from file:///private/tmp/uvtest/uv_example)
+\end{lstlisting}
+
+Here again, if we load this module within Python we will see that it is located within the virtual environment:
+
+\begin{lstlisting}[style=shell]
+$ python
+Python 3.13.1 (main, Dec 19 2024, 14:22:59) [Clang 18.1.8 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import numpy
+>>> print(numpy.__file__)
+/private/tmp/uvtest/uv_example/.venv/lib/python3.13/site -packages/numpy/__init__.py
+\end{lstlisting}
+
+(Note that I will use \texttt{\textgreater \textgreater \textgreater } throughout the book to denote commands with an interactive Python shell.)
+The details regarding the package are stored within a file called ``pyproject.toml'' in the main project directory.
+Looking inside this file we can see that it contains details about the packages that have been added, including the specific version:
+
+\begin{lstlisting}[style=shell]
+$ more pyproject.toml
+[project]
+name = "uv -example"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Russell Poldrack", email = "poldrack@gmail.com" }
+]
+requires -python = ">=3.13"
+dependencies = [
+    "numpy>=2.2.3",
+]
+
+[project.scripts]
+uv -example = "uv_example:main"
+
+[build -system]
+requires = ["hatchling"]
+build -backend = "hatchling.build"
+\end{lstlisting}
+
+This file allows one to specify many other details about a Python package, as I will discuss further in Chapter 12.
+It not only stores dependencies but also metadata about the project, making it useful for packaging and distribution, and learning more about its features is important for anyone looking to develop Python packages.\index{metadata}
+
+\subsubsection{Locking dependencies in uv}
+
+Computational reproducibility requires that we be able to exactly recreate an environment, including the specific versions of all packages.
+If you look at the \texttt{pyproject.toml} file you will see that it doesn't specify exact versions for Python or the dependencies; instead, it specifies a lower bound; i.e., ``numpy\textgreater =\textbf{DECIMAL\_0}.3'' means that the numpy version should be at least \textbf{DECIMAL\_0}.3, but could be higher if a newer version became available.
+This is often fine, but for purposes of reproducibility we often wish to record the exact package versions that were used for a particular analysis.
+This is commonly done using a \texttt{requirements.txt} file, and \textit{uv} allows exporting the current environment to such a file:
+
+\begin{lstlisting}[style=shell]
+$ uv pip compile pyproject.toml -o requirements.txt
+Resolved 1 package in 78ms
+# This file was autogenerated by uv via the following command:
+#    uv pip compile pyproject.toml
+numpy==2.2.3
+    # via uv -example (pyproject.toml)
+\end{lstlisting}
+
+One note about locking: I have occasionally experienced conflicts when using the same code across multiple operating systems (MacOS and Linux in my case), where a package version that works on one OS causes a dependency conflict on another OS.  For this reason, while committing the lock file is a best practice, I will sometimes omit it from version control for projects where I expect to be running the code across platforms, or instead commit separate copies of the lock file for different platforms (e.g. \textit{uv.lock.macos}).\index{lock file}
+
+This brief overview only scratches the surface of the many features within \textit{uv}, which I recommend you explore in detail via the project documentation.
+
+\subsection{Environment management using \textit{conda}}
+
+Another popular tool for managing virtual environments is \textit{Conda}.\index{Conda}
+It has much of the same functionality as uv and has been around much longer, but we have largely moved away from it for most projects in my lab for several reasons: \textit{uv} is relatively more efficient when it comes to disk space and it is often faster than \textit{Conda}, especially as environments start to have many packages installed.
+In addition, there are sometimes conflicts between \textit{Conda}'s native package management and the \textit{pip} package management system.
+When using \textit{Conda} it's sometimes necessary to use \textit{pip} to install some packages that aren't available within the \textit{Conda} library, but this can result in conflicts between the two package management systems.
+
+There is one important way in which \textit{Conda} differs from \textit{uv}.
+In fact, I switched to \textit{uv} in 2024 after being a long-time user of \textit{Conda}, but I still use \textit{Conda} for some projects.
+The crucial feature of \textit{Conda} that has kept me using it for a limited set of projects is its ability to manage non-Python software elements alongside Python packages.
+I have found on a couple of occasions that some Python packages have dependencies that rely upon non-Python software components.
+Specifically, in cases where Python packages required a specific component (the LLVM compiler), I was unable to easily get the specific required version of that component working on our Mac using \textit{uv}, whereas \textit{Conda} simply installed the required component and worked out of the box.
+The speed and efficiency of \textit{uv} generally outshine \textit{Conda} in my experience, but in some cases \textit{Conda} may help solve tricky non-Python dependency issues.
+
+The Python environment management landscape will continue to evolve, and the acquisition of Astral (the developer of \textit{uv}) by OpenAI in 2026 has raised some questions regarding the future of \textit{uv}. However, as of the time of writing, my suggestion is to use \textit{uv} by default for projects that do not require non-Python system libraries. For those projects, use \textit{miniconda} as the default.
+
+\section{Large language models}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{files/gpt4_haiku-1c6eb309679b20db271e58a551fe8088.png}
+\caption[Haiku generated by GPT-4]{Haiku generated by GPT-4 from the prompt: ``Please generate a haiku that reflects on the experience of writing a book about coding for science using AI.''}
+\label{GPT4Haiku-fig}
+\end{figure}
+
+Large language models (LLMs) power tools like ChatGPT, enabling them to generate human-like text responses, such as the haiku shown in Figure~\ref{GPT4Haiku-fig}.
+Understanding how these models function can help users make better use of AI coding assistants.
+This section provides a brief introduction to LLMs, focusing on their structure, capabilities, and limitations.
+
+\subsection{A brief history of neural networks}\index{neural networks}
+
+LLMs are a type of \textit{artificial neural network}, which are computer models composed of a huge number of computing units that are loosely patterned after neurons in the brain.
+Artificial neural networks were first developed in the 1940s, only to be abandoned by AI researchers after the early versions were shown to have major limitations in the kinds of problems they could solve.
+There was a renaissance of neural network research in the 1980's and 1990's arising primarily from researchers in cognitive science, but interest again waned as the field of \textit{machine learning} developed tools that were able to solve many of the same problems in a computationally simpler manner.
+It was not until the late 2000's that the latest wave of interest in neural networks came about, building on the development of methods that allowed researchers to effectively train neural networks with many layers, known as \textit{deep neural networks} (hence the common term \textit{deep learning}).\index{deep learning}
+These methods, together with the realization that graphical processing units (GPUs) could be used to train these models much more quickly and the development of large datasets for model training, led to early advances in the mid 2010's, particularly in the domain of image recognition.
+
+\subsection{How LLMs are built and trained}
+
+The LLMs that are most prominent as of 2026, such as GPT-4, Claude, and Google Gemini, are based on a specific neural network architecture known as a \textit{transformer}, which was first introduced in 2017 \citep{Vaswani:2017aa}.\index{GPT-4}\index{Claude}
+Transformers were developed in order to effectively learn how to map one sequence to another sequence, such as in the case of translating from a sentence in one language to a sentence in another.
+However, large transformers trained on massive datasets have since shown themselves to be able to adapt to many different types of problems that they were never explicitly trained to perform.
+For this reason, these models (along with other kinds of large pre-trained models) have been referred to as \textit{foundation models} \citep{Bommasani:2022aa}.
+
+One important feature of foundation models is that they are generally trained in a ``self-supervised'' way, which means that we don't explicitly have to tell the model how it should respond for any particular input.
+This enables training on very large datasets, since the data don't need to be explicitly labeled.
+In the case of GPT-4 and other similar models, they are simply given large sequences of text and trained to accurately predict the next \textit{token} (which could refer to words, parts of words, or other elements).
+Note that the models themselves don't actually see text; instead, the text is \textit{tokenized} to convert it into numbers before it is input to the model, and the output of the model is then decoded to convert from numerical tokens back to language.
+LLMs like GPT-4 are trained on massive amounts of text, numbering in the trillions of tokens.
+The model is trained to become increasingly better at predicting the next token by changing the \textit{weights} (the strength of connections between the different units) in the model in a way that tries to incrementally correct its errors, which after many hours of training across many GPUs results in a model that can perform the prediction task well.
+
+After this training, the model has a lot of knowledge but is often not very well behaved, so model-builders generally do some form of \textit{fine-tuning} after initial training of the model, primarily to train it to perform in a way that is more amenable to being a helpful chatbot.
+
+\subsection{``Open Source'' language models}
+
+The large commercial models such as GPT-4, Claude, and Gemini are truly ``black boxes'' in the sense that we have no access to how they work internally or how they were trained.\index{black (formatter)}
+However, an ecosystem of ``open source'' language models has also burgeoned, allowing researchers to run powerful pre-trained models on their own computing hardware and providing some degree of insight into the function of the model.
+It's important to point out that the label ``open source'' is in many cases a misnomer, since it's relatively rare for the authors of these models to give full access to all of the code and data that went into training the model.
+Many of them are better described as ``open-weight'' models (a term I will use throughout this book), since the model weights and code necessary to perform inference are made openly available even if the training code and data are not.
+Despite these limitations, the availability of these open-ish models has given researchers the opportunity to work more closely with these models and see into their inner workings.
+They also allow users to perform further fine-tuning to augment model performance in particular domains.
+
+Running large open source models with tens of billions of parameters (such as the well known Llama models released by Meta) can require significant GPU resources, but many of these models are also released in smaller versions that can be run with reasonable speed on a laptop with a GPU; most of the examples in this book were run on a Macbook Pro M3 Max laptop.
+Users wishing to run the larger open-weight models can access them via service providers who provide API access to these models for a fee.
+I will discuss working with APIs in more detail in Chapter 5.
+
+As an example of what we can do with open-weight language models, suppose that we want to compare the output of models before and after instruction tuning.
+While we can't access versions of commercial models such as GPT-4 prior to instruction tuning, there are a large number of open-weight models for which both versions are available.
+I will show results from the Qwen1.5-0.5B model, which is very small and thus runs relatively quickly even on a laptop.
+
+To see the difference that this fine-tuning makes, we can give the same prompt to a model with and without instruction tuning: ``What is the best way to relax after a long day of Python coding?''
+
+Here is the result from the model without instruction tuning:
+
+\begin{lstlisting}[style=transcript]
+Going for a walk or having a drink with friends is a great way to relax after a long day of Python coding.
+system
+You are a helpful assistant.
+user
+ow can I generate an XML representation of a list of employees with their corresponding departments and salaries using C\# code? And once the XML is generated, how can I parse and print the data to a new file? Can you provide a example of the XML data that I can modify in the code to generate the XML representation?\index{XML}
+Here's an example of the XML data that I can modify to generate the XML representation: ... [continues with XML output]''
+\end{lstlisting}
+
+It's not a very helpful response, and it's also followed by a bunch of content that is irrelevant to the prompt.
+By comparison, the instruction-tuned version of the same model gives a much better response:
+
+\begin{lstlisting}[style=transcript]
+Relaxing after a long day of Python coding can be a great way to recharge and refocus.
+Here are some tips that might help you relax:
+
+1. Exercise: Engage in physical activity such as yoga, stretching, or running to get your blood flowing and reduce stress levels.
+
+2. Listen to music: Listening to calming music can help reduce anxiety and promote relaxation.
+
+3. Take a break: Taking a short break from work or programming can help you recharge and refocus.
+
+4. Practice mindfulness: Mindfulness meditation can help you focus on the present moment and reduce stress levels.
+
+5. Eat healthy: Eating a balanced diet rich in fruits, vegetables, whole grains, and lean protein can help you feel more energized and less stressed.
+
+6. Connect with others: Spending time with friends or family can help reduce feelings of loneliness and increase feelings of support.
+
+7. Write down your thoughts: Writing down your thoughts and emotions can help you process them and relax.
+
+Remember, it's important to take care of yourself both physically and mentally before returning to work.
+By taking these steps, you can help ensure that you can return to work feeling refreshed and ready to tackle any challenges that come your way.
+\end{lstlisting}
+
+\subsection{In-context learning and LLM prompting}
+
+Once the training of the model is complete, its weights are fixed and the model itself does not change unless additional training or fine-tuning is applied.
+Given this, how is it that these models can exhibit such a wide range of behaviors (including writing code), and how can they adapt to the details of a particular chat session? It turns out that the model is ``learning'' from all of the interactions that occur within a specific chat session, but this learning does not occur through modifications of the model's weights.
+Instead, it occurs as the model builds up a store of information within its \textit{context window}, which you can think of as the model's ``working memory'', similar to the way that we can hold a phone number in our mind but lose it as soon as we stop rehearsing it.
+The model's response at any point in time is conditioned upon all of the content that has occurred up to that point in the chat session, up to the limit of its context window (which is now large enough for most models to hold a substantial amount of text).
+In this way, the model can ``learn'' without requiring any lasting changes in its structure.
+
+Understanding in-context learning is important for LLM power-users because it relates directly to the effectiveness of different prompting strategies.
+In particular, it suggests that an effective prompt should help build up enough relevant information in the context window that the model's predictions are likely to be correct and relevant.
+I will discuss this in much more detail in Chapter 5.
+
+\subsection{Randomness in LLMs}
+
+When an output is generated from an LLM, it doesn't uniquely specify a particular token to be output next.
+Instead, it outputs a set of values that are transformed into probabilities over tokens, and the next token is then chosen based on those probabilities.
+As an example, I ran the same prompt five times (`Output a random vegetable.') on a small LLM (Qwen-2.5-0.5B-Chat), removing any extraneous text generated by the model:
+
+\begin{lstlisting}[style=transcript]
+Sure, here's a random vegetable: Green beans
+Sure, here's a random vegetable: Tomato
+Sure, here's a random vegetable: broccoli!
+Sure, here's a random vegetable: Spinach.
+Sure, here's a random vegetable: Veggie: Broccoli
+\end{lstlisting}
+
+In this case I ran each prompt with a different \textit{random seed}, which is a value that allows one to reproducibly generate a set of random numbers.
+Open source models, as well as some commercial models, allow specifying the random seed when submitting a prompt, usually requiring use of the API.
+
+When choosing amongst the possible responses based on their probabilities, one could simply always output the token with the highest probability, which is known as ``greedy'' selection.
+However, LLMs often introduce some variability in output (via a \textit{softmax} operator).
+This procedure has a parameter known as \textit{temperature} that allows one to scale the degree of randomness, from deterministic (greedy) responding when temperature is set to zero to greater randomness at temperature increases.
+These systems often default to a small degree of randomness (with temperature in the range of 0.7) to allow some exploration without enabling highly surprising or bizarre responses.
+
+\subsection{Reproducibilty challenges of LLMs}
+
+The randomness of large language models is particularly important for scientists who are using them in contexts where reproducibilty is important.
+Research performed using commercial/closed large language models should be considered irreproducible in principle; even if one records the system fingerprint (uniquely specifying which model was run) and sets the random seed, there is no guarantee that these models will remain available.
+As an example, OpenAI \href{https://platform.openai.com/docs/deprecations}{deprecated a number of models}, including the widely used \texttt{text-davinci-002} model, meaning that they are no longer available to users.\index{OpenAI}
+Research performed on open-weight models is in theory reproducible if the random seed is specified along with the specific model version used.
+However, in many cases it is also important to ensure that any results obtained using LLMs are robust to the specific random seed chosen.
+One should \textit{never} cherry pick scientific results by trying different random seeds and only reporting the results that are most consistent with the hypothesis being tested; I refer to this as ``seed-hacking'', on analogy to the commonly used term ``p-hacking''.\index{p-hacking}
+This issue is discussed in more detail in Chapter 9.

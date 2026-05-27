@@ -1,0 +1,332 @@
+\chapter{Sharing Research Objects}
+
+Science at its best is a communal enterprise, and the sociologist of science Robert Merton noted that ``Secrecy is the
+antithesis of this norm; full and open communication its enactment'' \citep{Merton:1942aa}.  Unfortunately scientists have not always lived up to this norm in practice.  It remains unfortnately common to hear anecdotes of researchers who refuse to share data or materials even after publishing in journals that have (largely unenforced) requirements for sharing.  The metascientific evidence is also consistent with this.  As just one example, when \citep{Wicherts:2006aa} requested data from authors of papers in a number of top journals in psychology, they were unable to obtain data from 73\% of the authors.  More recent work by \citep{Tedersoo:2021aa} has shown a similar pattern of unavailability across many scientific fields.
+
+I will use the term ``research objects'' to refer generally to all forms of research materials and outputs, including data, code, and materials; while publications are also an important research object, I will not discuss them here. The open sharing of research objects has become increasingly prevalent in the 21st century, particularly with the genesis of the ``open science'' movement.  In fact, when \citep{Tedersoo:2021aa} compared data availability between 2000--2009 and 2010--2019 they found that it had significantly increased over time.  There are numerous contributors to this increase in transparency. Foremost, the reproducibility crisis across many fields of science has spurred efforts to increase the credibility of scientific research, with open sharing of data and materials being a main component of these efforts.  Major scientific institutions have also made open science central to their effort, including the United States Government (which officially named 2023 as the ``Year of Open Science''), the European Union, and UNESCO.  Overall the scientific world is evolving strongly in the direction of making science more open and transparent, which many of us think is also a key to making it more reproducible.\index{reproducibility}\index{reproducibility!crisis}\index{open science}
+
+In this chapter I will focus on how to effectively share research objects in a way that abides by the FAIR Principles that I outlined in Chapter 6.\index{FAIR principles}
+
+\section{Persistent identifiers}
+
+While you may never have heard the phrase ``link rot'', you have almost certainly encountered a URL embedded in a publication that no longer works.  \textit{Persistent identifiers} (PIDs) are meant to address the issue of \textit{findability} by providing a durable link to the metadata for an object along with a reference to its current location.  The presence of a persistent identifier doesn't ensure that the object will always be available, but it does provide a mechanism to find it if it does exist.\index{metadata}
+
+The need for PIDs is nowhere as clear as it is for people, especially for people with common names (think ``Robert Smith'' or ``Mei Wang'').  The need to identify individual researchers was the rationale for the ORCID (Open Researcher and Contributor ID), which provides free identifiers for researchers for life; for example, my ORCID is orcid.org/0000-0001-6755-0259, and if you follow that link you will find a public record that includes information about my education, academic affiliations, publications, and more.  My name is quite uncommon, but for people with common names the ability to point to a unique identifier that is not tied to an employer helps ensure that people are findable and that their metadata is accessible. In addition, if a researcher changes their name for any reason, their ORCID stays the same, ensuring that they get credit for publications under both names. (If you are a researcher and don't have an ORCID, you should definitely register for one!)
+
+Another commonly encountered PID is the \textit{digital object identifier} (\textit{DOI}), which has become the most popular PID for publications and is also commonly used for other resources such as data and code.  DOIs are issued by a publisher or archive, and they contain metadata about the object along with a current link to the object.  If the links change (for example, the web site changes their URL structure), the publisher can easily update those links so that the DOI points to the correct link.  The DOI doesn't guarantee that the resource will always exist, but it does ensure that at least the metadata will persist even if the resource disappears. Other PIDs that are commonly encountered are RORs (Research Organization Registry) for research institutions and RRIDs (Research Resource Identifiers) for research resources  in the biosciences including antibodies, cell lines, model organisms, software tools, and databases.
+
+\subsection{PID versioning}
+
+It's common for a resource to change over its life; as one example, preprints posted to archives like \textit{arXiv} or \textit{bioRxiv} to be updated when a revised manuscript is created. Some PID providers (particularly DOIs) provide \textit{versioned DOIs} that point to specific versions of an object, where others provide \textit{concept DOIs} that instead point to the object in general; in addition, some providers provide both.  For example, the Zenodo archive (discussed in more detail below) allows direct sharing of software releases from a GitHub repository, which we used to share code from the NARPS project that I discussed in an earlier chapter. Zenodo provides a concept DOI (doi.org/10.5281/zenodo.3339821) that points to the resource (defaulting to the latest version), and also provides version DOIs that allow specific reference to any particular version.  When citing a versioned resource such as code, it's important to cite the specific version that was used in the work.\index{GitHub}\index{Zenodo}
+
+\section{Resource accessibility}
+
+The \textit{accessible} portion of the FAIR principles states that data should be accessible by a well-specified and standard protocol.  This means that "data available from the authors upon reasonable request* is a decidedly unFAIR way to share data.  Accessible does not, however, mean that the data must be openly available to the world.  There are many cases when data cannot be shared openly, particularly in the context of human subjects data where the sharing of identifiable information could put the subjects at risk of harm.  It is almost never the case, however, that data cannot be shared at all.  Instead, it is common that sensitive datasets must be shared under a \textit{data usage agreement} (DUA), as I will discuss in more detail in the later section on data sharing.  FAIR sharing of controlled-access data requires that the process for accessing the data is made clear in the metadata.
+
+Accessibility generally implies that the data are available online, potentially requiring some kind of authentication, preferably using a standardized protocol (e.g. ORCID login). In general it's best to share objects via a standard archive, which will ensure that the metadata are findable and the data are broadly accessible.  The use of a standard archive also helps ensure that the data will remain accessible in the long term, which is much less likely if they are shared from a lab server or private web site.
+
+\section{Interoperable data formats and software platforms}
+
+Once the objects are findable and accessible, it's important that others are able to work with them, which is the \textit{interoperable} portion of the FAIR principles; here I focus primarily on the engineering aspects of interoperability rather than the semantic aspects that focus on metadata.  The most important aspect of interoperability is the use of open, non-proprietary, and machine-readable file formats. I've already discussed a number of these that span many different types of data, including CSV/TSV, JSON, HDF5, Zarr, and Parquet.  Interoperability also requires that the data are documented and annotated in a way that makes them usable by other researchers. For example, a TSV file with no column labels and no data dictionary is not particularly useful to anyone.\index{CSV}\index{JSON}\index{Parquet}\index{HDF5}\index{Zarr}
+
+I also believe that reproducibility requires the use of open-source software platforms such as Python or R.  It is common in the social sciences (particularly economics) for researchers to use the \textit{Stata} software package for statistical analysis.  Sharing Stata code (\texttt{.do} files) allows me to read the code and potentially see what was done (though Stata's syntax is notoriously unreadable by non-experts), but I have no way to actually run the code unless I purchase a Stata license or have access to a site license. It's also very common for researchers in engineering and natural sciences to use the commercial package MATLAB; fortunately there is an open source alternative (\textit{Octave}) that can run some MATLAB programs, but it will fail if the commonly used MATLAB Toolboxes are used. In my opinion, research using these closed-source commercial platforms is non-reproducible, which is why I moved from MATLAB to Python as my primary computing platform in 2009.\index{Python}\index{Stata}\index{open source}
+
+\section{Explicit licensing for reuse}
+
+It's quite common for individuals to post material online (such as pushing code to a public GitHub repository) without any information regarding the terms of release and then refer to the material as ``open source'', but this is a misnomer.  Without an explicit license granting usage rights to users, the creator holds the copyright (assuming that the material is eligible for copyright) and ``all rights are reserved'', meaning that the downloader has no right to use, modify, or redistribute the material. This is why one should always include an explicit license or use agreement with shared materials, and one should \textit{never} use materials for research without an explicit license or use agreement. Otherwise there is the potential that the owner might disallow your usage of the materials, preventing release or publication and potentially resulting in legal liability.  Because the nature of these license/agreements differ between different types of research objects, I will discuss them in detail below in the context of specific types of objects.
+
+\section{Sharing code}
+
+Ten years ago I would have started this section with an explainer about why it's so important to share one's research code, but today there is relatively little opposition to sharing research code; in fact, in many areas of science it has become largely expected that code will be shared (often via GitHub or some other distributed version control platform).  This does not, however, mean that it's shared in a way that is effective in affording reuse and reproducibility. Here I will focus on the most important issues around making shared code useful, building on the FAIR principles for research software \citep{Barker:2022aa}.\index{version control}
+
+\subsection{Licensing for shared code}
+
+In the context of software, ``all rights are reserved'' by the copyright holder unless an explicit \textit{license} is provided.  This means that without a license, someone downloading the code does not have the legal right to use, modify, or redistribute the code.  This is why one should \textit{never} rely upon code that has been shared without a license, as it can put an entire project in legal peril.  You also protect yourself, since licenses generally include conditions that explicitly limit your liability and provide no warranty for the code.
+
+There are many different licenses available for software, but they largely fall into two categories.  \textit{Permissive} licenses are those that place very few restrictions on the reuse, modification, or redistribution of the code; these generally allow commercial usage and closed-source reuse.  The least prohibitive license, known as an \textit{Unlicense}, places the code into the public domain (thus waiving any copyright claims), and only limits liability and warranty. \textit{Copyleft} licenses (best known from the GNU \textit{General Public License}, or \textit{GPL}) are more restrictive, requiring full disclosure of any modifications.  They are also sometimes referred to as \textit{viral} licenses, since they also generally require that any modifications be released under the same license as the original.  I tend to strongly favor permissive licenses like the \textit{MIT License}, because they maximize the potential reuse of the code while still maintaining credit for the original authors.
+
+When using open source code, it is essential to abide by the conditions of the license of the original code.  In particular, if you are reusing code licensed under the GPL then you are required to release your modifications under the GPL as well.
+
+\subsection{Persistent identifiers for code}
+
+The most common way for researchers to cite code today is through a link to a github repository.  This is better than not sharing at all, but it fails to achieve a couple of important goals.  First, repositories change over time, and a link to a repository does not specify which particular version of the code was used for the research.  This can be addressed by using a link to a specific commit or release, but these are vulnerable to deletion, since any user can delete the repositories that they own at any time.  Second, it makes the assumption that GitHub will always exist and continue to provide unfettered access to all current repositories.  While there is no reason to think that GitHub will go away anytime soon, we can't trust a commercial platform to have our best interests at heart.  For this reason, I believe that research code associated with a publication should be shared using a persistent identifier (such as a DOI) on an archival platform.
+
+At present, the easiest way to achieve this is to use the direct connection from Github to the nonprofit data archive Zenodo, which is operated by the high-energy physics lab CERN in Switzerland. Generating a archival code package with a DOI can be achieved in just a few steps:
+
+\begin{itemize}
+\item Create an account on zenodo.org, logging in using your GitHub credentials
+\item Navigate to the GitHub Repositories page for the new account, and enable the preservation of the relevant repository by clicking the ``ON'' button next to the repository; This must be done before the release, since Zenodo won't generate DOIs retrospectively.
+\item Go to the repository page on GitHub, and create a release for the software package, which is a frozen version of the current state of the repository.  This should be done immediately after completing the analyses for the project, so that the code in the release exactly matches the code used for the project.
+\item Zenodo will then automatically generate a version DOI that can be used to cite the specific version of software in a publication, along with a concept DOI for the package that resolves to the latest version.
+\end{itemize}
+
+There is another emerging standard PID for code known as the Software Hash Identifier (SWHID), which is being developed by the Software Heritage organization (softwareheritage.org) that also runs an archive for software preservation. Unlike most PIDs, which are \textit{extrinsic} in the sense that they have no direct relation to the content of the objects that they refer to, the SWHID is an \textit{intrinsic} identifier that is based on a hash of the content (similar to the hashes that are used for commits in \textit{git}).  This has the benefit that one can directly validate whether code matches the SWHID, and may become more prevalent in the future.  Saving code to the Software Heritage archive is as easy as submitting a \textit{Save Code Now} request.
+
+\subsection{Software citation}
+
+As software resources are increasingly recognized as legitimate scientific contributions, it is increasingly common for them to be cited in research papers and included on \textit{curricula vitae} for academic advancement and hiring.    \citep{Smith:2016aa} laid out a set of principles for the citation of software:
+
+\begin{enumerate}
+\item \textit{Importance}: Software should be considered an important intellectual product that is worthy of citation.
+\item \textit{Credit and attribution}: Software citation should give proper attribution and credit to its creators and maintainers.
+\item \textit{Unique identification}: Software to be cited should have a unique PID.
+\item \textit{Persistence}: Software to be cited should be available in a persistent manner; if the software is not available then at least the metadata should be persistent.
+\item \textit{Accessibility}: Software citations should make clear how to obtain the software.
+\item \textit{Specificity}: Software citations should refer to the specific version of the software that was used in the research.
+\end{enumerate}
+
+The GitHub-Zenodo and Software Heritage mechanisms described above can help fulfill these principles.  Code citation can be further supported by providing citation metadata via the \texttt{CITATION.cff} file.  Here is an example of the \texttt{CITATION.cff} file for the \textit{bettercode} package associated with this book:
+
+\begin{lstlisting}
+cff -version: 1.2.0
+title: 'Better Code, Better Science'
+message: Code for examples in the book
+type: software
+authors:
+  - given -names: Russell
+    family -names: Poldrack
+    email: russpold@stanford.edu
+    affiliation: Stanford University
+    orcid: '0000 -0001 -6755 -0259'
+repository -code: 'https://github.com/BetterCodeBetterScience/bettercode'
+url: 'https://bettercodebetterscience.github.io/book/'
+abstract: > -
+  This is code used to generate examples for the book Better
+  Code, Better Science.
+keywords:
+  - software engineering
+  - AI
+  - scientific software
+license: MIT
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.18603014
+\end{lstlisting}
+
+This file is used by both GitHub and Zenodo to populate citation information; see Figure~\ref{citationcff-fig} for an example of how GitHub displays this information in the ``Cite this repository'' section. Including this file is a great way to help encourage proper citation of your code, and there are tools (such as CFFinit) that can help create a citation file for any project.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{files/github_citation-ed3a775869383c66a17b8944ac9119b8.png}
+\caption[Citation information generated from CITATION.cff file]{An example of the citation information generated automatically by GitHub on the basis of the CITATION.cff file.}
+\label{citationcff-fig}
+\end{figure}
+
+For researchers who use software in their research, it's important to cite the software so that the creators will receive credit. This is best done by citing it in the reference section alongside the cited papers, so that it is picked up by citation indexing systems.
+
+\subsection{Software metadata}
+
+In addition to citation information there are a number of other metadata that are important in order to make the code FAIR.  A set of guidelines regarding software metadata have been laid out in the RSMD (Research Software MetaData Guidelines for End-Users) project \citep{Gruenpeter:2024aa}.  An emerging standard for the specification of software metadata is the \texttt{codemeta.json} file, which provides a standard vocabulary for the specification of software metadata.  This file uses the \textit{JSON-LD} format that I mentioned in a previous chapter, which links the terms in the dictionary to a format vocabulary.  The codemeta-generator tool )codemeta.github.io/codemeta-generator) provides an easy interface for generating of these files.  GitHub itself doesn't do anything special with the \texttt{codemeta.json} contents, but if the software is archived in Software Heritage then the project will be searchable by the specified metadata. Because this is becoming the standard, generating metadata now will also help ensure that your project remains findable in the future.\index{generator}\index{JSON-LD}
+
+Because many systems (e.g. the \textit{PyPI} package archive) do not use \texttt{codemeta.json}, it's also important to put relevant information in other files that may be used.  For Python code, the \texttt{pyproject.toml} file allows specification of a number of metadata elements; in particular, it's important to specify the name, version, description, license, authors, and keywords under the \texttt{[project]} section, and project URLs under the \texttt{[project.urls]} section, since these are used by PyPI for searching packages in the index.\index{PyPI}
+
+\subsection{Software versioning}
+
+It is essential to clearly version the software used in a research project to ensure reproducibility of the results, since it is common for the behavior of software to change between versions.  There are two standards for software versioning.  The approach recommended for most projects is \textit{semantic versioning}, which uses a numeric format with a specific structure: \textit{..}.  These different levels are meant to imply different degrees of backwards-compatibility:\index{semantic versioning}
+
+\begin{itemize}
+\item \textit{Major} version changes (e.g. 1.1.3 -\textgreater  2.0.0) are meant to imply changes that are likely to break previously working code, such as changes in the API
+\item \textit{Minor} version changes (e.g., 1.2.4 -\textgreater  1.3.0) are meant to imply the backwards-compatible addition of features
+\item \textit{Patch} version changes (e.g. 1.2.4 -\textgreater  1.2.5) are meant to imply backwards-compatible bug fixes
+\end{itemize}
+
+Because the line between different kind of changes can be fuzzy, it's always good to be clear about the exact nature of changes in a change log.  Also note that ``0.x.x'' generally implies that the code is unstable, so things can break between any of the version types; in other cases, researchers will use tags to further delineate versions:
+
+\begin{itemize}
+\item \textit{alpha} versions (e.g. 1.0.0a1) are meant to imply that the code is too early for general use
+\item \textit{beta} versions (e.g. 1.2.1b1) are meant to imply that the software is in beta-testing mode
+\item \textit{release candidate} versions (e.g. 1.5.3rc1) are meant to imply an early release of the code for final testing by users before the official release
+\end{itemize}
+
+Note that the Python versioning standard is slightly different from the official Semantic Versioning (2.0) standard that is used in some other languages, which uses hyphens (e.g. 1.5.3-rc1).
+
+Another approach that is sometimes used in large projects is \textit{calendar versioning}, where the version is based on the year and date (e.g. 25.2 for the second release of 2025).  For most projects the semantic versioning approach is preferred since it more clearly signals the nature of the change, but in some cases users may want to be able to tie the software to specific points in time.
+
+\subsection{Preparing code for sharing}
+
+Before sharing code, it's important to make sure that it is ready to share, which involves three important steps: sanitization, portability, and documentation.
+
+\subsubsection{Sanitization}
+
+The goal of sanitization is to make sure that no private or sensitive information is shared along with the code.  This includes:
+
+\begin{itemize}
+\item passwords or other credentials
+\item API keys or tokens
+\item Protected Health Information (PHI) or Personally Identifiable Information (PII)
+\end{itemize}
+
+The most powerful tool for sanitization is the \texttt{.gitignore} file, which helps prevent files from being checked into a \textit{git} repository by preventing them from appearing in the status or from being added (unless the \texttt{-f} flag is used to force an add).  Any files containing private or sensitive information (such as environment files or config files) should be added to the \texttt{.gitignore} file as soon as they are created.  If you are sharing a package that requires configuring these files, then it can be useful to include an example version (e.g. \texttt{.env.example}) that shows the structure of the file without including any private information.  Note that \texttt{.gitignore} only ignores files that are untracked; if a file was previously committed, then adding it to \texttt{.gitignore} will not remove it from previous commits.
+
+\subsubsection{Ensuring portability}
+
+We have already discussed coding portably in Chapter 3, by which I mean ensuring that there are no configuration details in the code that would prevent the code from running on another machine. By far the most common portability issue is the inclusion of absolute file paths, which are unlikely to resolve properly on a different computer.
+
+\subsubsection{Documentation}
+
+I have already discussed documentation in Chapter 7.  If you didn't generate documentation during the creation of the code, it's definitely important to create at least minimal documentation prior to release.  See the previous section for more details on how to create good documentation.
+
+\subsection{Publishing software packages}
+
+If your code involves a module that others might want to reuse, then it's worth considering publishing it to a package repository. This makes it easy for anyone to install your software with a single command, rather than requiring a download of the code followed by installation.  The most widely used package index in the Python ecosystem is the \textit{Python Package Index} (known as \textit{PyPI}); if you have ever used the \textit{pip} package installer to install a Python package, then you have used PyPI as it is the default package index for \textit{pip}.  In the \textit{Conda} ecosystem, another popular package index is \textit{conda-forge} (conda-forge.org), which can be used with the \texttt{conda install} command. Both of these systems allow versioning, so that users can install a specific version of the package to facilitate reproducibility.  Here I will focus on PyPI and \textit{uv} as an example.\index{Conda}
+
+\subsubsection{Making a package installable}
+
+To make a package installable, the first step is to create a \texttt{pyproject.toml} which is now the standard configuration file for Python projects (replacing the older \texttt{setup.py} and \texttt{setup.cfg}).  One important setting is the choice of \textit{build backend}, which is the system that is used to generate the Python package files. For this example I will use the \textit{uv\_build} backend that is now the default for \textit{uv} projects.  There are two types of files generated when the package is built.  One, known as an \textit{sdist} (for ``source distribution''), is basically a tar archive containing the code and metadata.  This allows the building of the package across different platforms, and serves as a transparent view of the code in the package.  The other, known as a \textit{wheel}, is a pre-built version of the package; if the package is pure Python then this will be a platform-independent package, whereas if there is any compiled code (such as C code) then this will be specific to the platform where it was compiled.  Using the wheel can save time for large projects where building the package can take significant time.
+
+To build the \textit{bettercode} package using \textit{uv}, we simply run the build command:
+
+\begin{lstlisting}
+$  uv build
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/bettercode -0.1.0.tar.gz
+Successfully built dist/bettercode -0.1.0 -py3 -none -any.whl
+\end{lstlisting}
+
+Note that the wheel file has \texttt{-none-} in its name, which refers to the fact that it is platform-independent.  Once the package is built it is ready to push to PyPI.
+
+\subsubsection{Publishing packages to PyPI}
+
+Once the package is built, then we can upload it to PyPI for distribution.  We first need to ensure that the version information is correct.  This matters less for the first upload, but once you have uploaded a release to PyPI then you will need update the version for future uploads to work.  \textit{uv} has a useful \texttt{version} option that that allows easily \textit{bumping} the version according to the kind of change that is being made. For example, if we wanted to make a minor version change, we could do this:
+
+\begin{lstlisting}
+$ uv version
+bettercode 0.1.0
+$ uv version - -bump minor
+bettercode 0.1.0 => 0.2.0
+\end{lstlisting}
+
+This changes the metadata in \texttt{pyproject.toml} to match the new version, though we would need to rerun the \texttt{uv build} command to create the build files for the new version.  Next we need to create and/or log into our account on pypi.org, and then make sure that the project name (specified as the ``name'' variable in \texttt{pyproject.toml}) is not already in use (by searching the index for that name); if it is then we will have to change the name of the project. Assuming it isn't then we need to set up our PyPI authentication credentials and download a token, which can be provided at the command line with the \texttt{publish} command:\index{uv}
+
+\begin{lstlisting}
+$  uv publish - -token <your token here>
+Publishing 2 files to https://upload.pypi.org/legacy/
+Uploading bettercode -0.2.0.tar.gz (15.7MiB)
+Uploading bettercode -0.2.0 -py3 -none -any.whl (15.7MiB)
+\end{lstlisting}
+
+If the publish command is successful, then the project should be visible on PyPI, as this one is at pypi.org/project/bettercode.  It's also possible to automate the generation of new PyPI releases using GitHub Actions; see the \textit{uv} documentation for more details.
+
+\subsection{Sharing data}
+
+In Chapter 7 I covered many of the essential topics regarding data sharing. In particular, I highlighted the importance of proper metadata and data documentation, and the importance of using appropriate file formats and data organization standards. Here I will focus specifically on the mechanics of sharing.
+
+\subsubsection{Data use agreements and licensing}
+
+Just as with code, it is essential that any shared data are accompanied by an explicit \textit{data use agreement} (\textit{DUA}).  These are often referred to as \textit{licenses}, but licenses are legal objects related to copyrighted materials; as I mentioned in Chapter 7, the degree to which data are subject to copyright varies across jurisdictions and depends on the degree of ``creative activity'' involved in creation and/or curation of the dataset. This is why software licenses are not appropriate for shared data: They assume that the material being shared is copyrighted, and thus would not have legal force if the data were not copyrightable.  They also sometimes have terms that are specific to software, particularly with regard to patent rights.
+
+It's more common to release data under agreements that are meant for a broader class of objects including data and databases.  In particular, the \textit{Creative Commons} licenses are commonly used for data release; I will refer to them as ``licenses'' for simplicity, noting that they may not be true licenses in the legal sense in some cases.  The most permissive of these is the Public Domain Dedication (known as \textit{CC0}), which waives all rights of the owner and places no legal restriction on the user in terms of sharing or licensing of derivative works.  This is generally the preferred option for shared data when possible. Another alternative is the Attribution license (known as \textit{CC-BY}), which legally requires attribution of credit to the creator.  While many researchers feel that this is a more appropriate license given their desire for credit, it's rare that a researcher would actually engage in legal action if the attribution clause was violated, and scientific norms generally ensure that data users will give credit to the owner even if it is not legally required.
+
+In some cases it is necessary to place additional restrictions on how the data will be used; common cases for this include the sharing of roprietary information (e.g. internal company data) or sensitive information (e.g., PHI/PII). In addition, some jurisdictions require a higher degree of control over the sharing of human subjects data, specifically the European countries covered by the GDPR. In these cases, it is generally necessary to negotiate a DUA between institutions, which can often require substantial time and effort. If this situation arises, it is generally best to start by talking with the relevant legal officials within one's institution to learn more about the process, since it can vary drastically between institutions and jurisdictions.\index{GDPR}
+
+There is also a concerning development in the US, in which a legal rule initiated by the Biden administration in 2024 has restricted access of individuals from ``countries of concern'' (including China) to ``bulk sensitive data'' (specifically including ``human 'omic data'') and US Government related data\footnote{www.justice.gov/nsd/media/1382521/dl?inline}. This ruling will require additional access control (e.g. preventing some foreign researchers in US labs from accessing those data), and in some cases may also result in the need to use systems with a higher security level to work with those datasets.
+
+\subsubsection{Choosing a data repository}
+
+Once one is ready to share their data, they need to choose a repository through which to share it.  It's important to choose a repository that has the following features:
+
+\begin{itemize}
+\item It has a strong sustainability model.
+
+\begin{itemize}
+\item For a repository without institutional funding, it should have plan for data preservation in case the repository were to lose funding.
+\end{itemize}
+
+
+\item It provides PIDs for deposited data.
+\item The data are immutable once shared; new versions can be posted, but the original versions remain available by versioned PIDs.
+\item It exposes relevant metadata for search engines or other sites.
+\item In cases where access control is necessary, the repository should provide the necessary mechanisms.
+\item It should provide clear licensing of datasets.
+\item It should provide standard protocols for data transfer, including APIs for machine-readable access.
+\end{itemize}
+
+There are two main classes of repositories. \textit{Generalist} repositories are those that are meant to store any kind of data; examples include the \textit{Open Science Framework}, \textit{Zenodo}, and \textit{Dryad}. \textit{Specialist} repositories are those that specialize in a particular kind of data; there are many such repositories across all domains of science, which are cataloged at re3data.org.  These vary from databases focused on a very specific type of data, to those focused on broad scientific subfields.  Notable examples include:\index{Dryad}
+
+\begin{itemize}
+\item GenBank: a database of openly available DNA sequences, operated by the US National Institutes of Health
+\item Inter-university Consortium for Political and Social Research (ICPSR): A data archive for the social sciences, run by the  Institute for Social Research at the University of Michigan.
+\item OpenNeuro: A database for BIDS-compliant neuroscience data, run by my laboratory at Stanford\index{BIDS (Brain Imaging Data Structure)}
+\item PANGAEA: A database of earth and environmental science data, run by researchers at the Helmholtz Center for Polar- and Marine Research and University of Bremen, Germany
+\end{itemize}
+
+There are important tradeoffs when choosing between a generalist versus a specialist repository. Generalist repositories generally are much larger and better funded, and provide strong sustainability features. On the other hand, specialist repositories are more likely to support the particular features of data from their subfield, and data in specialist repositories are more likely to be discovered by researchers in the subfield.  I generally advise researchers to use a specialist repository for their data if one exists and is well-established, but to otherwise consider using a generalist repository.
+
+\subsubsection{Sharing human subjects data}
+
+For researchers working with human subjects data, it is important to ensure that they are shared ethically.  In the US, data that have been deidentified (as discussed in Chapter 7) are not considered ``human subjects data'' under US Federal Regulations, and thus can legally be shared openly in most cases (unless the original consent explicitly stated that the data would not be shared).  However, there are increasing concerns about the ability to reidentify subjects from data using AI tools even after the data have been ``deidentified'', and the US National Institutes of Health suggested in its 2023 Policy for Data Management and Sharing\footnote{grants.nih.gov/grants/guide/notice-files/NOT-OD-21-013.html} that controlled access should be considered even for data that have been deidentified.  It is important to consider the potential harm that would occur due to reidentification as well as the potential likelihood of reidentification; datasets that include features such as disease diagnoses that, if disclosed, could result in significant harm to the subject should be considered for controlled access even if it is not legally required.
+
+It is also important to ensure that informed consent for research subjects provides information regarding how the data will be shared.  If the data will be shared broadly, then subjects should be informed that that data will be deidentified, but also make clear that the researcher cannot guarantee that reidentification will not be possible in the future.  Subjects can then properly weigh the risks of participation.  A number of model consent forms have been developed to support broad sharing; in my field of neuroimaging, the Open Brain Consent \citep{Bannier:2021aa} was developed to support researchers in the US and Europe who wish to be able to openly share their data.
+
+\subsubsection{Sharing large datasets}
+
+When datasets reach into the terabytes or beyond, it becomes very difficult to share them by standard means like web downloads.  In this case, one has to decide whether to bring the data to the compute, or the compute to the data. If it's necessary to transfer very large datasets, the most common solution is the Globus file transfer system (globus.org).  Globus provides the ability to quickly and securely transfer very large amounts of data in a fault tolerant way.  It also allows the verification of the data transfer and encryption of the data, and provides a web dashboard that allows monitoring of large transfers.  Most HPC centers provide a Globus endpoint that allows transfer to and from other systems, and it's also possible to mount cloud file systems using Globus.
+
+Another alternative for working with large shared datasets is to move the computing to a system that is attached to the data, rather than copying the data to one's own computing system.  This is a common workflow on cloud systems, where it's usually straightforward to run compute instances that are in the same data center as the data, making access fast and efficient. Many open datasets (including our OpenNeuro dataset) are available on Amazon's cloud systems via the AWS Data Exchange.  Analyzing data in the cloud can get expensive quickly due to the cost of cloud computing, but it may become cost-efficient depending on the cost of local data storage for very large datasets.\index{AWS}
+
+\subsubsection{Data citation}
+
+There are two standard ways to cite data. The most common is to use a standard citation that includes the DOI for the dataset that was issued by the archive, preferably a version DOI for the specific version of the data used in the research.  However, it is increasingly common for high-value datasets to be described in a \textit{data descriptor}, which is a standard journal publication that describes the dataset and links directly to the data.  There is an increasing number of journals that publish such data descriptors, with \textit{Scientific Data} being the most prominent as of 2026.  The publication of a data descriptor allows the researcher to obtain credit in the most valuable form for academic progression: journal citations.  For example, we published a paper describing a large neuroimaging dataset [Poldrack:2016aa], which as of early 2026 has been cited more than 450 times according to Google Scholar. Data descriptors are becoming an increasingly popular mechanism for researchers to obtain academic credit for their shared data.
+
+\section{Sharing computational models}
+
+Computational models are a common form of research object. The sharing of these models has become increasingly prominent in the context of deep learning and AI models.  Models actually involve several different types of objects:\index{deep learning}
+
+\begin{itemize}
+\item The code that defines the model architecture
+\item The code used for training and evaluating the model
+\item The configuration parameters used for training
+\item The learned parameters of the model (and possibly checkpoints containing parameters from intermediate steps during training)
+\item The training data used to train the model
+\end{itemize}
+
+Here I focus on the sharing of model parameters, since the previous sections have covered sharing of code and data.  It's important to note here that a model should not be considered ``open source'' unless it shares all of these components.  Many of the AI models that have been openly shared (such as the \textit{Llama} large language models shared by the Meta Corporation) are more appropriately referred to as ``open weight'' models since they often have not shared all of the training data and code.
+
+Model parameters should be shared according to the same principles discussed above for code and data:
+
+\begin{itemize}
+\item They should be shared using data formats that are standard within the specific domain (which may vary depending on the class of model)
+\item They should be shared with sufficient metadata to allow interpretation and attribution of credit
+\item They should be shared with an explicit license that outlines terms of reuse
+\end{itemize}
+
+The Hugging Face Hub (huggingface.co/models) has become a very prominent generalist archive for machine learning models and datasets.  It supports a number of FAIR practices, including the ability to generate DOIs for models or datasets and the ability to associate an open source license with the objects.  It also provides significant tooling for seamlessly downloading models and datasets. Hugging Face also provides access to \textit{model cards}, which are a particular form of documentation developed within the machine learning literature \citep{Mitchell:2019aa} that describes the model and any potential limitations or biases in a human-readable way.\index{machine learning}
+
+There are relatively few specialist repositories for models. One notable example is the \textit{Vascular Model Repository} (vascularmodel.com) developed by my Stanford colleague Alison Marsden and her colleagues, which shares vascular models generated using the open-source \textit{SimVascular} software for modeling of patient-specific blood flow patterns using images of the heart. When such a specialist repository is available it's usually best to share the model parameters via that mechanism.
+
+\subsection{Licenses for AI models}
+
+It is increasingly common for AI models to be released under what have come to be called \textit{Responsible AI Licenses}, which include terms regarding the acceptable uses of the model. In particular, these licenses are meant to prohibit harmful uses of the code. As an example, here are the behavioral terms included in the AI Pubs Open Rail-S license (www.licenses.ai/ai-pubs-open-rails-vz1):
+
+\begin{lstlisting}
+You agree not to use the Source Code or its Derivatives in any of the following ways:
+
+1. Legal: 
+
+    (a) In any way that violates any applicable national, federal, state, local or international law or regulation.
+
+2. Harm and Discrimination
+
+  (a) For the purpose of exploiting, Harming or attempting to exploit or Harm minors in any way;
+  (b) To generate or disseminate false information with the purpose of Harming others;
+  (c) To generate or disseminate personal identifiable information that can be used to Harm an individual;
+  (d) To defame, disparage or otherwise harass others;
+  (e) For any use intended to or which has the effect of Harming individuals or groups based on online or offline social behavior or known or predicted personal or personality characteristics
+  (f) To exploit any of the vulnerabilities of a specific group of persons based on their age, social, physical or mental characteristics, in order to materially distort the behavior of a person belonging to that group in a manner that causes or is likely to cause that person or another person Harm
+  (g) For any use intended to or which has the effect of discriminating against individuals or groups based on legally protected characteristics or categories.
+
+3. Transparency
+
+  (a) To generate or disseminate machine -generated information or content in any medium  without expressly and intelligibly disclaiming that it is machine -generated;
+  (b) To impersonate or attempt to impersonate human beings for purposes of deception;
+  (c) For fully automated decision making that adversely impacts an individual’s legal rights or otherwise creates or modifies a binding, enforceable obligation.
+\end{lstlisting}
+
+This license also makes the behavioral use terms viral, even if the copyright license is not: ``Even though derivative versions of the Source Code could be released under different licensing terms, the License specifies that the use restrictions in the original License must apply to such derivatives.''
+
+\section{Sharing environments and platforms}
+
+As we discussed earlier in the section on containers, complete reproducibility requires the sharing of the computational environment in which the computing was performed.  At minimum, one should share a description of the dependencies that went into the computation.  The \texttt{pyproject.toml} file for a project will specify the dependencies, but allows loose version constraints (e.g. \texttt{numpy\textgreater =1.24}).  While this is good for general usage, it does not ensure reproducibility since we can't tell what specific version of the package was used in any particular analysis.  Instead it is best to include a \textit{lock file} that lists the exact versions of each dependency; when using \textit{uv}, the \texttt{uv.lock} file contains this information.  However, the lock file only contains information about the Python dependencies, and does not contain details about the system level libraries (such as the version of the \textit{glibc} library, which is known to potentially affect numerical computations; \citep{Glatard:2015aa}). It is for this reason that we generally prefer to share containers, which encapsulate the system environment more broadly.\index{lock file}
+
+\textit{Docker} has become the standard tooling for generating compute containers.  As I described in the previous section on containers, the contents of a \textit{Docker} container image are defined in part by a \texttt{Dockerfile}, which provides a recipe for building the container.  It's important to note that while a container image provides a reproducible computing environment, the \texttt{Dockerfile} itself does not.  In a large study of Dockerfiles on GitHub, \citep{Malka:2026aa} found that very few containers could be perfectly reproduced or even functionally reproduced (i.e. including the same package versions). In fact, of a set of 5,298 Dockerfiles that were successfully built in 2023, only 72\% of those could be rebuilt just two years later.  This suggests that the sharing and archiving of container images is essential for reproducibility.  Container images are commonly shared through the \textit{Docker Hub} web archive. However, it is important to realize that this archive may delete images that are not accessed for a certain period of time.  Container images should thus be archived using a generalist repository such as \textit{Zenodo} or \textit{OSF} in order to ensure their continued availability.\index{Docker}\index{Docker Hub}\index{OSF (Open Science Framework)}
