@@ -1,8 +1,6 @@
 """Tests for the listings-manifest loader."""
-from pathlib import Path
-
 import pytest
-from manifest import ManifestEntry, load_manifest
+from manifest import load_manifest
 
 
 def test_load_manifest_parses_command_entry(tmp_path):
