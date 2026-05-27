@@ -1,10 +1,12 @@
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, seed, settings, strategies as st
 from hypothesis.extra import numpy as nps
 
 from bettercode.testing.linear_regression import linear_regression
 
 
+@seed(42)
+@settings(database=None)
 @given(
     # Only generate data that is likely to be valid to start with
     nps.arrays(np.float64, (10, 1), elements=st.floats(-1e6, 1e6)),

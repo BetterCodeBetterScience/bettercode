@@ -1,5 +1,5 @@
 import numpy as np
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, given, seed, settings, strategies as st
 from hypothesis.extra import numpy as nps
 from scipy.stats import linregress
 
@@ -7,6 +7,8 @@ from bettercode.testing.linear_regression import _validate_input, linear_regress
 
 
 # Test 1: Test the validation logic in isolation
+@seed(42)
+@settings(database=None)
 @given(
     nps.arrays(
         np.float64, (10, 1), elements=st.floats(allow_nan=True, allow_infinity=True)
@@ -29,6 +31,8 @@ def test_validate_input(X, y):
 
 
 # Test 2: Test the algorithm's correctness, assuming valid input
+@seed(42)
+@settings(database=None)
 @given(
     nps.arrays(np.float64, (10, 1), elements=st.floats(-1e6, 1e6)),
     nps.arrays(np.float64, (10,), elements=st.floats(-1e6, 1e6)),

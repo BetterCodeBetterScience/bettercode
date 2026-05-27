@@ -1,0 +1,200 @@
+chapter: testing
+outputs:
+
+  # Block 4: passing pytest run for escape_velocity test
+  - id: pytest_escape_velocity_pass
+    description: "Passing pytest run for test_escape_velocity (v1 no-validation)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_escape_velocity.py::test_escape_velocity"]
+    output_file: "latex/generated/testing/pytest_escape_velocity_pass.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 5: failing pytest run — ev_expected typo
+  - id: pytest_escape_velocity_typo_fail
+    description: "Failing pytest run for escape_velocity with ev_expected = 1186.0 typo"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_escape_velocity_typo.py"]
+    output_file: "latex/generated/testing/pytest_escape_velocity_typo_fail.txt"
+    expected_exit_code: 1
+    normalize: [pytest_timings, file_paths, memory_addresses, terminal_width]
+
+  # Block 6: REPL — assert 0.1 + 0.2 == 0.3 raises AssertionError
+  - id: repl_float_assert_fail
+    description: "REPL: assert 0.1 + 0.2 == 0.3 raises AssertionError"
+    driver: "scripts/repl_drivers/testing/float_assert_fail.py"
+    output_file: "latex/generated/testing/repl_float_assert_fail.txt"
+    expected_exit_code: 0
+    normalize: []
+
+  # Block 7: REPL — 0.1 + 0.2 = 0.30000000000000004
+  - id: repl_float_value
+    description: "REPL: shows 0.1 + 0.2 floating-point result"
+    driver: "scripts/repl_drivers/testing/float_value.py"
+    output_file: "latex/generated/testing/repl_float_value.txt"
+    expected_exit_code: 0
+    normalize: []
+
+  # Block 8: REPL — np.allclose(0.1 + 0.2, 0.3) → True
+  - id: repl_float_allclose
+    description: "REPL: np.allclose(0.1 + 0.2, 0.3) returns True"
+    driver: "scripts/repl_drivers/testing/float_allclose.py"
+    output_file: "latex/generated/testing/repl_float_allclose.txt"
+    expected_exit_code: 0
+    normalize: []
+
+  # Block 12: REPL — find_outliers normal call
+  - id: repl_find_outliers_normal
+    description: "REPL: find_outliers([1,2,3,1000,4,5,6]) returns [3]"
+    driver: "scripts/repl_drivers/testing/find_outliers_normal.py"
+    output_file: "latex/generated/testing/repl_find_outliers_normal.txt"
+    expected_exit_code: 0
+    normalize: []
+
+  # Block 13: REPL — find_outliers all-equal raises ZeroDivisionError
+  - id: repl_find_outliers_zero_div
+    description: "REPL: find_outliers with all-equal data raises ZeroDivisionError"
+    driver: "scripts/repl_drivers/testing/find_outliers_zero_div.py"
+    output_file: "latex/generated/testing/repl_find_outliers_zero_div.txt"
+    expected_exit_code: 0
+    normalize: []
+
+  # Block 15: failing pytest run — ZeroDivisionError against v1 buggy
+  - id: pytest_find_outliers_bug_fail
+    description: "Failing pytest run for find_outliers v1 buggy (ZeroDivisionError)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_find_outliers_v1_buggy.py"]
+    output_file: "latex/generated/testing/pytest_find_outliers_bug_fail.txt"
+    expected_exit_code: 1
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 17: passing pytest run — find_outliers v2 fixed (Q2: corrected path)
+  - id: pytest_find_outliers_fixed_pass
+    description: "Passing pytest run for both find_outliers tests against v2_fixed"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_find_outliers.py"]
+    output_file: "latex/generated/testing/pytest_find_outliers_fixed_pass.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 27: failing pytest run — distance test with sqrt(125) wrong value
+  - id: pytest_distance_fail
+    description: "Failing pytest run for distance test with wrong expected value (sqrt(125))"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_distance_v1_failing.py"]
+    output_file: "latex/generated/testing/pytest_distance_fail.txt"
+    expected_exit_code: 1
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 28: passing pytest run — distance test with sqrt(89) correct value
+  - id: pytest_distance_pass
+    description: "Passing pytest run for distance test with correct expected value (sqrt(89))"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_distance.py"]
+    output_file: "latex/generated/testing/pytest_distance_pass.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 30: failing pytest run — GPT-4 generated test with wrong Jupiter value
+  - id: pytest_escape_velocity_gpt4_fail
+    description: "Failing pytest run for GPT-4-generated escape_velocity test (Jupiter value mismatch)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_escape_velocity_gpt4.py"]
+    output_file: "latex/generated/testing/pytest_escape_velocity_gpt4_fail.txt"
+    expected_exit_code: 1
+    normalize: [pytest_timings, file_paths, memory_addresses, terminal_width]
+
+  # Block 36: coverage report for textmining module
+  - id: pytest_textmining_coverage
+    description: "Coverage report for textmining module showing 97% coverage"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_textmining.py",
+              "--cov=src/bettercode/testing/textmining", "--cov-report=term-missing",
+              "--no-header", "-q"]
+    output_file: "latex/generated/testing/pytest_textmining_coverage.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 51: parametrized year-parsing test (Q7: mocked, offline-safe)
+  - id: pytest_textmining_parametric
+    description: "Parametrized test for parse_year_from_pmid (mocked, offline-safe)"
+    command: ["uv", "run", "pytest",
+              "tests/testing_chapter/test_parse_year_mocked.py::test_parse_year_from_pmid_parametric",
+              "-v"]
+    output_file: "latex/generated/testing/pytest_textmining_parametric.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 56: failing hypothesis smoke test — singular matrix (Q8: seeded + temp_paths)
+  - id: pytest_property_based_smoke_fail
+    description: "Failing hypothesis smoke test for linear_regression (singular matrix)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_property_based_smoke.py"]
+    output_file: "latex/generated/testing/pytest_property_based_smoke_fail.txt"
+    expected_exit_code: 1
+    normalize: [pytest_timings, file_paths, memory_addresses, terminal_width, temp_paths]
+
+  # Block 63: cherry-picking a single named test
+  - id: pytest_cherry_pick_single
+    description: "Running a single named test from the textmining suite"
+    command: ["uv", "run", "pytest",
+              "tests/testing_chapter/test_textmining.py::test_parse_year_from_PubMed_record",
+              "-v"]
+    output_file: "latex/generated/testing/pytest_cherry_pick_single.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 65: natural test ordering (second before first)
+  - id: pytest_ordering_natural_order
+    description: "Tests run in definition order: test_second before test_first"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/_demos/test_ordering_v1_natural.py", "-v"]
+    output_file: "latex/generated/testing/pytest_ordering_natural_order.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 67: controlled test ordering with pytest-order marks
+  - id: pytest_ordering_controlled_order
+    description: "Tests run in mark-controlled order: test_first before test_second"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_ordering.py", "-v"]
+    output_file: "latex/generated/testing/pytest_ordering_controlled_order.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 71: all 3 marker tests passing
+  - id: pytest_markers_all
+    description: "All 3 marker tests passing (unit1, unit2, integration)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_markers.py", "-v"]
+    output_file: "latex/generated/testing/pytest_markers_all.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 72: only unit tests selected with -m unit
+  - id: pytest_markers_unit_only
+    description: "Only unit tests selected with -m unit"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_markers.py", "-m", "unit", "-v"]
+    output_file: "latex/generated/testing/pytest_markers_unit_only.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 73: integration test only with -m "not unit"
+  - id: pytest_markers_not_unit
+    description: "Integration test only selected with -m 'not unit'"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_markers.py", "-m", "not unit", "-v"]
+    output_file: "latex/generated/testing/pytest_markers_not_unit.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 75: --durations=0 output (long-running ~9s, slow)
+  - id: pytest_duration_report
+    description: "Duration report showing test timing with --durations=0 (slow: ~9s)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_duration.py", "--durations=0", "-v"]
+    output_file: "latex/generated/testing/pytest_duration_report.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 78: serial parallel test run (~10s, slow)
+  - id: pytest_parallel_serial
+    description: "Serial run: 10 parametrized tests × 1s sleep each (slow: ~10s)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_parallel.py", "-v"]
+    output_file: "latex/generated/testing/pytest_parallel_serial.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width]
+
+  # Block 79: xdist parallel run (~2s, machine-specific worker count)
+  - id: pytest_parallel_xdist
+    description: "Parallel run with -n auto across multiple workers (slow: ~2s)"
+    command: ["uv", "run", "pytest", "tests/testing_chapter/test_parallel.py", "-n", "auto", "-v"]
+    output_file: "latex/generated/testing/pytest_parallel_xdist.txt"
+    expected_exit_code: 0
+    normalize: [pytest_timings, file_paths, terminal_width, worker_count]
