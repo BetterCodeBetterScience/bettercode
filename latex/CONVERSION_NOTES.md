@@ -240,3 +240,56 @@ Result of grep over `notebooks/` and `../example-*/` for each module being migra
 | narps | (none) | yes |
 
 All modules are safe to rename/refactor. No external importers found in `notebooks/` or `example-*` directories.
+
+---
+
+## Renderer tweaks (Task 18)
+
+### xdist normalizer
+
+**Problem:** The `pytest_parallel_xdist` manifest entry produced non-deterministic
+output on every run because pytest-xdist assigns worker IDs and completion order
+randomly. `build_listings.py verify testing` always reported drift on this entry.
+
+**Fix:** Added the `xdist_schedule` normalizer to `scripts/normalize_output.py`.
+It locates the block between `scheduling tests via LoadScheduling` and the trailing
+`===` summary line, then:
+1. Replaces `[gw\d+]` worker IDs with `[gwN]`
+2. Replaces `[ \d+%]` completion percentages with `[NNN%]`
+3. Sorts all lines in that block alphabetically
+
+This makes the output fully deterministic regardless of worker assignment or
+completion order, while preserving the visual structure (queue lines and PASSED
+lines are still present, just canonically ordered). Five unit tests were added to
+`tests/test_listings_infra/test_normalize_output.py` covering idempotence,
+cross-run stability, worker-ID stripping, summary-line preservation, and
+passthrough of unrelated text.
+
+The `pytest_parallel_xdist` manifest entry's `normalize:` list was updated to
+include `xdist_schedule` as the final step (after `worker_count`).
+
+### `\lstinputlisting` option tweaks
+
+No additional options were added. The `base` style in `designchanges.sty` already
+includes `breaklines=true` and `breakatwhitespace=true`, which handles all long
+lines (141-char `plugins:` line and test-name lines) without producing overfull
+`\hbox` warnings in the LaTeX log.
+
+### `designchanges.sty` changes
+
+No changes were made. All styles render cleanly at the current settings.
+
+### REPL convention sentence
+
+Added one sentence to `latex/book-testing.tex` immediately before the first REPL
+block (block 6, `repl_float_assert_fail`), after the prose paragraph introducing
+the floating-point example:
+
+> Throughout this book, interactive Python sessions are shown using the standard
+> Python REPL prompts (`>>>` for input, `...` for continuation).
+
+### PDF build status
+
+PDF built successfully: 62 pages, no overfull `\hbox` warnings. Only minor
+`\vbox` overfull (0.897pt) warnings from the page-output routine, which are
+normal for the Cambridge class and do not affect content layout.
