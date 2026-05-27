@@ -74,6 +74,12 @@ def terminal_width(text: str) -> str:
     return "\n".join(out_lines)
 
 
+@register("worker_count")
+def worker_count(text: str) -> str:
+    """Replace xdist worker count like '16 workers' with 'N workers'."""
+    return re.sub(r"\b\d+ workers\b", "N workers", text)
+
+
 def apply_normalizers(text: str, names: list[str]) -> str:
     """Apply each named normalizer in order. Unknown names raise KeyError."""
     for name in names:

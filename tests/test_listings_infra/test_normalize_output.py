@@ -86,3 +86,14 @@ def test_apply_normalizers_unknown_name_raises():
 
     with pytest.raises(KeyError):
         apply_normalizers("anything", ["does_not_exist"])
+
+
+def test_worker_count_normalizes_xdist_worker_line():
+    text = "scheduling tests via LoadScheduling\n16 workers [10 items]"
+    result = NORMALIZERS["worker_count"](text)
+    assert result == "scheduling tests via LoadScheduling\nN workers [10 items]"
+
+
+def test_worker_count_leaves_other_numbers_alone():
+    text = "16 tests passed"
+    assert NORMALIZERS["worker_count"](text) == text
