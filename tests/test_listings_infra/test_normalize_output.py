@@ -97,3 +97,67 @@ def test_worker_count_normalizes_xdist_worker_line():
 def test_worker_count_leaves_other_numbers_alone():
     text = "16 tests passed"
     assert NORMALIZERS["worker_count"](text) == text
+
+
+# --- xdist_schedule normalizer tests ---
+
+XDIST_SAMPLE_A = (
+    "============================= test session starts ==============================\n"
+    "scheduling tests via LoadScheduling\n"
+    "\n"
+    "tests/t.py::test_a[0] \n"
+    "tests/t.py::test_a[2] \n"
+    "tests/t.py::test_a[1] \n"
+    "[gw4] [ 10%] PASSED tests/t.py::test_a[0] \n"
+    "[gw1] [ 20%] PASSED tests/t.py::test_a[2] \n"
+    "[gw2] [ 30%] PASSED tests/t.py::test_a[1] \n"
+    "\n"
+    "============================== 3 passed in 1.00s ==============================\n"
+)
+
+XDIST_SAMPLE_B = (
+    "============================= test session starts ==============================\n"
+    "scheduling tests via LoadScheduling\n"
+    "\n"
+    "tests/t.py::test_a[1] \n"
+    "tests/t.py::test_a[0] \n"
+    "tests/t.py::test_a[2] \n"
+    "[gw2] [ 10%] PASSED tests/t.py::test_a[2] \n"
+    "[gw0] [ 20%] PASSED tests/t.py::test_a[1] \n"
+    "[gw9] [ 30%] PASSED tests/t.py::test_a[0] \n"
+    "\n"
+    "============================== 3 passed in 1.00s ==============================\n"
+)
+
+
+def test_xdist_schedule_is_idempotent():
+    """Applying the normalizer twice gives the same result as applying once."""
+    result = NORMALIZERS["xdist_schedule"](XDIST_SAMPLE_A)
+    assert NORMALIZERS["xdist_schedule"](result) == result
+
+
+def test_xdist_schedule_produces_same_output_for_different_orderings():
+    """Two runs with different worker/test orderings produce identical output."""
+    result_a = NORMALIZERS["xdist_schedule"](XDIST_SAMPLE_A)
+    result_b = NORMALIZERS["xdist_schedule"](XDIST_SAMPLE_B)
+    assert result_a == result_b
+
+
+def test_xdist_schedule_strips_worker_ids():
+    """Worker IDs like [gw4] are replaced with [gwN]."""
+    result = NORMALIZERS["xdist_schedule"](XDIST_SAMPLE_A)
+    assert "[gw4]" not in result
+    assert "[gw1]" not in result
+    assert "[gwN]" in result
+
+
+def test_xdist_schedule_preserves_summary_line():
+    """The final summary line (passed/failed count) is preserved."""
+    result = NORMALIZERS["xdist_schedule"](XDIST_SAMPLE_A)
+    assert "3 passed" in result
+
+
+def test_xdist_schedule_leaves_unrelated_text_unchanged():
+    """Text without xdist scheduling markers is returned unchanged."""
+    text = "plain pytest output\n1 passed in 0.1s\n"
+    assert NORMALIZERS["xdist_schedule"](text) == text

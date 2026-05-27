@@ -197,4 +197,4 @@ outputs:
     command: ["uv", "run", "pytest", "tests/testing_chapter/test_parallel.py", "-n", "auto", "-v"]
     output_file: "latex/generated/testing/pytest_parallel_xdist.txt"
     expected_exit_code: 0
-    normalize: [pytest_timings, file_paths, terminal_width, worker_count]
+    normalize: [pytest_timings, file_paths, terminal_width, worker_count, xdist_schedule]

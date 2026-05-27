@@ -80,6 +80,52 @@ def worker_count(text: str) -> str:
     return re.sub(r"\b\d+ workers\b", "N workers", text)
 
 
+@register("xdist_schedule")
+def xdist_schedule(text: str) -> str:
+    """Canonicalize xdist scheduling output to make it deterministic.
+
+    Finds the block between 'scheduling tests via LoadScheduling' and the
+    trailing summary line, normalizes worker IDs ([gwN]), and sorts the
+    scheduling/PASSED lines so ordering is stable across runs.
+    """
+    marker = "scheduling tests via LoadScheduling"
+    if marker not in text:
+        return text
+
+    lines = text.split("\n")
+    start_idx = None
+    for i, line in enumerate(lines):
+        if marker in line:
+            start_idx = i + 1
+            break
+
+    if start_idx is None:
+        return text
+
+    # Find the end: first line that is a pytest separator (starts with '===')
+    # after the scheduling block. This matches both pure-'=' lines and lines
+    # like '====== 10 passed ... ======'.
+    end_idx = len(lines)
+    for i in range(start_idx, len(lines)):
+        if lines[i].startswith("==="):
+            end_idx = i
+            break
+
+    schedule_lines = lines[start_idx:end_idx]
+
+    # Normalize worker IDs and completion percentages, then sort
+    def _norm_line(ln: str) -> str:
+        ln = re.sub(r"\[gw\d+\]", "[gwN]", ln)
+        ln = re.sub(r"\[ *\d+%\]", "[NNN%]", ln)
+        return ln
+
+    normalized = [_norm_line(ln) for ln in schedule_lines]
+    sorted_lines = sorted(normalized)
+
+    result_lines = lines[:start_idx] + sorted_lines + lines[end_idx:]
+    return "\n".join(result_lines)
+
+
 def apply_normalizers(text: str, names: list[str]) -> str:
     """Apply each named normalizer in order. Unknown names raise KeyError."""
     for name in names:
