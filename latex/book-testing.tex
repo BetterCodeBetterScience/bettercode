@@ -718,15 +718,7 @@ When developing a new function, it's usually sufficient to run only the tests th
 If all of the tests for a specific function are located within a single test file, then one can simply call \textit{pytest} with that file.
 It's also possible to run a specific test within a file by referring to a specific class or function using a double-colon marker:
 
-\begin{lstlisting}[style=shell]
-$ pytest tests/textmining/test_textmining.py::test_parse_year_from_PubMed_record
-
-============================= test session starts ==============================
-collected 1 item
-
-tests/textmining/test_textmining.py .                                    [100%]
-============================== 1 passed in 0.17s ===============================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_cherry_pick_single.txt}
 
 This allows one to focus on the tests that are immediately relevant to a specific development task.
 
@@ -743,57 +735,19 @@ Before recommending \textit{python-order} as a possible solution, I looked at it
 Conversely, during the course of writing I came across a number of other packages that had been recommended on Stack Overflow to solve various problems, some of which had not seen commits in several years or had longstanding unaddressed issues.}.
 We start with two tests that are out of order in the test code:
 
-\begin{lstlisting}[style=Python]
-import pytest
-
-def test_second():
-    """This is the second test."""
-    assert True
-
-def test_first():
-    """This is the first test."""
-    assert True
-\end{lstlisting}
+\lstinputlisting[style=Python]{../tests/testing_chapter/_demos/test_ordering_v1_natural.py}
 
 Running this, we see that these are run in the order they are defined in the test code:
 
-\begin{lstlisting}[style=shell]
-$ pytest -vv tests/ordering/test_order.py
-=========================== test session starts ============================
-collected 2 items
-
-tests/ordering/test_order.py::test_second PASSED                     [ 50%]
-tests/ordering/test_order.py::test_first PASSED                      [100%]
-============================ 2 passed in 0.05s =============================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_ordering_natural_order.txt}
 
 After installing the \texttt{pytest-order} plugin, we can now add marks that control the execution order of the tests:
 
-\begin{lstlisting}[style=Python]
-import pytest
-
-@pytest.mark.order(2)
-def test_second():
-    """This is the second test."""
-    assert True
-
-@pytest.mark.order(1)
-def test_first():
-    """This is the first test."""
-    assert True
-\end{lstlisting}
+\lstinputlisting[style=Python]{../tests/testing_chapter/test_ordering.py}
 
 Running this, we see that these are run in the order they are defined in the test code:
 
-\begin{lstlisting}[style=shell]
-$ pytest -vv tests/ordering/test_order.py
-=========================== test session starts ============================
-collected 2 items
-
-tests/ordering/test_order.py::test_first PASSED                      [ 50%]
-tests/ordering/test_order.py::test_second PASSED                     [100%]
-============================ 2 passed in 0.05s =============================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_ordering_controlled_order.txt}
 
 This package also provides other useful ways to control execution order, such as relative markers like ``before'' or ``last''.
 
@@ -835,60 +789,19 @@ markers = [
 
 We can then generate tests using these markers:
 
-\begin{lstlisting}[style=Python]
-import pytest
-
-@pytest.mark.unit
-def test_unit1():
-    """This is a unit test."""
-    assert True
-
-@pytest.mark.unit
-def test_unit2():
-    """This is a unit test."""
-    assert True
-
-@pytest.mark.integration
-def test_integration():
-    """This is an integration test."""
-    assert True
-\end{lstlisting}
+\lstinputlisting[style=Python]{../tests/testing_chapter/test_markers.py}
 
 Running these using the standard pytest command, both tests are executed:
 
-\begin{lstlisting}[style=shell]
-$ pytest -vv tests/markers/test_markers.py
-=========================== test session starts ============================
-collected 3 items
-
-tests/markers/test_markers.py::test_unit1 PASSED                     [ 33%]
-tests/markers/test_markers.py::test_unit2 PASSED                     [ 66%]
-tests/markers/test_markers.py::test_integration PASSED               [100%]
-============================ 3 passed in 0.05s =============================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_markers_all.txt}
 
 However, we can also specify that only the unit tests should be executed, using the \texttt{-m} flag to deselect all other flags:
 
-\begin{lstlisting}[style=shell]
-$ pytest -vv -m unit tests/markers/test_markers.py
-=========================== test session starts ============================
-collected 3 items / 1 deselected / 2 selected
-
-tests/markers/test_markers.py::test_unit1 PASSED                     [ 50%]
-tests/markers/test_markers.py::test_unit2 PASSED                     [100%]
-===================== 2 passed, 1 deselected in 0.05s ======================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_markers_unit_only.txt}
 
 We could also run all tests that to not match a particular marker:
 
-\begin{lstlisting}[style=shell]
-$ pytest -vv -m "not unit" tests/markers/test_markers.py
-=========================== test session starts ============================
-collected 3 items / 2 deselected / 1 selected
-
-tests/markers/test_markers.py::test_integration PASSED               [100%]
-===================== 1 passed, 2 deselected in 0.05s ======================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_markers_not_unit.txt}
 
 \subsection{Longest tests last}
 
@@ -898,38 +811,11 @@ This ensures that one doesn't end up waiting a long time for long-running tests 
 We can use pytest's \texttt{--durations} flag to get the durations for each test.
 Here is an example with three tests with different durations to completion:
 
-\begin{lstlisting}[style=Python]
-import pytest
-from time import sleep
-
-def test_duration_3():
-    sleep(3)
-    assert True
-
-def test_duration_5():
-    sleep(5)
-    assert True
-
-def test_duration_1():
-    sleep(1)
-    assert True
-\end{lstlisting}
+\lstinputlisting[style=Python]{../tests/testing_chapter/test_duration.py}
 
 We can call pytest with \texttt{--durations=0} which will return the duration for all of the tests:
 
-\begin{lstlisting}[style=shell]
-$ pytest --durations=0 tests/ordering/test_duration.py
-============================= test session starts ==============================
-collected 3 items
-
-tests/ordering/test_duration.py ...                                      [100%]
-
-============================== slowest durations ===============================
-5.00s call     tests/ordering/test_duration.py::test_duration_5
-3.01s call     tests/ordering/test_duration.py::test_duration_3
-1.00s call     tests/ordering/test_duration.py::test_duration_1
-============================== 3 passed in 9.10s ===============================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_duration_report.txt}
 
 Using the results of this, we could impose ordering on test execution so that the slowest ones are executed last, or add a \texttt{slow} marker that we could exclude from our regular testing.
 
@@ -1028,35 +914,14 @@ If we have written good tests, they should be able to run independently, and thu
 If we are using \textit{pytest} as our testing framework, then we can use the \textit{pytest-xdist} extension to enable the parallel execution of tests in pytest.
 For example, let's set up a parameterized test that includes a \texttt{time.sleep()} command so that execution will take a significant amount of time.
 
-\begin{lstlisting}[style=Python]
-import pytest
-import time
-
-@pytest.mark.parametrize("x", range(10))
-def test_parallel(x):
-    assert x in range(10), f"Value {x} is not in the expected list."
-    time.sleep(1) # wait for one second
-\end{lstlisting}
+\lstinputlisting[style=Python]{../tests/testing_chapter/test_parallel.py}
 
 If we run this using the standard \texttt{pytest} command, we should see that it takes about ten seconds, given that there are ten tests:
 
-\begin{lstlisting}[style=shell]
-$ pytest tests/parallel/tests_parallel.py
-======================== test session starts =========================
-collected 10 items
-
-tests/parallel/tests_parallel.py ..........                     [100%]
-======================== 10 passed in 10.18s =========================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_parallel_serial.txt}
 
 If we have installed \texttt{pytest-xdist} then we can add the \texttt{-n auto} flag which will automatically detect how manu CPU cores we have available and run the tests in parallel across those cores:
 
-\begin{lstlisting}[style=shell]
-$ pytest tests/parallel/tests_parallel.py -n auto
-========================= test session starts ==========================
-16 workers [10 items]
-..........                                                        [100%]
-========================== 10 passed in 1.97s ==========================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_parallel_xdist.txt}
 
 You can see that it detected the 16 cores in my laptop and ran the 10 tests in parallel, greatly reducing the testing time.
