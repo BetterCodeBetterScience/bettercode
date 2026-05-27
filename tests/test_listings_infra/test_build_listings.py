@@ -115,3 +115,61 @@ def test_build_only_filters_to_one_entry(tmp_repo):
     assert result.returncode == 0, result.stderr
     assert not (tmp_repo / "latex" / "generated" / "testing" / "a.txt").exists()
     assert (tmp_repo / "latex" / "generated" / "testing" / "b.txt").read_text() == "B\n"
+
+
+def test_verify_passes_when_committed_matches(tmp_repo):
+    manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
+    manifest.write_text(
+        "chapter: testing\n"
+        "outputs:\n"
+        "  - id: e\n"
+        "    description: e\n"
+        '    command: ["python", "-c", "print(\'E\')"]\n'
+        '    output_file: "latex/generated/testing/e.txt"\n'
+        "    expected_exit_code: 0\n"
+        "    normalize: []\n"
+    )
+    # Pre-commit the expected output
+    (tmp_repo / "latex" / "generated" / "testing" / "e.txt").write_text("E\n")
+    result = _run_cli(["verify", "testing"], cwd=tmp_repo)
+    assert result.returncode == 0, result.stderr
+
+
+def test_verify_fails_with_diff_when_drift(tmp_repo):
+    manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
+    manifest.write_text(
+        "chapter: testing\n"
+        "outputs:\n"
+        "  - id: e\n"
+        "    description: e\n"
+        '    command: ["python", "-c", "print(\'NEW\')"]\n'
+        '    output_file: "latex/generated/testing/e.txt"\n'
+        "    expected_exit_code: 0\n"
+        "    normalize: []\n"
+    )
+    # Committed output is stale
+    (tmp_repo / "latex" / "generated" / "testing" / "e.txt").write_text("OLD\n")
+    result = _run_cli(["verify", "testing"], cwd=tmp_repo)
+    assert result.returncode != 0
+    output = result.stdout + result.stderr
+    assert "DRIFT" in output
+    assert "-OLD" in output or "OLD" in output
+    assert "+NEW" in output or "NEW" in output
+    assert "build testing --only e" in output
+
+
+def test_verify_fails_when_output_file_missing(tmp_repo):
+    manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
+    manifest.write_text(
+        "chapter: testing\n"
+        "outputs:\n"
+        "  - id: missing\n"
+        "    description: missing committed\n"
+        '    command: ["python", "-c", "print(\'X\')"]\n'
+        '    output_file: "latex/generated/testing/missing.txt"\n'
+        "    expected_exit_code: 0\n"
+        "    normalize: []\n"
+    )
+    result = _run_cli(["verify", "testing"], cwd=tmp_repo)
+    assert result.returncode != 0
+    assert "missing" in (result.stdout + result.stderr).lower()

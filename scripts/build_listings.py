@@ -9,6 +9,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import difflib
 import subprocess
 import sys
 from pathlib import Path
@@ -59,8 +60,42 @@ def cmd_build(manifest: Manifest, only: str | None) -> int:
 
 
 def cmd_verify(manifest: Manifest, only: str | None) -> int:
-    # Implemented in Task 8.
-    raise NotImplementedError("verify is implemented in Task 8")
+    drift_count = 0
+    for entry in manifest.outputs:
+        if only is not None and entry.id != only:
+            continue
+        regenerated = _run_entry(entry)
+        out_path = Path(entry.output_file)
+        if not out_path.exists():
+            print(
+                f"DRIFT in {entry.output_file}: file missing\n"
+                f"Fix: python scripts/build_listings.py build "
+                f"{manifest.chapter} --only {entry.id}",
+                file=sys.stderr,
+            )
+            drift_count += 1
+            continue
+        committed = out_path.read_text()
+        if committed != regenerated:
+            diff = "".join(
+                difflib.unified_diff(
+                    committed.splitlines(keepends=True),
+                    regenerated.splitlines(keepends=True),
+                    fromfile="committed",
+                    tofile="regenerated",
+                )
+            )
+            print(
+                f"DRIFT in {entry.output_file}\n{diff}\n"
+                f"Fix: python scripts/build_listings.py build "
+                f"{manifest.chapter} --only {entry.id}",
+                file=sys.stderr,
+            )
+            drift_count += 1
+    if drift_count:
+        return 1
+    print(f"verify: {len(manifest.outputs)} outputs OK")
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
