@@ -221,51 +221,18 @@ For these reasons, we should always aim to create tests that can be executed ind
 Here is an example where coupling between tests could cause failures.\index{coupling}
 First we generate two functions that make changes in place to a data frame:
 
-\begin{lstlisting}[style=Python]
-def split_names(df):
-    df['firstname'] = df['name'].apply(lambda x: x.split()[0])
-    df['lastname'] = df['name'].apply(lambda x: x.split()[1])
-
-def get_initials(df):
-    df['initials'] = df['firstname'].str[0] + df['lastname'].str[0]
-\end{lstlisting}
+\lstinputlisting[style=Python]{../src/bettercode/testing/dataframe_ops.py}
 
 In this case, the \texttt{get\_initials()} function relies upon the \texttt{split\_names()} function having been run, since otherwise the necessary columns won't exist in the data frame.
 We can then create tests for each of these, and a data frame that they can both use:
 
-\begin{lstlisting}[style=Python]
-people_df = pd.DataFrame({'name': ['Alice Smith', 'Bob Howard', 'Charlie Ashe']}) 
-
-def test_split_names():
-    split_names(people_df)
-    assert people_df['firstname'].tolist() == ['Alice', 'Bob', 'Charlie']
-    assert people_df['lastname'].tolist() == ['Smith', 'Howard', 'Ashe']
-
-def test_get_initials():
-    get_initials(people_df)
-    assert people_df['initials'].tolist() == ['AS', 'BH', 'CA']
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=5]{../tests/testing_chapter/_demos/test_dataframe_ops_coupled.py}
 
 These tests run correctly, but the same tests fail if we change their order such that \texttt{test\_get\_intials()} runs first, because the necessary columns (\texttt{firstname} and \texttt{lastname}) have not yet been created.
 
 One simple way to deal with this is to set up all of the necessary structure locally within each test:
 
-\begin{lstlisting}[style=Python]
-def get_people_df():
-    return pd.DataFrame({'name': ['Alice Smith', 'Bob Howard', 'Charlie Ashe']}) 
-
-def test_split_names_fullsetup():
-    local_people_df = get_people_df()
-    split_names(local_people_df)
-    assert local_people_df['firstname'].tolist() == ['Alice', 'Bob', 'Charlie']
-    assert local_people_df['lastname'].tolist() == ['Smith', 'Howard', 'Ashe']
-
-def test_get_initials_fullsetup():
-    local_people_df = get_people_df()
-    split_names(local_people_df)
-    get_initials(local_people_df)
-    assert local_people_df['initials'].tolist() == ['AS', 'BH', 'CA']
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=5]{../tests/testing_chapter/test_dataframe_ops.py}
 
 For simple functions like these this would not cause too much computational overhead, but for computationally intensive functions we would like to be able to reuse the results from the first time each function is run.
 In a later section we will discuss the use of \textit{fixtures} which allow this kind of reuse across tests while avoiding the ordering problems that we saw above when using a global variable across tests.\index{global variable}
@@ -278,41 +245,12 @@ There are several testing frameworks for Python; we will focus on the popular an
 We will start with a very simple example: a function that generates the Euclidean distance between two points.
 Our coding assistant generates the following for us based on the prompt in the comment:
 
-\begin{lstlisting}[style=Python]
-# generate a function that calculates the distance between two points
-# where each point is defined as a tuple of two numbers
-
-import math
-
-def distance(p1, p2):
-    """Calculate the distance between two points"""
-    x1, y1 = p1
-    x2, y2 = p2
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-\end{lstlisting}
+\lstinputlisting[style=Python]{../src/bettercode/testing/distance.py}
 
 Now we would like to generate some tests for this code to make sure that it works properly.
 If we ask Copilot to generate some tests, it does a seemingly decent job:
 
-\begin{lstlisting}[style=Python]
-def test_distance_zero():
-    assert distance((0, 0), (0, 0)) == 0
-
-def test_distance_positive_coordinates():
-    assert distance((1, 2), (4, 6)) == 5
-
-def test_distance_negative_coordinates():
-    assert distance((-1, -2), (-4, -6)) == 5
-
-def test_distance_mixed_coordinates():
-    assert distance((1, -2), (-4, 6)) == math.sqrt(125)
-
-def test_distance_same_x():
-    assert distance((3, 4), (3, 8)) == 4
-
-def test_distance_same_y():
-    assert distance((3, 4), (7, 4)) == 4
-\end{lstlisting}
+\lstinputlisting[style=Python]{../tests/testing_chapter/_demos/test_distance_v1_failing.py}
 
 Now that we have our tests, we can run them using the \texttt{pytest} command:
 
@@ -323,29 +261,14 @@ $ pytest tests/test_distance.py
 This command will cause pytest to search (by default) for any files named \texttt{test\_*.py} or \texttt{*\_test.py} in the relevant path, and the select any functions whose name starts with the prefix ``test''.
 Running those tests, we get an error:
 
-\begin{lstlisting}[style=shell]
->       assert distance((1, -2), (-4, 6)) == math.sqrt(125)
-E       assert 9.433981132056603 == 11.180339887498949
-E        +  where 9.433981132056603 = distance((1, -2), (-4, 6))
-E        +  and   11.180339887498949 = <built-in function sqrt>(125)
-E        +    where <built-in function sqrt> = math.sqrt
-
-tests/test_distance.py:17: AssertionError
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_distance_fail.txt}
 
 Here we see that the value returned by our function is different from the one expected by the test; in this case, the test value generated by Copilot is incorrect.
 In our research, it was not uncommon for AI coding tools to generate correct tests structures but use incorrect test values. 
 Test values should always be checked by a domain expert.
 Once we fix the expected value for that test (the square root of 89), then we can rerun the tests and see that they have passed:
 
-\begin{lstlisting}[style=shell]
-$  pytest tests/test_distance.py                                          
-======================== test session starts =========================
-
-tests/test_distance.py ......                                   [100%]
-
-========================= 6 passed in 0.07s ==========================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_distance_pass.txt}
 
 \subsection{Potential problems with AI-generated tests}
 
@@ -355,64 +278,11 @@ One of my early forays into AI-driven test generation uncovered an interesting e
 In our early project that examined the performance of GPT-4 for coding \citep{Poldrack:2023aa}, one of the analyses that we performed first asked GPT-4 to generate a set of functions related to common problems in several scientific domains, and then to generate tests to make sure that the function performed correctly.\index{GPT-4}
 One of the functions that was generated was the escape velocity function shown above, for which GPT-4 generated the following test:
 
-\begin{lstlisting}[style=Python]
-def test_escape_velocity():
-
-    mass_earth = 5.972e24
-    radius_earth = 6.371e6
-    result = escape_velocity(mass_earth, radius_earth)
-    assert pytest.approx(result, rel=1e-3) == 11186.25
-
-    mass_mars = 6.4171e23
-    radius_mars = 3.3895e6
-    result = escape_velocity(mass_mars, radius_mars)
-    assert pytest.approx(result, rel=1e-3) == 5027.34
-
-    mass_jupiter = 1.8982e27
-    radius_jupiter = 6.9911e7
-    result = escape_velocity(mass_jupiter, radius_jupiter)
-    assert pytest.approx(result, rel=1e-3) == 59564.97
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=6, lastline=21]{../tests/testing_chapter/_demos/test_escape_velocity_gpt4.py}
 
 When we run this test (renaming it \texttt{test\_escape\_velocity\_gpt4}), we see that one of the tests fails:
 
-\begin{lstlisting}[style=shell]
-$  pytest tests/test_escape_velocity.py::test_escape_velocity_gpt4      
-============================= test session starts ==============================
-
-tests/test_escape_velocity.py F                                          [100%]
-
-=================================== FAILURES ===================================
-__________________________ test_escape_velocity_gpt4 ___________________________
-
-    def test_escape_velocity_gpt4():
-
-        mass_earth = 5.972e24
-        radius_earth = 6.371e6
-        result = escape_velocity(mass_earth, radius_earth)
-        assert pytest.approx(result, rel=1e-3) == 11186.25
-
-        mass_mars = 6.4171e23
-        radius_mars = 3.3895e6
-        result = escape_velocity(mass_mars, radius_mars)
-        assert pytest.approx(result, rel=1e-3) == 5027.34
-
-        mass_jupiter = 1.8982e27
-        radius_jupiter = 6.9911e7
-        result = escape_velocity(mass_jupiter, radius_jupiter)
->       assert pytest.approx(result, rel=1e-3) == 59564.97
-E       assert 60202.716344497014 \pm 60.2027 == 59564.97
-E
-E         comparison failed
-E         Obtained: 59564.97
-E         Expected: 60202.716344497014 \pm 60.2027
-
-tests/test_escape_velocity.py:38: AssertionError
-=========================== short test summary info ============================
-FAILED tests/test_escape_velocity.py::test_escape_velocity_gpt4 - 
-assert 60202.716344497014 \pm 60.2027 == 59564.97
-============================== 1 failed in 0.08s ===============================
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_escape_velocity_gpt4_fail.txt}
 
 It seems that the first two assertions pass but the third one, for Jupiter, fails.
 This failure took a bit of digging to fully understand.
@@ -446,29 +316,11 @@ If we are using the TDD approach, we would first want to develop a set of tests 
 The following three tests specify several different outcomes that we might expect.
 First, we give a query that is known to give a valid result, and test whether it in fact gives such a result:
 
-\begin{lstlisting}[style=Python]
-def test_get_PubMedIDs_for_query_check_valid():
-    query = "friston-k AND 'free energy'"
-    ids = get_PubMedIDs_for_query(query)
-
-    # make sure that a list is returned
-    assert isinstance(ids, list)       
-    # make sure the list is not empty
-    assert len(ids) > 0
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=35, lastline=42]{../tests/testing_chapter/test_textmining.py}
 
 Second, we give a query with a known empty result, and make sure it returns an empty list:
 
-\begin{lstlisting}[style=Python]
-def test_get_PubMedIDs_for_query_check_empty():
-    query = "friston-k AND 'fizzbuzz'"
-    ids = get_PubMedIDs_for_query(query)
-
-    # make sure that a list is returned
-    assert isinstance(ids, list)   
-    # make sure the resulting list is empty
-    assert len(ids) == 0
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=45, lastline=52]{../tests/testing_chapter/test_textmining.py}
 
 With the minimal tests in place, we then move to writing the code for the module.
 We first create an empty function to ensure that the tests fail:
@@ -519,51 +371,7 @@ TypeError: object of type 'NoneType' has no len()
 
 Now we work with Copilot write the code to make the tests pass:
 
-\begin{lstlisting}[style=Python]
-# define the eutils base URL globally for the module
-BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
-
-
-def get_PubMedIDs_for_query(
-    query: str, retmax: int = None, esearch_url: str = None
-) -> list:
-    """
-    Search database for a given query and return a list of IDs.
-    :param query: str, the query to search for
-    :param retmax: int, the maximum number of results to return
-    :base_url: str, the base url for the pubmed search
-    :return: list, a list of pubmed IDs
-    """
-    # define the base url for the pubmed search
-    if esearch_url is None:
-        esearch_url = f"{BASE_URL}/esearch.fcgi"
-
-    params = format_pubmed_query_params(query, retmax=retmax)
-
-    response = requests.get(esearch_url, params=params)
-
-    return get_idlist_from_response(response)
-
-
-def format_pubmed_query_params(query: str, retmax: int = 10000) -> str:
-    """
-    Format a query for use with the pubmed api.
-    :param query: str, the query to format
-    :return: dict, the formatted query dict
-    """
-
-    # define the parameters for the search
-    return {"db": "pubmed", "term": query, "retmode": "json", "retmax": retmax}
-
-
-def get_idlist_from_response(response: requests.Response) -> list:
-    if response.status_code == 200:
-        # extract the pubmed IDs from the response
-        ids = response.json()["esearchresult"]["idlist"]
-        return ids
-    else:
-        raise ValueError("Bad request")
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=1, lastline=45]{../src/bettercode/testing/textmining.py}
 
 Note that we have split parts of the functionality into separate functions in order to make the code more understandable.
 Running the tests, we see that both of them pass.
@@ -575,14 +383,7 @@ We can also add additional tests to cover additional functions that we generated
 It can be useful to know if there are any portions of our code that are not being exercised by our tests, which is known as \textit{code coverage}.\index{code coverage}
 The \textit{pytest-cov} extension for the \textit{pytest} testing package can provide us with a report of test coverage for these tests:
 
-\begin{lstlisting}[style=shell]
----------- coverage: platform darwin, python 3.12.0-final-0----------
-Name                                     Stmts   Miss  Cover   Missing
-----------------------------------------------------------------------
-src/bettercode/textmining.py                30      1    97%   70
-----------------------------------------------------------------------
-TOTAL                                       30      1    97%
-\end{lstlisting}
+\lstinputlisting[style=shell]{generated/testing/pytest_textmining_coverage.txt}
 
 This report shows that of the 30 statements in our code, one of them is not covered by the tests.
 When we look at the missing code (denoted as being on line 70), we see that the missing line is this one from \texttt{get\_idlist\_from\_response}:
@@ -597,16 +398,7 @@ Since none of our test cases caused a bad request to occur, this line never gets
 We can address this by adding a test that makes sure that an exception is raised if an invalid base url is provided.
 To check for an exception, we need to use the \texttt{pytest.raises} context manager:\index{context manager}
 
-\begin{lstlisting}[style=Python]
-def test_get_PubMedIDs_for_query_check_badurl():
-    query = "friston-k AND 'free energy'"
-    # bad url
-    base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.f'
-    
-    # make sure that the function raises an exception
-    with pytest.raises(Exception):
-        ids = get_PubMedIDs_for_query(query, base_url=base_url)
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=55, lastline=62]{../tests/testing_chapter/test_textmining.py}
 
 After adding this test, we see that we now have 100\% coverage.
 It's important not to get too hung up on test coverage; rather than always aspiring to 100\% coverage, it's important to make sure that the most likely possible situations are tested.
@@ -625,13 +417,7 @@ In the \textit{pytest} framework we do this using a special Python operator call
 A decorator is function that takes another function as input, modifies its functionality, and returns another function; you don't need to understand in detail how decorators work for this particular usage.
 To refactor our tests above, we would first create the fixture by decorating the function that generates the fixture with the \texttt{@pytest.fixture} decorator, setting the \texttt{scope} variable to ``session'' so that the fixture is only generated once within the session:
 
-\begin{lstlisting}[style=Python]
-@pytest.fixture(scope="session")
-def ids():
-    query = "friston-k AND 'free energy'"
-    ids = get_PubMedIDs_for_query(query)
-    return ids
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=14, lastline=18]{../tests/testing_chapter/test_textmining.py}
 
 We can then refactor our tests for a valid query to use the fixture by passing it as an argument to the test function:
 
