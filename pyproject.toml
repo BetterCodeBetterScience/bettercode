@@ -120,3 +120,4 @@ markers = [
     "unit: mark a test as a unit test.",
     "integration: mark a test as an integration test."
 ]
+norecursedirs = ["_demos", ".git", ".tox", ".venv", "dist", "build", "*.egg", ".hypothesis"]
