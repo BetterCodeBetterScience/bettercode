@@ -5,6 +5,7 @@ executes them through a stdlib `code.InteractiveConsole`, capturing input,
 output, and tracebacks in the canonical interactive-Python format
 (>>> prompts, ... continuations, standard tracebacks).
 """
+
 from __future__ import annotations
 
 import code

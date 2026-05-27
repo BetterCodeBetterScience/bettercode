@@ -1,4 +1,5 @@
 """Tests for the REPL Session helper."""
+
 from repl_console import Session
 
 

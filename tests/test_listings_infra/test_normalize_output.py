@@ -1,4 +1,5 @@
 """Tests for output normalizers."""
+
 from normalize_output import apply_normalizers, NORMALIZERS
 
 
@@ -36,14 +37,14 @@ def test_file_paths_strips_repo_absolute_to_relative(tmp_path, monkeypatch):
     """Absolute paths under the repo root are rewritten to repo-relative."""
     monkeypatch.chdir(tmp_path)
     repo_root = str(tmp_path)
-    text = f"  File \"{repo_root}/src/bettercode/foo.py\", line 12, in foo"
+    text = f'  File "{repo_root}/src/bettercode/foo.py", line 12, in foo'
     result = NORMALIZERS["file_paths"](text)
-    assert result == "  File \"src/bettercode/foo.py\", line 12, in foo"
+    assert result == '  File "src/bettercode/foo.py", line 12, in foo'
 
 
 def test_file_paths_leaves_non_repo_paths_alone(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    text = "  File \"/usr/lib/python3.12/site-packages/x.py\", line 1, in y"
+    text = '  File "/usr/lib/python3.12/site-packages/x.py", line 1, in y'
     assert NORMALIZERS["file_paths"](text) == text
 
 
@@ -82,5 +83,6 @@ def test_apply_normalizers_runs_in_order():
 
 def test_apply_normalizers_unknown_name_raises():
     import pytest
+
     with pytest.raises(KeyError):
         apply_normalizers("anything", ["does_not_exist"])

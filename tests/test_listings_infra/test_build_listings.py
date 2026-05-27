@@ -1,4 +1,5 @@
 """End-to-end tests for the build_listings CLI."""
+
 import subprocess
 import sys
 from pathlib import Path
@@ -24,7 +25,12 @@ def tmp_repo(tmp_path):
     (tmp_path / "scripts").mkdir()
     # Copy the real script modules into the temp repo so build_listings.py
     # can import them.
-    for name in ("build_listings.py", "manifest.py", "normalize_output.py", "repl_console.py"):
+    for name in (
+        "build_listings.py",
+        "manifest.py",
+        "normalize_output.py",
+        "repl_console.py",
+    ):
         (tmp_path / "scripts" / name).write_text(
             (REPO_ROOT / "scripts" / name).read_text()
         )
@@ -40,8 +46,8 @@ def test_build_writes_normalized_output(tmp_repo):
         "outputs:\n"
         "  - id: echo\n"
         "    description: echo demo\n"
-        "    command: [\"python\", \"-c\", \"print('hello in 0.5s')\"]\n"
-        "    output_file: \"latex/generated/testing/echo.txt\"\n"
+        '    command: ["python", "-c", "print(\'hello in 0.5s\')"]\n'
+        '    output_file: "latex/generated/testing/echo.txt"\n'
         "    expected_exit_code: 0\n"
         "    normalize: [pytest_timings]\n"
     )
@@ -59,8 +65,8 @@ def test_build_fails_when_exit_code_mismatches(tmp_repo):
         "outputs:\n"
         "  - id: must_pass\n"
         "    description: but actually fails\n"
-        "    command: [\"python\", \"-c\", \"import sys; sys.exit(2)\"]\n"
-        "    output_file: \"latex/generated/testing/must_pass.txt\"\n"
+        '    command: ["python", "-c", "import sys; sys.exit(2)"]\n'
+        '    output_file: "latex/generated/testing/must_pass.txt"\n'
         "    expected_exit_code: 0\n"
         "    normalize: []\n"
     )
@@ -76,8 +82,8 @@ def test_build_accepts_nonzero_expected_exit(tmp_repo):
         "outputs:\n"
         "  - id: expect_fail\n"
         "    description: failure on purpose\n"
-        "    command: [\"python\", \"-c\", \"import sys; print('boom'); sys.exit(1)\"]\n"
-        "    output_file: \"latex/generated/testing/expect_fail.txt\"\n"
+        '    command: ["python", "-c", "import sys; print(\'boom\'); sys.exit(1)"]\n'
+        '    output_file: "latex/generated/testing/expect_fail.txt"\n'
         "    expected_exit_code: 1\n"
         "    normalize: []\n"
     )
@@ -94,14 +100,14 @@ def test_build_only_filters_to_one_entry(tmp_repo):
         "outputs:\n"
         "  - id: a\n"
         "    description: a\n"
-        "    command: [\"python\", \"-c\", \"print('A')\"]\n"
-        "    output_file: \"latex/generated/testing/a.txt\"\n"
+        '    command: ["python", "-c", "print(\'A\')"]\n'
+        '    output_file: "latex/generated/testing/a.txt"\n'
         "    expected_exit_code: 0\n"
         "    normalize: []\n"
         "  - id: b\n"
         "    description: b\n"
-        "    command: [\"python\", \"-c\", \"print('B')\"]\n"
-        "    output_file: \"latex/generated/testing/b.txt\"\n"
+        '    command: ["python", "-c", "print(\'B\')"]\n'
+        '    output_file: "latex/generated/testing/b.txt"\n'
         "    expected_exit_code: 0\n"
         "    normalize: []\n"
     )

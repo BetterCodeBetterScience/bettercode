@@ -3,6 +3,7 @@
 Each normalizer is a pure `str -> str` function registered in NORMALIZERS
 by name. Manifests reference normalizers by these names.
 """
+
 from __future__ import annotations
 
 import os
@@ -14,9 +15,11 @@ NORMALIZERS: dict[str, Callable[[str], str]] = {}
 
 def register(name: str) -> Callable[[Callable[[str], str]], Callable[[str], str]]:
     """Decorator: register a normalizer function under `name`."""
+
     def _wrap(fn: Callable[[str], str]) -> Callable[[str], str]:
         NORMALIZERS[name] = fn
         return fn
+
     return _wrap
 
 

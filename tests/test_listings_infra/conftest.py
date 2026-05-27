@@ -3,6 +3,7 @@
 Adds the `scripts/` directory to sys.path so tests can import the
 script modules directly (they are not installed as a package).
 """
+
 import sys
 from pathlib import Path
 

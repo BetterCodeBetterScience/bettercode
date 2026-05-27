@@ -1,4 +1,5 @@
 """Tests for the listings-manifest loader."""
+
 import pytest
 from manifest import load_manifest
 

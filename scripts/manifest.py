@@ -1,4 +1,5 @@
 """Listings manifest: dataclasses + YAML loader with validation."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -11,6 +12,7 @@ import yaml
 @dataclass
 class ManifestEntry:
     """One output to be generated and verified."""
+
     id: str
     description: str
     output_file: str
@@ -25,14 +27,14 @@ class ManifestEntry:
         has_driver = self.driver is not None
         if has_command == has_driver:
             raise ValueError(
-                f"entry {self.id!r}: exactly one of 'command' or 'driver' "
-                f"must be set"
+                f"entry {self.id!r}: exactly one of 'command' or 'driver' must be set"
             )
 
 
 @dataclass
 class Manifest:
     """Parsed listings manifest for a single chapter."""
+
     chapter: str
     outputs: list[ManifestEntry] = field(default_factory=list)
 

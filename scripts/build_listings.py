@@ -5,6 +5,7 @@ Usage:
     python scripts/build_listings.py build <chapter> [--only ID]
     python scripts/build_listings.py verify <chapter> [--only ID]
 """
+
 from __future__ import annotations
 
 import argparse
