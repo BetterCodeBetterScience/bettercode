@@ -196,6 +196,34 @@ True
 
 **This is a content change to the book.** Every existing `In :`/`Out:` block becomes `>>>`/result. The chapter intro (or preface) gains a sentence stating that examples use the standard Python REPL. The `repl` style in `designchanges.sty` may need a visual tweak; verify during step 10 of the migration.
 
+## Cross-block context and shared state
+
+Many code blocks in the book depend on context established in earlier blocks (a function defined a few blocks back, an `import` from earlier in the session, a value from a prior REPL line). The model handles this through three explicit patterns:
+
+**Pattern 1 — Function + test across two files.** The most common case in the testing chapter. The book shows a function in one block and a test that calls it in the next. These map to two canonical files (`src/bettercode/testing/<concept>_vN.py` and `tests/testing_chapter/test_<concept>.py`). The test file does a real `import` of the function; LaTeX pulls each block from its own file. There is no shared in-memory state — execution always re-imports — so the dependency is explicit and verifiable.
+
+**Pattern 2 — One file, multiple LaTeX blocks via line ranges.** When the book shows one coherent piece of code interrupted by prose, use one runnable file and multiple `\lstinputlisting` calls with `firstline=…, lastline=…`. The file as a whole is the runnable unit; the book carves it up visually.
+
+```latex
+\lstinputlisting[style=Python, firstline=1,  lastline=10]{../src/bettercode/testing/foo.py}
+% ... prose ...
+\lstinputlisting[style=Python, firstline=11, lastline=25]{../src/bettercode/testing/foo.py}
+```
+
+**Pattern 3 — REPL session shown as multiple blocks.** Three options, in preference order:
+- **3a (preferred):** Each visual block is its own driver script that does whatever setup it needs (re-import, redefine). Cheap, isolated, each block independently regenerable. Small redundancy across driver scripts, but invisible to the reader.
+- **3b:** One driver produces one long transcript file; LaTeX uses `firstline/lastline` to display slices. Single source of truth for the session, but slice boundaries are fragile when prose moves around.
+- **3c:** Single driver, single file — when the book actually shows one continuous block.
+
+**Cross-chapter references.** Same as Pattern 1: the canonical file does a real `import` from another chapter's module. The book either shows the import (truthful) or hides it via `firstline=2` (cosmetic). Either way, the dependency is real and the build verifies it.
+
+**Pedagogical-vs-canonical mismatch in imports.** The book sometimes shows imports the canonical library file does not need (e.g., the `escape_velocity` block shows `import numpy as np` because the test uses it). Three valid handling strategies, decided case-by-case during migration step 1:
+1. Hide leading imports in the book via `firstline=N`; show them in the test block where they are actually used.
+2. Add a "pedagogical preamble" file per block group that bundles imports plus the function as one runnable unit.
+3. Lightly edit the book's narrative so imports appear where the canonical files put them.
+
+Record the rule chosen for each block in `CONVERSION_NOTES.md`. Step 1's catalog will surface how often this comes up and whether a fourth pattern emerges that needs explicit design treatment.
+
 ## Workflow
 
 **Author edits a block:**
@@ -258,6 +286,8 @@ pdf-no-verify:
 | Traceback line numbers drift when snippet files are reformatted | `verify` catches the drift; author regenerates. |
 | Author bypasses `verify` locally and pushes stale outputs | CI runs the same `verify` step on PR; blocks merge. |
 | YAML manifest grows unwieldy as more chapters are added | Per-chapter sharding; `--only <id>` for fast iteration. |
+| Inter-block dependencies (function defined in block A, used in block B) | Covered by the three patterns in "Cross-block context and shared state". Step-1 catalog surfaces frequency and any fourth pattern. |
+| Book shows imports the canonical file doesn't need (or vice versa) | Decide per-block during migration (hide via line range, add preamble file, or edit prose). Rules recorded in CONVERSION_NOTES.md. |
 
 ## Extensibility
 
