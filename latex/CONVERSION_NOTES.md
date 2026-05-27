@@ -155,6 +155,23 @@ produces **158 output lines** (79 `\begin` + 79 `\end`), representing
 
 ---
 
+## Resolutions (decided 2026-05-27)
+
+| Q | Decision |
+|---|----------|
+| 1 | Informational only — the plan's "158" was a miscount (158 grep lines = 79 begin + 79 end). 79 is correct. Note the correction here; no other docs need updating. |
+| 2 | **Fix the book.** Update block 17 in `book-testing.tex` to show the correct path (`pytest tests/testing_chapter/test_find_outliers.py`). Manifest entry generates output matching the corrected text. Treat the original as a typo. |
+| 3 | **Separate files when the failure run IS shown; keep inline when only the bad code is shown.** Apply to blocks 22–23 case-by-case. |
+| 4 | **Separate files:** `test_distance_v1_failing.py` (wrong value, `expected_exit_code: 1`) and `test_distance_v2_fixed.py` (correct value, `expected_exit_code: 0`). |
+| 5 | **Keep inline if the chapter does not show the failure output;** extract only if a manifest output references the bad version. |
+| 6 | **Keep inline.** Generating output that depends on a non-canonical stub module is fragile. |
+| 7 | **Mock the PubMed API.** Use `pytest-mock`/canned fixtures so CI is deterministic and offline-safe. The chapter's lesson is parametrization, not live API calls. Minor framing tweak to the chapter's prose may be needed. |
+| 8 | Pin hypothesis with `@hypothesis.seed(42)` + `@settings(database=None)` on the canonical property test. Add `temp_paths` to the manifest entry's normalizers. |
+| 9 | **Apply Q3 rule:** if block 64's natural-order output appears in the chapter, use separate files `test_ordering_v1_natural.py` / `test_ordering_v2_marked.py`. Otherwise keep block 64 inline. |
+| 10 | **Add `worker_count` normalizer** to `scripts/normalize_output.py`: regex `\b\d+ workers\b` → `N workers`. Plus a unit test. Do this as part of Task 14 or 15 (before generating the affected output). |
+
+---
+
 ## Summary counts
 
 | Type | Count |
