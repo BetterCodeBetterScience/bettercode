@@ -101,7 +101,7 @@ outputs:
   - id: pytest_textmining_coverage
     description: "Coverage report for textmining module showing 97% coverage"
     command: ["uv", "run", "pytest", "--tb=short", "tests/testing_chapter/test_textmining.py",
-              "--cov=src/bettercode/testing/textmining", "--cov-report=term-missing",
+              "--cov=bettercode.testing.textmining", "--cov-report=term-missing",
               "--no-header", "-q"]
     output_file: "latex/generated/testing/pytest_textmining_coverage.txt"
     expected_exit_code: 0

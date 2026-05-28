@@ -1,15 +1,10 @@
-...............
-WARNING: Failed to generate report: No data to report.
-
-                                                                         [100%]
+...............                                                          [100%]
 ================================ tests coverage ================================
 ______________ coverage: platform darwin, python 3.13.11-final-0 _______________
 
+Name                                   Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------
+src/bettercode/testing/textmining.py      26      0   100%
+--------------------------------------------------------------------
+TOTAL                                     26      0   100%
 15 passed in 3.71s
-.venv/lib/python3.13/site-packages/coverage/inorout.py:561: CoverageWarning: Module src/bettercode/testing/textmining was never imported. (module-not-imported); see https://coverage.readthedocs.io/en/7.13.4/messages.html#warning-module-not-imported
-  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
-.venv/lib/python3.13/site-packages/coverage/control.py:958: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.io/en/7.13.4/messages.html#warning-no-data-collected
-  self._warn("No data was collected.", slug="no-data-collected")
-.venv/lib/python3.13/site-packages/pytest_cov/plugin.py:363: CovReportWarning: Failed to generate report: No data to report.
-
-  warnings.warn(CovReportWarning(message), stacklevel=1)
