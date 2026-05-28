@@ -9,4 +9,4 @@ collecting ... collected 3 items / 2 deselected / 1 selected
 
 tests/testing_chapter/test_markers.py::test_integration PASSED           [100%]
 
-======================= 1 passed, 2 deselected in 0.10s ========================
+======================= 1 passed, 2 deselected in 0.09s ========================

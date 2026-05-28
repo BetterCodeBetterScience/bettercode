@@ -31,4 +31,4 @@ tests/testing_chapter/test_parallel.py::test_parallel[6]
 tests/testing_chapter/test_parallel.py::test_parallel[7] 
 tests/testing_chapter/test_parallel.py::test_parallel[8] 
 tests/testing_chapter/test_parallel.py::test_parallel[9] 
-============================== 10 passed in 4.69s ==============================
+============================== 10 passed in 4.36s ==============================

@@ -9,23 +9,12 @@ tests/testing_chapter/_demos/test_escape_velocity_typo.py F              [100%]
 
 =================================== FAILURES ===================================
 _____________________________ test_escape_velocity _____________________________
-
-    def test_escape_velocity():
-        """
-        Test the escape_velocity function with known values.
-        Note: ev_expected has a typo (1186.0 instead of 11186.0) — intentionally failing demo.
-        """
-        mass_earth = 5.972e24  # Earth mass in kg
-        radius_earth = 6.371e6  # Earth radius in meters
-        ev_expected = 1186.0  # typo: should be 11186.0
-        ev_computed = escape_velocity(mass_earth, radius_earth)
->       assert np.allclose(ev_expected, ev_computed), "Test failed!"
-E       AssertionError: Test failed!
-E       assert False
-E        +  where False = <function allclose at 0xADDR>(1186.0, 11185.97789184991)
-E        +    where <function allclose at 0xADDR> = np.allclose
-
-tests/testing_chapter/_demos/test_escape_velocity_typo.py:15: AssertionError
+tests/testing_chapter/_demos/test_escape_velocity_typo.py:15: in test_escape_velocity
+    assert np.allclose(ev_expected, ev_computed), "Test failed!"
+E   AssertionError: Test failed!
+E   assert False
+E    +  where False = <function allclose at 0xADDR>(1186.0, 11185.97789184991)
+E    +    where <function allclose at 0xADDR> = np.allclose
 =========================== short test summary info ============================
 FAILED tests/testing_chapter/_demos/test_escape_velocity_typo.py::test_escape_velocity
-============================== 1 failed in 0.14s ===============================
+============================== 1 failed in 0.12s ===============================

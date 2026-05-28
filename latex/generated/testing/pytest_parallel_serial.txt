@@ -18,4 +18,4 @@ tests/testing_chapter/test_parallel.py::test_parallel[7] PASSED          [ 80%]
 tests/testing_chapter/test_parallel.py::test_parallel[8] PASSED          [ 90%]
 tests/testing_chapter/test_parallel.py::test_parallel[9] PASSED          [100%]
 
-============================= 10 passed in 10.16s ==============================
+============================= 10 passed in 10.15s ==============================

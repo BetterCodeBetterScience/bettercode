@@ -107,6 +107,53 @@ def test_worker_count_leaves_other_numbers_alone():
     assert NORMALIZERS["worker_count"](text) == text
 
 
+def test_strip_docstrings_removes_multi_line_docstring():
+    text = (
+        '    def test_foo():\n'
+        '        """\n'
+        '        Multi-line docstring.\n'
+        '        Second line of docstring.\n'
+        '        """\n'
+        '        x = 1\n'
+    )
+    expected = '    def test_foo():\n        x = 1\n'
+    assert NORMALIZERS["strip_docstrings"](text) == expected
+
+
+def test_strip_docstrings_removes_single_line_docstring():
+    text = (
+        '    def test_foo():\n'
+        '        """Single line docstring."""\n'
+        '        x = 1\n'
+    )
+    expected = '    def test_foo():\n        x = 1\n'
+    assert NORMALIZERS["strip_docstrings"](text) == expected
+
+
+def test_strip_docstrings_leaves_string_literals_alone():
+    """A `\"\"\"` inside a code expression isn't at column 0 of whitespace-only."""
+    text = '    msg = "hello"\n    print(msg)\n'
+    assert NORMALIZERS["strip_docstrings"](text) == text
+
+
+def test_strip_docstrings_handles_multiple_docstrings():
+    text = (
+        '    def a():\n'
+        '        """doc a"""\n'
+        '        return 1\n'
+        '    def b():\n'
+        '        """doc b"""\n'
+        '        return 2\n'
+    )
+    expected = (
+        '    def a():\n'
+        '        return 1\n'
+        '    def b():\n'
+        '        return 2\n'
+    )
+    assert NORMALIZERS["strip_docstrings"](text) == expected
+
+
 # --- xdist_schedule normalizer tests ---
 
 XDIST_SAMPLE_A = (

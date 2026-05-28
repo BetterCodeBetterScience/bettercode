@@ -10,4 +10,4 @@ collecting ... collected 3 items / 1 deselected / 2 selected
 tests/testing_chapter/test_markers.py::test_unit1 PASSED                 [ 50%]
 tests/testing_chapter/test_markers.py::test_unit2 PASSED                 [100%]
 
-======================= 2 passed, 1 deselected in 0.09s ========================
+======================= 2 passed, 1 deselected in 0.08s ========================

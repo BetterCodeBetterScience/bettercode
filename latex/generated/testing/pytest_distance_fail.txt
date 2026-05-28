@@ -9,16 +9,12 @@ tests/testing_chapter/_demos/test_distance_v1_failing.py ...F..          [100%]
 
 =================================== FAILURES ===================================
 _______________________ test_distance_mixed_coordinates ________________________
-
-    def test_distance_mixed_coordinates():
-        # AI-generated test with wrong expected value — intentionally failing demo
->       assert distance((1, -2), (-4, 6)) == math.sqrt(125)
-E       assert 9.433981132056603 == 11.180339887498949
-E        +  where 9.433981132056603 = distance((1, -2), (-4, 6))
-E        +  and   11.180339887498949 = <built-in function sqrt>(125)
-E        +    where <built-in function sqrt> = math.sqrt
-
-tests/testing_chapter/_demos/test_distance_v1_failing.py:20: AssertionError
+tests/testing_chapter/_demos/test_distance_v1_failing.py:20: in test_distance_mixed_coordinates
+    assert distance((1, -2), (-4, 6)) == math.sqrt(125)
+E   assert 9.433981132056603 == 11.180339887498949
+E    +  where 9.433981132056603 = distance((1, -2), (-4, 6))
+E    +  and   11.180339887498949 = <built-in function sqrt>(125)
+E    +    where <built-in function sqrt> = math.sqrt
 =========================== short test summary info ============================
 FAILED tests/testing_chapter/_demos/test_distance_v1_failing.py::test_distance_mixed_coordinates
-========================= 1 failed, 5 passed in 0.14s ==========================
+========================= 1 failed, 5 passed in 0.13s ==========================

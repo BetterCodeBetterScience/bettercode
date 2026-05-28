@@ -9,13 +9,9 @@ tests/testing_chapter/_demos/test_property_based_smoke.py F              [100%]
 
 =================================== FAILURES ===================================
 __________________ test_linear_regression_without_validation ___________________
-
-    @seed(42)
->   @settings(database=None)
+tests/testing_chapter/_demos/test_property_based_smoke.py:9: in test_linear_regression_without_validation
+    @settings(database=None)
                    ^^^
-
-tests/testing_chapter/_demos/test_property_based_smoke.py:9: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 tests/testing_chapter/_demos/test_property_based_smoke.py:21: in test_linear_regression_without_validation
     params = linear_regression(X, y, validate=False)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -25,31 +21,25 @@ src/bettercode/testing/linear_regression.py:36: in linear_regression
 .venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:669: in inv
     ainv = _umath_linalg.inv(a, signature=signature)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-err = 'invalid value', flag = 8
-
-    def _raise_linalgerror_singular(err, flag):
->       raise LinAlgError("Singular matrix")
-E       numpy.linalg.LinAlgError: Singular matrix
-E       Falsifying example: test_linear_regression_without_validation(
-E           X=array([[0.],
-E                  [0.],
-E                  [0.],
-E                  [0.],
-E                  [0.],
-E                  [0.],
-E                  [0.],
-E                  [0.],
-E                  [0.],
-E                  [0.]]),
-E           y=array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]),  # or any other generated value
-E       )
-E       Explanation:
-E           These lines were always and only run by failing examples:
-E               .venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:163
-
-.venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:163: LinAlgError
+.venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:163: in _raise_linalgerror_singular
+    raise LinAlgError("Singular matrix")
+E   numpy.linalg.LinAlgError: Singular matrix
+E   Falsifying example: test_linear_regression_without_validation(
+E       X=array([[0.],
+E              [0.],
+E              [0.],
+E              [0.],
+E              [0.],
+E              [0.],
+E              [0.],
+E              [0.],
+E              [0.],
+E              [0.]]),
+E       y=array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]),  # or any other generated value
+E   )
+E   Explanation:
+E       These lines were always and only run by failing examples:
+E           .venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:163
 =========================== short test summary info ============================
 FAILED tests/testing_chapter/_demos/test_property_based_smoke.py::test_linear_regression_without_validation
-============================== 1 failed in 2.02s ===============================
+============================== 1 failed in 1.85s ===============================

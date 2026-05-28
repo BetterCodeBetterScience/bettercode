@@ -10,4 +10,4 @@ collecting ... collected 2 items
 tests/testing_chapter/test_ordering.py::test_first PASSED                [ 50%]
 tests/testing_chapter/test_ordering.py::test_second PASSED               [100%]
 
-============================== 2 passed in 0.09s ===============================
+============================== 2 passed in 0.08s ===============================

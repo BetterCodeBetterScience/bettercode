@@ -87,6 +87,24 @@ def worker_count(text: str) -> str:
     return re.sub(r"\b\d+ workers\b", "N workers", text)
 
 
+@register("strip_docstrings")
+def strip_docstrings(text: str) -> str:
+    """Remove triple-quoted docstrings from rendered Python source.
+
+    Matches an indented line starting with `\"\"\"` through its closing
+    `\"\"\"`, including the trailing newline. Handles both single-line
+    and multi-line docstrings. Defense-in-depth pair with `pytest --tb=short`:
+    --tb=short usually removes function source entirely, but coverage and
+    other tools may still surface docstrings.
+    """
+    return re.sub(
+        r'^(\s+)""".*?"""\s*\n',
+        "",
+        text,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+
+
 @register("xdist_schedule")
 def xdist_schedule(text: str) -> str:
     """Canonicalize xdist scheduling output to make it deterministic.
