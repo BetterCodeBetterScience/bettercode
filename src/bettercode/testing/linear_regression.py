@@ -1,7 +1,8 @@
 import numpy as np
 
 
-def linear_regression_verbose(X, y):
+def linear_regression_verbose(X: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """Fit ordinary least squares regression using the normal equation."""
     # Add a column of ones to the input data to account for the intercept term
     X_with_intercept = np.c_[np.ones(X.shape[0]), X]
 
@@ -14,7 +15,8 @@ def linear_regression_verbose(X, y):
     return beta
 
 
-def _validate_input(X, y):
+def _validate_input(X: np.ndarray, y: np.ndarray) -> None:
+    """Raise ValueError if the regression inputs are degenerate or non-finite."""
     if np.isinf(X).any() or np.isinf(y).any():
         raise ValueError("Input data contains infinite values")
     if np.isnan(X).any() or np.isnan(y).any():
@@ -27,8 +29,10 @@ def _validate_input(X, y):
         raise ValueError("Input data is not full rank")
 
 
-def linear_regression(X, y, validate=True):
-
+def linear_regression(
+    X: np.ndarray, y: np.ndarray, validate: bool = True
+) -> np.ndarray:
+    """Fit ordinary least squares regression, optionally validating inputs."""
     if validate:
         _validate_input(X, y)
 

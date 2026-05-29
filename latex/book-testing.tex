@@ -157,7 +157,7 @@ Running this with the original function definition, we see that it fails:
 
 We can now fix the code by returning an empty list if zero standard deviation is detected:
 
-\lstinputlisting[style=Python, firstline=25, lastline=28]{../src/bettercode/testing/find_outliers_v2_fixed.py}
+\lstinputlisting[style=Python, firstline=16, lastline=19]{../src/bettercode/testing/find_outliers_v2_fixed.py}
 
 Here we add a comment to explain the intention of the statement.
 Running the tests now will show that the problem is fixed:
@@ -373,7 +373,7 @@ TypeError: object of type 'NoneType' has no len()
 
 Now we work with Copilot write the code to make the tests pass:
 
-\lstinputlisting[style=Python, firstline=1, lastline=45]{../src/bettercode/testing/textmining.py}
+\lstinputlisting[style=Python, firstline=1, lastline=52]{../src/bettercode/testing/textmining.py}
 
 Note that we have split parts of the functionality into separate functions in order to make the code more understandable.
 Running the tests, we see that both of them pass.
@@ -518,7 +518,7 @@ We will generate a fixture so that the valid record and PubMed ID can be reused 
 
 Armed with these tests, we can then develop the code for \texttt{get\_record\_from\_PubMedID}:
 
-\lstinputlisting[style=Python, firstline=48, lastline=65]{../src/bettercode/testing/textmining.py}
+\lstinputlisting[style=Python, firstline=55, lastline=72]{../src/bettercode/testing/textmining.py}
 
 This passes the tests, so we can now move to writing some initial tests for \texttt{parse\_year\_from\_PubMed\_record}:
 
@@ -566,7 +566,7 @@ def linear_regression(X, y):
 
 Asking Copilot to make the code more readable, we get this somewhat overly verbose version:
 
-\lstinputlisting[style=Python, firstline=4, lastline=14]{../src/bettercode/testing/linear_regression.py}
+\lstinputlisting[style=Python, firstline=4, lastline=15]{../src/bettercode/testing/linear_regression.py}
 
 The linear regression computation requires several things to be true of the input data in order to proceed without error:
 
@@ -578,7 +578,7 @@ The linear regression computation requires several things to be true of the inpu
 
 In order to ensure that the input data are valid, we generate a function that validates the inputs, raising an exception if they are not, and we include this in our linear regression function:
 
-\lstinputlisting[style=Python, firstline=17, lastline=36]{../src/bettercode/testing/linear_regression.py}
+\lstinputlisting[style=Python, firstline=18, lastline=40]{../src/bettercode/testing/linear_regression.py}
 
 Now we can use the \texttt{hypothesis} module to throw a range of data at this function and see if it fails, using the following test:
 

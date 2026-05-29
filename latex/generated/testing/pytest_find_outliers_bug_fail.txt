@@ -8,10 +8,10 @@ _____________________ test_find_outliers_identical_values ______________________
 tests/testing_chapter/_demos/test_find_outliers_v1_buggy.py:16: in test_find_outliers_identical_values
     outliers = find_outliers(data, threshold=2.0)
                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/bettercode/testing/find_outliers_v1_buggy.py:29: in find_outliers
+src/bettercode/testing/find_outliers_v1_buggy.py:20: in find_outliers
     z_score = abs(value - mean) / std
               ^^^^^^^^^^^^^^^^^^^^^^^
 E   ZeroDivisionError: float division by zero
 =========================== short test summary info ============================
 FAILED tests/testing_chapter/_demos/test_find_outliers_v1_buggy.py::test_find_outliers_identical_values
-========================= 1 failed, 1 passed in 0.14s ==========================
+========================= 1 failed, 1 passed in 0.13s ==========================

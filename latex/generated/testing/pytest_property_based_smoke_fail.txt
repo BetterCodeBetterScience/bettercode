@@ -11,7 +11,7 @@ tests/testing_chapter/_demos/test_property_based_smoke.py:9: in test_linear_regr
 tests/testing_chapter/_demos/test_property_based_smoke.py:21: in test_linear_regression_without_validation
     params = linear_regression(X, y, validate=False)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/bettercode/testing/linear_regression.py:36: in linear_regression
+src/bettercode/testing/linear_regression.py:40: in linear_regression
     return np.linalg.inv(X.T @ X) @ X.T @ y
            ^^^^^^^^^^^^^^^^^^^^^^
 .venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:669: in inv
@@ -38,4 +38,4 @@ E       These lines were always and only run by failing examples:
 E           .venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:163
 =========================== short test summary info ============================
 FAILED tests/testing_chapter/_demos/test_property_based_smoke.py::test_linear_regression_without_validation
-============================== 1 failed in 1.89s ===============================
+============================== 1 failed in 2.43s ===============================
