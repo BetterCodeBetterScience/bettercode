@@ -45,7 +45,7 @@ There are two aspects of complexity that are important to understand.  First, an
 One important place where complexity is useful, and a bit tricky, is in thinking about loops. It's generally not possible to tell the complexity implications from the looping structure itself, since it depends on what is being done within each loop. For example, take the following function:
 
 \begin{lstlisting}[style=Python]
-def find_duplicates(items):
+def find_duplicates(items: list) -> list:
     duplicates = []
     for item in items:
         if items.count(item) > 1 and item not in duplicates:
@@ -56,7 +56,7 @@ def find_duplicates(items):
 This might seem like it would be $O(N)$ since it simply loops through the items.  However, if we look at the operations that are being performed, we see that the \texttt{.count()} operation is $O(N)$ (since it needs to look at all items) and the \texttt{item not in duplicates} needs to traverse an unknown portion of the list depending on the number of duplicates. Thus, this procedure is $O(N^2)$, since the count operation alone is $O(N)$ and must be performed N times.  On the other hand, take the following code:
 
 \begin{lstlisting}[style=Pythonshort]
-def validate_records(records):
+def validate_records(records: list) -> None:
     for record in records:
         for field in ['name', 'email', 'phone']:
             validate_field(record, field)
@@ -77,7 +77,7 @@ There are a couple of important points to know when profiling code. First, it's 
 Function profiling looks at the execution time taken by each function.  Let's say that we have two different implementations of a function, in this case using functions to find duplicates in an array of numbers, where one is efficient and one is inefficient:
 
 \begin{lstlisting}[style=Python]
-def find_duplicates_inefficient(data):
+def find_duplicates_inefficient(data: list) -> list:
     duplicates = []
     seen = []
     
@@ -91,7 +91,7 @@ def find_duplicates_inefficient(data):
     return duplicates
 
 
-def find_duplicates_efficient(data):
+def find_duplicates_efficient(data: list) -> list:
     duplicates = set()
     seen = set()
     
@@ -112,7 +112,7 @@ import pstats
 import io
 import numpy as np
 
-def compare_duplicate_finding(data_size=10000):
+def compare_duplicate_finding(data_size: int = 10000) -> None:
     data = list(range(data_size)) + list(range(data_size // 2))
     np.random.shuffle(data)
     
@@ -236,7 +236,7 @@ As an example we can look at the use of the \texttt{.copy()} method in NumPy.  I
 from memory_profiler import profile
 
 @profile
-def process_with_copies(n_rows=2000000):
+def process_with_copies(n_rows: int = 2000000) -> np.ndarray:
     data = np.random.randn(n_rows, 5)
     
     data_copy1 = data.copy() 
@@ -251,8 +251,8 @@ def process_with_copies(n_rows=2000000):
     return result
 
 @profile
-def process_without_copies(n_rows=2000000):
-    data = np.random.randn(n_rows, 5) 
+def process_without_copies(n_rows: int = 2000000) -> np.ndarray:
+    data = np.random.randn(n_rows, 5)
     
     mean = data.mean()
     std = data.std()
@@ -318,7 +318,7 @@ There is a caveat to this kind of memory profiling, which is that it is less exa
 \textit{pandas} data frames can exhibit some surprising memory usage features, and memory profiling can often be useful to optimize \textit{pandas} workflows.  \texttt{pandas} has a built-in memory profiling function for data frames, called \texttt{.memory\_usage()}.  Here we will use this to see an example of a surprising memory usage feature.  We first create functions to generate a data frame with a number of string variables, and to analyze the memory footprint of the data frame. Note that it's important to use \texttt{deep=True} when using the memory analyzer, since otherwise it will only report the size of the pointers in memory and not the size of the actual data that are being pointed to:
 
 \begin{lstlisting}[style=Python]
-def create_sample_data(n_rows=100000):
+def create_sample_data(n_rows: int = 100000) -> pd.DataFrame:
     data = {
         'subject_id': range(n_rows),
         'condition': np.random.choice(
@@ -336,7 +336,7 @@ def create_sample_data(n_rows=100000):
     
     return pd.DataFrame(data)
 
-def analyze_memory(df):
+def analyze_memory(df: pd.DataFrame) -> int:
 
     print("\nMemory usage per column:")
     memory_usage = df.memory_usage(deep=True)
@@ -402,10 +402,10 @@ A common source of slow execution is use of an inefficient algorithm.  Let's reu
 
 \begin{lstlisting}[style=Python]
 import random
-def create_random_list(n):
+def create_random_list(n: int) -> list[int]:
     return [random.randint(1, n) for i in range(n)]
 
-def find_duplicates_slow(lst):
+def find_duplicates_slow(lst: list) -> list:
     duplicates = []
     for i in range(len(lst)):
         for j in range(i+1, len(lst)):
@@ -425,7 +425,7 @@ Out:
 This is in fact worse than $O(N^2)$, because the added check for \texttt{lst[i] not in duplicates} scales with the number of duplicates, such that it could approach $O(N^3)$ if there were a high number of duplicates. We can speed this up substantially by using a dictionary and keeping track of how many times each item appears.  This only requires a single loop, giving it a time complexity of O(N).
 
 \begin{lstlisting}[style=Python]
-def find_duplicates_fast(lst):
+def find_duplicates_fast(lst: list) -> list:
     seen = {}
     duplicates = []
     for item in lst:
@@ -450,7 +450,7 @@ Notice that the first results are reported in milliseconds and the second in mic
 \begin{lstlisting}[style=Python]
 from collections import Counter
 
-def find_duplicates_counter(lst):
+def find_duplicates_counter(lst: list) -> list:
     duplicates = [item for item, count in Counter(lst).items() if count > 1]
     return duplicates
 
@@ -477,7 +477,7 @@ nrows, ncolumns = 1000, 100
 rng = np.random.default_rng(seed=42)
 random_data = rng.random((nrows, ncolumns))
 
-def fill_df_slow(random_data):
+def fill_df_slow(random_data: np.ndarray) -> pd.DataFrame:
     nrows, ncolumns = random_data.shape
     columns = ['column_' + str(i) for i in range(ncolumns)]
     df = pd.DataFrame(columns=columns)
@@ -497,7 +497,7 @@ Out:
 We can compare this to a function that also loops through each row of data, but instead of adding the data to a data frame it adds them to a dictionary, and then converts the dictionary to a data frame:
 
 \begin{lstlisting}[style=Python]
-def fill_df_fast(random_data):
+def fill_df_fast(random_data: np.ndarray) -> pd.DataFrame:
     nrows, ncolumns = random_data.shape
     columns = ['column_' + str(i) for i in range(ncolumns)]
     df = pd.DataFrame({columns[j]: random_data[:, j] for j in range(ncolumns)})
@@ -516,7 +516,7 @@ Again notice the difference in units between the two measurements.  This method 
 We can make it even faster by directly passing the \textit{NumPy} array into pandas:
 
 \begin{lstlisting}[style=Python]
-def fill_df_superfast(random_data):
+def fill_df_superfast(random_data: np.ndarray) -> pd.DataFrame:
     nrows, ncolumns = random_data.shape
     columns = ['column_' + str(i) for i in range(ncolumns)]
     df = pd.DataFrame(random_data, columns=columns)
@@ -557,7 +557,7 @@ Here we see that there are major differences between data types.  Sets are by fa
 Any time one is working with \textit{NumPy} or \textit{pandas} objects, the presence of a loop in the code should count as a bad smell.  These packages have highly optimized vectorized operations, so the use of loops will almost always be orders of magnitude slower.  For example, we can compute the dot product of two arrays using a list comprehension (which is effectively a loop):\index{list comprehension}
 
 \begin{lstlisting}[style=Pythonshort]
-def dotprod_by_hand(a, b):
+def dotprod_by_hand(a: np.ndarray, b: np.ndarray) -> float:
     return sum([a[i]*b[i] for i in range(len(a))])
 \end{lstlisting}
 
@@ -815,7 +815,7 @@ def sum_of_squares(n: int, seed: int) -> float:
     return total
 
 
-def main():
+def main() -> None:
     seed = int(sys.argv[1]) if len(sys.argv) > 1 else 42
     n = 1_000_000
     iterations = 100
@@ -931,7 +931,7 @@ For many Python operations we can take advantage of something called ``just-in-t
 There are several tools for JIT compilation in Python; here I will focus on the \textit{Numba} package, but the \textit{JAX} package is also popular.  With numba, JIT compilation is as simple as adding a \texttt{@jit} decorator to the function:\index{JAX}\index{Numba}
 
 \begin{lstlisting}[style=Python]
-def sum_of_squares_python(n):
+def sum_of_squares_python(n: int) -> float:
     total = 0.0  # Use float to avoid integer overflow
     for i in range(n):
         total += i ** 2
@@ -939,14 +939,14 @@ def sum_of_squares_python(n):
 
 # *Numba* JIT compiled version
 @jit(nopython=True)
-def sum_of_squares_numba(n):
+def sum_of_squares_numba(n: int) -> float:
     total = 0.0  # Use float to match Python version
     for i in range(n):
         total += i ** 2
     return total
 
 # *NumPy* vectorized version
-def sum_of_squares_numpy(n):
+def sum_of_squares_numpy(n: int) -> float:
     return np.sum(np.arange(n, dtype=np.float64) ** 2)
 \end{lstlisting}
 
@@ -954,7 +954,7 @@ Comparing the performance of these two functions with ten million values, we see
 
 \begin{lstlisting}[style=Python]
 # Pure Python version with list
-def sum_of_squares_python_list(n):
+def sum_of_squares_python_list(n: int) -> float:
     values = []
     for i in range(n):
         values.append(i ** 2)
@@ -962,7 +962,7 @@ def sum_of_squares_python_list(n):
 
 # *Numba* object mode with list
 @jit(nopython=False)
-def sum_of_squares_numba_object(n):
+def sum_of_squares_numba_object(n: int) -> float:
     values = [] 
     for i in range(n):
         values.append(i ** 2)
@@ -1075,7 +1075,7 @@ where $c$ is a point on the complex plane, and $z_0 = 0$.  A point is defined as
 Here is the initial code that I generated using Claude.  First, the function to calculate the escape time for a point:
 
 \begin{lstlisting}[style=Python]
-def get_mandelbrot_pixel(c_real, c_imag, max_iter):
+def get_mandelbrot_pixel(c_real: float, c_imag: float, max_iter: int) -> int:
     """Calculates the escape time of a single point."""
     z_real = 0
     z_imag = 0
@@ -1092,7 +1092,7 @@ def get_mandelbrot_pixel(c_real, c_imag, max_iter):
 Note that this function contains a pure Python loop, which we would never actually use in real production code; rather, we would either vectorize it using Numpy or apply JIT compilation using Numba, but I'm using it for this example exactly because it's so computationally intensive. We then need to break up the data in order to perform the computation in groups across a single chunk of data, which we define as a set of rows in the image:
 
 \begin{lstlisting}[style=Python]
-def compute_mandelbrot_rows(args):
+def compute_mandelbrot_rows(args: tuple) -> int:
     start_row, end_row, width, height, max_iter = args
     
     # Define the complex plane region
@@ -1115,7 +1115,7 @@ def compute_mandelbrot_rows(args):
 We then need to generate the chunks and run the process in parallel across them:
 
 \begin{lstlisting}[style=Python]
-def run_parallel(grid_size, ncores=None, chunking_factor=1):
+def run_parallel(grid_size: tuple, ncores: int | None = None, chunking_factor: int = 1) -> tuple[int, float, int]:
     width, height, max_iter = grid_size
     
     if ncores is not None:
@@ -1147,7 +1147,7 @@ def run_parallel(grid_size, ncores=None, chunking_factor=1):
 Notice that we pass in a \texttt{chunking\_factor}, which helps determine the number of chunks that the data will be broken into, defaulting to 1 which means that the number of chunks equals the number of available cores. For comparison, we will also run it in serial on a single core:
 
 \begin{lstlisting}[style=Python]
-def run_serial(grid_size):
+def run_serial(grid_size: tuple) -> tuple[int, float]:
     width, height, max_iter = grid_size
     
     start_time = time.time()

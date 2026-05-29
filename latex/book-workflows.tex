@@ -388,7 +388,7 @@ from bettercode.simple_workflow.visualization import (
     generate_clustered_heatmap,
 )
 
-def main():
+def main() -> None:
     """Generate and save clustered heatmap."""
     # ruff: noqa: F821
     input_path = Path(snakemake.input[0])

@@ -732,11 +732,11 @@ This shows that \textit{Zarr} obtains slightly more compression than HDF5, each 
 import time
 nreps = 10
 
-def load_h5py(filename):
+def load_h5py(filename: str) -> np.ndarray:
     with h5py.File(filename, 'r') as f:
         return f['difumo'][:]
 
-def load_zarr(filename):
+def load_zarr(filename: str) -> np.ndarray:
     zarr_data = zarr.open(filename, mode='r')
     return zarr_data[:]
 
@@ -873,10 +873,11 @@ This is useful because it is very easy to automatically parse such a file name. 
 \begin{lstlisting}[style=Python]
 filename = 'sub -001_sess -1A_desc -Diffusion_fa.nii.gz'
 
-def split_filename(filename):
+def split_filename(filename: str) -> tuple[str, dict[str, str]]:
+    """Parse a BIDS-style filename into its extension and key-value pairs."""
     extension = '.'.join(filename.split('.')[1:])
     name = filename.split('.')[0]
-    key_values = {k:v for k,v in (item.split(' -') for item in name.split('_')[: -1])}
+    key_values = {k: v for k, v in (item.split(' -') for item in name.split('_')[: -1])}
     key_values['suffix'] = name.split('_')[ -1]
     return extension, key_values
 

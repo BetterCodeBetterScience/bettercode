@@ -446,21 +446,19 @@ Here is a refactored version of the code that:
 
 \begin{lstlisting}[style=Python]
 rt_column_names = {
-        'stroop': 'ResponseTime',
-        'flanker': 'RT',
-        'nback': 'RespTime'
-    }
+    'stroop': 'ResponseTime',
+    'flanker': 'RT',
+    'nback': 'RespTime'
+}
 
-    def get_mean_response_time(testdata, column_name):
-        return testdata[column_name].mean()
+def get_mean_response_time(testdata: pd.DataFrame, column_name: str) -> float:
+    return testdata[column_name].mean()
 
-    mean_rt = {}
-    for test, column_name in rt_column_names.items():
-        mean_rt[test] = get_mean_response_time(
-            data[test],
-            column_name)
+mean_rt = {}
+for test, column_name in rt_column_names.items():
+    mean_rt[test] = get_mean_response_time(data[test], column_name)
 
-    grand_mean_rt = np.mean(list(mean_rt.values()))
+grand_mean_rt = np.mean(list(mean_rt.values()))
 \end{lstlisting}
 
 This refactoring has more lines of code than the original, but it will be much easier to understand, to maintain, and to modify.

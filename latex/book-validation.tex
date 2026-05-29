@@ -210,7 +210,7 @@ Figure~\ref{ecoli-fig} shows the resulting rendering of that network, which has 
 Given this DAG, we then need to generate timeseries data for expression of each gene that reflect the causal relationships between the genes as well as the autocorrelation in gene expression within genes measured over time.  For this, we turn to the \textit{tigramite} package, which is primarily focused on causal discovery from timeseries data, but also includes a function that can generate timeseries data given a graphical model.  However, the \textit{tigramite} package requires a different representation of the graphical model than the one obtained from \textit{pgmpy}, so we have to convert the edge representation from the original to the link format required for \textit{tigramite}:\index{DAG (directed acyclic graph)}
 
 \begin{lstlisting}[style=Python]
-def generate_links_from_pgmpy_model(model, coef=0.5, ar_param=0.6):
+def generate_links_from_pgmpy_model(model, coef: float = 0.5, ar_param: float = 0.6) -> tuple[dict, dict, dict]:
     nodes, edges = model.nodes(), model.edges()
     noise_func = lambda x: x 
     links = {}
@@ -258,7 +258,7 @@ Now that we have the dataset we can test out our estimation method. Since I don'
 from tigramite.pcmci import PCMCI
 from tigramite.independence_tests.parcorr import ParCorr
 
-def run_pcmci(dataframe):
+def run_pcmci(dataframe) -> dict:
     # Initialize PCMCI with partial correlation-based independence test
     pcmci = PCMCI(dataframe=dataframe, cond_ind_test=ParCorr())
     # Run PCMCI to discover causal links
@@ -271,7 +271,7 @@ results = run_pcmci(ecoli_dataframe)
 The results from this analysis include a list of all of the edges that were identified from the data using causal discovery, which we can summarize to determine how well the model performed. First we need to extract the links that were discovered from the results which pass our intended false discovery rate threshold:
 
 \begin{lstlisting}[style=Python]
-def extract_discovered_links(results, index_to_node, q_thresh=0.00001):
+def extract_discovered_links(results: dict, index_to_node: dict, q_thresh: float = 0.00001) -> list[tuple[str, str]]:
     discovered_links = []
     fdr_p = results['fdr_p_matrix'][:, :, 1]  # use only lag 1 p-values
     links = np.where(fdr_p < q_thresh)
@@ -286,7 +286,7 @@ discovered_links = extract_discovered_links(results, index_to_node, .01)
 Then we can summarize the results:
 
 \begin{lstlisting}[style=Python]
-def get_edge_stats(edges, discovered_links, verbose=True):
+def get_edge_stats(edges, discovered_links: list, verbose: bool = True) -> dict:
     true_edges = set(edges)
     discovered_edges = set(discovered_links)
     true_positives = true_edges.intersection(discovered_edges)
@@ -394,25 +394,20 @@ As an example, I will use the Eisenberg data that you have already seen on a cou
 from sdv.single_table import GaussianCopulaSynthesizer
 from sdv.metadata import Metadata
 
-def generate_independent_synthetic_data(df, random_seed=42):
+def generate_independent_synthetic_data(df: pd.DataFrame, random_seed: int = 42) -> pd.DataFrame:
     """
     Generate synthetic data where all variables are independent.
     
     Uses SDV to model the full dataset, then shuffles each column 
     independently to break all correlations while preserving marginal distributions.
     
-    Parameters:
-    -----------
-    df : pd.DataFrame
-        Original dataframe to generate synthetic version of
-    random_seed : int, optional
-        Random seed for reproducibility (default: 42)
+    Args:
+        df: Original dataframe to generate synthetic version of.
+        random_seed: Random seed for reproducibility (default: 42).
         
     Returns:
-    --------
-    pd.DataFrame
         Synthetic dataframe with same shape and column names as input,
-        but with independent variables
+        but with independent variables.
     """
     # Suppress the metadata saving warning
     warnings.filterwarnings('ignore', message='We strongly recommend saving the metadata')
@@ -707,7 +702,7 @@ While grid search worked, it was exceedingly slow, taking more than 25 seconds t
 import time
 from scipy.stats import norm
 
-def negative_log_likelihood(params, data):
+def negative_log_likelihood(params: np.ndarray, data: np.ndarray) -> float:
     """Negative log likelihood function to minimize"""
     mu, sd = params
     # ensure sd is positive to avoid dividing by zero
@@ -801,7 +796,7 @@ K_m = torch.tensor(K_m_init, requires_grad=True)
 We also need to set up a \textit{loss function} that will define how far the prediction is from the data, for which we will use the squared error:
 
 \begin{lstlisting}[style=Python]
-def compute_loss(V_max, K_m, S, v_observed):
+def compute_loss(V_max: torch.Tensor, K_m: torch.Tensor, S: torch.Tensor, v_observed: torch.Tensor) -> torch.Tensor:
     """Compute MSE loss between predicted and observed velocities."""
     v_predicted = michaelis_menten(S, V_max, K_m)
     loss = torch.mean((v_predicted - v_observed) ** 2)
@@ -902,12 +897,12 @@ More recently the manual identification of a set of summary statistics has been 
 I will use the \textit{sbi} Python package that implements several methods for simulation-based inference.  We first define our simulator, which for the Ricker model is very simple:
 
 \begin{lstlisting}[style=Python]
-def ricker_model(N, r, sigma=0.3, phi=10):
+def ricker_model(N: float, r: float, sigma: float = 0.3, phi: float = 10) -> tuple[float, int]:
     N_next = r * N * np.exp( -N + np.random.normal(0, sigma))
     y_next = np.random.poisson(N_next * phi)
     return N_next, y_next
 
-def ricker_simulator(params: torch.Tensor, t=None, n_time_steps=250, starting_n=100):
+def ricker_simulator(params: torch.Tensor, t: torch.Tensor | None = None, n_time_steps: int = 250, starting_n: int = 100) -> torch.Tensor:
     r = params[0].cpu().numpy()  # intrinsic growth rate
     sigma = params[1].cpu().numpy()  # growth rate variability
     phi = params[2].cpu().numpy()      # measurement error term
@@ -1107,24 +1102,18 @@ def run(
         self, 
         X: np.ndarray, 
         y: np.ndarray, 
-        beta: Optional[float] = None
+        beta: float | None = None
     ) -> dict:
         """
         Run cross -validated classification with optional signal injection.
         
-        Parameters
-        ----------
-        X : np.ndarray
-            Feature matrix
-        y : np.ndarray
-            Target labels
-        beta : float, optional
-            If provided, inject synthetic signal with this coefficient
+        Args:
+            X: Feature matrix.
+            y: Target labels.
+            beta: If provided, inject synthetic signal with this coefficient.
             
-        Returns
-        -------
-        dict
-            Mean scores across all CV folds
+        Returns:
+            Mean scores across all CV folds.
         """
         # Convert to numpy arrays
         X = np.array(X)
