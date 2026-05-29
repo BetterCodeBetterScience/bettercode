@@ -91,5 +91,10 @@ pre-commit run --all-files
 - Do not include *any* code in `__init__.py` files.
 - Use pytest for testing.
 - Use functions rather than classes for tests. Use pytest fixtures to share resources between tests.
-- Use numpy-style docstrings
+- Use Google-style docstrings. Put types in the function signature (type hints) only;
+  do not repeat them in the docstring. Use a single-line docstring for self-evident
+  functions. Annotate every function signature, and prefer built-in generics
+  (`list[int]`) over `typing` aliases (`List[int]`).
+  Exception: test functions get docstrings but no type hints (no `-> None`, no
+  typed fixture parameters) — pytest does not use them and they add noise.
 

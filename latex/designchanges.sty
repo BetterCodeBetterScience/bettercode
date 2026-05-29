@@ -1,0 +1,318 @@
+% designchanges.sty
+% Custom design modifications for "Better Code, Better Science"
+% by Russell A. Poldrack
+%
+% This file collects all design-level customizations in one place,
+% separate from the document class, per Cambridge University Press
+% guidelines. Each change is documented with a brief explanation.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{designchanges}[2026/03/26 Design customizations for Better Code Better Science]
+
+% ---------------------------------------------------------------
+% List spacing: make itemize lists more compact to reduce whitespace
+% ---------------------------------------------------------------
+\RequirePackage{enumitem}
+\setlist[itemize]{noitemsep, topsep=0pt}
+
+% ---------------------------------------------------------------
+% listings formatting
+% ---------------------------------------------------------------
+% \usepackage[scaled=0.85]{beramono} % A popular choice for code
+\usepackage{listings}
+%\usepackage{inconsolata}
+% \setmonofont{Inconsolata}[Scale=0.85]
+% \usepackage{sourcecodepro}      % Source Code Pro — Adobe, very legible
+% \setmonofont[scale=0.85]{Jetbrains}  
+
+\usepackage{fontspec}
+\setmonofont{JetBrains Mono}[Scale=0.8]
+
+\usepackage{xcolor}
+
+% Colors tuned for print + e-book
+\newif\ifprint
+% Flip this for the print build, leave false for the web/PDF build:
+\printtrue
+
+\ifprint
+  % Print: grayscale, optimized for B&W ink
+  \definecolor{codekw}{gray}{0.0}    % keywords: black + bold
+  \definecolor{codestr}{gray}{0.35}  % strings: medium gray
+  \definecolor{codecom}{gray}{0.50}  % comments: lighter gray + italic
+  \definecolor{codebg}{gray}{0.95}   % very subtle background
+  \definecolor{coderule}{gray}{0.70}
+\else
+  % Online: full color
+  \definecolor{codekw}{HTML}{0033B3}
+  \definecolor{codestr}{HTML}{067D17}
+  \definecolor{codecom}{HTML}{8C8C8C}
+  \definecolor{codebg}{gray}{0.96}
+  \definecolor{coderule}{gray}{0.75}
+\fi
+
+% Shared base style
+\lstdefinestyle{base}{
+  basicstyle=\ttfamily,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{coderule},
+  framesep=4pt,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  emptylines=1,           % collapse runs of >=2 blank lines to a single one
+  breakindent=0pt,
+  postbreak=\mbox{\textcolor{coderule}{$\hookrightarrow$}\space},
+  showstringspaces=false,
+  upquote=true,           % straight quotes in code
+  columns=fullflexible,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  extendedchars=false,
+  literate=%               % stop ligatures from mangling output
+    {--}{{-{}-}}2
+    {---}{{-{}-{}-}}3
+    {->}{{-{}>}}2
+    {=>}{{={}>}}2
+}
+
+% Python source
+\lstdefinestyle{python}{
+  style=base,
+  language=Python,
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecom}\itshape,
+}
+
+\lstdefinestyle{pythonshort}{
+  style=python,
+  numbers=none,
+}
+% R source
+\lstdefinestyle{R}{
+  style=base,
+  language=R,
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecom}\itshape,
+}
+
+% Shell / pytest output / tracebacks — no language, no highlighting
+\lstdefinestyle{shell}{
+  style=base,
+  language=,
+  basicstyle=\ttfamily\footnotesize,
+}
+
+% IPython / REPL session
+\lstdefinestyle{repl}{
+  style=base,
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  commentstyle=\color{codecom}\itshape,
+  morecomment=[l]{In :},   % treat REPL prompts as comments visually
+  morecomment=[l]{Out:},
+}
+
+% YAML language definition
+\lstdefinelanguage{yaml}{
+  keywords={true, false, null, yes, no, on, off, True, False, None, Null, ~},
+  keywordstyle=\color{codekw}\bfseries,
+  sensitive=true,
+  comment=[l]{\#},
+  commentstyle=\color{codecom}\itshape,
+  string=[b]',
+  stringstyle=\color{codestr},
+  morestring=[b]",
+  morestring=[s]{>}{\ },        % folded scalar
+  morestring=[s]{|}{\ },        % literal scalar
+  literate=%
+    {:}{{\textcolor{codekw}{:}}}{1}
+    {-}{{\textcolor{codekw}{-}}}{1}
+    {--}{{-{}-}}2
+    {---}{{-{}-{}-}}3
+}
+
+\lstdefinestyle{yaml}{
+  style=base,
+  language=yaml,
+  basicstyle=\ttfamily\small,
+  showstringspaces=false,
+}
+
+\lstdefinestyle{transcript}{
+  style=base,
+  language=,                          % no language = no keyword highlighting
+  basicstyle=\ttfamily\footnotesize,  % slightly smaller — transcripts are dense
+  % breaklines=true,
+  breakatwhitespace=true,            % allow breaks anywhere (paths, hashes, etc.)
+  showstringspaces=false,
+  upquote=true,
+  columns=fullflexible,
+  keepspaces=true,
+  extendedchars=true,
+  inputencoding=utf8,
+  numbers=none,
+  literate=%
+    {└}{{\textcolor{coderule}{\textbar\_}}}1
+    {├}{{\textcolor{coderule}{\textbar\textendash}}}1
+    {│}{{\textcolor{coderule}{\textbar}}}1
+    {─}{{\textcolor{coderule}{-}}}1
+    {⏺}{{\textbullet}}1
+    {⎿}{{\textcolor{coderule}{\textbar\_}}}1
+    {→}{{$\rightarrow$}}1
+    {←}{{$\leftarrow$}}1
+    {↪}{{$\hookrightarrow$}}1
+    {☐}{{$\square$}}1
+    {☒}{{$\boxtimes$}}1
+    {±}{{$\pm$}}1
+    {≈}{{$\approx$}}1
+    {≠}{{$\neq$}}1
+    {≤}{{$\leq$}}1
+    {≥}{{$\geq$}}1
+    {…}{{\ldots}}1
+    {–}{{--}}1
+    {—}{{---}}1
+    {'}{{'}}1
+    {'}{{'}}1
+    {"}{{``}}1
+    {"}{{''}}1
+}
+
+% TOML language definition
+\lstdefinelanguage{toml}{
+  keywords={true, false},
+  keywordstyle=\color{codekw}\bfseries,
+  sensitive=true,
+  comment=[l]{\#},
+  commentstyle=\color{codecom}\itshape,
+  string=[b]",
+  morestring=[b]',
+  morestring=[s]{"""}{"""},          % multi-line basic string
+  morestring=[s]{'''}{'''},          % multi-line literal string
+  stringstyle=\color{codestr},
+  morekeywords={[2]inf, nan, +inf, -inf, +nan, -nan},
+  keywordstyle={[2]\color{codekw}},
+  % Treat brackets and equals as structural punctuation
+  literate=%
+    {[}{{\textcolor{codekw}{[}}}{1}
+    {]}{{\textcolor{codekw}{]}}}{1}
+    {=}{{\textcolor{codekw}{=}}}{1}
+    {--}{{-{}-}}2
+    {---}{{-{}-{}-}}3
+}
+
+\lstdefinestyle{toml}{
+  style=base,
+  language=toml,
+  basicstyle=\ttfamily\small,
+  showstringspaces=false,
+}
+
+% JSON language definition
+\lstdefinelanguage{json}{
+  keywords={true, false, null},
+  keywordstyle=\color{codekw}\bfseries,
+  sensitive=true,
+  string=[b]",
+  stringstyle=\color{codestr},
+  % JSON has no comments, but tools like JSON5/JSONC do — uncomment if needed:
+  % comment=[l]{//},
+  % morecomment=[s]{/*}{*/},
+  % commentstyle=\color{codecom}\itshape,
+  literate=%
+    *{0}{{\textcolor{codekw}{0}}}{1}
+     {1}{{\textcolor{codekw}{1}}}{1}
+     {2}{{\textcolor{codekw}{2}}}{1}
+     {3}{{\textcolor{codekw}{3}}}{1}
+     {4}{{\textcolor{codekw}{4}}}{1}
+     {5}{{\textcolor{codekw}{5}}}{1}
+     {6}{{\textcolor{codekw}{6}}}{1}
+     {7}{{\textcolor{codekw}{7}}}{1}
+     {8}{{\textcolor{codekw}{8}}}{1}
+     {9}{{\textcolor{codekw}{9}}}{1}
+     {:}{{\textcolor{codekw}{:}}}{1}
+     {,}{{\textcolor{codekw}{,}}}{1}
+}
+
+\lstdefinestyle{json}{
+  style=base,
+  language=json,
+  basicstyle=\ttfamily\small,
+  showstringspaces=false,
+}
+
+% Dockerfile language definition
+\lstdefinelanguage{dockerfile}{
+  morekeywords={FROM, AS, RUN, CMD, LABEL, MAINTAINER, EXPOSE, ENV,
+                ADD, COPY, ENTRYPOINT, VOLUME, USER, WORKDIR, ARG,
+                ONBUILD, STOPSIGNAL, HEALTHCHECK, SHELL},
+  keywordstyle=\color{codekw}\bfseries,
+  sensitive=true,                       % Dockerfile instructions are uppercase by convention
+  comment=[l]{\#},
+  commentstyle=\color{codecom}\itshape,
+  string=[b]",
+  morestring=[b]',
+  stringstyle=\color{codestr},
+  % Highlight variable substitution: ${VAR} and $VAR
+  moredelim=[s][\color{codekw}]{\$\{}{\}},
+  literate=%
+    {--}{{-{}-}}2
+    {---}{{-{}-{}-}}3
+}
+
+\lstdefinestyle{dockerfile}{
+  style=base,
+  language=dockerfile,
+  basicstyle=\ttfamily\small,
+  showstringspaces=false,
+}
+
+% Makefile language definition
+\lstdefinelanguage{makefile}{
+  morekeywords={include, -include, sinclude,
+                ifeq, ifneq, ifdef, ifndef, else, endif,
+                define, endef, override, export, unexport,
+                vpath, .PHONY, .DEFAULT, .PRECIOUS, .SUFFIXES,
+                .INTERMEDIATE, .SECONDARY, .DELETE_ON_ERROR,
+                .IGNORE, .SILENT, .EXPORT_ALL_VARIABLES, .NOTPARALLEL},
+  keywordstyle=\color{codekw}\bfseries,
+  sensitive=true,
+  comment=[l]{\#},
+  commentstyle=\color{codecom}\itshape,
+  string=[b]",
+  morestring=[b]',
+  stringstyle=\color{codestr},
+  % Variable references: $(VAR) and ${VAR}
+  moredelim=[s][\color{codekw}]{\$(}{)},
+  moredelim=[s][\color{codekw}]{\$\{}{\}},
+  % Automatic variables: $@, $<, $^, $?, $*, $+, $|
+  moredelim=[is][\color{codekw}\bfseries]{\$@}{\$@},
+  literate=%
+    {:=}{{\textcolor{codekw}{:=}}}{2}
+    {?=}{{\textcolor{codekw}{?=}}}{2}
+    {+=}{{\textcolor{codekw}{+=}}}{2}
+    {!=}{{\textcolor{codekw}{!=}}}{2}
+    {$@}{{\textcolor{codekw}{\$@}}}{2}
+    {$<}{{\textcolor{codekw}{\$<}}}{2}
+    {$^}{{\textcolor{codekw}{\$\^}}}{2}
+    {$?}{{\textcolor{codekw}{\$?}}}{2}
+    {$*}{{\textcolor{codekw}{\$*}}}{2}
+    {--}{{-{}-}}2
+    {---}{{-{}-{}-}}3
+}
+
+\lstdefinestyle{makefile}{
+  style=base,
+  language=makefile,
+  basicstyle=\ttfamily\small,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=8,                  % Make requires real tabs for recipes
+}
