@@ -160,12 +160,12 @@
   inputencoding=utf8,
   numbers=none,
   literate=%
-    {└}{{\textcolor{coderule}{\textbar\_}}}1
-    {├}{{\textcolor{coderule}{\textbar\textendash}}}1
-    {│}{{\textcolor{coderule}{\textbar}}}1
-    {─}{{\textcolor{coderule}{-}}}1
-    {⏺}{{\textbullet}}1
-    {⎿}{{\textcolor{coderule}{\textbar\_}}}1
+    % {└}{{\textcolor{coderule}{\textbar\_}}}1
+    % {├}{{\textcolor{coderule}{\textbar\textendash}}}1
+    % {│}{{\textcolor{coderule}{\textbar}}}1
+    % {─}{{\textcolor{coderule}{-}}}1
+    % {⏺}{{\textbullet}}1
+    % {⎿}{{\textcolor{coderule}{\textbar\_}}}1
     {→}{{$\rightarrow$}}1
     {←}{{$\leftarrow$}}1
     {↪}{{$\hookrightarrow$}}1
@@ -315,4 +315,26 @@
   showstringspaces=false,
   showtabs=false,
   tabsize=8,                  % Make requires real tabs for recipes
+}
+
+
+\lstdefinelanguage{Rust}{
+  keywords={
+    as, break, const, continue, crate, else, enum, extern, false, fn, for,
+    if, impl, in, let, loop, match, mod, move, mut, pub, ref, return, self,
+    Self, static, struct, super, trait, true, type, unsafe, use, where, while,
+    async, await, dyn
+  },
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={i8, i16, i32, i64, i128, isize, u8, u16, u32, u64, u128, usize,
+              f32, f64, bool, char, str, String, Vec, Option, Result, Box},
+  ndkeywordstyle=\color{teal}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily\itshape,
+  stringstyle=\color{red!70!black},
+  morestring=[b]",
+  morestring=[b]'
 }
