@@ -77,7 +77,7 @@ As software resources are increasingly recognized as legitimate scientific contr
 
 The GitHub-Zenodo and Software Heritage mechanisms described above can help fulfill these principles.  Code citation can be further supported by providing citation metadata via the \texttt{CITATION.cff} file.  Here is an example of the \texttt{CITATION.cff} file for the \textit{bettercode} package associated with this book:
 
-\begin{lstlisting}
+\begin{lstlisting}[style=toml]
 cff -version: 1.2.0
 title: 'Better Code, Better Science'
 message: Code for examples in the book
@@ -176,7 +176,7 @@ To make a package installable, the first step is to create a \texttt{pyproject.t
 
 To build the \textit{bettercode} package using \textit{uv}, we simply run the build command:
 
-\begin{lstlisting}
+\begin{lstlisting}[style=shell]
 $  uv build
 Building source distribution...
 Building wheel from source distribution...
@@ -190,7 +190,7 @@ Note that the wheel file has \texttt{-none-} in its name, which refers to the fa
 
 Once the package is built, then we can upload it to PyPI for distribution.  We first need to ensure that the version information is correct.  This matters less for the first upload, but once you have uploaded a release to PyPI then you will need update the version for future uploads to work.  \textit{uv} has a useful \texttt{version} option that that allows easily \textit{bumping} the version according to the kind of change that is being made. For example, if we wanted to make a minor version change, we could do this:
 
-\begin{lstlisting}
+\begin{lstlisting}[style=shell]
 $ uv version
 bettercode 0.1.0
 $ uv version - -bump minor
@@ -199,7 +199,7 @@ bettercode 0.1.0 => 0.2.0
 
 This changes the metadata in \texttt{pyproject.toml} to match the new version, though we would need to rerun the \texttt{uv build} command to create the build files for the new version.  Next we need to create and/or log into our account on pypi.org, and then make sure that the project name (specified as the ``name'' variable in \texttt{pyproject.toml}) is not already in use (by searching the index for that name); if it is then we will have to change the name of the project. Assuming it isn't then we need to set up our PyPI authentication credentials and download a token, which can be provided at the command line with the \texttt{publish} command:\index{uv}
 
-\begin{lstlisting}
+\begin{lstlisting}[style=shell, numbers=none]
 $  uv publish - -token <your token here>
 Publishing 2 files to https://upload.pypi.org/legacy/
 Uploading bettercode -0.2.0.tar.gz (15.7MiB)
@@ -299,7 +299,7 @@ There are relatively few specialist repositories for models. One notable example
 
 It is increasingly common for AI models to be released under what have come to be called \textit{Responsible AI Licenses}, which include terms regarding the acceptable uses of the model. In particular, these licenses are meant to prohibit harmful uses of the code. As an example, here are the behavioral terms included in the AI Pubs Open Rail-S license (www.licenses.ai/ai-pubs-open-rails-vz1):
 
-\begin{lstlisting}
+\begin{lstlisting}[style=transcript]
 You agree not to use the Source Code or its Derivatives in any of the following ways:
 
 1. Legal: 
