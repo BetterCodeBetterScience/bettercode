@@ -25,6 +25,11 @@
 % \usepackage{sourcecodepro}      % Source Code Pro — Adobe, very legible
 % \setmonofont[scale=0.85]{Jetbrains}  
 
+% setup captions package for numbers with a colon
+\usepackage{caption}
+\captionsetup[lstlisting]{labelsep=none}
+
+
 \usepackage{fontspec}
 \setmonofont{JetBrains Mono}[Scale=0.8]
 
@@ -72,6 +77,8 @@
   numbers=left,
   numbersep=5pt,
   extendedchars=false,
+  caption=\mbox{},
+  numberbychapter=true,    % optional: number as 1.1, 1.2, etc.
   literate=%               % stop ligatures from mangling output
     {--}{{-{}-}}2
     {---}{{-{}-{}-}}3
@@ -91,6 +98,7 @@
 \lstdefinestyle{pythonshort}{
   style=python,
   numbers=none,
+  caption={},
 }
 % R source
 \lstdefinestyle{R}{
@@ -106,6 +114,14 @@
   style=base,
   language=,
   basicstyle=\ttfamily\footnotesize,
+}
+
+\lstdefinestyle{shellshort}{
+  style=base,
+  language=,
+  basicstyle=\ttfamily\footnotesize,
+  numbers=none,
+  caption={},
 }
 
 % IPython / REPL session
@@ -319,6 +335,7 @@
 
 
 \lstdefinelanguage{Rust}{
+  style=base,
   keywords={
     as, break, const, continue, crate, else, enum, extern, false, fn, for,
     if, impl, in, let, loop, match, mod, move, mut, pub, ref, return, self,
