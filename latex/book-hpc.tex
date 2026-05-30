@@ -54,7 +54,7 @@ Working on a shared HPC system generally involves submitting a \textit{batch job
 
 Job schedulers generally use a \textit{Fairshare} system to allocate resources to users. This system computes the resources used by each user according to a sliding window over time, and assigns priority in such a way that users with heavy recent usage have a lower priority score for job execution.  One can see their priority score using the \texttt{sshare} command on systems using Slurm for scheduling:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 $ sshare
 Account        User  RawShares  NormShares  RawUsage  EffectvUsage  FairShare
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,7 +67,7 @@ The important number here is the ``FairShare'' value of 0.81. This is a value th
 
 A batch job is defined by a \textit{batch file}, which has a specific format depending on the scheduler; I will focus here on the Slurm format.  Here is the first part of a Slurm file that runs a single Python program:\index{Python}
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 #!/bin/bash
 # - - - - - - - - - - - - - - - -SLURM Parameters - - - - - - - - - - - - - - - -
 #SBATCH - -partition=normal
@@ -103,7 +103,7 @@ Note the Bash directive at the top of the file; a Slurm script is simply a Bash 
 
 After specifying these directives, then we specify the modules to be loaded (more about that below) and then the commands that we want to run:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 # - - - - - - - - - - - - - - - -Modules - - - - - - - - - - - - - - - - - - - - - - - -
 module load python/3.12.1
 
@@ -129,14 +129,14 @@ There are three sections in the commands portion of the file, the first of which
 
 To submit the batch job, we simply use the \texttt{sbatch} call:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 $ sbatch fibnumber.sbatch
 Submitted batch job 14653975
 \end{lstlisting}
 
 We can then look at the queue to see the status of the job, using the \texttt{squeue} command.  Running that command would return a very long list, depending on the size of the system. For reference, here are the results from the Sherlock supercomputer at Stanford that I used for testing:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 $ squeue | wc
    8473   68399  684460
 $ squeue | grep PD | wc
@@ -145,7 +145,7 @@ $ squeue | grep PD | wc
 
 At the time I ran my jobs there were more than 8,000 jobs in the queue, of which almost 2000 were pending. We can use the \texttt{--user} flag to pull out the jobs that are owned by me (using my account name \texttt{russpold}) - otherwise it would be a long list of all jobs on the system:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 $ squeue - -user russpold
           14653975    normal fibnumbe russpold PD       0:00      1 (None)
 \end{lstlisting}
@@ -164,14 +164,14 @@ If you find yourself stuck for a long time due to Resources, it likely suggests 
 
 Once your job starts running, the status turns to \texttt{R}:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 $ squeue | grep russpold
           14654437    normal fibnumbe russpold  R       1:11      1 sh02 -01n36
 \end{lstlisting}
 
 The information at the end (\texttt{sh02-01n36}) is the name of the compute node where the job is running. In general it's only possible to SSH into a compute node while one has an active job running, as I did here in order to look at the processes running under my name:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 $ ssh sh02 -01n36
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,7 +194,7 @@ russpold 20916  0.0  0.0 112828  1000 pts/0    S+   10:27   0:00 grep - -color=a
 
 This output is a bit odd: for one of the inputs (\texttt{-i 1000004}) there are two srun processes along with the actual Python process, while for the others there is only a single srun process, and those Python processes never actually got run before the time expired. This occurs because Slurm assumes that each srun command has full access to all of the resources that have been requested, and the first of the srun commands to hit the slurm controller (which in this case was the \texttt{-i 1000004} one) will run while the others will be stuck in a holding pattern waiting for the required resources.  In order to cause the multiple processes to run at the same time, we need to add the \texttt{--exclusive} flag, as well as specifying that the total. memory should be shared between the processes:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 $CODEDIR/fibnumber.py -i 1000001 &
 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 $CODEDIR/fibnumber.py -i 1000002 &
 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 $CODEDIR/fibnumber.py -i 1000003 &
@@ -203,7 +203,7 @@ srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python
 
 Logging into the compute node we now see that each Python process is running along with two srun processes for each input:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 russpold 30556  0.0  0.0 113504  1788 ?        S    11:05   0:00 /bin/bash /var/spool/slurmd/job14658999/slurm_script
 russpold 30611  0.4  0.0 421832  9224 ?        Sl   11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000001
 russpold 30612  0.4  0.0 421832  9216 ?        Sl   11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000002
@@ -233,7 +233,7 @@ A very common use case on HPC systems is a \textit{parametric sweep}, where we w
 
 First let's implement our previous analysis as a job array; we wouldn't usually use a job array for such a small set, but it's a useful example.  Here is what the sbatch file would look like:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 #!/bin/bash
 #SBATCH - -partition=normal
 #SBATCH - -nodes=1
@@ -267,7 +267,7 @@ srun python3 $CODEDIR/fibnumber.py -i $ITER_VALUE
 
 First note that this batch file specifies the resources needed for each individual job, rather than the combined job like it did before; this is because jobs in a job array are treated separately.  We create array numbers that are used to index the jobs (from 1 to 4); these will end up in the file names for the error and output files, by including \texttt{\%a} in the file name specifiers.  This script is then called once for each value of the array index, and the environment variable \texttt{\$SLURM\_ARRAY\_TASK\_ID} contains the value of the array; we add 100000 to this to get the values that we want to pass along to the Python script. Once the job begins, we see this in the Slurm queue:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 $ squeue | grep russpold
         14679499_1    normal fibnumbe russpold  R       2:46      1 sh02 -01n49
         14679499_2    normal fibnumbe russpold  R       2:46      1 sh02 -01n49
@@ -279,7 +279,7 @@ There is a single job number (14679499), but each individual job in the array is
 
 Job arrays become very useful when one wants to run a large number of parametric variations.  In these cases it can be useful to specify the parameters in a text file and then read that file into the slurm script, rather than using Bash to create the parameters. For example, let's say that we have a prediction problem and we want to run a multiverse analysis to assess analytic variability across models and crossvalidation schemes, running each combination with 100 different random seeds.  We could generate a text file called \texttt{params.txt} containing columns with each of these:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 Lasso  ShuffleSplit  42
 Ridge  ShuffleSplit  593
 ...
@@ -287,7 +287,7 @@ Ridge  ShuffleSplit  593
 
 We could then pass the task ID to our Python script, which would read in the parameter file and select the row specified by the task ID to retrieve the parameters for that run:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 #SBATCH - -array=1 -100%10  # Run 100 tasks, but only 10 at a time (%)
 
 # The task ID tells the Python script which line to use from the parameter file
@@ -310,13 +310,13 @@ Sometimes there are dependencies between jobs, such that one job must complete b
 
 For example, if you had a job that you wanted to run only after job 999444 had completed, you could use:
 
-\begin{lstlisting}[language=bash]
-sbatch - -dependency=afterok:999444 part2.sbatch
+\begin{lstlisting}[style=shell, numbers=none]
+$ sbatch - -dependency=afterok:999444 part2.sbatch
 \end{lstlisting}
 
 You can also retrieve the job ID from an sbatch command more easily by using the \texttt{--parseable} flag, which allows easy chaining of jobs:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 # Submit first job, capture job ID
 JOB1=$(sbatch - -parsable preprocess.sbatch)
 
@@ -350,7 +350,7 @@ When estimating resource needs, it's generally a good idea to pad the estimated 
 
 One essential tool for resource estimation is the \texttt{seff} tool (a community tool often installed alongside Slurm), which provides a report for completed jobs on their resource usage.  Here is an example from one of the example jobs run earlier:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 Job ID: 14654437
 Cluster: sherlock
 User/Group: russpold/russpold
@@ -380,7 +380,7 @@ New HPC users, particularly those with strong system administration skills, ofte
 
 Most HPC systems offer the ability to load software \textit{modules} that provide access to many different software packages.  The \texttt{module} function provides access to these.  Here is a listing of the modules that are loaded by default when I log into my local HPC system, obtained using \texttt{module list}:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 $ module list
 
 Currently Loaded Modules:
@@ -397,7 +397,7 @@ Currently Loaded Modules:
 
 A listing of all available modules can be printed using \texttt{module avail}, but this will often be a very long list!  A more useful tool is \texttt{module spider}, which searches the available modules for a specific term. For example, we could search for the available Python modules:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell]
 $ module spider python
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -419,14 +419,14 @@ $ module spider python
 
 Let's say that I want to load the latest version of Python.  By default our system provides access to an older version of Python 3:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 $ python3 - -version
 Python 3.6.8
 \end{lstlisting}
 
 By loading the \texttt{python/3.14.2} module, we can gain access a newer version:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[style=shell, numbers=none]
 $ module load python/3.14.2
 $ python3 - -version
 Python 3.14.2
@@ -458,8 +458,8 @@ First, I develop the code using a small version of the problem on my laptop.  Th
 
 Second, I would install the code on the HPC system and run it interactively within an interactive development shell, which is available using the \texttt{srun} command:
 
-\begin{lstlisting}[language=bash]
-srun - -nodes=1 - -ntasks=1 - -cpus -per -task=4 - -mem=16G - -time=2:00:00 - -pty bash
+\begin{lstlisting}[style=shell, numbers=none]
+$ srun - -nodes=1 - -ntasks=1 - -cpus -per -task=4 - -mem=16G - -time=2:00:00 - -pty bash
 \end{lstlisting}
 
 This provides an interactive shell on a compute node, so that one can run computationally intensive jobs.  I would run my code in this shell in order to ensure that it executes successfully on the system, and also to profile its memory usage for the slurm batch job.
