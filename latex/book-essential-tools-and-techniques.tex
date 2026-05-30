@@ -92,7 +92,7 @@ Changes to be committed:
 
 \noindent{It's now in the staging area, but hasn't yet been committed to the database, as we can see if we print the log:}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ git log
 fatal: your current branch 'main' does not have any commits yet
 \end{lstlisting}
@@ -272,7 +272,7 @@ Later I will suggest that working directly in the main branch is not optimal, bu
 Let's say that we wish to try changing out the database backend for our project, which will require changes to several of the source files.
 Starting with a clean working tree (i.e., no uncommitted changes or untracked files not included in \texttt{.gitignore}), we would first create a new tag so that we can easily find the last commit in case we decide that we want to revert back to it:
 
-\begin{lstlisting}[style=shell]
+\begin{lstlisting}[style=shellshort]
 git tag v0.2-pre-db-change
 \end{lstlisting}
 
