@@ -132,8 +132,9 @@ One answer to these problems is to start the process by creating a set of \texti
 The process of writing tests before writing code to solve the problem is known as \textit{test-driven development} (TDD), which I think is a very useful framework to use when writing scientific code, especially if one plans to use LLMs for code generation.
 Test-driven development is somewhat controversial within the software engineering field, in part because many people take it too far and become obsessive with testing, such that the tests come to be the tail that wags the dog; in particular I would caution against using the amount of test coverage as a metric for success.
 But I think that when it is used in a thoughtful way, TDD can be a powerful way to increase the effectiveness and accuracy of one's code.
+In addition, TDD is very useful in the context of AI coding agents, where it can help keep the agent on track and ensure that it focuses on the main problem at hand.
 
-I will dive deeply into testing in a later chapter; here I will simply outline a simple test-driven development workflow for the data transformation problem described above.
+I will dive deeply into testing in the next chapter; here I will simply outline a simple test-driven development workflow for the data transformation problem described above.
 The TDD workflow can be summarized in a cycle involving three steps:
 
 \begin{itemize}
@@ -948,7 +949,6 @@ The examples above showed how scalar variable types like string or integer work,
 \item Generators are specified as \texttt{typing.Iterator}
 \end{itemize}
 
-Note that most of the example code in this book does not include type hints, for the sake of brevity.  However, all of the code in the GitHub repository includes type hints.\index{GitHub}
 
 \section{Code formatting tools}\index{code formatting}
 
@@ -1052,7 +1052,7 @@ The model could certainly be prompted to make more extensive changes on more com
 
 Given that even professional programmers make errors on a regular basis, it seems almost certain that researchers writing code for their scientific projects will make their fair share of errors too. \textit{Defensive coding} means writing code in a way that tries to protect against errors.
 One essential aspect of defensive coding is a thorough suite of tests for all important functions; I will dive much more deeply into this in the next chapter.
-Here I focus on robustness to \textit{runtime errors}; that is, errors that are not necessarily due to errors in the code per se, but rather due to errors in the logic of the code or errors or invalid assumptions about the data that are being used by code.
+Here I focus on robustness to \textit{runtime errors}; that is, errors that are not necessarily due to errors in the code per se, but rather due to errors in the logic of the code or errors or invalid assumptions about the data that are being used by code. 
 
 A central aspect of defensive coding is to detect errors and announce them in a loud way.
 For example, in a recent code review in our group, a researcher showed the following code:
@@ -1080,7 +1080,7 @@ def get_subject_label(file):
 \end{lstlisting}
 
 When I asked the question ``Should there ever be a file path that doesn't include a subject label?'', the answer was ``No'', meaning that this code allows what amounts to an error to occur without announcing its presence.
-When we looked at the place where this function was used in the code, there was no check for whether the output was \texttt{None}, meaning that such an error would go unnoticed until it caused an error later when \texttt{subject\_label} was assumed to be a string.
+When we looked at the place where this function was used in the code, there was no check for whether the output was \texttt{None}, meaning that such an error would go unnoticed until it caused an error later when \texttt{subject\_label} was assumed to be a string but turned out to be \texttt{None}.
 Also note that the docstring for this function is misleading, as it states that a message will be printed if the return value is \texttt{None}, but no message is actually printed.\index{docstring}
 In general, printing a message is a poor way to signal the potential presence of a problem, particularly if the code has a large amount of text output in which the message might be lost.
 
@@ -1212,13 +1212,15 @@ carbon_isotope_mass_numbers = list(range(8, 21)) + [22]
 assert mass_number in carbon_isotope_mass_numbers
 \end{lstlisting}
 
+Where should assertions go? On the one hand, it's a good idea to create assertions as early as possible, so as to avoid doing unnecessary computation before hitting an error.  On the other hand, if it's possible that the values of variables will be modified between their creation and use, then it makes sense to place the assertions close to where they will be accessed, to ensure that any changes don't result in uncaught violations.  
+
 \section{Coding portably}
 
-If you have ever tried to run other people's research code on your own machine, you have almost certainly run into errors due to the hard-coding of machine-dependent details into the code.
+If you have ever tried to run someone else's research code on your own machine, you have almost certainly run into errors due to the hard-coding of machine-dependent details into the code.
 A good piece of evidence for this is the frequency with which AI coding assistants will insert paths into code that appear to be leaked from their training data or hallucinated.
-Here are a few examples where a prompt for a path was completed with what appears to be a leaked or hallucinated file path from the GPT-4o training set:
+Here are a few examples where a prompt for a path was completed with what appears to be a leaked or hallucinated file path from the model's training set:
 
-\begin{lstlisting}[style=Pythonshort]
+\begin{lstlisting}[style=Python]
 image_path = '/home/brain/workingdir/data/dwi/hcp/preprocessed/ response_dhollander/100206/T1w/Diffusion/100206_WM_FOD_norm.mif'
 data_path = '/data/pt_02101/fmri_data/'
 image_path = '/Users/kevinsitek/Downloads/pt_02101/'
@@ -1302,7 +1304,6 @@ data_sources:
     file_pattern: "*.fits"
   catalog:
     type: "sql"
-    connection_string: "postgresql://username:password@localhost:5432/star_catalog"
 
 # Analysis Parameters
 analysis:
@@ -1328,19 +1329,25 @@ We can easily load this configuration file into Python using the \texttt{PyYAML}
   'description': 'Analysis of multi-source astronomical data',
   'lead_scientist': 'Dr. Jane Doe',
   'team': ['John Smith', 'Emily Brown', 'Michael Wong']},
- 'data_sources': {'telescope_data': {'path': '/data/telescope/',
+ 'data_sources': {
+  'telescope_data': {'path': '/data/telescope/',
    'file_pattern': '*.fits'},
-  'catalog': {'type': 'sql',
-   'connection_string': 'postgresql://username:password@localhost:5432/star_catalog'}},
- 'analysis': {'image_processing': {'noise_reduction': {'algorithm': 'wavelet',
+  'catalog': {'type': 'sql'},
+ 'analysis': {'image_processing': 
+   {'noise_reduction': {
+    'algorithm': 'wavelet',
     'threshold': 0.05},
-   'background_subtraction': {'method': 'median', 'kernel_size': [50, 50]}}}}
+   'background_subtraction': {
+    'method': 'median', 
+    'kernel_size': [50, 50]}}}}}
 \end{lstlisting}
 
 \subsection{Protecting private credentials}
 
 It is important to ensure that configuration files do not get checked into version control, since this could expose them to the world if the project is shared.
 For this reason, one should always add any configuration files to the \texttt{.gitignore} file, which will prevent them from being checked into the repository by accident.
+
+\textbf{TODO}: Sharing credentials, CI/CD env variables
 
 \section{Managing technical debt}
 
@@ -1766,7 +1773,7 @@ There are several strategies that I find very useful when debugging.
 
 \subsection{Using a debugger}\index{debugger}
 
-Debuggers are tools that allow one to stop the execution of the code and inspect the internal values of variables.  I will admit to a dirty little secret: I basically never use a debugger when writing code.  I'm sure that there are cases where this has impaired my ability to understand and fix a bug, but in general I find that the overhead of using a debugger costs more than the benefits are worth, compared to using debug logging or embedded print statements.  However, a debugger can be particularly useful when it's not clear which variables to look at. Most IDEs also come with graphical debuggers, which can be helpful for those who aren't comfortable with using the interactive command-line \textit{Pdb} tool that I will focus on here.
+Debuggers are tools that allow one to stop the execution of the code and inspect the internal values of variables.  I will admit to a dirty little secret: I very rarely use a debugger when writing code.  I'm sure that there are cases where this has impaired my ability to understand and fix a bug, but in general I find that the overhead of using a debugger costs more than the benefits are worth, compared to using debug logging.  However, a debugger can be particularly useful when it's not clear which variables to look at. Most IDEs also come with graphical debuggers, which can be helpful for those who aren't comfortable with using the interactive command-line \textit{Pdb} tool that I will focus on here.
 
 Here is an example:
 
