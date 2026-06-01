@@ -6,7 +6,7 @@ One of the keys to efficient software development is good project organization. 
 
 \subsection{It needs to work}
 
-This might seem like an obvious point: In order for a software project to be useful, the software first and foremost needs to be written and to run successfully.  However, the point may not be as obvious as it seems: In particular, may researchers can get stuck trying to plan and generate code that is as perfect as possible, and never actually generate code that runs well enough to solve their problem.  Remember the Agile software development idea that we discussed in Chapter 1, which stresses the importance of ``working software'' over clean, well-documented code. This is not to say that we don't want clean, well-documented code in the end; rather, it implies that we should first get something working that solves our problem (the ``minimum viable product''), and once we have that we can then clean up, refactor, and document the code to help address the next goals.  Don't let the perfect be the enemy of the good!\index{agile development}
+This might seem like an obvious point: In order for a software project to be useful, the software first and foremost needs to be written and to run successfully.  However, the point may not be as obvious as it seems: In particular, many researchers can get stuck trying to plan and generate code that is as perfect as possible, and never actually generate code that runs well enough to solve their problem.  Remember the Agile software development idea that we discussed in Chapter 1, which stresses the importance of ``working software'' over clean, well-documented code. This is not to say that we don't want clean, well-documented code in the end; rather, it implies that we should first get something working that solves our problem (the ``minimum viable product''), and once we have that we can then clean up, refactor, and document the code to help address the next goals.  Don't let the perfect be the enemy of the good!\index{agile development}
 
 \subsection{It needs to work correctly}
 
@@ -73,7 +73,7 @@ Using this structure will make it easy to generate a Python module from your cod
 \item \texttt{tests}: for software tests. While one can put tests alongside code within the \texttt{src/\textless projectname\textgreater } directory, it is most customary to put them in a separate \texttt{tests} directory within the main project directory.  This keeps test code separate from project code, and makes it easy to find all of the tests.
 \end{itemize}
 
-I would suggest setting these all up when you create the project, so there won't be any temptation to cut corners down the road.  There are tools known as \textit{cookiecutters} that can help automate the creation of standard directory structures. While I've not personally found them to be necessary or particularly useful, they can be helpful for larger groups to ensure the generation of standardized directory structures.
+I would suggest setting these all up when you create the project, so there won't be any temptation to cut corners down the road.  There are tools known as \textit{cookiecutters} that can automate the creation of standard directory structures, which can be helpful for larger groups to ensure the generation of standardized directory structures.
 
 \subsubsection{Organizing Python code}
 
@@ -136,15 +136,16 @@ You will likely want to have some additional folder structure within each of the
 
 \begin{lstlisting}[style=shell]
 modeling/
-|-- method -logreg_reg -elasticnet
-|-- method -logreg_reg -L1
-|-- method -logreg_reg -L2
-|-- method -svm_reg -elasticnet
-|-- method -svm_reg -L1
-`-- method -svm_reg -L2
+|-- method-logreg_reg-elasticnet
+|-- method-logreg_reg-L1
+|-- method-logreg_reg-L2
+|-- method-svm_reg-elasticnet
+|-- method-svm_reg-L1
+`-- method-svm_reg-L2
 \end{lstlisting}
 
-One substantial benefit of this scheme is that it can easily be parsed in an automated way.  It is important to be very careful not to include additional dashes or underscores within the values, since this will defeat the ability to reliably parse the folder names.
+Each entry is defined in terms of a set of key-value pairs (where the key and value are separated by a dash), which are separated by underscores. 
+One substantial benefit of this scheme is that it can easily be parsed in an automated way (i.e. first splitting by underscores to obtain the key-value pairs, and then splitting each by the dash to obtain the respective key and value).  It is important to be very careful not to include additional dashes or underscores within the values, since this will defeat the ability to reliably parse the folder names.
 
 \subsection{Folder numbering}
 
@@ -152,35 +153,35 @@ There are some cases where it makes sense to number folders, as when there are d
 
 \begin{lstlisting}[style=shell]
 $  ls -1
-figure -1
-figure -10
-figure -11
-figure -2
-figure -3
-figure -4
-figure -5
-figure -6
-figure -7
-figure -8
-figure -9
+figure-1
+figure-10
+figure-11
+figure-2
+figure-3
+figure-4
+figure-5
+figure-6
+figure-7
+figure-8
+figure-9
 \end{lstlisting}
 
 Whereas it sorts properly with zero-padding:
 
 \begin{lstlisting}[style=shell]
 $  ls -1
-figure -01
-figure -02
-figure -03
-figure -04
-figure -05
-figure -06
-figure -07
-figure -08
-figure -09
-figure -10
-figure -11
-figure -12
+figure-01
+figure-02
+figure-03
+figure-04
+figure-05
+figure-06
+figure-07
+figure-08
+figure-09
+figure-10
+figure-11
+figure-12
 \end{lstlisting}
 
 \section{Computational notebooks}
@@ -205,7 +206,7 @@ Some researchers do all of their coding interactively within notebooks.  This is
 
 \textbf{Dependence on execution order}
 
-The cells in a Jupyter notebook can be executed in any order by the user, which means that the current value of all of the variables in the workspace depends on the exact order in which the previous cells were executed.  While this can sometimes be evident from the execution numbers that are presented alongside each cell, for a complex notebook it can become very difficult to identify exactly what has happened. This is why most Jupyter power-users learn to reflexively restart the kernel and run all of the cells in the notebook, as this is the only way to guarantee ordered execution. This is also an issue that is commonly confusing for new users; I once taught a statistics course using Jupyter notebooks within Google Colab, and I found that very often student confusions were resolved by restarting the kernel and rerunning the notebook, reflecting their basis in out-of-order execution.  Out-of-order execution is exceedingly common; an analysis of 1.4 million notebooks from Github by \citep{Pimentel:2019aa} found that for notebooks in which the execution order was unambiguous, 36.4\% of the notebooks had cells that were executed out of order.
+The cells in a Jupyter notebook can be executed in any order by the user, which means that the current value of all of the variables in the workspace depends on the exact order in which the previous cells were executed.  While this can sometimes be evident from the execution numbers that are presented alongside each cell, for a complex notebook it can become very difficult to identify exactly what has happened. This is why most Jupyter power-users learn to reflexively restart the kernel and run all of the cells in the notebook, as this is the only way to guarantee ordered execution. This is also an issue that is commonly confusing for new users; I once taught a statistics course using Jupyter notebooks within Google Colab, and I found that very often student confusions were resolved by restarting the kernel and rerunning the notebook, reflecting their basis in out-of-order execution.  Out-of-order execution is exceedingly common; an analysis of 1.4 million notebooks from Github by \citep{Pimentel:2019aa} found that for notebooks in which the execution order was unambiguous, 36.4\% of the notebooks had cells that were executed out of order.  Fortunately there is an easy solution to this: One simply needs to restart and run the entire notebook in order before saving and committing the file.
 
 \textbf{Global workspace}
 
@@ -257,28 +258,28 @@ In the notebook, we first load the data from Github and preprocess it in order t
 
 library(mirt)
 
-# Test models with increasing # factors to find the best -fitting model based on minimum BIC
+# Test models with increasing # factors to find the best-fitting model based on minimum BIC
 
-bic_values < - c()
+bic_values <- c()
 n = 1
 best_model_found = FALSE
 fit = list()
 
 while (!best_model_found) {
-    fit[[n]] < - mirt(data_df_spread, n, itemtype = 'graded', SE = TRUE, 
+    fit[[n]] <- mirt(data_df_spread, n, itemtype = 'graded', SE = TRUE, 
         verbose = FALSE, method = 'MHRM')
 
-    bic < - extract.mirt(fit[[n]], 'BIC')
+    bic <- extract.mirt(fit[[n]], 'BIC')
     if (n > 1 && bic > bic_values[length(bic_values)]) {
         best_model_found = TRUE
-        best_model < - fit[[n - 1]]
+        best_model <- fit[[n - 1]]
         cat('Best model has', n - 1, 'factor(s) with BIC =', 
             bic_values[length(bic_values)], '\n')
     } else {
         cat('Model with', n, 'factor(s): BIC =', bic, '\n')
-        n < - n + 1
+        n <- n + 1
     }
-    bic_values < - c(bic_values, bic)
+    bic_values <- c(bic_values, bic)
 }
 \end{lstlisting}
 
@@ -286,7 +287,7 @@ This cell ingests uses the \texttt{-i} flag to ingest the \texttt{data\_df\_spre
 
 \begin{lstlisting}[style=R]
 %%R -o loadings
-loadings < - as.data.frame(summary(best_model)$rotF, verbose=FALSE)
+loadings <- as.data.frame(summary(best_model)$rotF, verbose=FALSE)
 \end{lstlisting}
 
 The ability to easily integrate code from Python and many other languages is one of the most important applications of Jupyter notebooks for scientists.
@@ -299,11 +300,11 @@ Most Jupyter users learn over time to restart their kernel and run the entire no
 
 \subsubsection{Keep notebooks short}
 
-One of the graduate students in my lab recently created a notebook that was so long that I began referring to it as their ``big beautiful notebook'' (a sarcastic reference to Donald Trump's 2025 ``Big Beautiful Bill'').  A monster notebook will generally become unwieldy, because it often has dependencies that span across many different parts of the notebook. In addition, a large notebook will often take a very long time to run, making it more difficult to practice the ``restart and run all'' practice recommended above.  Instead of having a single large notebook, it's better to develop shorter notebooks that are targeted at specific functions.  This will also help better encapsulate the data, since they will need to be shared explicitly across the different notebooks.
+One of the graduate students in my lab created a notebook that was so long that I began referring to it (sarcastically) as their ``big beautiful notebook''.  A monster notebook will generally become unwieldy, because it often has dependencies that span across many different parts of the notebook. In addition, a large notebook will often take a very long time to run, making it more difficult to practice the ``restart and run all'' practice recommended above.  Instead of having a single large notebook, it's better to develop shorter notebooks that are targeted at specific functions.  This will also help better encapsulate the data, since they will need to be shared explicitly across the different notebooks.
 
 \subsubsection{Parameterize the notebook}
 
-Because notebooks are often generated in a quick and dirty way, it't not uncommon to see parameters such as directory names or function settings strewn across the entire notebook.  This violates the principles of clean coding that we mentioned in Chapter 3, and makes changes very difficult to effectively implement. Instead, it's better to define any parameters or settings in a cell at the top of the notebook. In this way, one can easily make changes and ensure that they are propagated throughout the notebook.
+Because notebooks are often generated in a quick and dirty way, it's not uncommon to see parameters such as directory names or function settings strewn across the entire notebook.  This violates the principles of clean coding that we mentioned in Chapter 3, and makes changes very difficult to effectively implement. Instead, it's better to define any parameters or settings in a cell at the top of the notebook. In this way, one can easily make changes and ensure that they are propagated throughout the notebook.
 
 \subsubsection{Extract functions into modules}
 
@@ -386,11 +387,11 @@ You can see that the file includes a section for cells, that in this case can co
 +   "execution_count": 4,
 \end{lstlisting}
 
-This is one of the reasons why we say that notebook files don't work well with version control: simply executing the file without any actual changes will still result in a difference according to git, and these differences can litter the git history, making it very difficult to discern true code differences.
+This is one of the reasons why we say that notebook files don't work well with version control: simply executing the file without any actual changes will still result in a difference according to git, and these differences can litter the \texttt{git} history, making it very difficult to discern true code differences.
 
 Another challenge with using Jupyter notebooks alongside version control occurs when the notebook includes images, such as output from plotting commands.  Images in Jupyter notebooks are stored in a serialized text-based format; you can see this by perusing the text of a notebook that includes images, where you will see large sections of seemingly random text, which represent the content of the image converted into text.  If the images change then the \texttt{git diff} will be littered with huge sections of this gibberish text.  One could filter these out when viewing the diffs (e.g., using \texttt{grep}) but another challenge is that very large images can cause the version control system to become slow and bloated if there are many notebooks with images that change over time.
 
-There are tools that one can use to address this, such as \textit{nbstripout} to remove cell outputs before committing a file, or \textit{nbdime} to provide ``rich diffs'' that make it easier to see the differences in the current state versus the last commit. There is also a library called \textit{nbdev} that provides git hooks to help with the git workflow.  However, converting notebooks to pure Python code prior to committing is a straightforward way to work around these issues.
+There are tools that one can use to address this, such as \textit{nbstripout} to remove cell outputs before committing a file, or \textit{nbdime} to provide ``rich diffs'' that make it easier to see the differences in the current state versus the last commit. There is also a library called \textit{nbdev} that provides \texttt{git} hooks (which are scripts that run automatically when code is committed) to help with the \texttt{git} workflow.  However, converting notebooks to pure Python code prior to committing is a straightforward way to work around these issues.
 
 \subsection{Converting notebooks to pure Python}
 
@@ -410,7 +411,7 @@ import matplotlib.pyplot as plt
 These cells can then be version-controlled just as one would with any Python file. To create a linked Python version of a Jupyter notebook, use the jupytext command:
 
 \begin{lstlisting}[style=shell]
-$  jupytext --set -formats ipynb,py:percent example_notebook2.ipynb
+$  jupytext --set-formats ipynb,py:percent example_notebook2.ipynb
 [jupytext] Reading example_notebook2.ipynb in format ipynb
 [jupytext] Updating notebook metadata with '{"jupytext": {"formats": "ipynb,py:percent"}}'
 [jupytext] Updating example_notebook2.ipynb
@@ -421,7 +422,7 @@ This creates a new Python file that is linked to the notebook, such that edits c
 
 \subsubsection{Using jupytext as a pre-commit hook}\index{pre-commit}
 
-If one wants to edit code using Jupyter notebooks while still maintaining the advantages of the pure Python format for version control (assuming one is using \textit{git}), one option is to apply \textit{jupytext} as part of a *pre-commit hook, which is a git feature that allows commands to be executed automatically prior to the execution of a commit. To use this function, you must have the \textit{pre-commit} Python module installed.   Automatic syncing of python and notebook files can be enabled within a git repository by creating a file called \texttt{.pre-commit-config.yaml} within the main repository directory, with the following contents:
+If one wants to edit code using Jupyter notebooks while still maintaining the advantages of the pure Python format for version control (assuming one is using \textit{git}), one option is to apply \textit{jupytext} as part of a *pre-commit hook, which is a \texttt{git} feature that allows commands to be executed automatically prior to the execution of a commit. To use this function, you must have the \textit{pre-commit} Python module installed.   Automatic syncing of python and notebook files can be enabled within a \texttt{git} repository by creating a file called \texttt{.pre-commit-config.yaml} within the main repository directory, with the following contents:
 
 \begin{lstlisting}[style=yaml]
 repos:
@@ -442,7 +443,7 @@ repos:
         language: system
 \end{lstlisting}
 
-The first section will automatically run jupytext and generate a pure Python version of the notebook before the commit is completed.  The second section will unstage the \texttt{ipynb} files before committing, so that they will not be committed to the git repository (only the Python files will). This will keep the Python and Jupyter notebook files synced while only committing the Python files to the git repository.
+The first section will automatically run jupytext and generate a pure Python version of the notebook before the commit is completed.  The second section will unstage the \texttt{ipynb} files before committing, so that they will not be committed to the \texttt{git} repository (only the Python files will). This will keep the Python and Jupyter notebook files synced while only committing the Python files to the \texttt{git} repository.
 
 \section{Containers}
 
@@ -507,7 +508,7 @@ boot  etc  lib	 mnt	proc  run   srv   tmp  var
 For realistic applications we will often want to be able to access our local storage volumes to be able to process files, run local code, or save outputs. With Docker we can mount a local storage volume to a location within the container using \textit{bind}.  Let's say that we want to output contents from an operation within the container to a local directory called \texttt{container-output} and that we want this to appear as \texttt{/data} within the container.  We can do that using the \texttt{-v} flag to \texttt{docker run}:
 
 \begin{lstlisting}[style=shell]
-$  docker run -it -v ./container -output:/data python:3.13.9 bash
+$  docker run -it -v ./container-output:/data python:3.13.9 bash
 root@d14247359d45:/# cd /data
 root@d14247359d45:/data# ls
 root@d14247359d45:/data# echo "test output from container" > test_output.txt
@@ -515,9 +516,9 @@ root@d14247359d45:/data# more test_output.txt
 test output from container
 root@d14247359d45:/data# exit
 exit
-$  ls container -output
+$  ls container-output
 test_output.txt
-$  more container -output/test_output.txt                                    
+$  more container-output/test_output.txt                                    
 test output from container
 \end{lstlisting}
 
@@ -526,7 +527,7 @@ test output from container
 To create a reproducible software execution environment, we will often need to create our own new Docker image that contains the necessary dependencies and application code.  AI coding tools are generally quite good at creating the required \texttt{Dockerfile} that defines the image. I used the following prompt to Claude Sonnet 4:\index{Claude}
 
 \begin{lstlisting}[style=transcript]
-I would like to generate a Dockerfile to define a Docker image based on the python:3.13.9 image.  The Python package wonderwords should be installed from PyPi. A local Python script should be created that creates a random sentence using wonderwords.RandomSentence() and prints it.  This script should be the entrypoint for the Docker container.  Create this within docker -example inside the current project.  Do not create a new workspace - use the existing workspace for this project.
+I would like to generate a Dockerfile to define a Docker image based on the python:3.13.9 image.  The Python package wonderwords should be installed from PyPi. A local Python script should be created that creates a random sentence using wonderwords.RandomSentence() and prints it.  This script should be the entrypoint for the Docker container.  Create this within docker-example inside the current project.  Do not create a new workspace - use the existing workspace for this project.
 \end{lstlisting}
 
 Here is the content of the resulting \texttt{Dockerfile}:
@@ -547,11 +548,11 @@ COPY random_sentence.py .
 ENTRYPOINT ["python", "random_sentence.py"]
 \end{lstlisting}
 
-The entry point defines the command that will be run by default when the container is run. We can then build the image:
+The bold commands are specific Dockerfile commands.  Of particular importance, \texttt{ENTRYPOINT} defines the command that will be run by default when the container is run. We can then build the image:
 
 \begin{lstlisting}[style=shell]
 $  docker build -t random-sentence-generator .
-[+] Building 0.0s (9/9) FINISHED                              docker:desktop -linux
+[+] Building 0.0s (9/9) FINISHED                              docker:desktop-linux
  => [internal] load build definition from Dockerfile                          0.0s
  => => transferring dockerfile: 339B                                          0.0s
  => [internal] load metadata for docker.io/library/python:3.13.9              0.0s
@@ -581,7 +582,7 @@ python                      3.13.9            49bb15d4b6f6   2 weeks ago     1.1
 We then run the container to execute the command:
 
 \begin{lstlisting}[style=shell]
-$  docker run - -rm random -sentence -generator
+$  docker run --rm random-sentence-generator
 Random sentence: The tangible fairy informs crazy.
 \end{lstlisting}
 
@@ -593,7 +594,7 @@ In addition to allowing the sharing of reproducible environments, containers als
 Letting Claude run arbitrary commands is risky and can result in data loss, system corruption, or even data exfiltration (e.g., via prompt injection attacks). To minimize these risks, use --dangerously-skip-permissions in a container without internet access. (www.anthropic.com/engineering/claude-code-best-practices)
 \end{quote}
 
-Their documentation also links to an example Dockerfile that makes it easy to implement this once you know how to use Docker.
+Their documentation also links to an example Dockerfile that makes it easy to implement this once you know how to use Docker.  However, I would personally never run this mode on my own personal computer, since it can still potentially leak private data.
 
 \section{Documentation}
 
@@ -603,7 +604,7 @@ Here I will outline the important aspects of documentation for scientific coding
 
 \subsection{Writing self-documenting code}
 
-The best code is code that is so clear that it can be used easily and correctly without any additional documentation.  While this is rarely the reality, it highlights the utility of clean coding and clear commenting for users as well as developers.  Some important ways to generate self-documenting code are:
+The best code is code that is so clear that it can be used easily and correctly without any additional documentation.  While this is rarely the reality, it highlights the utility of clean coding and clear commenting for users as well as developers.  Following on the discussion of clean coding in Chapter 3, some important ways to generate self-documenting code are:
 
 \begin{itemize}
 \item Use clear and consistent naming conventions for all objects
@@ -713,7 +714,7 @@ A docstring is meant to document the interface of the function, and thus should 
 \item Optionally, a brief usage example
 \end{itemize}
 
-Docstrings are the most basic form of explicit documentation within Python code.  They are particularly useful for generating API documentation using automated tools like Sphinx and MkDocs (to be discussed further below). When it comes to choosing a docstring style, it's really a matter of personal choice. I personally prefer the Google style, simply because it is more compact. But either can be used successfully with these tools to generate full API documentation for a project. Docstrings are most important for public functions and classes that are likely to be imported elsewhere.  They are less important for internal functions, as long as the role of the code is clear from its signature.\index{Sphinx}
+Docstrings are the most basic form of explicit documentation within Python code.  They are particularly useful for generating API documentation using automated tools like Sphinx\index{Sphinx} and MkDocs (to be discussed further below). When it comes to choosing a docstring style, it's really a matter of personal choice. I personally prefer the Google style, simply because it is more compact. But either can be used successfully with these tools to generate full API documentation for a project; what is most important is to pick one style and use it consistently within a project. Docstrings are most important for public functions and classes that are likely to be imported elsewhere.  They are less important for internal functions, as long as the role of the code is clear from its signature.
 
 AI tools are quite good at generating docstrings, especially when the code is cleanly written.  My usual workflow is to write a function, and then ask my AI tool to generate a docstring, which I then edit to make sure that the docstring accurately reflects the interface as well as the intent and logic of the code.
 
