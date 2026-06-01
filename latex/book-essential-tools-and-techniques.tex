@@ -250,7 +250,7 @@ It would also require knowing exactly which files have been added in order to cr
 The only time that I can imagine a blanket add/commit being reasonable is when one is initially creating a repository using a large number of files.
 
 A better practice is to explicitly name all files being added, which forces one to think about exactly what problem the commit is solving.
-If one is certain that they know exactly which code files have been changed, then a useful alternative can be to only add modified files (using \texttt{git add -u}), which can save a bit of time if there are numerous files being added.
+If one is certain that they know exactly which code files have been changed, then a useful alternative can be to only add tracked files that have been modified (using \texttt{git add -u}), which can save a bit of time if there are numerous files being added.
 However, it's important to make sure that the commit message always faithfully reflects the totality of the changes.
 
 \subsection{Version control as developer productivity tool}
@@ -266,8 +266,11 @@ On the other hand, with a solid version control workflow these problems are triv
 
 \subsubsection{Falling back on previous commits}
 
-I will start first with a simple example that only involves the \texttt{main} branch of the repository; if you don't know what a ``branch'' is, this would be a good time to seek out your favorite \textit{git} resource and learn about that concept.\index{Git!branching}
-Later I will suggest that working directly in the main branch is not optimal, but it's common for many research projects with a single developer so I will start there, fitting with the mantra that we should never let the perfect be the enemy of the good.
+A \textit{branch} in \textit{git} is akin to a parallel version of the repository, in which one can work without affecting other branches.\index{Git!branching}
+Branches can be \textit{merged}, meaning that the contents of a one branch can be combined with another.
+All \textit{git} repositories start with a single default branch, usually called ``main'' (or sometimes the previous convention, ``master'').  
+I will start first with a simple example that only involves the \texttt{main} branch of the repository.
+In the next section I will suggest that working directly in the main branch is not optimal, but it's common for many research projects with a single developer to work in the the main branch so I will start there, fitting with the mantra that we should never let the perfect be the enemy of the good.
 
 Let's say that we wish to try changing out the database backend for our project, which will require changes to several of the source files.
 Starting with a clean working tree (i.e., no uncommitted changes or untracked files not included in \texttt{.gitignore}), we would first create a new tag so that we can easily find the last commit in case we decide that we want to revert back to it:
@@ -278,7 +281,7 @@ git tag v0.2-pre-db-change
 
 We then start developing on the new code, committing as usual.
 Let's say that we make a few commits on the new code, but then go down a road that we decide to abandon.
-It's easy to get back to the last commit simply by typing \texttt{git reset --hard HEAD}, which takes the code back to the state it was in at the last commit (known as ``HEAD'').
+It's easy to get back to the last commit simply by typing \texttt{git reset --hard HEAD}, which takes the code back to the state it was in at the last commit (known as ``HEAD''); however, you should be aware that this will permanently delete any changes that have been made to tracked files since the last commit, so use \texttt{git status} and \texttt{git diff} first to make sure you know what you are going delete.
 In the case that we decide to abandon the entire project and want to go back to the state of the code when we started (which is denoted by the tag we created), we simply need to find the hash for that commit and then check out that version of the repository:
 
 \begin{lstlisting}[style=shell]
@@ -300,8 +303,7 @@ A look at the output of \texttt{git log} will now show that the HEAD matches the
 
 \subsubsection{Using branches}
 
-All \textit{git} repositories start with a single default branch, usually called ``main'' (or sometimes the previous convention, ``master'').
-While it's possible to develop completely within the main branch of a repository, I generally prefer to use \textit{development branches}, which can be thought of as different versions of the repository.
+While it's possible to develop completely within the main branch of a repository, I generally prefer to use \textit{development branches}, which can be thought of as different parallel versions of the repository.
 In my preferred workflow, whenever I want to modify code I first create and then check out a new branch, in which I will do that work.
 One great benefit of this is that if the main branch was working when I created the development branch, it will remain in a working state even as I make our changes in the new branch.
 This provides much greater freedom to try out changes with no concern about breaking existing code, and also allows development to proceed without interfering with production code.
@@ -324,8 +326,10 @@ $ git branch
 \end{lstlisting}
 
 We can now go about our development work, committing as usual to the branch.
-If I were to later decide to abandon the new branch, I would simply check out the main branch and be right back where I left off before creating the new branch.
-I could then either delete the feature branch (to keep the repository clean), or keep it around in case I wish to go back later and look at it again.
+If we then decide that we want to combine those changes into the main branch, we can perform a \textit{merge}, which attempts to automatically combine the changes in the development branch into the main branch.  If no changes were made to the main branch since the development branch was created, then it's likely that the automatic merge from the development branch into main will be successful.  However, if there are conflicting changes to main and to the development branch, this can cause a dreaded \textit{merge conflict}, which can require manual editing of the files.  Rather than giving a detailed explanation about how to deal with merge conflicts, I would instead suggest that you paste the details about any merge conflicts into your favorite chatbot, since they will usually have the right answer for how to fix the merge conflict.
+
+If instead I were to later decide to abandon the development branch, I would simply check out the main branch and be right back where I had left off before creating the new branch.
+I could then either delete the feature branch (to keep the repository clean), or keep it around in case I wish to go back and look at it again later.
 
 \subsection{Collaborative development using GitHub}
 
@@ -343,7 +347,7 @@ The process would be:
 \item Once the feature is complete, they commit and push all of their changes to the repository on GitHub.
 \item They then create a \textit{pull request}, which requests that the code in their branch be merged into the main branch of the primary repository.\index{pull request}
 \item Another developer on the team reviews the pull request, and provides comments suggesting changes to the code.
-\item Once the reviewer's comments are addressed, the code from the branch is merged into the main branch, so that the changes are now incorporated there.
+\item Once the reviewer's comments and any merge conflicts are addressed, the code from the branch is merged into the main branch, so that the changes are now incorporated there.
 \item After merging, the branch is deleted to keep the repository clean.
 \end{enumerate}
 
