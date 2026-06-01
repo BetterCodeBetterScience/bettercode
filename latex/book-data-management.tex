@@ -109,7 +109,7 @@ Before discussing different options, it is useful to lay out the important consi
 \item \textit{Longevity}: Will the data remain available in the long term?
 \end{itemize}
 
-It's also important to point out that most projects end up using multiple storage solutions for different portions of the data lifecycle.
+It's also important to point out that most projects end up using multiple storage solutions for different portions of the data lifecycle, given that the considerations listed above have varying importance at different stages.
 
 \subsection{File system storage}
 
@@ -163,7 +163,7 @@ Research data are often stored on network drives.  These can vary from a network
 
 Many researchers run and manage their own RAID systems for their group's use, either attached to a single workstation or to a network.  This can be a cost-effective solution for large data storage, especially in situations where institutional data storage resources are not available.  However, I think that the apparent robustness of RAID systems can provide a false sense of security to their users.  Take the most common RAID setup for redundant storage, RAID 5, in which the system is robust to the failure of one of its hard drives.  When a drive fails, the system enters a ``degraded'' mode, often providing a notice to the user such as a flashing red light or beeping sounds.  If this failure goes unnoticed, or the system administrator puts off fixing it, the failure of a second drive during degraded mode or during the rebuilding of the array after replacing the first failed drive (which can often take many hours) can lead to complete data loss.  Similarly, if the rebuilding of the array fails (for example, due to power loss during the rebuild or an unrecoverable error in reading from the other drives), this can compromise the data. Safe use of RAID arrays requires consistent attention (including email notifications of failure if possible) and a strong backup strategy.
 
-Most research institutions now offer large network-attached storage systems for research data, often connected directly to high-performance computing systems.  We have used systems like these for our research data for more than 15 years, and I personally would never go back to running my group's own RAID system (which I did for years beforehand).  Foremost, the system administration and hardware management resources of an institutional computing center will almost always outstrip those of most research groups.  These large systems will have monitoring and repair procedures in place to ensure against data loss, and in the 15 years that we have used these systems (at Stanford and the University of Texas), we have never experienced data loss due to hardware failure.  However, they are still liable to potential disasters.  These systems are also highly performant, providing parallel access to the data through high-speed interconnections with the compute system.\index{high-performance computing}
+Most research institutions now offer large network-attached storage systems for research data, often connected directly to high-performance computing systems.  We have used systems like these for our research data for more than 15 years, and I personally would never go back to running my group's own RAID system (which I did for years beforehand).  Foremost, the system administration and hardware management resources of an institutional computing center will almost always outstrip those of most research groups.  These large systems will have monitoring and repair procedures in place to ensure against data loss, and in the 15 years that we have used these systems (at Stanford and the University of Texas), we have never experienced data loss due to hardware failure, but these systems have top-notch resources and staff support that may not be available in many centers, and the systems are still liable to potential disasters.  These systems are also highly performant, providing parallel access to the data through high-speed interconnections with the compute system.\index{high-performance computing}
 
 Backing up one's data from a large network drive is a great idea in theory, but in our experience it has often been either impossible or too costly, given the many terabytes of research data that we store on the systems.  Given the relatively low likelihood of failure, we have adopted a more risk-tolerant strategy to big data storage:
 
@@ -172,7 +172,7 @@ Backing up one's data from a large network drive is a great idea in theory, but 
 \item Software code is stored on a separate partition that is backed up by the computing center, as well as being pushed to Github.
 \end{itemize}
 
-In this way, we have redundant copies of the code and original data that could be used to recreate the processed data if necessary.  This is a risky strategy, but the more risk-averse alternative of continuously backing up our entire 250TB partition would be cost-prohibitive.
+In this way, we have redundant copies of the code and original data that could be used to recreate the processed data if necessary.  This is a risky strategy, but the more risk-averse alternative of continuously backing up an entire 250TB data partition would be cost-prohibitive for most research labs.
 
 \subsection{Cloud drives}
 
@@ -215,9 +215,9 @@ The best known form of database is the \textit{relational database}, which organ
 One important feature of a relational databases is that they generally implement features to ensure data integrity and reliability.  These are often referred to as the \textit{ACID} properties:\index{ACID properties}
 
 \begin{itemize}
-\item \textit{Atomicity}: Transactions are atomic, meaning that they either succeed or they don't: there are no partial transactions.  If a transaction fails then the database remains in the state it was in prior to the failed transaction.
+\item \textit{Atomicity}: Transactions are atomic, meaning that they either commit an entire transaction or none at all: there are no partial transactions.  If an attempt to commit a transaction fails then the database remains in the state it was in prior to the failed attempt.
 \item \textit{Consistency}: A transaction is required to leave the database in a valid state.  Any transaction that attempts to violate any constraints or rules (such as the requirement that every measurement includes a valid device key) will be rejected.
-\item \textit{Isolation}: Individual transactions do not interfere with one another, such that they would never see any partial changes due to another transaction.  Thus, one can submit many transactions at once and be sure that they will each be processed correctly without interference from others.
+\item \textit{Isolation}: Individual transactions do not interfere with one another, such that they would never see any partial changes due to another transaction.  Thus, one can submit many transactions at once and be sure that they will each be processed correctly without interference from others. 
 \item \textit{Durability}:  Transactions are durable, such that once they are written they will be permanent despite failures such as power outages or system crashes (as long as the server is not damaged).
 \end{itemize}
 
@@ -636,10 +636,10 @@ Spreadsheet software such as Microsoft Excel is commonly used by researchers for
 \item Spreadsheet tools will often automatically format data, sometimes changing things in important but unwanted ways.  For example, gene names such as ``SEPT2'' and ``MARCH1'' are converted to dates by Microsoft Excel, and some accession numbers (e.g., ``2310009E13'') are converted to floating point numbers.  An analysis of published genomics papers \citep{Ziemann:2016aa} found that roughly twenty percent of supplementary gene lists created using Excel contained errors in gene names due to these conversions.
 \item It is very easy to make errors when performing operations on a spreadsheet, and these errors can often go unnoticed.  A well known example occurred in the paper  ``Growth in a time of debt'' by the prominent economists Carmen Reinhart and Kenneth Rogoff \citep{Reinhart:2010aa}. This paper claimed to have found that high levels of national debt led to decreased economic growth, and was used as a basis for promoting austerity programs after the 2008 financial crisis.  However, researchers subsequently discovered that the authors had made an error in their Excel spreadsheet, excluding data from several countries; when the full data were used, the relationship between growth and debt became much weaker \citep{Herndon:2013aa}.
 \item Spreadsheet software can sometimes have limitations that can cause problems.  For example, the use of an outdated Microsoft Excel file format (.xls) caused underreporting of COVID-19 cases due to limitations on the number of rows in that file format, and the lack of any warnings when additional rows in the imported data files were ignored\footnote{www.bbc.com/news/technology-54423988}.
-\item Spreadsheets do not easily lend themselves to version control and change tracking, although some spreadsheet tools (such as Google Sheets) do provide the ability to clearly label versions of the data.\index{version control}
+\item Spreadsheets do not easily lend themselves to version control and change tracking, although some spreadsheet tools (such as Google Sheets) do provide the ability to create labeled snapshots of the data.\index{version control}
 \end{itemize}
 
-I will occasionally use Microsoft Excel to examine a data file, but I think that spreadsheet tools should \textit{almost never} be used as part of a scientific data workflow.
+I will occasionally use Microsoft Excel to visualize a data file, but I think that spreadsheet tools should \textit{almost never} be used as part of a scientific data workflow.
 
 \subsection{Multidimensional array data}
 
@@ -762,7 +762,7 @@ Average loading time for h5: 7.218049 seconds
 Average loading time for zarr: 0.875727 seconds
 \end{lstlisting}
 
-This shows that \textit{Zarr} is slightly slower than the native \textit{NumPy} file loader, but much faster than HDF5.
+This shows that \textit{Zarr} is slightly slower than the native \textit{NumPy} file loader for these data, but much faster than HDF5.  Note, however, that performance for HDF5 and Zarr will depend on the details of the type of file, compression algorithm, and chunking scheme used for the data, so 
 
 I would suggest that unless you have a strong need for HDF5 compatibility, that you use \textit{Zarr} files to store large binary data files such as matrices.
 
@@ -866,19 +866,19 @@ Another consideration about the number of files has to do with storage systems t
 
 From my standpoint, the most important consideration for naming of files and folders is the ability to automatically parse the file/folder names.  While there are many possible ways to do this, I prefer the approach used in the Brain Imaging Data Structure (BIDS), which our group was involved in developing \citep{Gorgolewski:2016aa}.  This is a standard for organizing a wide range of brain imaging data types, but the strategy behind the standard is applicable to almost any scientific data type.  The basic idea is to embed a set of key-value pairs in the name, along with a suffix that defines the data type along with a file type extension for files.  The schema looks like this:\index{BIDS (Brain Imaging Data Structure)}
 
-\texttt{\textless key\textgreater -\textless value\textgreater \_\textless key\textgreater -\textless value\textgreater \_suffix.extension}
+\texttt{\textless key\textgreater-\textless value\textgreater \_\textless key\textgreater-\textless value\textgreater \_suffix.extension}
 
 This is useful because it is very easy to automatically parse such a file name.  For example, let's say we have a file called `sub-001\_sess-1A\_desc-Diffusion\_fa.nii.gz'.  We can easily parse file names like this as follows:
 
 \begin{lstlisting}[style=Python]
-filename = 'sub -001_sess -1A_desc -Diffusion_fa.nii.gz'
+filename = 'sub-001_sess-1A_desc-Diffusion_fa.nii.gz'
 
 def split_filename(filename: str) -> tuple[str, dict[str, str]]:
     """Parse a BIDS-style filename into its extension and key-value pairs."""
     extension = '.'.join(filename.split('.')[1:])
     name = filename.split('.')[0]
-    key_values = {k: v for k, v in (item.split(' -') for item in name.split('_')[: -1])}
-    key_values['suffix'] = name.split('_')[ -1]
+    key_values = {k: v for k, v in (item.split('-') for item in name.split('_')[:-1])}
+    key_values['suffix'] = name.split('_')[-1]
     return extension, key_values
 
 extension, key_values = split_filename(filename)
@@ -996,9 +996,9 @@ A codebook is meant to be a more human-friendly description of the content of th
 
 \begin{itemize}
 \item Numerical Value: A continuous value from 0.10 to 50.00 represents the measured concentration in mg/L.
-\item -90: Value below the lower limit of detection (\textless  0.10 mg/L).
-\item -98: Unusable sample (e.g., sample was hemolyzed, insufficient quantity).
-\item -99: Missing (e.g., sample not collected, participant refused blood draw).
+\item-90: Value below the lower limit of detection (\textless  0.10 mg/L).
+\item-98: Unusable sample (e.g., sample was hemolyzed, insufficient quantity).
+\item-99: Missing (e.g., sample not collected, participant refused blood draw).
 \end{itemize}
 \end{itemize}
 
@@ -1043,7 +1043,7 @@ In addition, the model defines a set of relationships between these concepts, as
 
 This data model highlights the breadth of information that needs to be represented in order to accurately record provenance.
 
-There are several different ways to track provenance in practice, which vary in their complexity, comprehensiveness, and ease of use.  WIe will discuss this further in the later chapter on workflows.
+There are several different ways to track provenance in practice, which vary in their complexity, comprehensiveness, and ease of use.  I will discuss this further in the following chapter on workflows.
 
 \section{Handling of sensitive data}
 
@@ -1097,13 +1097,13 @@ Deidentification generally involves the removal of specific identifying informat
  - (N) Web Universal Resource Locators (URLs)
  - (O) Internet Protocol (IP) addresses
  - (P) Biometric identifiers, including finger and voice prints
- - (Q) Full -face photographs and any comparable images
- - (R) Any other unique identifying number, characteristic, or code, except as permitted by paragraph (c) of this section [Paragraph (c) is presented below in the section “Re -identification”]; and
+ - (Q) Full-face photographs and any comparable images
+ - (R) Any other unique identifying number, characteristic, or code, except as permitted by paragraph (c) of this section [Paragraph (c) is presented below in the section “Re-identification”]; and
 
 (ii) The covered entity does not have actual knowledge that the information could be used alone or in combination with other information to identify an individual who is a subject of the information.
 \end{lstlisting}
 
-In the US, deidentification of data is generally sufficient to render them non-sensitive, whereas this is generally \textit{not} the case in European countries covered by the General Data Protection Regulation (GDPR).\index{GDPR}
+In the US, deidentification of data is generally sufficient to render them non-sensitive, whereas this is generally \textit{not} the case in European countries covered by the General Data Protection Regulation (GDPR).  Readers in countries covered by GDPR should consult with local data protection experts since the GDPR regulations are also differently interpreted between institutions.\index{GDPR}
 
 \subsection{Anonymization}
 
@@ -1125,7 +1125,7 @@ However,\textit{git} does not work well for version control on larger datasets u
 
 A solution to this problem is to use a version control tool that is specifically designed for large data.  There are several tools that address this problem; we will focus on DataLad (datalad.org), which is a data management system that functions very similarly to git.  It is based on a tool called \textit{git-annex}, but provides much greater ease of use for researchers.  (Full disclosure: Our group collaborates with the \textit{DataLad} group and our grants have supported some of their development work.)
 
-An important note: \textit{DataLad} is quite powerful but has a significant learning curve, and takes a bit of time to get accustomed to.  In particular, its use of symbolic links can sometimes confuse new users. Having said that, let's look at some simple examples.
+An important note: \textit{DataLad} is quite powerful but has a significant learning curve, and takes a bit of time to get accustomed to.  In particular, its use of symbolic links can sometimes confuse new users. The learning curve means that it's probably only worthwhile for large groups with very large and changing datasets to manage. Having said that, let's look at some simple examples to show how it works.
 
 \subsubsection{Creating a local \textit{DataLad} dataset}
 
@@ -1143,9 +1143,9 @@ create(ok): my_datalad_repo (dataset)
 This creates a new directory, called \texttt{my\_datalad\_repo} and sets it up as a \textit{DataLad} dataset.  We then go into the directory and create a subdirectory called \texttt{data}, and then download some data files from another project.  We do this using the \texttt{datalad download-url} function, which will both download the data and save them to the datalad dataset:
 
 \begin{lstlisting}[style=shell]
-$ datalad download -url -d . -O my_datalad_repo/data/ https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/demographics.csv
+$ datalad download-url -d . -O my_datalad_repo/data/ https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv
 
-[INFO   ] Downloading 'https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/demographics.csv' into '/Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/'
+[INFO   ] Downloading 'https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv' into '/Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/'
 download_url(ok): /Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/demographics.csv (file)
 add(ok): data/demographics.csv (file)
 save(ok): my_datalad_repo (dataset)
@@ -1154,9 +1154,9 @@ add(ok): .gitmodules (file)
 save(ok): . (dataset)
 
 
-$ datalad download -url -d . -O my_datalad_repo/data/ https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/meaningful_variables_clean.csv
+$ datalad download-url -d . -O my_datalad_repo/data/ https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv
 
-[INFO   ] Downloading 'https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/meaningful_variables_clean.csv' into '/Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/'
+[INFO   ] Downloading 'https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv' into '/Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/'
 download_url(ok): /Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/meaningful_variables_clean.csv (file)
 add(ok): data/meaningful_variables_clean.csv (file)
 save(ok): my_datalad_repo (dataset)
@@ -1170,14 +1170,14 @@ A \textit{DataLad} dataset is also a \textit{git} repository, which we can see i
 \begin{lstlisting}[style=shell]
 $ git log
 
-commit 948cc31262fcddda3bfc56b222687710861c57d1 (HEAD -> text/datamgmt -Nov3)
+commit 948cc31262fcddda3bfc56b222687710861c57d1 (HEAD -> text/datamgmt-Nov3)
 Author: Russell Poldrack <poldrack@gmail.com>
 Date:   Mon Dec 15 13:40:52 2025 -0800
 
     [DATALAD] Download URLs
 
     URLs:
-      https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/meaningful_variables_clean.csv
+      https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv
 
 commit 9b4b8b29e08a21974dc52e3026405b878078f07b
 Author: Russell Poldrack <poldrack@gmail.com>
@@ -1186,7 +1186,7 @@ Date:   Mon Dec 15 13:40:29 2025 -0800
     [DATALAD] Download URLs
 
     URLs:
-      https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/demographics.csv
+      https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv
 \end{lstlisting}
 
 Here we see the commit messages that were automatically created by DataLad, first for creating the new dataset and then for downloading the URLS.  The \texttt{datalad download-url} function adds the URL to the log, which is useful for provenance tracking. If one wishes to download a large number of files, there is also a \texttt{datalad addurls} command that can download multiple files based on a single text file (TSV, JSON, etc) containing the relevant URLs and information.
@@ -1240,7 +1240,7 @@ nothing to save, working tree clean
 Although the previous example was meant to provide background on how \textit{DataLad} works, in practice there is actually a much easier way to accomplish these steps, which is by using the \texttt{datalad run} command. This command will automatically take care of fetching and unlocking the relevant files, running the command, and then committing the files back in, generating a commit message that tracks the specific command that was used:
 
 \begin{lstlisting}[style=shell]
-$ datalad run -i my_datalad_repo/data/demographics.csv -o my_datalad_repo/data/demographics.csv - - uv run src/bettercode/modify_data.py my_datalad_repo/data/demographics.csv
+$ datalad run -i my_datalad_repo/data/demographics.csv -o my_datalad_repo/data/demographics.csv -- uv run src/bettercode/modify_data.py my_datalad_repo/data/demographics.csv
 [INFO   ] Making sure inputs are available (this may take some time)
 unlock(ok): my_datalad_repo/data/demographics.csv (file)
 [INFO   ] == Command start (output follows) =====
@@ -1257,7 +1257,7 @@ save(ok): . (dataset)
 
 # show the most recent commit
 $ git log -1
-commit 3ef3b94a0abffec6a8db7570a97339f48ee728ed (HEAD -> text/datamgmt -Nov3)
+commit 3ef3b94a0abffec6a8db7570a97339f48ee728ed (HEAD -> text/datamgmt-Nov3)
 Author: Russell Poldrack <poldrack@gmail.com>
 Date:   Mon Dec 15 13:28:06 2025 -0800
 
@@ -1289,7 +1289,7 @@ DataLad is a particularly powerful tool for sharing data across systems.  It all
 We first need to install and set up the \textit{datalad-osf} Python package.  We also need to create an account on the OSF site, and obtain a Personal Access Token for login.  We can then use \textit{DataLad} to authenticate with OSF:
 
 \begin{lstlisting}[style=shell, numbers=none]
-$ datalad osf -credentials                                                1 ↵
+$ datalad osf-credentials                                                1 ↵
 You need to authenticate with 'https://osf.io' credentials. https://osf.io/settings/tokens provides information on how to gain access
 token:
 osf_credentials(ok): [authenticated as Russell Poldrack <poldrack@stanford.edu>]
@@ -1298,20 +1298,20 @@ osf_credentials(ok): [authenticated as Russell Poldrack <poldrack@stanford.edu>]
 Having authenticated with OSF, we can now create a new OSF project using DataLad:
 
 \begin{lstlisting}[style=shell, numbers=none]
-$ datalad create -sibling -osf - -title datalad -test -project -s osf
-create -sibling -osf(ok): https://osf.io/htprk/
-[INFO   ] Configure additional publication dependency on "osf -storage"
-configure -sibling(ok): . (sibling)
+$ datalad create-sibling-osf --title datalad-test-project -s osf
+create-sibling-osf(ok): https://osf.io/htprk/
+[INFO   ] Configure additional publication dependency on "osf-storage"
+configure-sibling(ok): . (sibling)
 \end{lstlisting}
 
 Once the project is created, we can push the contents of our dataset to our OSF project:
 
 \begin{lstlisting}[style=shell]
-$ datalad push - -to osf
-copy(ok): data/demographics.csv (file) [to osf -storage...]
-copy(ok): data/meaningful_variables_clean.csv (file) [to osf -storage...]
+$ datalad push --to osf
+copy(ok): data/demographics.csv (file) [to osf-storage...]
+copy(ok): data/meaningful_variables_clean.csv (file) [to osf-storage...]
 publish(ok): . (dataset) [refs/heads/main ->osf:refs/heads/main [new branch]]
-publish(ok): . (dataset) [refs/heads/git -annex ->osf:refs/heads/git -annex [new branch]]
+publish(ok): . (dataset) [refs/heads/git-annex ->osf:refs/heads/git-annex [new branch]]
 action summary:
   copy (ok: 2)
   publish (ok: 2)
@@ -1321,7 +1321,7 @@ These data now exist on OSF, and can be cloned to our local machine using \textt
 
 \begin{lstlisting}[style=shell, numbers=none]
 $ datalad clone osf://htprk/
-[INFO   ] Remote origin uses a protocol not supported by git -annex; setting annex -ignore
+[INFO   ] Remote origin uses a protocol not supported by git-annex; setting annex-ignore
 install(ok): /Users/poldrack/Downloads/htprk (dataset)
 \end{lstlisting}
 
