@@ -4,6 +4,8 @@ In most areas of science today, the processing and analysis of data comprise man
 
 \section{What do we want from a scientific workflow?}
 
+\textbf{TODO}: ? add specific examples of what happens when each of these are violated?
+
 First let's ask: What do we want from a computational scientific workflow?  Here are some of the factors that I think are important.  First, we care about the \textit{correctness} of the workflow, which includes the following factors:
 
 \begin{itemize}
@@ -61,11 +63,11 @@ There are certainly some contexts where a more formal structure adhering in deta
 One of the simplest ways to build a workflow is to stream data directly from one command to another, such that the intermediate results are ephemeral since no information about the intermediate states is saved.  Such a workflow is \textit{linear} in the sense that there is a single pathway through the workflow. One common way that this is accomplished is through the use of \textit{pipes}, which are a syntactic construct that feed the results of one process directly into the next process.  Some readers may be familiar with pipes from the UNIX shell, where they are represented by the vertical bar ``|''.  For example, let's say that we had a log file that contains the following entries:
 
 \begin{lstlisting}[style=shell]
-2024 -01 -15 10:23:45 ERROR: Database connection failed
-2024 -01 -15 10:24:12 ERROR: Invalid user input
-2024 -01 -15 10:25:33 ERROR: Database connection failed
-2024 -01 -15 10:26:01 INFO: Request processed
-2024 -01 -15 10:27:15 ERROR: Database connection failed
+2024-01-15 10:23:45 ERROR: Database connection failed
+2024-01-15 10:24:12 ERROR: Invalid user input
+2024-01-15 10:25:33 ERROR: Database connection failed
+2024-01-15 10:26:01 INFO: Request processed
+2024-01-15 10:27:15 ERROR: Database connection failed
 \end{lstlisting}
 
 and that we wanted to generate a summary of errors. We could use the following pipeline:
@@ -123,6 +125,8 @@ Name: EverArrested, dtype: float64
 
 Note that \textit{pandas} data frames also include an explicit \texttt{.pipe} method that allows using arbitrary functions within a pipeline. While these kinds of streaming workflows can be useful for simple data processing operations, they can become very difficult to debug, so I would generally avoid using complex functions within a method chain.
 
+\textbf{TODO}: Add a concrete example showing difficulty in debugging?
+
 \section{A simple workflow example}
 
 Most real scientific workflows are complex and can often run for hours, and we will encounter such a complex workflow later in the chapter. However, we will start our discussion of workflows with a relatively simple and fast-running example that will help demonstrate the basic concepts of workflow execution. We will use the same data as above (from Eisenberg et al.) to perform a simple workflow:
@@ -136,6 +140,8 @@ Most real scientific workflows are complex and can often run for hours, and we w
 \end{itemize}
 
 I have implemented each of these components as a module \href{https://github.com/BetterCodeBetterScience/bettercode/blob/main/src/bettercode/simple\_workflow.py}{here}.  The simplest possible workflow would be a script that simply imports and calls each of the methods in turn. For such a simple workflow this would be fine, but I will use this example to show how we might take advantage of more sophisticated workflow management tools.
+
+\textbf{TODO}: show the actual code for the scripts?
 
 \section{Running a simple workflow using GNU make}\index{Make!GNU make}
 
@@ -199,7 +205,7 @@ clean:
 	rm -rf $(OUTPUT_DIR)
 \end{lstlisting}
 
-Most of the targets (except for ``clean'' and ``all'') refer to specific files that are required for the workflow. For example, the first target refers to the two files that need to be downloaded by the \texttt{download\_data.py} script. This target does not rely on the outputs of any others, so there is nothing following the colon in the target name. For the others, they require particular inputs, which come after the colon; thus, if those don't already exist then their targets will be run first.  Note that \textit{make} requires the use of tabs to indent commands, and will fail if spaces are used; thus, \texttt{Makefile} commands often need to be reformatted when copied and pasted since this often converts tabs to spaces.
+Most of the targets (except for ``clean'' and ``all'') refer to specific files that are required for the workflow. For example, the first target refers to the two files that need to be downloaded by the \texttt{download\_data.py} script. This target does not rely on the outputs of any others, so there is nothing following the colon in the target name. For the others, they require particular inputs, which come after the colon; thus, if those don't already exist then their targets will be run first.  Note that \textit{make} requires the use of tabs to indent commands, and will fail if spaces are used; thus, \texttt{Makefile} commands often need to be reformatted when copied and pasted since this often converts tabs to spaces.  This is a common source of \textit{make} problems that is easy to miss.
 
 We can run the entire workflow by simply running \texttt{make all}:
 
@@ -316,8 +322,8 @@ What this does is first specify a set of directories; the \texttt{BASEDIR} varia
 
 \begin{lstlisting}[style=yaml]
 # Data URLs
-meaningful_variables_url: "https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/meaningful_variables_clean.csv"
-demographics_url: "https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/demographics.csv"
+meaningful_variables_url: "https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv"
+demographics_url: "https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv"
 
 # Correlation settings
 correlation_method: "spearman"
@@ -326,7 +332,7 @@ correlation_method: "spearman"
 heatmap:
   figsize: [12, 10]
   cmap: "coolwarm"
-  vmin: -1.0
+  vmin:-1.0
   vmax: 1.0
 \end{lstlisting}
 
@@ -417,7 +423,7 @@ if __name__ == "__main__":
     main()
 \end{lstlisting}
 
-You can see that the code refers to the \texttt{snakemake} module even though we haven't explicitly imported it; this is possible because the script is executed within the \textit{Snakemake} environment which makes that object available, containing all of the configuration details.
+You can see that the code refers to the \texttt{snakemake} module even though we haven't explicitly imported it; this is possible because the script is executed within the \textit{Snakemake} environment which makes the \texttt{snakemake} object available within the script's execution namespace, containing all of the configuration details.  
 
 Once the \texttt{Snakefile}  and other related files are ready to go, we can first check whether they are properly formatted using \texttt{snakemake --lint}, which is a static analysis tool specifically for snakemake configuration files.  Here is the result (note: some output lines are omitted for conciseness):\index{static analysis}
 
@@ -501,7 +507,7 @@ localrule download_demographics:
     jobid: 7
     reason: Missing output files: output/data/demographics.csv
     resources: tmpdir=/var/folders/r2/f85nyfr1785fj4257wkdj7480000gn/T
-Downloaded 522 rows from https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02 -16 -2019/demographics.csv
+Downloaded 522 rows from https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv
 Saved to output/data/demographics.csv
 [Wed Dec 24 08:17:58 2025]
 Finished jobid: 7 (Rule: download_demographics)
@@ -578,17 +584,17 @@ Similarly, \textit{Snakemake} will rerun the workflow if any of the scripts used
 
 \subsection{Reproducible environments with Conda}
 
-\textit{Snakemake} comes with native support for \textit{Conda} environments, which helps ensure reproducibility across systems. As I discussed in Chapter 2, I don't love conda, but in lieu of support for \textit{uv} it's a reasonable solution for reproducible \textit{Snakemake} workflows.  After first installing \textit{Conda} on our system (if necessary), we then need to identify all of the packages that are necessary for our workflow to succeed, and then add those to a YAML file. Here is the example for our simple workflow, which I placed in \texttt{envs/simple.yaml}:\index{reproducibility}
+\textit{Snakemake} comes with native support for \textit{Conda} environments, which helps ensure reproducibility across systems. As I discussed in Chapter 2, I generally prefer \textit{uv} over  \textit{Conda}, but \textit{Snakemake} does not support  \textit{uv} environments at the time of writing, so \textit{Conda} is the only option until that support becomes available.  After first installing \textit{Conda} on our system (if necessary), we then need to identify all of the packages that are necessary for our workflow to succeed, and then add those to a YAML file. Here is the example for our simple workflow, which I placed in \texttt{envs/simple.yaml}:\index{reproducibility}
 
 \begin{lstlisting}[style=yaml]
 name: bettercode
 channels:
-  - conda -forge
+ - conda-forge
 dependencies:
-  - numpy=2.4.0
-  - pandas=2.3.3
-  - matplotlib=3.10.8
-  - seaborn=0.13.2
+ - numpy=2.4.0
+ - pandas=2.3.3
+ - matplotlib=3.10.8
+ - seaborn=0.13.2
 \end{lstlisting}
 
 When we run the workflow, we will see that snakemake first builds a local \textit{Conda} environment within the working directory. In this case I am running it from a different directory than the source directory, so I need to specify the location of the \texttt{Snakefile}:
@@ -612,14 +618,14 @@ As I discussed in Chapter 2, software containers are increasingly used as a mean
 Using containers is easiest if you can find an existing Docker container that contains all of the necessary dependencies for your code.  Fortunately there is a large number of containers available via the \href{https://hub.docker.com/}{Docker Hub}, and given the simple dependencies that our workflow requires, I was easily able to find \href{https://hub.docker.com/layers/jupyter/scipy-notebook/x86\_64-ubuntu-22.04/images/sha256-3b37958b7b31ce94c3027d7c83c98fc16acfe166fab2de2f62ae54c50e59aed3}{a container} containing the necessary packages.  I added this to my \texttt{config.yaml} file:\index{SciPy}\index{Docker}\index{Docker Hub}
 
 \begin{lstlisting}[style=yaml]
-# Container image (used with - -sdm apptainer)
-container: "docker://jupyter/scipy -notebook:x86_64 -ubuntu -22.04"
+# Container image (used with --sdm apptainer)
+container: "docker://jupyter/scipy-notebook:x86_64-ubuntu-22.04"
 \end{lstlisting}
 
 and also added the definition to my \texttt{Snakemake} file:
 
 \begin{lstlisting}[style=Python]
-# Container image for all rules (used with - -sdm apptainer)
+# Container image for all rules (used with --sdm apptainer)
 container: config["container"]
 \end{lstlisting}
 
@@ -992,27 +998,27 @@ Thus, we need to generate tests for 83 functions comprising more than 1000 state
 I started by generating a \texttt{CLAUDE.md} file to create the test framework:
 
 \begin{lstlisting}[style=transcript]
-This is a set of implementations of an analysis workflow for single -cell RNA -seq data analysis. These are meant to exemplify different ways of building a workflow.  The main goal of this development project is to develop a testing framework for this workflow.  This will involve two main steps:
+This is a set of implementations of an analysis workflow for single-cell RNA-seq data analysis. These are meant to exemplify different ways of building a workflow.  The main goal of this development project is to develop a testing framework for this workflow.  This will involve two main steps:
 
- - develop unit tests for the functions defined within src/example_rnaseq
- - develop integration tests for the snakemake workflow defined in snakemake_workflow
+- develop unit tests for the functions defined within src/example_rnaseq
+- develop integration tests for the snakemake workflow defined in snakemake_workflow
 
-Some of these tests can be performed using automatically generated data. However, the integration tests will require a test dataset. this should be based on the actual data that can be found at $DATADIR/dataset -OneK1K_subset -immune_raw.h5ad.  To minimize the size of this dataset, we should first select a subset of 30 donors from the dataset.  we should look for donors that vary in the number of cells, with some having high numbers and some having low numbers. The donors should also vary in age so that the subset covers the entire distribution of ages in the dataset. then we should select a subset of about 500 genes.  these should include:
+Some of these tests can be performed using automatically generated data. However, the integration tests will require a test dataset. this should be based on the actual data that can be found at $DATADIR/dataset-OneK1K_subset-immune_raw.h5ad.  To minimize the size of this dataset, we should first select a subset of 30 donors from the dataset.  we should look for donors that vary in the number of cells, with some having high numbers and some having low numbers. The donors should also vary in age so that the subset covers the entire distribution of ages in the dataset. then we should select a subset of about 500 genes.  these should include:
 
- - a set of genes from a pathway (TNF -alpha Signaling via NF -KB) known to be associated with aging, found in tests/data/HALLMARK_TNFA_SIGNALING_VIA_NFKB.v2025.1.Hs.json
- - a set of about 200 other highly variable genes
- - a set of about 100 weakly variable genes
+- a set of genes from a pathway (TNF-alpha Signaling via NF-KB) known to be associated with aging, found in tests/data/HALLMARK_TNFA_SIGNALING_VIA_NFKB.v2025.1.Hs.json
+- a set of about 200 other highly variable genes
+- a set of about 100 weakly variable genes
 
 This dataset should be saved to tests/data/testdata.h5ad.
 
 ## Coding guidelines
 
- - Think about the problem before generating code.
- - Write code that is clean and modular. Prefer shorter functions/methods over longer ones.
- - Prefer reliance on widely used packages (such as numpy, pandas, and scikit -learn); avoid unknown packages from Github.
- - Do not include *any* code in `__init__.py` files.
- - Use pytest for testing.
- - Use functions rather than classes for tests. Use pytest fixtures to share resources between tests.
+- Think about the problem before generating code.
+- Write code that is clean and modular. Prefer shorter functions/methods over longer ones.
+- Prefer reliance on widely used packages (such as numpy, pandas, and scikit-learn); avoid unknown packages from Github.
+- Do not include *any* code in `__init__.py` files.
+- Use pytest for testing.
+- Use functions rather than classes for tests. Use pytest fixtures to share resources between tests.
 \end{lstlisting}
 
 Claude Code took about 20 minutes to generate an entire test framework for the code, comprising 215 test functions and 19 test fixtures.  Interestingly, Claude disregarded my instructions to use functions rather than classes for tests, generating 78 test classes.  While I usually prefer tests to be in pure functions rather than classes so that novices can more easily understand them, I decided in this case to stay with the class-based implementation since I don't mind it and it does make the organization of the tests a bit cleaner.
@@ -1072,7 +1078,7 @@ result = run_pseudobulk_pipeline(
 
 Pseudobulking is an operation that should summarize all cells of a given type for each donor, but none of the test conditions actually check that it has been properly applied.  In fact, these tests could pass if \texttt{run\_pseudobulk\_pipeline()} simply passed the original data back without doing anything to it!  This is a case where domain knowledge is essential to get the tests right and avoid the happy path.  In several other cases the tests called \texttt{pytest.skip()} (which causes the test to be skipped) for outcomes that really should have triggered a test failure.  For example, it skipped the integration tests for the full dataset if the dataset hadn't already been created, and it also skipped the \textit{Snakemake} integration functions if the \textit{Snakemake} call failed (which it initially did because of a missing argument).\index{pytest}
 
-These examples highlight the need to closely examine the test code that is generated by AI agents.  However it's worth noting that although it took a significant amount of human time to read over the AI-generated tests, the time spent was still far less than if I had undertaken writing the test code without AI assistance, and Claude was also able to fix all of the issues to my satisfaction after I raised them.
+These examples highlight the need to closely examine the test code that is generated by AI agents.  However it's worth noting that although it took a significant amount of human time to read over the AI-generated tests, the time spent was still far less than if I had undertaken writing the test code without AI assistance, and Claude was also able to fix all of the issues to my satisfaction after I raised them. 
 
 \subsection{Property-based testing for workflows}\index{testing!property-based}
 
