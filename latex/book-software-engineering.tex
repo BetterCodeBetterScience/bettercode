@@ -1346,8 +1346,7 @@ We can easily load this configuration file into Python using the \texttt{PyYAML}
 
 It is important to ensure that configuration files do not get checked into version control, since this could expose them to the world if the project is shared.
 For this reason, one should always add any configuration files to the \texttt{.gitignore} file, which will prevent them from being checked into the repository by accident.
-
-\textbf{TODO}: Sharing credentials, CI/CD env variables
+Another layer of protection can be obtained through the use of automated secret scanning tools, which can be enabled as a \textit{pre-commit hook} in \texttt{git}, such that any secrets that are accidentally checked into git will be caught prior to committing the code.
 
 \section{Managing technical debt}
 
