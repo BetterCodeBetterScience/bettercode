@@ -3,7 +3,7 @@
 \section{The tools and why we use them}
 
 I hope that the principles and strategies outlined in this book will transcend any particular software platform or programming language, but for the purposes of explication I will focus on a particular language (Python) and a particular set of tools for software development/engineering and AI coding assistance.\index{Python}
-Here I briefly outline our motivation for these particular tools.
+Here I briefly outline the motivation for these particular tools.
 
 \subsection{Why Python?}
 
@@ -20,7 +20,7 @@ I should note that different scientific communities have often converged on part
 The above are some examples of Python packages, but in some fields the ecosystem is much more elaborated in R, Julia, Perl or Matlab.\index{Julia}\index{Matlab}
 I hope that most of the lessons in this book will be relevant to these other languages as well, though some of these other languages do not provide the same level of software engineering tools as Python.
 
-It would be unfair to not also mention Python's weaknesses. A major limitation is performance: As I will discuss in more detail in Chapter 10, Python is substantially slower than languages such as C/C++ or Rust, though I will discuss methods to improve its performance.  Python also struggles with parallelism, though recent changes in  Python aim to address this.  Another pain point for Python is its fragmented ecosystem for package and environment management; I discuss some of these challenges in Chapter 2.
+It would be unfair to not also mention Python's weaknesses. A major limitation is performance: As I will discuss in more detail in Chapter 10, Python is substantially slower than languages such as C/C++ or Rust, though I will discuss methods to improve its performance.  Python also struggles with parallelism, though recent changes in  Python aim to address this.  Another pain point for Python is its fragmented ecosystem for package and environment management; I discuss some of these challenges later in this chapter.
 
 If you don't already know Python, then I suggest that you try to follow along with the examples anyway; my aim is to write them in a way that anyone with a general knowledge of programming should be able to read and understand them.
 In some cases I will use programming constructs that are specific to Python; if you are coming from another language and you see something you don't understand, then I would recommend asking an AI assistant to explain it to you, since current AI tools are very good at explaining the intent of Python code! Learning a new programming language is also a great way to expand your programming skills, and Python is currently a great language to learn.
@@ -166,18 +166,18 @@ Date:   Mon Feb 17 07:42:35 2025 -0800
 \end{lstlisting}
 
 \noindent{Now we can see our latest commit at the top of the list.
-If I were to push our repository to GitHub, then we could also see a much more user-friendly graphical view of commit history and the changes that occurred in each commit.
-Most IDEs also have an interface to work directly with \textit{git}; for example, within VSCode there is a \textbf{Source Control} panel that would allow one to do everything that I did above using the command line.\index{VSCode}}
+If I were to push the repository to GitHub, then we could also see a much more user-friendly graphical view of commit history and the changes that occurred in each commit.
+Most IDEs also have an interface to work directly with \textit{git}; for example, within VSCode there is a \textbf{Source Control} panel that would allow one to do everything that I did using the command line above.\index{VSCode}}
 
 \subsection{Version control as a lab notebook}
 
 It is essential for a researcher to keep track of their work as it proceeds, and traditionally this has been done using a written lab notebook.
-This has several drawbacks; it's impossible to search easily, and for researchers with terrible handwriting (like author RP, as seen in Figure~\ref{LabNotebook-fig}) it can often be impossible to later decipher what the notes actually mean.
+This has several drawbacks; it's impossible to search easily, and for researchers with terrible handwriting (like me, as seen in Figure~\ref{LabNotebook-fig}) it can often be impossible to later decipher what the notes actually mean.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.5\linewidth]{files/lab_notebook_scan-9b129b911f015b08e42c75f271b2e514.png}
-\caption[Scan of lab notebook]{Scan of a page from Russ's lab notebook circa 2000.}
+\caption[Scan of lab notebook]{Scan of a page from the author's lab notebook circa 2000.}
 \label{LabNotebook-fig}
 \end{figure}
 
@@ -222,9 +222,7 @@ For example:
 \begin{lstlisting}[style=transcript]
 feature: Enable use of multiple APIs
 
-Previously the function only worked with the OpenAI API.
-This change generalizes it to allow any endpoint that 
-follows the OpenAI API conventions.
+Previously the function only worked with the OpenAI API. This change generalizes it to allow any endpoint that follows the OpenAI API conventions.
 \end{lstlisting}
 
 \subsubsection{A single commit should reflect solution of a particular problem}
@@ -335,7 +333,6 @@ I could then either delete the feature branch (to keep the repository clean), or
 
 While git is very useful for the individual developer, it becomes even more powerful when used for collaborative development amongst a group of developers.
 For \textit{git} users this is enabled by the popular \href{http://github.com}{GitHub} web platform for version control.
-I will assume a basic familiarity with the use of GitHub: see the Suggested Resources at the end of the chapter for resources to learn how to use GitHub.
 
 Collaborative development requires choosing a workflow that the team will adhere to; a commonly used workflow for GitHub users is the ``\href{https://docs.github.com/en/get-started/using-github/github-flow}{GitHub flow}'', which goes as follows.
 Let's say that we have two developers on our team, and one of them wants to attempt the database backend project that we described above.
@@ -372,19 +369,19 @@ When the virtual environment is \textit{activated} using a special command, thes
 They can be easily removed from the path by deactivating the environment.
 
 There are numerous tools within the Python ecosystem for package management and virtual environments, to the degree that some have called it an \href{https://dublog.net/blog/so-many-python-package-managers/}{``inexcusable pain in the ass''}.
-I will focus on two solutions here (\textit{uv} and \textit{conda}), realizing that things will change over time and these recommendations will likely need to be updated (living textbooks FTW!).
+I will focus on two solutions here (\textit{uv} and \textit{conda}), realizing that things will change over time, so you may want to consult the web for the latest recommendations.
 
 \subsection{Environment management using \textit{uv}}
 
 \textit{\href{https://docs.astral.sh/uv/}{uv}} is a relatively new package management tool that has quickly gained momentum in the Python community, in large part because of its speed (particularly when resolving package dependencies) and its efficient use of disk space.
 To start, we simply initialize a new project, marking it as a package so that it will create the appropriate code structure:
 
-\lstinputlisting[style=shell, firstline=3, lastline=14]{shell/essential-tools/uv.out}
+\lstinputlisting[style=shell, firstline=7, lastline=16]{shell/essential-tools/uv.out}
 
 We can then create a new virtual environment using the command \texttt{uv venv}.\index{uv}
 This is stored within the directory \texttt{.venv}.
 
-\lstinputlisting[style=shell, firstline=16, lastline=46]{shell/essential-tools/uv.out}
+\lstinputlisting[style=shell, firstline=20, lastline=50]{shell/essential-tools/uv.out}
 
 One thing to note here is that the \texttt{python} executable is actually a symbolic link to a version that is in a central cache (under \texttt{.local/share/uv}).
 This means that we can create numerous virtual environments, but there will only be one copy of that particular version of Python, saving space on disk.
@@ -422,7 +419,7 @@ It not only stores dependencies but also metadata about the project, making it u
 \subsubsection{Locking dependencies in uv}
 
 Computational reproducibility requires that we be able to exactly recreate an environment, including the specific versions of all packages.
-If you look at the \texttt{pyproject.toml} file you will see that it doesn't specify exact versions for Python or the dependencies; instead, it specifies a lower bound; i.e., ``numpy\textgreater =\textbf{DECIMAL\_0}.3'' means that the numpy version should be at least \textbf{DECIMAL\_0}.3, but could be higher if a newer version became available.
+If you look at the \texttt{pyproject.toml} file you will see that it doesn't specify exact versions for Python or the dependencies; instead, it specifies a lower bound; i.e., ``numpy $\geq$ 2.4.6'' means that the \textit{Numpy} version should be at least 2.4.6, but could be higher if a newer version became available.
 This is often fine, but for purposes of reproducibility we often wish to record the exact package versions that were used for a particular analysis.
 This is commonly done using a \texttt{requirements.txt} file, and \textit{uv} allows exporting the current environment to such a file:
 
@@ -441,9 +438,9 @@ When using \textit{Conda} it's sometimes necessary to use \textit{pip} to instal
 
 There is one important way in which \textit{Conda} differs from \textit{uv}.
 In fact, I switched to \textit{uv} in 2024 after being a long-time user of \textit{Conda}, but I still use \textit{Conda} for some projects.
-The crucial feature of \textit{Conda} that has kept me using it for a limited set of projects is its ability to manage non-Python software elements alongside Python packages.
+The crucial feature of \textit{Conda} that has kept me using it for a limited set of projects is its ability to effectively manage non-Python software elements alongside Python packages.
 I have found on a couple of occasions that some Python packages have dependencies that rely upon non-Python software components.
-Specifically, in cases where Python packages required a specific component (the LLVM compiler), I was unable to easily get the specific required version of that component working on our Mac using \textit{uv}, whereas \textit{Conda} simply installed the required component and worked out of the box.
+Specifically, in cases where Python packages required a specific component (the LLVM compiler), I was unable to easily get the specific required version of that component working on my Mac using \textit{uv}, whereas \textit{Conda} simply installed the required component and worked out of the box.
 The speed and efficiency of \textit{uv} generally outshine \textit{Conda} in my experience, but in some cases \textit{Conda} may help solve tricky non-Python dependency issues.
 
 The Python environment management landscape will continue to evolve, and the acquisition of Astral (the developer of \textit{uv}) by OpenAI in 2026 has raised some questions regarding the future of \textit{uv}. However, as of the time of writing, my suggestion is to use \textit{uv} by default for projects that do not require non-Python system libraries. For those projects, use \textit{miniconda} as the default.
@@ -471,35 +468,35 @@ These methods, together with the realization that graphical processing units (GP
 
 \subsection{How LLMs are built and trained}
 
-The LLMs that are most prominent as of 2026, such as GPT-4, Claude, and Google Gemini, are based on a specific neural network architecture known as a \textit{transformer}, which was first introduced in 2017 \citep{Vaswani:2017aa}.\index{GPT-4}\index{Claude}
+The LLMs that are most prominent as of 2026, such as GPT-5, Claude, and Google Gemini, are based on a specific neural network architecture known as a \textit{transformer}, which was first introduced in 2017 \citep{Vaswani:2017aa}.\index{GPT-5}\index{Claude}
 Transformers were developed in order to effectively learn how to map one sequence to another sequence, such as in the case of translating from a sentence in one language to a sentence in another.
 However, large transformers trained on massive datasets have since shown themselves to be able to adapt to many different types of problems that they were never explicitly trained to perform.
 For this reason, these models (along with other kinds of large pre-trained models) have been referred to as \textit{foundation models} \citep{Bommasani:2022aa}.
 
 One important feature of foundation models is that they are generally trained in a ``self-supervised'' way, which means that we don't explicitly have to tell the model how it should respond for any particular input.
 This enables training on very large datasets, since the data don't need to be explicitly labeled.
-In the case of GPT-4 and other similar models, they are simply given large sequences of text and trained to accurately predict the next \textit{token} (which could refer to words, parts of words, or other elements).
+In the case of LLM's, they are simply given large sequences of text and trained to accurately predict the next \textit{token} (which could refer to words, parts of words, or other elements).
 Note that the models themselves don't actually see text; instead, the text is \textit{tokenized} to convert it into numbers before it is input to the model, and the output of the model is then decoded to convert from numerical tokens back to language.
-LLMs like GPT-4 are trained on massive amounts of text, numbering in the trillions of tokens.
+The current LLMs are trained on massive amounts of text, numbering in the trillions of tokens.
 The model is trained to become increasingly better at predicting the next token by changing the \textit{weights} (the strength of connections between the different units) in the model in a way that tries to incrementally correct its errors, which after many hours of training across many GPUs results in a model that can perform the prediction task well.
 
 After this training, the model has a lot of knowledge but is often not very well behaved, so model-builders generally do some form of \textit{fine-tuning} after initial training of the model, primarily to train it to perform in a way that is more amenable to being a helpful chatbot.
 
 \subsection{``Open Source'' language models}
 
-The large commercial models such as GPT-4, Claude, and Gemini are truly ``black boxes'' in the sense that we have no access to how they work internally or how they were trained.\index{black (formatter)}
+The large commercial models such as GPT-5, Claude, and Gemini are truly ``black boxes'' in the sense that we have no access to how they work internally or how they were trained.\index{black (formatter)}
 However, an ecosystem of ``open source'' language models has also burgeoned, allowing researchers to run powerful pre-trained models on their own computing hardware and providing some degree of insight into the function of the model.
 It's important to point out that the label ``open source'' is in many cases a misnomer, since it's relatively rare for the authors of these models to give full access to all of the code and data that went into training the model.
 Many of them are better described as ``open-weight'' models (a term I will use throughout this book), since the model weights and code necessary to perform inference are made openly available even if the training code and data are not.
 Despite these limitations, the availability of these open-ish models has given researchers the opportunity to work more closely with these models and see into their inner workings.
 They also allow users to perform further fine-tuning to augment model performance in particular domains.
 
-Running large open source models with tens of billions of parameters (such as the well known Llama models released by Meta) can require significant GPU resources, but many of these models are also released in smaller versions that can be run with reasonable speed on a laptop with a GPU; most of the examples in this book were run on a Macbook Pro M3 Max laptop.
+Running large open source models with tens of billions of parameters (such as the well known Llama models released by Meta) can require significant GPU resources, but many of these models are also released in smaller versions that can be run with reasonable speed on a laptop with a GPU; most of the examples in this book were run on a 2023 Macbook Pro M3 Max laptop.
 Users wishing to run the larger open-weight models can access them via service providers who provide API access to these models for a fee.
 I will discuss working with APIs in more detail in Chapter 5.
 
 As an example of what we can do with open-weight language models, suppose that we want to compare the output of models before and after instruction tuning.
-While we can't access versions of commercial models such as GPT-4 prior to instruction tuning, there are a large number of open-weight models for which both versions are available.
+While we can't access versions of commercial models such as GPT-5 prior to instruction tuning, there are a large number of open-weight models for which both versions are available.
 I will show results from the Qwen1.5-0.5B model, which is very small and thus runs relatively quickly even on a laptop.
 
 To see the difference that this fine-tuning makes, we can give the same prompt to a model with and without instruction tuning: ``What is the best way to relax after a long day of Python coding?''
