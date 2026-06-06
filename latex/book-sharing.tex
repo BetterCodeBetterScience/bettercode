@@ -1,7 +1,7 @@
 \chapter{Sharing Research Objects}
 
 Science at its best is a communal enterprise, and the sociologist of science Robert Merton noted that ``Secrecy is the
-antithesis of this norm; full and open communication its enactment'' \citep{Merton:1942aa}.  Unfortunately scientists have not always lived up to this norm in practice.  It remains unfortnately common to hear anecdotes of researchers who refuse to share data or materials even after publishing in journals that have (largely unenforced) requirements for sharing.  The metascientific evidence is also consistent with this.  As just one example, when \citep{Wicherts:2006aa} requested data from authors of papers in a number of top journals in psychology, they were unable to obtain data from 73\% of the authors.  More recent work by \citep{Tedersoo:2021aa} has shown a similar pattern of unavailability across many scientific fields.
+antithesis of this norm; full and open communication its enactment'' \citep{Merton:1942aa}.  Unfortunately scientists have not always lived up to this norm in practice.  It remains unfortunately common to hear anecdotes of researchers who refuse to share data or materials even after publishing in journals that have (largely unenforced) requirements for sharing.  The metascientific evidence is also consistent with this.  As just one example, when \citep{Wicherts:2006aa} requested data from authors of papers in a number of top journals in psychology, they were unable to obtain data from 73\% of the authors.  More recent work by \citep{Tedersoo:2021aa} has shown a similar pattern of unavailability across many scientific fields.
 
 I will use the term ``research objects'' to refer generally to all forms of research materials and outputs, including data, code, and materials; while publications are also an important research object, I will not discuss them here. The open sharing of research objects has become increasingly prevalent in the 21st century, particularly with the genesis of the ``open science'' movement.  In fact, when \citep{Tedersoo:2021aa} compared data availability between 2000--2009 and 2010--2019 they found that it had significantly increased over time.  There are numerous contributors to this increase in transparency. Foremost, the reproducibility crisis across many fields of science has spurred efforts to increase the credibility of scientific research, with open sharing of data and materials being a main component of these efforts.  Major scientific institutions have also made open science central to their effort, including the United States Government (which officially named 2023 as the ``Year of Open Science''), the European Union, and UNESCO.  Overall the scientific world is evolving strongly in the direction of making science more open and transparent, which many of us think is also a key to making it more reproducible.\index{reproducibility}\index{reproducibility!crisis}\index{open science}
 
@@ -17,7 +17,7 @@ Another commonly encountered PID is the \textit{digital object identifier} (\tex
 
 \subsection{PID versioning}
 
-It's common for a resource to change over its life; as one example, preprints posted to archives like \textit{arXiv} or \textit{bioRxiv} to be updated when a revised manuscript is created. Some PID providers (particularly DOIs) provide \textit{versioned DOIs} that point to specific versions of an object, where others provide \textit{concept DOIs} that instead point to the object in general; in addition, some providers provide both.  For example, the Zenodo archive (discussed in more detail below) allows direct sharing of software releases from a GitHub repository, which we used to share code from the NARPS project that I discussed in an earlier chapter. Zenodo provides a concept DOI (doi.org/10.5281/zenodo.3339821) that points to the resource (defaulting to the latest version), and also provides version DOIs that allow specific reference to any particular version.  When citing a versioned resource such as code, it's important to cite the specific version that was used in the work.\index{GitHub}\index{Zenodo}
+It's common for a resource to change over its life; as one example, preprints posted to archives like \textit{arXiv} or \textit{bioRxiv} to be updated when a revised manuscript is created. Some PID providers (particularly DOIs) provide \textit{versioned DOIs} that point to specific versions of an object, where others provide \textit{concept DOIs} that instead point to the object in general; in addition, some providers provide both.  For example, the Zenodo archive (discussed in more detail below) allows direct sharing of software releases from a GitHub repository, which we used to share code from the NARPS project that I discussed in an earlier chapter. Zenodo provides a concept DOI (doi.org/10.5281/zenodo.3339821) that points to the resource (defaulting to the latest version), and also provides version DOIs that allow specific reference to any particular version.  When citing a versioned resource such as code, it's important to cite the specific version that was used in the work; otherwise, a user following a concept DOI might be referred to a newer version than the one that was actually used in the research.\index{GitHub}\index{Zenodo}
 
 \section{Resource accessibility}
 
@@ -45,7 +45,7 @@ In the context of software, ``all rights are reserved'' by the copyright holder 
 
 There are many different licenses available for software, but they largely fall into two categories.  \textit{Permissive} licenses are those that place very few restrictions on the reuse, modification, or redistribution of the code; these generally allow commercial usage and closed-source reuse.  The least prohibitive license, known as an \textit{Unlicense}, places the code into the public domain (thus waiving any copyright claims), and only limits liability and warranty. \textit{Copyleft} licenses (best known from the GNU \textit{General Public License}, or \textit{GPL}) are more restrictive, requiring full disclosure of any modifications.  They are also sometimes referred to as \textit{viral} licenses, since they also generally require that any modifications be released under the same license as the original.  I tend to strongly favor permissive licenses like the \textit{MIT License}, because they maximize the potential reuse of the code while still maintaining credit for the original authors.
 
-When using open source code, it is essential to abide by the conditions of the license of the original code.  In particular, if you are reusing code licensed under the GPL then you are required to release your modifications under the GPL as well.
+When using open source code, it is essential to abide by the conditions of the license of the original code.  In particular, if you are reusing code licensed under the GPL then you are required to release your entire project under the GPL.
 
 \subsection{Persistent identifiers for code}
 
@@ -78,28 +78,28 @@ As software resources are increasingly recognized as legitimate scientific contr
 The GitHub-Zenodo and Software Heritage mechanisms described above can help fulfill these principles.  Code citation can be further supported by providing citation metadata via the \texttt{CITATION.cff} file.  Here is an example of the \texttt{CITATION.cff} file for the \textit{bettercode} package associated with this book:
 
 \begin{lstlisting}[style=toml]
-cff -version: 1.2.0
+cff-version: 1.2.0
 title: 'Better Code, Better Science'
 message: Code for examples in the book
 type: software
 authors:
-  - given -names: Russell
-    family -names: Poldrack
+ - given-names: Russell
+    family-names: Poldrack
     email: russpold@stanford.edu
     affiliation: Stanford University
-    orcid: '0000 -0001 -6755 -0259'
-repository -code: 'https://github.com/BetterCodeBetterScience/bettercode'
+    orcid: '0000-0001-6755-0259'
+repository-code: 'https://github.com/BetterCodeBetterScience/bettercode'
 url: 'https://bettercodebetterscience.github.io/book/'
-abstract: > -
+abstract: >-
   This is code used to generate examples for the book Better
   Code, Better Science.
 keywords:
-  - software engineering
-  - AI
-  - scientific software
+ - software engineering
+ - AI
+ - scientific software
 license: MIT
 identifiers:
-  - type: doi
+ - type: doi
     value: 10.5281/zenodo.18603014
 \end{lstlisting}
 
@@ -116,18 +116,18 @@ For researchers who use software in their research, it's important to cite the s
 
 \subsection{Software metadata}
 
-In addition to citation information there are a number of other metadata that are important in order to make the code FAIR.  A set of guidelines regarding software metadata have been laid out in the RSMD (Research Software MetaData Guidelines for End-Users) project \citep{Gruenpeter:2024aa}.  An emerging standard for the specification of software metadata is the \texttt{codemeta.json} file, which provides a standard vocabulary for the specification of software metadata.  This file uses the \textit{JSON-LD} format that I mentioned in a previous chapter, which links the terms in the dictionary to a format vocabulary.  The codemeta-generator tool )codemeta.github.io/codemeta-generator) provides an easy interface for generating of these files.  GitHub itself doesn't do anything special with the \texttt{codemeta.json} contents, but if the software is archived in Software Heritage then the project will be searchable by the specified metadata. Because this is becoming the standard, generating metadata now will also help ensure that your project remains findable in the future.\index{generator}\index{JSON-LD}
+In addition to citation information there are a number of other metadata that are important in order to make the code FAIR.  A set of guidelines regarding software metadata have been laid out in the RSMD (Research Software MetaData Guidelines for End-Users) project \citep{Gruenpeter:2024aa}.  An emerging standard for the specification of software metadata is the \texttt{codemeta.json} file, which provides a standard vocabulary for the specification of software metadata.  This file uses the \textit{JSON-LD} format that I mentioned in a previous chapter, which links the terms in the dictionary to a format vocabulary.  The codemeta-generator tool (codemeta.github.io/codemeta-generator) provides an easy interface for generating of these files.  GitHub itself doesn't do anything special with the \texttt{codemeta.json} contents, but if the software is archived in Software Heritage then the project will be searchable by the specified metadata. Because this is becoming the standard, generating metadata now will also help ensure that your project remains findable in the future.\index{generator}\index{JSON-LD}
 
 Because many systems (e.g. the \textit{PyPI} package archive) do not use \texttt{codemeta.json}, it's also important to put relevant information in other files that may be used.  For Python code, the \texttt{pyproject.toml} file allows specification of a number of metadata elements; in particular, it's important to specify the name, version, description, license, authors, and keywords under the \texttt{[project]} section, and project URLs under the \texttt{[project.urls]} section, since these are used by PyPI for searching packages in the index.\index{PyPI}
 
 \subsection{Software versioning}
 
-It is essential to clearly version the software used in a research project to ensure reproducibility of the results, since it is common for the behavior of software to change between versions.  There are two standards for software versioning.  The approach recommended for most projects is \textit{semantic versioning}, which uses a numeric format with a specific structure: \textit{..}.  These different levels are meant to imply different degrees of backwards-compatibility:\index{semantic versioning}
+It is essential to clearly version the software used in a research project to ensure reproducibility of the results, since it is common for the behavior of software to change between versions.  There are two standards for software versioning.  The approach recommended for most projects is \textit{semantic versioning}, which uses a numeric format with a specific structure: \textit{MAJOR.MINOR.PATCH}.  These different levels are meant to imply different degrees of backwards-compatibility:\index{semantic versioning}
 
 \begin{itemize}
-\item \textit{Major} version changes (e.g. 1.1.3 -\textgreater  2.0.0) are meant to imply changes that are likely to break previously working code, such as changes in the API
-\item \textit{Minor} version changes (e.g., 1.2.4 -\textgreater  1.3.0) are meant to imply the backwards-compatible addition of features
-\item \textit{Patch} version changes (e.g. 1.2.4 -\textgreater  1.2.5) are meant to imply backwards-compatible bug fixes
+\item \textit{Major} version changes (e.g. 1.2.4 -\textgreater 2.0.0) are meant to imply changes that are likely to break previously working code, such as changes in the API
+\item \textit{Minor} version changes (e.g., 1.2.4 -\textgreater 1.3.0) are meant to imply the backwards-compatible addition of features
+\item \textit{Patch} version changes (e.g. 1.2.4 -\textgreater 1.2.5) are meant to imply backwards-compatible bug fixes
 \end{itemize}
 
 Because the line between different kind of changes can be fuzzy, it's always good to be clear about the exact nature of changes in a change log.  Also note that ``0.x.x'' generally implies that the code is unstable, so things can break between any of the version types; in other cases, researchers will use tags to further delineate versions:
@@ -180,8 +180,8 @@ To build the \textit{bettercode} package using \textit{uv}, we simply run the bu
 $  uv build
 Building source distribution...
 Building wheel from source distribution...
-Successfully built dist/bettercode -0.1.0.tar.gz
-Successfully built dist/bettercode -0.1.0 -py3 -none -any.whl
+Successfully built dist/bettercode-0.1.0.tar.gz
+Successfully built dist/bettercode-0.1.0-py3-none-any.whl
 \end{lstlisting}
 
 Note that the wheel file has \texttt{-none-} in its name, which refers to the fact that it is platform-independent.  Once the package is built it is ready to push to PyPI.
@@ -193,17 +193,17 @@ Once the package is built, then we can upload it to PyPI for distribution.  We f
 \begin{lstlisting}[style=shell]
 $ uv version
 bettercode 0.1.0
-$ uv version - -bump minor
+$ uv version --bump minor
 bettercode 0.1.0 => 0.2.0
 \end{lstlisting}
 
 This changes the metadata in \texttt{pyproject.toml} to match the new version, though we would need to rerun the \texttt{uv build} command to create the build files for the new version.  Next we need to create and/or log into our account on pypi.org, and then make sure that the project name (specified as the ``name'' variable in \texttt{pyproject.toml}) is not already in use (by searching the index for that name); if it is then we will have to change the name of the project. Assuming it isn't then we need to set up our PyPI authentication credentials and download a token, which can be provided at the command line with the \texttt{publish} command:\index{uv}
 
 \begin{lstlisting}[style=shell, numbers=none]
-$  uv publish - -token <your token here>
+$  uv publish --token <your token here>
 Publishing 2 files to https://upload.pypi.org/legacy/
-Uploading bettercode -0.2.0.tar.gz (15.7MiB)
-Uploading bettercode -0.2.0 -py3 -none -any.whl (15.7MiB)
+Uploading bettercode-0.2.0.tar.gz (15.7MiB)
+Uploading bettercode-0.2.0-py3-none-any.whl (15.7MiB)
 \end{lstlisting}
 
 If the publish command is successful, then the project should be visible on PyPI, as this one is at pypi.org/project/bettercode.  It's also possible to automate the generation of new PyPI releases using GitHub Actions; see the \textit{uv} documentation for more details.
@@ -318,7 +318,7 @@ You agree not to use the Source Code or its Derivatives in any of the following 
 
 3. Transparency
 
-  (a) To generate or disseminate machine -generated information or content in any medium  without expressly and intelligibly disclaiming that it is machine -generated;
+  (a) To generate or disseminate machine-generated information or content in any medium  without expressly and intelligibly disclaiming that it is machine-generated;
   (b) To impersonate or attempt to impersonate human beings for purposes of deception;
   (c) For fully automated decision making that adversely impacts an individual’s legal rights or otherwise creates or modifies a binding, enforceable obligation.
 \end{lstlisting}

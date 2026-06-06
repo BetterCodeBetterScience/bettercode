@@ -1,6 +1,6 @@
 \chapter{Optimizing performance}
 
-The computing power available to scientists has increased in a shockingly consistent way since the first microprocessors were manufactured in the 1970's.  The left panel in Figure~\ref{mooreslaw-fig} shows that the number of transistors on commercial CPU chips has doubled about every two years since the 1970s, very close to the two years predicted by Gordon Moore in 1965 \citep{Moore:1965} The number of transistors relates only indirectly to the computing power of the machine, and the right panel in \href{@mooreslaw-fig}{} shows that the computer power of the world's top supercomputer (measured in the number of floating point operations per second) has increased even faster, doubling roughly every 1.2 years.
+The computing power available to scientists has increased in a shockingly consistent way since the first microprocessors were manufactured in the 1970's.  The left panel in Figure~\ref{mooreslaw-fig} shows that the number of transistors on commercial CPU chips has doubled about every two years since the 1970s, very close to the two years predicted by Gordon Moore in 1965 \citep{Moore:1965} The number of transistors relates only indirectly to the computing power of the machine, and the right panel in Figure~\ref{mooreslaw-fig} shows that the computer power of the world's top supercomputer (measured in the number of floating point operations per second) has increased even faster, doubling roughly every 1.2 years.
 
 \begin{figure}[!htbp]
 \centering
@@ -40,7 +40,7 @@ That is, there is a tradeoff between accuracy, clarity, and speed that one must 
 
 Computational complexity refers to how the resources needed by a particular algorithm to solve a particular problem increases with the size of its input. We usually describe complexity in terms of what is known as ``big-O'' notation, describing how the resources (such as time or memory) needed to solve the problem scales with the size of the input.  More precisely, it provides an upper bound on the scaling, ignoring constant and lower-order factors.  For example, an $O(N)$ problem scales linearly with the size of the input, an $O(N^2)$ problem scales quadratically, and an $O(2^N)$ scales exponentially. In general we would consider problems with exponential scaling to be practically uncomputable for anything but the smallest datasets. It's important to keep in mind that these not meant to reflect actual performance, but rather meant to classify problems in terms of their worst-case difficulty as the input grows.  The fact that constant and lower-order factors are ignored also means that complexity differences may not become evident in real performance until inputs get very large.
 
-There are two aspects of complexity that are important to understand.  First, any particular problem has a lower bound on its complexity, such that no algorithm can perform better than this bound.  For example, finding the minimum of a list of numbers is $O(N)$, since finding the minimum requires looking at all of the numbers. Comparison-based sorting of a list, on the other hand, is $O(N log N)$, because it takes about $log_2 N$ splits of a list to get to the individual elements.  Second, while the problem defines the lower bound, different algorithms may scale differently with input size for the same problem.  For example, merge sort (which recursively splits lists into half and then interleaves them) achieves the lower bound of $O(N log N)$ since an $O(N)$ operation is required for each merge.  On the other hand, bubble sort, which repeatedly scans the list and swaps elements that are out of order, is $O(N^2)$ since each scan is $O(N)$ and it can take up to N scans, and thus fails to achieve optimal performance.
+There are two aspects of complexity that are important to understand.  First, any particular problem has a lower bound on its complexity, such that no algorithm can perform better than this bound.  For example, finding the minimum of a list of numbers is $O(N)$, since finding the minimum requires looking at all of the numbers (at least), and thus no algorithm can do better than $O(N)$. Comparison-based sorting of a list, on the other hand, is $O(N log N)$, because it takes about $log_2 N$ splits of a list to get to the individual elements.  Second, while the problem defines the lower bound, different algorithms may scale differently with input size for the same problem.  For example, merge sort (which recursively splits lists into half and then interleaves them) achieves the lower bound of $O(N log N)$ since an $O(N)$ operation is required for each merge.  On the other hand, bubble sort, which repeatedly scans the list and swaps elements that are out of order, is $O(N^2)$ since each scan is $O(N)$ and it can take up to N scans, and thus fails to achieve optimal performance.
 
 One important place where complexity is useful, and a bit tricky, is in thinking about loops. It's generally not possible to tell the complexity implications from the looping structure itself, since it depends on what is being done within each loop. For example, take the following function:
 
@@ -390,7 +390,7 @@ Memory usage per column:
 Total memory usage: 1.15 MB
 \end{lstlisting}
 
-This simple change led to almost 95\% in reduction in the memory footprint of the data frame, due to the fact that \textit{pandas} uses a compact representation for categorical data types.  This provides an example of how memory profiling, combined with knowledge of how the relevant packages work with the data, can lead to massive improvements in memory footprint.
+This simple change led to almost 95\% in reduction in the memory footprint of the data frame, due to the fact that \textit{pandas} uses a compact representation for categorical data types. This particular optimization works well in cases where there is a small number of unique categorical items that are repeated many times each.   This provides an example of how memory profiling, combined with knowledge of how the relevant packages work with the data, can sometimes lead to massive improvements in memory footprint.
 
 \section{Common sources of slow code execution}
 
@@ -398,7 +398,7 @@ Now we turn to the various causes of slow code execution and how to address them
 
 \subsection{Slow algorithm}
 
-A common source of slow execution is use of an inefficient algorithm.  Let's reuse our earlier example of finding duplicate elements within a list.  A simple way to implement this could be perform nested loops to compare each item to each other.  This has computational complexity of $O(N^2)$.  In this example we will use the \texttt{\%timeit} function with the \textit{Jupyter} notebook, which repeats the function multiple times in order to get a more precise estimate of execution time:\index{Jupyter}
+A common source of slow execution is use of an inefficient algorithm.  Let's reuse our earlier example of finding duplicate elements within a list.  A simple way to implement this could be perform nested loops to compare each item to each other.  This has computational complexity of greater than $O(N^2)$ in the worst case.  In this example we will use the \texttt{\%timeit} function with the \textit{Jupyter} notebook, which repeats the function multiple times in order to get a more precise estimate of execution time:\index{Jupyter}
 
 \begin{lstlisting}[style=Python]
 import random
@@ -550,7 +550,7 @@ Set & 0.007625 & 0.00999999 \\
 
 \bigskip
 
-Here we see that there are major differences between data types.  Sets are by far the fastest, which is due to the fact that they use a hash table algorithm that has $O(1)$ complexity; the 7 nanoseconds for the set operation is basically the minimum time needed for Python to perform a single operation, requiring about 25 clock cycles on my 4 GHz CPU. Second, we see that \textit{NumPy}/\textit{pandas} are roughly 30 times faster than Python lists for integers; this likely reflects the fact that \textit{NumPy} can load the entire dataset into contiguous memory, whereas the list requires a lookup and retrieval of the value from an unpredictable location in memory for each item.  Third, we see that strings are generally slower than integers, which reflects both the fact that the representation of strings is larger than the representation of integers and that comparing a string requires more operations than comparing integers. When timing matters, it's usually useful to do some prototype testing across different types of objects to find the most performant.  The million-fold difference between the performance of sets and other data types on this problem is a great example of how algorithmic complexity is the single most important factor we should consider when optimizing code.
+Here we see that there are major differences between data types.  Sets are by far the fastest, which is due to the fact that they use a hash table algorithm that has $O(1)$ complexity; the 7 nanoseconds for the set operation is basically the minimum time needed for Python to perform a single operation, requiring about 25 clock cycles on my 4 GHz CPU. Second, we see that \textit{NumPy}/\textit{pandas} objects are roughly 30 times faster than Python lists for integers; this likely reflects the fact that \textit{NumPy} can load the entire dataset into contiguous memory, whereas the list requires a lookup and retrieval of the value from an unpredictable location in memory for each item.  Third, we see that strings are generally slower than integers, which reflects both the fact that the representation of strings is larger than the representation of integers and that comparing a string requires more operations than comparing integers. When timing matters, it's usually useful to do some prototype testing across different types of objects to find the most performant.  The million-fold difference between the performance of sets and other data types on this problem is a great example of how algorithmic complexity is the single most important factor we should consider when optimizing code.
 
 \subsection{Unnecessary looping}
 
@@ -585,6 +585,8 @@ In addition to optimizing performance, vectorized calls often also make the code
 \subsection{Suboptimal API usage}
 
 When using a web API to obtain data, the proper use of the API is important to avoid suboptimal performance.  As an example we will use the \texttt{Bio.Entrez} module from the \texttt{Biopython} package, which enables the programmatic searching and downloading of abstracts from the PubMed database.  We first use the API to obtain the PubMed IDs for the 100 most recent publications for a particular search term (see [here] for the full example):\index{Biopython}
+
+\textbf{TODO}: No error handling for network failures, rate limiting, or API errors. NCBI's Entrez API requires `Entrez.email` and has rate limits. Add error handling guidance for production use.
 
 \begin{lstlisting}[style=Python]
 import time
@@ -708,12 +710,12 @@ duckdb_results = duckdb.query(query).df()
 end_time = time.time()
 
 print(f"*DuckDB* analysis completed in {end_time - start_time:.2f} seconds")
-print(f"Total route -month combinations: {len(duckdb_results):,}")
+print(f"Total route-month combinations: {len(duckdb_results):,}")
 \end{lstlisting}
 
 \begin{lstlisting}[style=shell, numbers=none]
 *DuckDB* analysis completed in 2.31 seconds
-Total route -month combinations: 3,339,788
+Total route-month combinations: 3,339,788
 \end{lstlisting}
 
 This call was able to extract data from 120 parquet files and summarize them in just over 2 seconds.  This is blazingly fast; for comparison, loading all of the files individually took over 130 seconds!  \textit{DuckDB} achieves this performance via several mechanisms:
@@ -768,15 +770,15 @@ polars_results = (
 end_time = time.time()
 
 print(f"Polars analysis completed in {end_time - start_time:.2f} seconds")
-print(f"Total route -month combinations: {len(polars_results):,}")
+print(f"Total route-month combinations: {len(polars_results):,}")
 \end{lstlisting}
 
 \begin{lstlisting}[style=shell, numbers=none]
 Polars analysis completed in 3.42 seconds
-Total route -month combinations: 3,339,788
+Total route-month combinations: 3,339,788
 \end{lstlisting}
 
-Polar completed in less than four seconds, which is somewhat slower than \textit{DuckDB} but still well within the range of acceptable performance for analysis of such a huge dataset. Note that the use of \texttt{engine="streaming"} for the \texttt{collect} step is critical here; without it, \textit{Polars} would default to an in-memory process that would likely have crashed just like \textit{pandas}.
+Polar completed in less than four seconds, which is somewhat slower than \textit{DuckDB} but still well within the range of acceptable performance for analysis of such a huge dataset. Note that the use of \texttt{engine="streaming"} for the \texttt{collect} step is critical here; without it, \textit{Polars} would default to an in-memory process that would likely have crashed just like \textit{pandas}, whereas the streaming method trades a slight speed reduction for the ability to work with datasets that are larger than the available RAM.
 
 Both \textit{DuckDB} and \textit{Polars} perform well at analyses of large tabular datasets. One reason to choose one versus the other may come down to one's preference for writing SQL queries versus pure Python method chains.  There are also some specific features where one package outshines the other; for example, \textit{Polars} has better features for timeseries analysis, whereas \textit{DuckDB} is better at complex joins between tables.  It's also easy to mix and match them, such as using \textit{DuckDB} to perform an initial aggregation across files and then using \textit{Polars} for subsequent transformations.
 
@@ -820,7 +822,7 @@ def main() -> None:
     n = 1_000_000
     iterations = 100
 
-    # warm -up
+    # warm-up
     sum_of_squares(n, seed)
     
     start = time.perf_counter()
@@ -982,7 +984,7 @@ C_{ik} = \sum_{j} A_{ij} B_{jk}
 Using einsum notation it is simple to express this:
 
 \begin{lstlisting}[style=Pythonshort]
-C = np.einsum('ij,jk ->ik', A, B)
+C = np.einsum('ij,jk->ik', A, B)
 \end{lstlisting}
 
 where $i$, $j$, and $k$ refer to the axes and $A$ and $B$ refer to the two arrays.  This becomes particularly powerful with complex operations over multidimensional arrays (often called \textit{tensors}), which is why einsum has become essential to coding of deep neural networks, which involve exactly these kinds of complex matrix multiplications.  Here is an example of a complex matrix multiplication implemented using standard \textit{NumPy} operations and einsum notation:\index{neural networks}
@@ -992,7 +994,7 @@ where $i$, $j$, and $k$ refer to the axes and $A$ and $B$ refer to the two array
 result = np.sum(A[:, :, np.newaxis] * B[np.newaxis, :, :] * C[:, np.newaxis, :], axis=1)
 
 # With einsum: clear and fast
-result = np.einsum('ij,jk,ik ->ik', A, B, C)
+result = np.einsum('ij,jk,ik->ik', A, B, C)
 \end{lstlisting}
 
 While clarity of the code is an important reason to use einsum, it can also provide significant performance gains in some cases.  For many basic matrix operations such as simple matrix multiplication, einsum may be slower than standard \textit{NumPy} operations, but in some cases they can speed things massively.  For example, here are implementations of summing the outer product of two matrices using either standard \textit{NumPy} functions or einsum notation:
@@ -1002,7 +1004,7 @@ a = np.random.rand(1000)
 b = np.random.rand(1000)
 
 opsum_numpy = np.outer(a, b).sum()
-opsum_einsum = np.einsum('i,j ->', a, b)
+opsum_einsum = np.einsum('i,j->', a, b)
 \end{lstlisting}
 
 Benchmarking these two functions we see that the einsum implementation is about 15 times faster than the \textit{NumPy} implementation, because it avoids the intermediate array operations used in the \textit{NumPy} version. This is a case where the speed with which information can be transferred to/from memory (known as \textit{memory bandwidth}) can become an important determinant of performance.  I would suggest doing some benchmarking with einsum tools whenever one is doing extensive work with matrices.  Always be sure to turn on optimization, either using the \texttt{optimize=True} flag in \textit{NumPy} or using the \textit{opt\_einsum} package; these tools will find the optimal order of matrix contraction, which can sometimes have massive performance implications.
@@ -1019,7 +1021,7 @@ There are different levels of parallelization, which vary in the ease with which
 
 Whereas implicit parallelization requires no changes to one's code, parallel processing generally involves the use of specific libraries that can run processes in parallel.  With regard to parallel processing in Python, there is an elephant in the room, known as the \textit{Global Interpreter Lock} (GIL). This is a language ``feature'' (or ``bug'', depending on one's point of view) that prevents execution of Python code by more than one thread/core simultaneously.  This was a design decision made early in the development of Python to simplify memory management (by preventing multiple threads from changing the same locations in memory simultaneously), before multi-core systems had become the norm.  Packages like \textit{NumPy} are able to release the GIL when calling functions implemented in compiled languages, and the GIL can also be unlocked during I/O, but the GIL prevents concurrent execution of pure Python code across multiple cores.
 
-There have been numerous attempts to overcome the single-thread limitation over time, but PEP 703, which was accepted in 2023, reflects a commitment by the Python developers to make the GIL optional, which would greatly enhance the ability to parallelize Python processes.  Since Python 3.13 it has been possible to disable the GIL, and \textit{NumPy} has experimental support for free-threaded Python as of version 2.1. I am not going to go into details about the GIL here, given that it will likely become a non-issue in coming years.  This will also be an interesting test for AI coding agents, which rely heavily upon older code; it's an open question as to how well and how quickly they will be able to adapt to major changes in Python programming patterns.
+There have been numerous attempts to overcome the single-thread limitation over time, but PEP 703, which was accepted in 2023, reflects a commitment by the Python developers to make the GIL optional, which would greatly enhance the ability to parallelize Python processes.  Since Python 3.13 it has been possible to disable the GIL, and \textit{NumPy} has experimental support for free-threaded Python as of version 2.1. I am not going to go into details about the GIL here, given that it will likely become a non-issue in coming years, though as of 2026 the large majority of Python code still uses the GIL.  This will also be an interesting test for AI coding agents, which rely heavily upon older code; it's an open question as to how well and how quickly they will be able to adapt to major changes in Python programming patterns.
 
 \subsection{Parallelization: When is the juice worth the squeeze?}
 
@@ -1158,7 +1160,7 @@ def run_serial(grid_size: tuple) -> tuple[int, float]:
     return result, elapsed_time
 \end{lstlisting}
 
-Figure~\ref{scaling-fig} shows the results for these simulations using a range of image sizes. We see a couple of interesting phenomena here.  First, the effectiveness of parallelization scales with the computational intensity of the problem, which is defined here by the number of pixels to be tested.  With small data, the parallel implementation actually performs \textit{worse} than the serial implementation, due to the overhead related to parallelization as well as possible throttling of the CPU speed due to heat generation.  As the image size increases, the impact of parallelization increases.  Second, we see that adding more cores does not linearly improve performance.  This is clearest from the plot showing the parallel processing efficiency for each number of CPUs, which shows that efficiency (defined as the ratio of actual time to what would be expected if performance improved linearly with the number of cores) reaches almost 100\% for 2 cores, but each increase in cores gives diminshing returns, such that 14 cores only gives about 60\% improvement, again due to the overhead needed for parallelization.
+Figure~\ref{scaling-fig} shows the results for these simulations using a range of image sizes. We see a couple of interesting phenomena here.  First, the effectiveness of parallelization scales with the computational intensity of the problem, which is defined here by the number of pixels to be tested.  With small data, the parallel implementation actually performs \textit{worse} than the serial implementation, due to the overhead related to parallelization as well as possible throttling of the CPU speed due to heat generation.  As the image size increases, the impact of parallelization increases.  Second, we see that adding more cores does not linearly improve performance.  This is clearest from the plot showing the parallel processing efficiency for each number of CPUs, which shows that efficiency (defined as the ratio of actual time to what would be expected if performance improved linearly with the number of cores) reaches almost 100\% for 2 cores, but each increase in cores gives diminishing returns, such that 14 cores only gives about 60\% improvement, again due to the overhead needed for parallelization.
 
 \begin{figure}[!htbp]
 \centering
@@ -1215,19 +1217,19 @@ with dask.config.set(num_workers=safe_threads):
 parallel_time = time.time() - start_time
 print(f"Parallel ({safe_threads} threads): {parallel_time:.2f} seconds")
 
-# Single -threaded
+# Single-threaded
 start_time = time.time()
 with dask.config.set(scheduler='synchronous'):
     _ = ddf.groupby('PULocationID')['trip_distance'].mean().compute()
 single_time = time.time() - start_time
-print(f"Single -threaded:         {single_time:.2f} seconds")
+print(f"Single-threaded:         {single_time:.2f} seconds")
 
 print(f"\nSpeedup: {single_time / parallel_time:.2f}x")
 \end{lstlisting}
 
 \begin{lstlisting}[style=shell, numbers=none]
 Parallel (8 threads): 4.07 seconds
-Single -threaded:         16.77 seconds
+Single-threaded:         16.77 seconds
 
 Speedup: 4.12x
 \end{lstlisting}

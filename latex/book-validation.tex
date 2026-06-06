@@ -12,7 +12,7 @@ and middling ability at performing statistical Monte Carlo simulations, we would
 choose to have the latter skill. (p.691)
 \end{quote}
 
-Simulations are indeed a powerful way to understand a system even when it's not analytically tractable.  More importantly, they are generally the only way that we can establish \textit{ground truth} against which we can compare our models.  As scientists we never know the true process that generates our data, but with simulations we can have complete control over the data generation process.
+Simulations are indeed a powerful way to understand a system even when it's not analytically tractable.  More importantly, they are generally the only way that we can establish \textit{ground truth} against which we can compare our models.  We can generate data where we know the answer, run our analysis on those simulate data, and make sure that the analysis provides us with the correct answer.  As scientists we never know the true process that generates our data, but with simulations we can have complete control over the data generation process.
 
 My previous book, \textit{Statistical Thinking} \citep{Poldrack:2023stats}, gives an \href{https://statsthinking21.github.io/statsthinking21-core-site/resampling-and-simulation.html}{overview} of how to use simulations in the context of statistics; here I will focus primarily on the use of simulation in the context of software validation, but I recommend that book for background reading if you aren't already familiar with the concept of a statistical distribution.
 
@@ -178,9 +178,11 @@ Choosing the right distribution for a simulation often comes down to understandi
 \end{itemize}
 \end{itemize}
 
-It is essential to choose the right distributions for a simulation; otherwise the results may be misleading at best or meaningless at worst.
+It is essential to choose the right distributions for a simulation; otherwise the results may be misleading at best or meaningless at worst.  
 
 \subsection{Simulating data from a model}
+
+\textbf{TODO}: Simplify in favor of a simpler model that would only use Numpy?  or acknowledge complex dependencies
 
 In some cases, we want to simulate data that have particular structure in order to test whether our code can properly identify the structure in the data. Depending on the kind of structure one needs to create, there are often existing tools that can help generate the data.  For example, the \textit{scikit-learn} package has a large number of data generators that are often useful, either on their own or as a starting point to develop a custom generator.  Similarly, the \textit{NetworkX} graph analysis package has a large number of graph generators available.\index{scikit-learn}
 
@@ -226,7 +228,7 @@ def generate_links_from_pgmpy_model(model, coef: float = 0.5, ar_param: float = 
         # for simplicity, use lag 1, constant coef and no edge noise
         links.setdefault(effect, []).append( ((cause, -1), coef, noise_func) )
 
-    # add a self -connection to all nodes to simulate autoregressive behavior
+    # add a self-connection to all nodes to simulate autoregressive behavior
     for node in nodes:
         idx = node_to_index[node]
         links.setdefault(idx, []).append( ((idx, -1), ar_param, noise_func) )
@@ -339,7 +341,7 @@ The results showed that the model performed quite well, detecting all of the tru
 \begin{lstlisting}[style=Python]
 noise_sd = 1
 tslength = 500
-q_values =  [1e -6, 1e -5, 1e -4, 1e -3, 1e -2]
+q_values =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
 signal_levels = np.arange(0, 0.7, 0.1)
 performance_results = []
 
@@ -468,14 +470,14 @@ The \textit{SDV} package also offers many additional tools for more sophisticate
 
 It is very common in science to collect data and then use those data to estimate the parameters for a given model, and it's important to be able to validate that the estimates are valid.  Given the central role of parameter estimation in code testing and validation, I now dive into the various methods that one can use to estimate model parameters, and show examples of how we might validate them. In addition to estimating model parameters, we generally also want some kind of way to quantify the uncertainty in our estimates. That is, rather than thinking of the parameter estimate as a single point value, we can ask: What range of values for the parameter are consistent with the data?  This is often expressed using \textit{confidence intervals}, though I will discuss below the ways that these are often misunderstood.
 
-A central idea in this section will be the notion of \textit{parameter recovery}: that is, how well can our estimation procedure recover the true parameter values using simulated data? This is particularly important in cases where we don't have statistical guarantees on the unbiasedness of our estimates. As we will see, simulation provides a powerful tool to assess parameter recovery performance for any model.
+A central idea in this section will be the notion of \textit{parameter recovery}: that is, how well can our estimation procedure recover the true parameter values using simulated data? This is particularly important in cases where we don't have statistical guarantees on the unbiasedness of our estimates. As we will see, simulation provides a powerful tool to assess parameter recovery performance for any model.  We will look at three different ways that one can estimate model parameters from data, whose applicability depends on the nature of the model being used.
 
 \subsection{Closed-form estimates}
 
 In some cases parameter estimates can be obtained using a closed form analytic solution.  We will use the normal distribution as an example.  This distribution has two parameters: a \textit{mean} (sometimes called a \textit{location}) that specifies where the center of the distribution falls, and a \textit{standard deviation} (sometimes called a \textit{scale}) that specifies the width of the distribution.  The probability function for the normal distribution is:
 
 \begin{equation}
-p(x \mid \mu, \sigma) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)
+p(x \mid \mu, \sigma) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left(-\frac{(x - \mu)^2}{2\sigma^2} \right)
 \end{equation}
 
 where $\mu$ is the mean and $\sigma$ is the standard deviation.
@@ -520,7 +522,7 @@ Using our example from above, we can compute a confidence interval for our estim
 \bar{y} \pm t_{\alpha/2, \, n-1} \cdot \frac{s_y}{\sqrt{n}}
 \end{equation}
 
-where $s_y$ is the sample standard deviation, $n$ is the sample size, and $t_{\alpha/2, \, n -1}$ is the \textit{critical value} of the \textit{t} distribution with $n - 1$ degrees of freedom at the $\alpha/2$ percentile. $\alpha$ defines our confidence level, and it is divided by two since we are interested in both the positive and negative directions.  In our case, this results in a confidence interval of [-0.09028, 0.03249].  We can use a simulation to confirm that this interval indeed captures the sample mean 95\% of the time for new samples from the same distribution:
+where $s_y$ is the sample standard deviation, $n$ is the sample size, and $t_{\alpha/2, \, n-1}$ is the \textit{critical value} of the \textit{t} distribution with $n - 1$ degrees of freedom at the $\alpha/2$ percentile. $\alpha$ defines our confidence level, and it is divided by two since we are interested in both the positive and negative directions.  In our case, this results in a confidence interval of [-0.09028, 0.03249].  We can use a simulation to confirm that this interval indeed captures the sample mean 95\% of the time for new samples from the same distribution:
 
 \begin{lstlisting}[style=Python]
 n_simulations = 100000
@@ -586,28 +588,28 @@ There are often cases where we don't have a sampling distribution that we can us
 \begin{lstlisting}[style=Python]
 from scipy.stats import bootstrap
 
-# use the bias -corrected/accelerated method ('BCa')
+# use the bias-corrected/accelerated method ('BCa')
 res = bootstrap((normal_samples,), np.mean, confidence_level=0.95,      
     n_resamples=10000, method='BCa', random_state=random_state)
 
 print(f'Bootstrap 95% CI for mean: '
     f'[{res.confidence_interval.low:.5f}, '
     f'{res.confidence_interval.high:.5f}]')
-print(f'CI based on t -distribution: [{ci_lower:.5f}, {ci_upper:.5f}]')
+print(f'CI based on t-distribution: [{ci_lower:.5f}, {ci_upper:.5f}]')
 \end{lstlisting}
 
 \begin{lstlisting}[style=shell]
-Bootstrap 95% CI for mean:  [ -0.09104, 0.03078]
-CI based on t -distribution: [ -0.09028, 0.03249]
+Bootstrap 95% CI for mean:  [-0.09104, 0.03078]
+CI based on t-distribution: [-0.09028, 0.03249]
 \end{lstlisting}
 
 Here we see that the bootstrap procedure gives results that are very close to those obtained using the closed form solution, but has the advantage of being usable with nearly any statistic (except for those based on extreme values) regardless of whether or not there is a closed form estimator and/or the sampling distribution is analytically tractable.
 
+Despite the challenges in interpreting frequentist confidence intervals, they remain an essential tool in practice for quantifying the uncertainty of statistical estimates.  
+
 \subsection{Bayesian estimation}
 
-I noted above that the interpretation of the frequentist confidence interval is counterintuitive for most people, which leads to common misunderstandings, even among experts \citep{Hoekstra:2014aa}. We would like a way of generating an interval that expresses our confidence about the true parameter value, but we can't do this in the frequentist framework. However, there is a different approach to statistics that allows us to generate such an interval, known as \textit{Bayesian statistics} after the Reverend Thomas Bayes whose famous equation forms the basis of this approach.
-
-Bayesian statistics is based on a different conception of probability from the frequentist approach that underlies the standard confidence interval.  Under the frequentist conception, probabilities are meant to refer to the long-run frequencies of outcomes across many samples, while the true parameter value is viewed as fixed. For this reason, it doesn't make sense to a frequentist to say that there is a particular probability of the true parameter value; it simply is what it is.  Bayesians, on the other hand, view probabilities as degrees of belief, and treat the estimation of parameters from data as a way to sharpen our belief - that is, as a learning opportunity.  This means that it is perfectly legitimate in the Bayesian framework to say that there is a 95\% probability that the true value of a parameter lies within a particular interval.
+We would like a way of generating an interval that expresses our confidence about the true parameter value, but we can't do this in the frequentist framework. However, there is a different approach to statistics that allows us to generate such an interval, known as \textit{Bayesian statistics} after the Reverend Thomas Bayes whose famous equation forms the basis of this approach. Bayesian statistics is based on a different conception of probability from the frequentist approach that underlies the standard confidence interval.  Under the frequentist conception, probabilities are meant to refer to the long-run frequencies of outcomes across many samples, while the true parameter value is viewed as fixed. For this reason, it doesn't make sense to a frequentist to say that there is a particular probability of the true parameter value; it simply is what it is.  Bayesians, on the other hand, view probabilities as degrees of belief, and treat the estimation of parameters from data as a way to sharpen our belief - that is, as a learning opportunity.  This means that it is perfectly legitimate in the Bayesian framework to say that there is a 95\% probability that the true value of a parameter lies within a particular interval.
 
 The fundamental idea in Bayesian statistics is that we start with a set of beliefs (known as a \textit{prior} distribution), we obtain some relevant data, and then use the likelihood of those data given the possible parameter values to update our beliefs, generating a \textit{posterior} distribution.  I won't go into detail about Bayesian methods here; see my \textit{Statistical Thinking} for a basic overview, and \citep{Gelman:2013} or \citep{McElreath:2020} for more detailed overviews.  Instead I will show an example of Bayesian estimation applied to our example data above. There are several Python packages that can be used to perform Bayesian estimation; I will use the popular \textit{PyMC} package.  The first section sets up the Bayesian model, with priors for the mean (mu) and standard deviation (sigma) that are very broad and thus will have little influence on the outcome; in Bayesian terms these are referred to as \textit{weakly informative priors}.  We then perform sampling to obtain an estimate of the posterior distribution of the parameters given the data.  Using these distributions, we can then find the narrowest set of values that contain 95\% of the mass of posterior distribution, which are known as the \textit{highest density interval} (HDI) (which is a type of \textit{credible interval} that contains the most likely values).  This interval serves as a Bayesian alternative to the frequentist confidence interval, allowing us to legitimately describe it as the interval that has a 95\% probability of containing the true value.
 
@@ -638,14 +640,14 @@ hdi_values = hdi.mu.values
 print(f"Posterior mean: {posterior_mean:.5f}, Posterior sd: {posterior_sd:.5f}")
 print(f"Sample mean: {sample_mean:.5f}, Sample sd: {sample_sd:.5f}")
 print(f'95% HDI values: {hdi_values}')
-print(f'95% CI based on t -distribution: [{ci_lower:.5f}, {ci_upper:.5f}]')
+print(f'95% CI based on t-distribution: [{ci_lower:.5f}, {ci_upper:.5f}]')
 \end{lstlisting}
 
 \begin{lstlisting}[style=shell]
 Posterior mean: -0.02895, Posterior sd: 0.99033
 Sample mean: -0.02889, Sample sd: 0.98922
 95% HDI values:                  [-0.08993, 0.03335]
-95% CI based on t -distribution: [-0.09028, 0.03249]
+95% CI based on t-distribution: [-0.09028, 0.03249]
 \end{lstlisting}
 
 In this case, the Bayesian HDI turns out to be very close to the parametric confidence interval. We can also obtain a visualization of the full posterior distributions obtained through Bayesian estimation, which are shown in Figure~\ref{BayesPosterior-fig}:
@@ -656,12 +658,12 @@ fig, axes = plt.subplots(1, 2, figsize=(12, 4))
 
 # Plot posterior for mu
 az.plot_posterior(trace, var_names=['mu'], ax=axes[0])
-axes[0].axvline(sample_mean, color='red', linestyle=' - -', label='Sample mean')
+axes[0].axvline(sample_mean, color='red', linestyle='--', label='Sample mean')
 axes[0].legend()
 
 # Plot posterior for sigma
 az.plot_posterior(trace, var_names=['sigma'], ax=axes[1])
-axes[1].axvline(sample_sd, color='red', linestyle=' - -', label='Population sd')
+axes[1].axvline(sample_sd, color='red', linestyle='--', label='Population sd')
 axes[1].legend()
 \end{lstlisting}
 
@@ -674,7 +676,7 @@ axes[1].legend()
 
 Bayesian estimation can be particularly useful when one has a strong prior belief about the value of a parameter and wishes to update that belief based on data.  For example, let's say that there was a published dataset that reported a particular parameter value, and a researcher performs additional observations and wants to update that parameter estimate.  Bayesian estimation allows this by the specification of the prior probability distribution. In the example above we used a relatively non-informative prior for the mean (a normal distribution with mean of zero and standard deviation of 1000, which allows for a very wide set of possibilities).  However, if we have existing data then we can use those data to inform our subsequent analyses, consistent with the idea that Bayesian inference is a form of learning from data.  One can also provide a prior based on one's scientific hypotheses or expectations, and the ability to incorporate prior knowledge into parameter estimation is generally taken as a strength of Bayesian methods; however, one must be sure that the prior doesn't overwhelm the data dogmatically, effectively forcing a particular answer regardless of what the data say.
 
-One drawback of Bayesian methods is that they can be very computationally expensive.  For example, the Bayesian estimation above took a bit over 2 seconds using 4 parallel sampling processes, which is much slower than the 189 microseconds required for closed-form estimation and also substantially slower than the optimization methods discussed in the next section. There are alternative Bayesian methods known as \textit{variational Bayes} that use mathematical tricks to speed up estimation, but often require substantial mathematical skill to develop, though some packages like \textit{PyMC} now offer built-in variational Bayes methods.
+One drawback of Bayesian methods is that they can be very computationally expensive.  For example, the Bayesian estimation above took a bit over 2 seconds using 4 parallel sampling processes, which is much slower than the 189 microseconds required for closed-form estimation and also substantially slower than the optimization methods discussed in the next section. There are alternative Bayesian methods known as \textit{variational Bayes} that use mathematical tricks to speed up estimation, but often require substantial mathematical skill to develop, though some packages like \textit{PyMC} now offer built-in variational Bayes methods.  However, these timing issues only become practically important when working with massive data sets or large numbers of models.
 
 \subsection{Estimating parameters using optimization}
 
@@ -696,7 +698,9 @@ We can see this visualized in Figure~\ref{gridsearch-fig}, where we see the land
 \label{gridsearch-fig}
 \end{figure}
 
-While grid search worked, it was exceedingly slow, taking more than 25 seconds to estimate the parameters that were estimated by closed form in less than a millisecond - a staggering 89,000 times slower!  Grid search is inefficient even with just two parameters, and becomes exponentially less efficient with each additional parameter.  A more effective and efficient way to estimate parameters is using optimization methods that are specifically built to search for parameter values that minimize a particular loss function.  A common choice in Python is  \texttt{scipy.optimize.minimize()}, which offers a number of algorithms for parameter search.  We can implement this for our normal distribution data; because the function finds the minimum, we will use the negative log-likelihood as our target, which is equivalent to maximizing the log-likelihood:
+While grid search worked, it was exceedingly slow, taking more than 25 seconds to estimate the parameters that were estimated by closed form in less than a millisecond - a staggering 89,000 times slower!  Grid search is inefficient even with just two parameters, and becomes exponentially less efficient with each additional parameter.  However, grid search over a coarse grid can be very useful for exploring the loss landscape of an optimization problem and identifying the presence of multiple local optima.
+
+A more effective and efficient way to estimate parameters is using optimization methods that are specifically built to search for parameter values that minimize a particular loss function.  A common choice in Python is  \texttt{scipy.optimize.minimize()}, which offers a number of algorithms for parameter search.  We can implement this for our normal distribution data; because the function finds the minimum, we will use the negative log-likelihood as our target, which is equivalent to maximizing the log-likelihood:
 
 \begin{lstlisting}[style=Python]
 import time
@@ -715,7 +719,7 @@ initial_params = [0, 1]
 
 start_time = time.time()
 result = minimize(negative_log_likelihood, initial_params, args=(normal_samples,), 
-                  method='Nelder -Mead')
+                  method='Nelder-Mead')
 \end{lstlisting}
 
 This gives us a solution that is equal to the fourth decimal place:
@@ -732,9 +736,9 @@ It's common to put boundaries on an optimization when there are bounds outside w
 \begin{lstlisting}[style=Python]
 from scipy.optimize import minimize, Bounds
 
-bounds = Bounds(lb=[ -np.inf, 1e -6], ub=[np.inf, np.inf])
+bounds = Bounds(lb=[-np.inf, 1e-6], ub=[np.inf, np.inf])
 result = minimize(negative_log_likelihood, initial_params, args=(normal_samples,), 
-                  method='L -BFGS -B', bounds=bounds)
+                  method='L-BFGS-B', bounds=bounds)
 \end{lstlisting}
 
 This doesn't have much impact on this particular problem, but with complex models and multiple parameters it's common for parameter values to explode, and setting boundaries can help prevent that. However, as I will discuss below, it's important to ensure that parameter estimates don't sit at the boundaries, as this can suggest pathologies in model fitting.
@@ -854,7 +858,7 @@ Since there are only two parameters, we can easily visualize how the parameter e
 
 \subsubsection{Local minima in optimization}
 
-The error landscape for the normal distribution example  is \textit{convex}, which means that there is a single global minimum that can be found simply by following the error gradient downwards.  Claude Sonnet 4 initially tried to convince me that the Michaelis-Menten problem is convex, but was overruled by Claude Opus 4.5; visit the notebook for this example to see the entire unfolding of this internecene battle.  Despite being non-convex, the error landscape of the Michaelis-Menten problem is smooth and relatively well behaved, as seen in Figure~\ref{mmloss-fig}.  However, many realistic scientific problems have highly complex \textit{non-convex likelihoods}, such that there are numerous \textit{local minima} that the optimization routine can get stuck in.  Figure~\ref{ComplexLoss-fig} shows an example of this.\index{Claude}
+The error landscape for the normal distribution example  is \textit{convex}, which means that there is a single global minimum that can be found simply by following the error gradient downwards.  The error landscape of the Michaelis-Menten problem is non-convex, though it is smooth and relatively well behaved, as seen in Figure~\ref{mmloss-fig}.  However, many realistic scientific problems have highly complex \textit{non-convex likelihoods}, such that there are numerous \textit{local minima} that the optimization routine can get stuck in.  Figure~\ref{ComplexLoss-fig} shows an example of this.\index{Claude}
 
 \begin{figure}[!htbp]
 \centering
@@ -878,7 +882,7 @@ Sometimes we want to estimate parameters from a model that doesn't have a tracta
 
 As an example, let's take the stochastic form of Ricker's [1954] model of population dynamics, which is a \textit{state space} model that describes how a population size changes over time:
 
-$N_{t+1} = r * N_t * e^{ - N_t + \epsilon_t}$
+$N_{t+1} = r * N_t * e^{-N_t + \epsilon_t}$
 
 where $N_t$ refers to the (unobservable) true population size at time $t$, $r$ refers to the growth rate of the population and $\epsilon_t \sim Normal(0, \sigma)$ describes noisy fluctuations in the population size.  Observations of population size are described in terms of a \textit{measurement model} that is a Poisson-distributed function of the population size:
 
@@ -889,16 +893,18 @@ where $\phi$ is a scale factor.  This is a model that is often used to understan
 The Ricker model does not have a tractable analytic likelihood; more importantly, it also has chaotic dynamics at higher $r$ values, such that tiny changes in initial values can have huge impacts on the resulting data.  This means that the loss landscape is very jagged and difficult to optimize over.  The idea of \textit{synthetic likelihood} was first developed to analyze these kinds of data, in which one estimates the parameters using \textit{summary statistics} of the data to estimate parameters rather than the data themselves.  If one chooses the appropriate summary statistics then it's possible to effectively model the data in this way, but this requires a deep understanding of the dynamics of the data; for example, Wood's \citep{Wood:2010aa} synthetic likelihood implementation of the Ricker model involved the following summary statistics:
 
 \begin{quote}
-the autocovariances to lag 5; the coefficients of the cubic regression of the ordered differences $y_t - y_{t -1}$ on their observed values; the coefficients, $\beta_1$ and $\beta_2$, of the autoregression  $y_{t+1}^{0.3} \sim \beta_1 y_t^{0.3} + \beta_2 y_t^{0.6}$ where $\epsilon_t$ is `error'); the mean population; and the number of zeroes observed.
+the autocovariances to lag 5; the coefficients of the cubic regression of the ordered differences $y_t - y_{t-1}$ on their observed values; the coefficients, $\beta_1$ and $\beta_2$, of the autoregression  $y_{t+1}^{0.3} \sim \beta_1 y_t^{0.3} + \beta_2 y_t^{0.6}$ where $\epsilon_t$ is `error'); the mean population; and the number of zeroes observed.
 \end{quote}
 
 More recently the manual identification of a set of summary statistics has been supplanted by the use of neural network models to generate low-dimensional \textit{embeddings} of the data.  Here I will use a method called \textit{Neural Posterior Estimation} \citep{greenberg:2019} in which a neural network model is trained to infer the posterior distribution of parameters from simulated data.  We also use a separate neural network model to generate a low-dimensional embedding of the observed data, which maintains information about temporal structure of the data and allows comparison of predicted and observed data in a common space.
+
+\textbf{TODO}: Give a bit more detail about pytorch? currently it comes afterwards
 
 I will use the \textit{sbi} Python package that implements several methods for simulation-based inference.  We first define our simulator, which for the Ricker model is very simple:
 
 \begin{lstlisting}[style=Python]
 def ricker_model(N: float, r: float, sigma: float = 0.3, phi: float = 10) -> tuple[float, int]:
-    N_next = r * N * np.exp( -N + np.random.normal(0, sigma))
+    N_next = r * N * np.exp(-N + np.random.normal(0, sigma))
     y_next = np.random.poisson(N_next * phi)
     return N_next, y_next
 
@@ -951,7 +957,7 @@ We then need a way to embed the data in a way that captures the relevant tempora
 \begin{lstlisting}[style=Python]
 from sbi.neural_nets import embedding_nets, posterior_nn
 
-# Define a causal CNN embedding for 1D time -series data
+# Define a causal CNN embedding for 1D time-series data
 embedding_cnn = embedding_nets.CausalCNNEmbedding(
     input_shape=(250,),      # Time series length
     num_conv_layers=4,       # Number of convolutional layers
@@ -1026,11 +1032,11 @@ for _ in range(n_permutations):
     permuted_corrs.append(permuted_corr)
 
 p_value_randomization = np.mean(np.abs(permuted_corrs) >= np.abs(observed_corr))
-print(f"Randomization p -value = {p_value_randomization:.5f}")
+print(f"Randomization p-value (two-tailed) = {p_value_randomization:.5f}")
 \end{lstlisting}
 
 \begin{lstlisting}[style=shell]
-Randomization p -value = 0.00040
+Randomization p-value = 0.00040
 \end{lstlisting}
 
 Here we see that the p-value obtained through randomization is very close to the one obtained using the parametric test.  The benefit of randomization is that it can be used for any statistic, regardless of whether it has a theoretical null distribution or not.  However, note that randomization does generally require the assumption of \textit{exchangeability}, which can fail when the observations are not independent.
@@ -1076,7 +1082,7 @@ class SignalInjectionConfig:
     shuffle_y: bool = False
 \end{lstlisting}
 
-The main class then implements each of the main components of the function as a separate method.  Inspecting the code closely, I found a place where the AI agent misinterpreted the logic of the original code:
+The main class then implements each of the main components of the function as a separate method.  Inspecting the code closely, the AI agent had misinterpreted the logic of the original code:
 
 \begin{lstlisting}[style=Python]
 # Shuffle or inject signal
@@ -1086,7 +1092,7 @@ The main class then implements each of the main components of the function as a 
             y = self._inject_signal(X, y, beta)
 \end{lstlisting}
 
-In principle the signal injection is independent of whether or not \texttt{y} is shuffled, since the \texttt{\_inject\_signal()} method generates a new synthetic \texttt{y} variable.  However, if one happened to setting \texttt{shuffle\_y=True} then the signal injection would be skipped by this code, which is not the intention.  To fix this I reordered the statement:
+In principle the signal injection is independent of whether or not \texttt{y} is shuffled, since the \texttt{\_inject\_signal()} method generates a new synthetic \texttt{y} variable.  However, if one happened to setting \texttt{shuffle\_y=True} then the signal injection would be skipped by this code, which is not the intention.  This highlights how AI-generated code can contain logical errors that don't actual cause any apparent runtime errors.  To fix this I reordered the statement:
 
 \begin{lstlisting}[style=Python]
 if beta is not None:
@@ -1105,7 +1111,7 @@ def run(
         beta: float | None = None
     ) -> dict:
         """
-        Run cross -validated classification with optional signal injection.
+        Run cross-validated classification with optional signal injection.
         
         Args:
             X: Feature matrix.
@@ -1249,9 +1255,9 @@ Figure~\ref{simpsons-penguin-fig} provides further insight into why this occurre
 
 \subsection{Sensitivity to random seeds}
 
-When using analysis methods that involve random numbers, it is essential to establish that the results are robust to different random seeds, and also to determine the degree of variability across simulations due to random seed variability.  There is published evidence \citep{Ferrari-Dacrema:2021aa} that some authors may cherry-pick results across random seeds in order to obtain better results, which we sometimes refer to as \textit{seed-hacking} on analogy to p-hacking.\index{p-hacking}
+When using analysis methods that involve random numbers, it is essential to establish that the results are robust to different random seeds, and also to determine the degree of variability across simulations due to random seed variability.  There is published evidence \citep{Ferrari-Dacrema:2021aa} that some authors may cherry-pick results across random seeds in order to obtain better results, which we sometimes refer to as \textit{seed-hacking} on analogy to p-hacking.\index{p-hacking} This can be prevented by running an analysis using multiple random seeds and reporting the mean or median along with the variability across seeds.
 
-As an example, I generated 50 synthetic datasets for a classification problem, and assessed the performance of two different classifiers that involve random numbers: a simple neural network model (Perceptron), and a stochastic gradient descent classifier \footnote{In fact these models were both fitted using the scikit-learn \texttt{SGDClassifier} function; the only difference is the use of the Perceptron loss versus a hinge loss (which is the standard loss used in support vector machines).}.  Each classifier was applied to the each dataset using 1000 different random seeds and their accuracy was recorded.  The result (shown in Figure~\ref{seed-fig}) was striking: although the average performance of the two models differed minimally across the 50,000 simulations (0.7276 for SGD versus 0.7280 for Perceptron), depending on the specific random seed one could find cases where each of the classifiers outperformed the other by almost 10\%!  This highlights the importance of quantifying the degree of variability due to random seed choice.
+As an example of how big an impact random seeds can have, I generated 50 synthetic datasets for a classification problem, and assessed the performance of two different classifiers that involve random numbers: a simple neural network model (Perceptron), and a stochastic gradient descent classifier \footnote{In fact these models were both fitted using the scikit-learn \texttt{SGDClassifier} function; the only difference is the use of the Perceptron loss versus a hinge loss (which is the standard loss used in support vector machines).}.  Each classifier was applied to the each dataset using 1000 different random seeds and their accuracy was recorded.  The result (shown in Figure~\ref{seed-fig}) was striking: although the average performance of the two models differed minimally across the 50,000 simulations (0.7276 for SGD versus 0.7280 for Perceptron), depending on the specific random seed one could find cases where each of the classifiers outperformed the other by almost 10\%!  This highlights the importance of quantifying the degree of variability due to random seed choice.
 
 \begin{figure}[!htbp]
 \centering
@@ -1271,9 +1277,9 @@ Many statistical methods rely upon an assumption that the residuals from the mod
 A common cause of failures of independence is the presence of group structure in the data, which can lead to \textit{clustered errors}; that is, members of each group are more similar in their errors compared to those in other groups. Figure~\ref{clusterederrors-fig} shows how clustering in the data can lead to highly inflated error rates, particularly when there is a small number of clusters.  This occurs because clustering leads to underestimation of the standard error that is used to compute the test statistic.  There are several different ways that the impact of clustered errors can be corrected, which are differently used across different research domains \citep{McNeish:2017aa}.  These include:
 
 \begin{itemize}
-\item Cluster-robust estimators for the standard error (commonly used in biostatistics)
-\item Fixed effect models (commonly used in economics and social sciences)
-\item Mixed effect models (commonly used in psychology and social sciences)
+\item Cluster-robust estimators for the standard error (commonly used in biostatistics), which correct the standard error to account for clustering in the data
+\item Fixed effect models (commonly used in economics and social sciences), in which the clustering is modeled out using linear terms
+\item Mixed effect models (commonly used in psychology and social sciences), in which variance components related to clustering are modeled out
 \end{itemize}
 
 Figure~\ref{clusterederrors-fig} shows that each of these does a good job of correcting for the effects of clustering in the data. The Python implementation of mixed effects modeling shows slightly inflated error rates, due to the fact that it uses a z-statistic which has slightly inflated error rates for small numbers of clusters, whereas the R implementation uses a correction to the degrees of freedom that corrects this.
