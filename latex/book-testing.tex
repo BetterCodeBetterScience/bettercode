@@ -537,7 +537,7 @@ We then pass this into our test using the \texttt{@pytest.mark.parametrize} deco
 
 \lstinputlisting[style=Python, firstline=151, lastline=156]{../tests/testing_chapter/test_textmining.py}
 
-Note that we inserted a delay at the beginning of the test (using \textt{time.sleep(0.5)}); this is necessary because the PubMed API has a rate limit on requests, and running these tests without a delay to limit the request rate can result in intermittent test failures due to exceeding the rate limit.
+Note that we inserted a delay at the beginning of the test (using \texttt{time.sleep(0.5)}); this is necessary because the PubMed API has a rate limit on requests, and running these tests without a delay to limit the request rate can result in intermittent test failures due to exceeding the rate limit.
 Looking at the results of running the test, we will see that each parametric value is run as a separate test:
 
 \lstinputlisting[style=shell]{generated/testing/pytest_textmining_parametric.txt}
