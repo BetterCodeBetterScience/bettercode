@@ -36,7 +36,7 @@ $ tree --charset=ascii .venv
 |   |-- activate.ps1
 |   |-- deactivate.bat
 |   |-- pydoc.bat
-|   |-- python -> /Users/poldrack/.local/share/uv/python/cpython-3.12.0-macos-aarch64-none/bin/python3.12
+|   |-- python -> ~/.local/share/uv/python/cpython-3.12.0/bin/python3.12
 |   |-- python3 -> python
 |   `-- python3.12 -> python
 |-- CACHEDIR.TAG
