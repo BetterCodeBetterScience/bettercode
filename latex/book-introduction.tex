@@ -12,7 +12,7 @@ These techniques, which bring unprecedented analytic power to scientists, can on
 
 The increasing prevalence of coding in scientific practice contrasts starkly with the lack of training that most researchers receive in software engineering.
 By ``software engineering'' I don't mean introductory classes in how to code in a particular language.
-Rather, I am referring to the set of practices that have been developed within the field of computer science and engineering that aim to improve the quality and efficiency of the software development process and the resulting software products.
+Rather, I am referring to the set of practices that have been developed within the fields of computer science and computer engineering that aim to improve the quality and efficiency of the software development process and the resulting software products.
 A glimpse into this field can be gotten from examining the \href{https://www.computer.org/education/bodies-of-knowledge/software-engineering}{Software Engineering Body of Knowledge (SWEBOK)}, first published in 2004 and updated most recently in 2024.\index{SWEBOK}
 While much of SWEBOK focuses on topics that are primarily relevant to large commercial software projects, it also includes numerous sections that are relevant to anyone writing code that aims to function correctly, such as how to test code for validity and how to maintain software once it has been developed.
 
@@ -67,36 +67,30 @@ This is an example of how a very simple coding mistake can have major scientific
 It would be an understatement to say that coding has undergone a revolution since the introduction of coding assistance tools based on artificial intelligence (AI) systems.
 While some degree of assistance has long been available (such as smart autocompletion by code editors), the introduction of Copilot by GitHub in 2021 and its subsequent incorporation into a number of integrated development environments (IDEs) brought a new level automation into the coding process.\index{Copilot}
 There are likely very few coders today who have not used these tools or at least tried them out.
-The presence of these tools has led to some breathless hand-wringing about whether AI will eliminate the need for programmers, but nearly all voices on this topic agree that programming will change drastically with the introduction of AI assistance but that the ability to program will remain a foundational skill for years to come.
+The presence of these tools has led to some breathless hand-wringing about whether AI will eliminate the need for programmers, but nearly all voices on this topic agree that while programming will change drastically with the introduction of AI assistance, the ability to program will remain a foundational skill for years to come.
 
-In early 2023 the frenzy about AI reached the boiling point with the introduction of the GPT-4 language model by OpenAI.\index{OpenAI}\index{GPT-4}
+In early 2023 the frenzy about AI reached a boiling point with the introduction of the GPT-4 language model by OpenAI.\index{OpenAI}\index{GPT-4}
 Analyses of early versions of this model \citep{Bubeck:2023aa} showed that its ability to solve computer programming problems was on par with human coders, and much better than the previous GPT-3 model.\index{GPT-3}
 Later that year GPT-4 became available as part of the GitHub CoPilot AI assistant, and those of us using Copilot saw some quite astonishing improvements in the performance of the model compared to the GPT-3 version.
 I had been developing a workshop on software engineering practices for scientists, and the advent of this new tool led to some deep soul-searching about whether such training would even be necessary given the power of AI coding assistants.
-My colleagues and I \citep{Poldrack:2023aa} subsequently performed a set of analyses that asked three questions about the ability of GPT-4 to perform scientific coding.
+My colleagues and I \citep{Poldrack:2023aa} subsequently analyzed the ability of GPT-4 to solve scientific coding problems.
 I will describe these experiments in more detail in Chapter 5, but in short, they showed that while GPT-4 was able to solve many coding problems quite effectively, it was far from being able to solve common coding problems completely on its own.  Coding assistants have continued to improve over time, but as I will discuss throughout the book, they still require close attention by the user to ensure that they function properly.
 
 I believe that AI coding assistants have the potential to greatly improve the experience of coding and to help new coders learn how to code effectively.
 However, my experiences with AI-assisted coding have also led me to the conclusion that software engineering skills will remain \textit{at least} as important in the future as they are now.
-First, and most importantly, the hardest problem in programming is not the generation of code; rather, it is the decomposition of the problem into a set of steps that can be used to generate code.\index{decomposition}
-The motivation for why coding will remain as an essential skill even if code is no longer being written by humans was expressed by Robert Martin in 2009, well before the current AI tools were even imaginable:\index{Martin, Robert}
+First, and most importantly, the hardest problem in programming is not the generation of code; rather, it is the decomposition of the problem into a set of steps that can be used to generate code, and the expression of those steps in a way that is clear enough to allow the code to correctly solve the problem.\index{decomposition}
+The motivation for why coding will remain as an essential skill even if code is no longer being written by humans was expressed by Robert Martin in the most recent edition of his book \textit{Clean Code}:\index{Martin, Robert}
 
 \begin{quote}
-...some have suggested that we are close to the end of code.
-That soon all code will be generated instead of written.
-That programmers simply won't be needed because business people will generate programs from specifications.
-Nonsense! We will never be rid of code, because code represents the details of the requirements.
-At some level those details cannot be ignored or abstracted; they have to be specified.
-And specifying requirements in such detail that a machine can execute them is programming.
-Such a specification is code. \citep{Martin:2009aa}
+One might argue that a book about code is somehow behind the times—that code is no longer the issue; that we should be concerned about AI, large language models (LLMs), and requirements instead. Indeed, some have suggested that we are close to the end of code. That soon, all code will be generated instead of written. That programmers simply won’t be needed, because businesspeople will generate programs from specifications—or prompts. Nonsense! We will never be rid of code, because code represents the details of the requirements. At some level, those details cannot be ignored or abstracted; they have to be specified. And specifying requirements in such detail that a machine can execute them is programming. Such a specification is code. \citep{Martin:2025aa}
 \end{quote}
 
 For simple common problems AI tools may be able to generate a complete and accurate solution, but for the more complex problems that most scientists face, a combination of coding skills and domain knowledge will remain essential to figuring out how to decompose a problem and express it in a way that a computer can solve it.
-Even if that involves generating prompts for a generative AI model rather than generating code de novo, a deep understanding of the generated code will be essential to making sure that the code accurately solves the problem at hand.
+Even if that involves generating prompts for a generative AI model or being interviewed by a coding agent rather than generating code de novo, a deep understanding of the generated code will be essential to making sure that the code accurately solves the problem at hand.
 
 Second, scientific coding requires an extra level of accuracy.
 Scientific research forms the basis for many important decisions in our society, from which medicines to prescribe to how effective a particular method for energy generation will be.
-The technical report for GPT-4 makes it clear that we should think twice about an unquestioning reliance upon AI models in these kinds of situations:
+The technical report for GPT-4 made it clear that we should think twice about an unquestioning reliance upon AI models in these kinds of situations:
 
 \begin{quote}
 Care should be taken when using the outputs of GPT-4, particularly in contexts where reliability is important. \citep{OpenAI:2024aa}
@@ -158,7 +152,7 @@ Similar efforts subsequently uncovered problems in other areas, such as cancer b
 
 As this crisis unfolded, attention turned to the potential causes for such a lack of reproducibility.
 One major focus was the role of ``questionable research practices'' (QRPs) - practices that have the potential to decrease the reproducibility of research.\index{questionable research practices}
-In a prominent 2011 article titled ``False Positive Psychology'', \citep{Simmons:2011aa} showed that commonly used practices within psychology have the potential to substantially inflate the false positive rates of research studies.\index{false positive}
+In a prominent 2011 article titled ``False Positive Psychology'', \citep{Simmons:2011aa} showed that commonly used research practices had the potential to substantially inflate the false positive rates of research studies.\index{false positive}
 Given the prominence of statistical hypothesis testing and the bias towards positive and statistically significant results (usually at p \textless  .05) in the psychology literature, these practices were termed ``p-hacking''.\index{p-hacking}
 Many of the efforts to improve reproducibilty have focused on reducing the prevalence of p-hacking, such as the pre-registration of hypotheses and data analyses.\index{pre-registration}
 
@@ -167,18 +161,17 @@ Many of the efforts to improve reproducibilty have focused on reducing the preva
 There is a well known quote from Jonathan Buckheit and David Donoho \citep{Buckheit:1995aa} that highlights the importance of openly available research objects in science:
 
 \begin{quote}
-An article about computational science in a scientic publication is not the scholarship itself, it is merely advertising of the scholarship.
-The actual scholarship is the complete software development environment and the complete set of instructions which generated the figures.
+An article about computational science in a scientic publication is not the scholarship itself, it is merely advertising of the scholarship. The actual scholarship is the complete software development environment and the complete set of instructions which generated the figures.
 \end{quote}
 
-There was surprisingly little focus on code during the reproducibility crisis, but it is clear that there are problems even with what would seem like the easiest quadrant of the Turing Way framework: namely, the ability to reproduce results given the same data and same analysis code.
+There was surprisingly little focus on code during the reproducibility crisis, but it is clear that there are problems even with what would seem like the easiest quadrant of the Turing Way framework: namely, the ability to reproduce results given the same data and same analysis methods.
 Tom Hardwicke, Michael Frank and colleagues have examined the ease of reproducing results from psychology papers where the data were openly available, and the results were not encouraging.
 In one analysis \citep{Hardwicke:2021aa}, they attempted to reproduce the published results from 25 papers with open data.\index{open data}
 Their initial analyses showed major numerical discrepancies in about 2/3 of the papers; strikingly, for about 1/4 of the papers they were unable to reproduce the values reported in the original publication \textit{even with the help of the authors}!
 
 It is increasingly common for researchers to share both code and data from their published research articles, in part due to incentives such as ``badges'' that are offered by some journals.
 However, in our experience, it can be very difficult to actually run the shared code, due to various problems that limit the portability of the code.
-Throughout this book I will discuss the tools and techniques that can help improve the portability of shared code and thus increase the reproducibility of published results.
+Throughout this book I will discuss the tools and techniques that can help improve the portability of shared code and thus increase the reproducibility of published results. I will also note that AI coding tools turn out to be particularly good at fixing the issues that often occur when trying to run someone else's code, making them an important tool for reproducibility.
 
 \subsection{Bug-hacking}\index{bug-hacking}
 
@@ -202,14 +195,14 @@ A set of these matrices were initially created and shared in 1992 and widely use
 These errors appeared to have significant impact on results, but interestingly the incorrect matrices actually performed \textit{better} than the correct matrices in terms of the number of errors in biological sequence alignments.
 It seems highly likely that a bug that had substantially reduced performance would have been identified much earlier.
 
-Another example comes from our own field of neuroimaging.
+Another example comes from our my field of neuroimaging.
 A typical neuroimaging study collects data from hundreds of thousands of three-dimensional volumetric pixels (know as \textit{voxels}) within the brain, and then performs statistical tests at each of those locations.
 This requires a correction for multiple tests to prevent the statistical error rate from skyrocketing simply due to the large number of tests.
 There are a number of different methods that are implemented in different software packages, some of which rely upon mathematical theory and others of which rely upon resampling or simulation.
 One of the commonly used open source software packages, AFNI, provided a tool called \textit{3DClustSim} that used simulation to estimate a statistical correction for multiple comparisons.\index{AFNI}\index{open source}
 This tool was commonly used in the neuroimaging literature, even by researchers who otherwise did not use the AFNI software, and the lore developed that 3DClustSim was less conservative than other tools.
 When Anders Eklund and Tom Nichols \citep{Eklund:2016aa} analyzed the performance of several different tools for multiple test correction, they identified a bug in the way that the 3DClustSim tool performed a particular rescaling operation, which led in some cases to inflated false positive rates.
-This bug had existed in the code for 15 years, and almost certainly was being leveraged by researchers to obtain ``better'' results (i.e., results with more seeming discoveries).
+This bug had existed in the code for 15 years, and almost certainly was being leveraged by researchers to obtain ``better'' results (i.e., results with more seeming discoveries, many of which would have been false).
 Had the bug led to much more conservative results compared to other standard methods, it is likely that users would have complained and the problem would have been investigated; in the event, no users complained about getting more apparent discoveries in their analyses.
 
 \subsection{How not to fool ourselves}
@@ -218,11 +211,11 @@ In his \href{https://calteches.library.caltech.edu/51/2/CargoCult.htm}{1974 comm
 You may be familiar, for example, of the idea of a ``double-blind'' randomized controlled trial in medical research, in which participants are randomly assigned to a treatment of interest or a control condition (such as a placebo); the ``double-blind'' aspect of the trial refers to the fact that neither the patient nor the researcher knows who has been assigned to the treatment versus control condition.\index{blinding!double-blind}
 Assuming that blinding actually works (which can fail, for example, if the treatment has strong side effects), this can give results that are at much lower risk of bias compared to a trial in which the physician or patient know what their condition is.
 In physics, researchers will regularly relabel or otherwise modify the data to prevent the researcher from knowing whether they are working with the real data versus some other version.
-This kind of blinding helps researchers avoid fooling themselves.
+This kind of blinding helps researchers avoid fooling themselves \citep{MacCoun:2015aa}.
 
 A major concern in the development of software for data analysis is that the researcher will make choices that are data-dependent.
 Andrew Gelman and Eric Loken \citep{Gelman:2014aa} referred to a ``garden of forking paths'', in which the researcher makes seemingly innocuous data-driven decisions about the methods to apply for analysis, resulting in an injection of bias into the analysis.\index{garden of forking paths}
-One commonly recommended solution for this is ``pre-registration'', in which the methods to be applied to the data are pre-specified before any contact is made with the data.
+One commonly recommended solution for this is ``pre-registration'', in which the methods to be applied to the data are pre-specified before any contact is made with the data \citep{Nosek:2018aa}.
 There are several platforms (including the Open Science Framework, \href{http://ClinicalTrials.gov}{ClinicalTrials.gov}, and \href{http://AsPredicted.org}{AsPredicted.org}, depending on the type of research) that can be used to pre-register analysis plans and code prior to their application to real data.\index{ClinicalTrials.gov}\index{AsPredicted.org}
 Pre-registration has been used in medical research for more than two decades, and its introduction was associated with a substantial reduction in the prevalence of positive outcomes in clinical trials, presumably reflecting the reduction in bias \citep{Kaplan:2015aa}.
 However, pre-registration can be challenging when the data are complex and the analytic methods are not clear from the outset.
@@ -246,10 +239,13 @@ In Chapter 9 I will talk in much more detail about how to validate computational
 
 \section{Guiding principles for this book}
 
+\textbf{TODO}: this needs to be either fleshed out or flushed
+
 The material that I will present in this book reflects a set of guiding principles:
 
 \begin{itemize}
-\item Scientific research increasingly relies upon code written by researchers with the help of AI agents.  Improving the quality of research code is a direct way to enhance the reliability of scientific research.
-\item Scientists bear the ultimate responsibility for ensuring that their code provides answers that are both reliable and valid.  Fortunately, there are many software development tools that can help in this endeavor.
+\item Improving the quality of research code is a direct way to enhance the reliability of scientific research.
+\item Scientific research increasingly relies upon code written by researchers with the help of AI agents.  
+\item Scientists bear the ultimate responsibility for ensuring that their code provides answers that are both reliable and valid.  
 \item Scientists have a responsibility to make their work as open and reproducible as possible.  Open source software and platforms for open sharing of research objects including data and code are essential to making this happen.
 \end{itemize}
