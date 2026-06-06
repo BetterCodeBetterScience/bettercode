@@ -117,9 +117,7 @@
 }
 
 \lstdefinestyle{shellshort}{
-  style=base,
-  language=,
-  basicstyle=\ttfamily\footnotesize,
+  style=shell,
   numbers=none,
   caption={},
 }
@@ -134,6 +132,12 @@
   commentstyle=\color{codecom}\itshape,
   morecomment=[l]{In :},   % treat REPL prompts as comments visually
   morecomment=[l]{Out:},
+}
+
+\lstdefinestyle{replshort}{
+  style=repl,
+  numbers=none,
+  caption={},
 }
 
 % YAML language definition
