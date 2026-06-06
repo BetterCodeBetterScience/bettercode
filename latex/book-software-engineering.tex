@@ -1,5 +1,7 @@
 \chapter{Principles of software engineering}
 
+\textbf{TODO}: add section on complexity
+
 Programming is the activity of using a computer to solve problems by creating computer software (either on one's own or via AI coding tools).  
 Software engineering is a larger discipline that uses scientific methods to understand how to create software that is more effective, robust, efficient, secure, and maintainable. 
 Just as structural engineering is the science of creating a physical building, software engineering is the science of building software. 
@@ -35,7 +37,7 @@ Software engineers love acronyms, and a commonly used acronym that targets this 
 Within commercial software engineering, it was once common to develop a detailed requirements document before one ever started writing code, and then move on to code writing using those fixed requirements.
 This is known as the ``waterfall'' method for project management; it can work well in some domains (like physical construction, where the plans can't change halfway through building, and the materials need to be on hand before construction starts), but in software development it often led to long delays that occurred once the initial plan ran into challenges at the coding phase.
 Instead, most software development projects now use methods generally referred to as \textit{Agile}, in which there are much faster cycles between planning and development.
-One of the most important principles of the Agile movement is that ``Working software is the primary measure of progress'' \citep{agilemanifesto}.
+One of the most important principles of the Agile movement is that ``Working software is the primary measure of progress'' \citep{Beck:2001aa}.
 It's worth noting that a lot of dogma has grown up around Agile and related software development methodologies (such as \textit{Scrum} and \textit{Kanban}), most of which is overkill for scientists producing code for research.
 But there are nonetheless some very useful concepts and processes that we can take from these methodologies to help us build scientific software better and faster.
 
@@ -45,14 +47,12 @@ In our laboratory, we focus heavily on the idea of the ``minimum viable product'
 We shoot for code that solves the scientific or technical problem at hand: no more, and no less.
 We try to write that code as cleanly as possible (as described in the next section), but we realize that the code will never be perfect, and that's ok.
 If it's code that will be reused in the future, then we will likely spend some additional time refactoring it to improve its clarity and robustness and providing additional documentation.\index{refactoring}
-This philosophy is the rationale for the ``test-driven development'' approach that we outline later in this chapter.\index{test-driven development}
+This philosophy is the rationale for the ``test-driven development'' approach that I outline later in this chapter.\index{test-driven development}
 
 \section{Designing software through user stories}
 
 It's important to think through the ways that a piece of software will be used, and one useful way to address this is through \textit{user stories}.
 Understanding specific use cases for the software from the standpoint of users can be very useful in helping to ensure that the software is actually solving real problems, rather than solving problems that might theoretically exist but that no user will ever engage with.
-We often see this with the development of visualization tools, where the developer thinks that a visualization feature would be ``cool'' but it doesn't actually solve a real scientific problem for a user of the software.
-
 A user story is often framed in the following way: ``As a [type of user], I want [a particular functionality] so that [what problem the functionality will solve]''.
 As an example, say that a researcher wanted to develop a tool to convert between different data formats.
 A couple of potential user stories for this software could be:
@@ -73,12 +73,12 @@ These two stories already point to several functions that need to be implemented
 User stories are also useful for thinking through the potential impact of new features that are envisioned by the coder.
 Perhaps the most common example of violations of YAGNI comes about in the development of visualization tools.
 In this example, the developer might decide to create an visualizer to show how the original dataset is being converted into the new format, with interactive features that would allow the user to view features of individual files.
-The question that you should always ask yourself is: What user stories would this feature address? If it's difficult to come up with stories that make clear how the feature would help solve particular problems for users, then the feature is probably not needed. 
+The question that you should always ask yourself is: What user stories would this feature address? If it's difficult to come up with stories that make clear how the feature would help solve particular problems for particular kinds of users, then the feature is probably not needed. 
 This is the reason that I regularly tell my trainees to post a note in their workspace with one simple mantra: ``MVP''.
 
 \section{Refactoring code}
 
-Throughout the book I will regularly mention the concept of \textit{refactoring} (as I just did in the previous section), so I should introduce it here.
+Throughout the book I will regularly mention the concept of \textit{refactoring}.\index{Refactoring}
 When we refactor a piece of code, we modify it in a way that doesn't change its external behavior.
 The idea long existed in software development but was made prominent by Martin Fowler in his book \textit{Refactoring: Improving the Design of Existing Code} \citep{Fowler:1999aa}.
 As the title suggests, the goal of refactoring is to improve existing code rather than adding features or fixing bugs - but why would we spend time modifying code once it's working, unless our goal is to add something new or fix something that is broken?
@@ -96,7 +96,7 @@ Yet the cumulative effect of these small changes can radically improve the desig
 
 There are several reasons why we might want to refactor existing code.
 Most importantly, we may want to make the code \textit{easier to maintain}.
-This in turn often implies making it easier to read and understand, as we discuss further below in the context of \textit{clean coding}.
+This in turn often implies making it easier to read and understand, as I discuss further below in the context of \textit{clean coding}.
 For example, we might want to break a large function out into several smaller functions so that the logical structure of the code is clearer from the code itself.
 Making code easier to understand and maintain also helps make it easier to add features to in the future.
 There are many other ways in which one can improve code, which are the focus of Fowler's book; I will outline more of them below when I turn later to the problem of ``code smells''.
@@ -130,7 +130,7 @@ Finally, once you start integrating all of the components, you won't have a way 
 
 One answer to these problems is to start the process by creating a set of \textit{tests}, which tell us whether the code has solved our intended problems.
 The process of writing tests before writing code to solve the problem is known as \textit{test-driven development} (TDD), which I think is a very useful framework to use when writing scientific code, especially if one plans to use LLMs for code generation.
-Test-driven development is somewhat controversial within the software engineering field, in part because many people take it too far and become obsessive with testing, such that the tests come to be the tail that wags the dog; in particular I would caution against using the amount of test coverage as a metric for success.
+Test-driven development is somewhat controversial within the software engineering field, in part due to the strident rhetoric of some TDD advocates, but also due to concerns about whether it might actually result in poorer software designs.   
 But I think that when it is used in a thoughtful way, TDD can be a powerful way to increase the effectiveness and accuracy of one's code.
 In addition, TDD is very useful in the context of AI coding agents, where it can help keep the agent on track and ensure that it focuses on the main problem at hand.
 
@@ -154,9 +154,9 @@ Good programmers write code that humans can understand.'' \citep[][p. 10]{Fowler
 \end{quote}
 
 Another idea that has emerged from the Agile community is \textit{clean coding}, which is the idea that code should be simple, readable, and easily maintainable.
-This idea was codified in the book titled \textit{Clean Code: A Handbook of Agile Software Craftsmanship} \citep{Martin:2009aa}, published by Robert C. Martin (known in the community as ``Uncle Bob'').
+This idea was codified in the book titled \textit{Clean Code: A Handbook of Agile Software Craftsmanship} \citep{Martin:2025aa}, published by Robert C. Martin (known in the community as ``Uncle Bob'').
 One of the best ways to describe clean code is that it is \textit{simple}.
-Kent Beck, another Agile founder who developed the idea of ``Extreme Programming'', laid out a set of rules for simple code:
+Kent Beck, another Agile founder who developed the related idea of ``Extreme Programming'', laid out a set of rules for simple code:
 
 \begin{enumerate}
 \item The code has tests and all of the tests run.
@@ -166,7 +166,7 @@ Kent Beck, another Agile founder who developed the idea of ``Extreme Programming
 \end{enumerate}
 
 Another way to think about clean code is that it makes it as easy as possible for another programmer to come in later and change it.
-And it's essential to remember that this ``other programmer'' is mostly like to refer to future you! When we look back at code that we wrote more than a few months ago, we are likely to remember very little of it, meaning that we need to rediscover the design and structure of the code.
+And it's essential to remember that this ``other programmer'' is mostly likely to refer to future you! When we look back at code that we wrote more than a few months ago, we are likely to remember very little of it, meaning that we need to rediscover the design and structure of the code.
 
 There are many different interpretations of the concept of clean code.
 Here I will lay out the principles that I think are most important for the creation of code in the context of scientific research (as opposed to commercial software development).
@@ -194,8 +194,8 @@ It's particularly important to point out that these different principles may som
 The use of different names for the same concept can lead the reader to assume that there are two different concepts at play, often known as a ``jangle fallacy''.
 This might occur when a similar concept appears across multiple functions, but is named differently; for example, a variable referring to a specific model is called \texttt{modelname} in one function and \texttt{llm\_label} in another.
 
-Conversely, using the same name to represent two different concepts can lead the reader to think that they are referring to the same thing, which is called a ``jingle fallacy''. For example, if one were to use the variable name \texttt{model} to refer to a model class within one function but to a string containing the model name in another function.`'
-This fallacy is particularly likely to occur when one uses names that are too simple (see below).
+Conversely, using the same name to represent two different concepts can lead the reader to think that they are referring to the same thing, which is called a ``jingle fallacy''. For example, this could occur if one were to use the variable name \texttt{model} to refer to a model class within one function but to a string containing the model name in another function.
+This problem is particularly likely to occur when one uses names that are too simple (see below).
 
 \textbf{Understandability}
 
@@ -267,7 +267,7 @@ get_transcript_level(gene, snps)}; phenotype < - get_phen(gene, trans_levels[[ge
 
 On the other hand, the syntactic role of horizontal empty space in Python enforces much clearer visual structure:
 
-\begin{lstlisting}[style=Python, caption='Example of the use of horizontal empty space to enhance readability.', label=lst:emptyspace]
+\begin{lstlisting}[style=Python]
 trans_levels = {}
 for gene in genes:
     snps = get_snps(gene, .001)
@@ -294,7 +294,7 @@ On the other hand, one of the most consistent messages from the software enginee
 \end{itemize}
 
 The overall goal of code comments should be to help the reader know as much as the writer knows about the code.
-We will start by outlining the kinds of things that do \textit{not} warrant comments, and then turn to the legitimate uses of comments.
+I will start by outlining the kinds of things that do \textit{not} warrant comments, and then turn to the legitimate uses of comments.
 
 \subsubsection{What not to comment}
 
@@ -401,9 +401,9 @@ For example:
 When including constant values, it can be useful to describe the motivation for the specific value chosen.
 
 \begin{lstlisting}[style=Pythonshort]
-# Using 500 bootstrap replicates based on recommendation 
+# Using 1000 bootstrap replicates based on recommendation 
 # from Efron & Tibshirani 1993
-n_replicates = 500
+n_replicates = 1000
 \end{lstlisting}
 
 \subsection{Avoiding ``code smells'' and ``anti-patterns''}
@@ -411,10 +411,10 @@ n_replicates = 500
 There are two related concepts that are used to describe the appearance of potentially problematic code The ``anti-pattern'' is a riff on the concept of a \textit{design pattern}, which is a recommended solution (i.e., a ``best practice'') for a common programming problem \citep{Gamma:1995aa}.\index{anti-pattern}
 An anti-pattern is conversely a commonly used but bad solution (i.e., a ``worst practice'') for a common programming problem.
 In the Python world these are well known from ``The Little Book of Python Anti-Patterns'' \citep{quantifiedcode:2018}, which lays out many different anti-patterns common in Python coding.
-The second idea, that of the ``code smell'', has been popularized by Martin Fowler in his well-known book *Refactoring: Improving The Design of Existing Code *\citep{Fowler:1999aa}.\index{code smell}
+The second idea, that of the ``code smell'', has been popularized by Martin Fowler in his well-known book on refactoring \citep{Fowler:1999aa}.\index{code smell}\index{refactoring}
 Just as a bad smell from food can give us an intuitive sense that the good might be spoiled, code smells are intuitive reactions to code that suggest that there might be a problem that could be a target for refactoring.
 
-Here we outline several bad smells and anti-patterns commonly found in our experience with scientific code.
+Here I outline several bad smells and anti-patterns commonly found in my experience with scientific code.
 
 \subsubsection{Duplicated code}
 
@@ -476,7 +476,7 @@ def proportion_significant(data):
 
 What does ``3.09'' refer to? A statistically literate reader might infer that this was meant to refer to the 99.9th percentile of the standard normal (Z) distribution, but couldn't be certain without talking to the developer.
 Another particular problem with floating point magic numbers is that they often are rounded (i.e., 3.09 rather than 3.090232306167813), which could lead to imprecision in the results in some contexts.
-An additional problem with this particular function is that the value can't be changed by the user of the function.
+Another problem with this example is that the value can't be changed by the user of the function.
 It would be better compute the value formally based on an explicit input of the probability, and then assign it to a named variable that makes clear what it means:
 
 \begin{lstlisting}[style=Pythonshort]
@@ -532,7 +532,7 @@ class LLMConfig:
     system_prompt: Optional[str] = None
     max_response_length: Optional[int] = None
 
-def run_llm_prompt(prompt, config):
+def run_llm_prompt(prompt: str, config: LLMConfig):
     ...
 
 # we could then use it like this
@@ -604,7 +604,7 @@ def run_workflow(raw_data, config):
 \end{lstlisting}
 
 This function clearly performs several operations, but viewed from the appropriate level of abstraction, it does one thing: it executes the workflow.
-Importantly, the only thing that would cause this function to change is if the workflow changed; any changes within the components of the workflow would not require changes to this function.
+Importantly, the only thing that would cause this function to change is if the workflow changed; any changes within the components of the workflow would not require changes to this function unless they affected the component function's interface.
 In this way, the high level workflow manager is \textit{insulated} from the details of each of the components, interacting with them only through their outputs.
 Each of the different workflow components can also be insulated from the other components, as long as they rely only upon the arguments provided to the function.
 
@@ -614,7 +614,7 @@ There is often a temptation when using object-oriented programming approaches to
 These kinds of objects are sometimes referred to as ``God objects'' since they are meant to have a God's-eye view of an entire project.
 
 In 2019, I started developing data processing and analysis code for large project called the Neuroimaging Analysis Replication and Prediction Study (NARPS).
-We won't go into the details here; if you are interested, you can find more detail in a paper that we published in 2020 \citep{Botvinik-Nezer:2020aa}, and the codebase is available at github.com/poldrack/narps.
+I won't go into the details here; if you are interested, you can find more detail in a paper that we published in 2020 \citep{Botvinik-Nezer:2020aa}, and the codebase is available at github.com/poldrack/narps.
 The brief description is that 70 research groups were given the same raw brain imaging dataset and asked to analyze it and submit their results; it was these results that I was analyzing in order to determine how different analysis methods might lead to different results.
 I decided to use an object-oriented approach to developing the code.
 This project ended up being one of the main reasons I became more interested in software engineering practices, but at this point I had not yet dived into the literature on good coding practices.
@@ -755,7 +755,7 @@ ic(GLOBALVAR)
 
 Which results in the output:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 ic| GLOBALVAR: 1
 ic| GLOBALVAR: 2
 \end{lstlisting}
@@ -786,7 +786,7 @@ C = 299792458
 
 We could then import this from our module within the iPython shell:
 
-\begin{lstlisting}[style=repl, numbers=none]
+\begin{lstlisting}[style=replshort]
 >>> from bettercode.constants import C
 >>> C
 299792458
@@ -797,14 +797,14 @@ We could then import this from our module within the iPython shell:
 We would generally like to define constants in such a way that their value is \textit{immutable}, i.e., it is not allowed to be modified.
 Unfortunately, importing a variable from a module doesn't prevent it from being modified:
 
-\begin{lstlisting}[style=repl, numbers=none]
+\begin{lstlisting}[style=replshort]
 >>> C = 43
 >>> C
 43
 \end{lstlisting}
 
 Unlike some other languages, Python doesn't offer a simple way to define a variable as a constant in a way that prevents it from being modified, but there are several tricks we can play to create an immutable constant.
-Here we demonstrate one simple way, in which we create a class but override its \texttt{\_\_setattr\_\_} method to prevent the value from being changed:
+Here I demonstrate one simple way, in which we create a class but override its \texttt{\_\_setattr\_\_} method to prevent the value from being changed:
 
 We first add the class definition to our \texttt{constants.py} file:
 
@@ -904,7 +904,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'
 
 However, mypy will identify the type mismatch prior to running the code, in a clearer way that would be more useful for identifying and fixing the problem:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ uv run mypy src/bettercode/mypy_example.py
 src/bettercode/mypy_example.py:5: error: Argument 1 to "compute_mean" has incompatible type "str"; expected "list[float]"  [arg-type]
 Found 1 error in 1 file (checked 1 source file)
@@ -956,7 +956,7 @@ Writing standards-compliant and well-formatted code requires a deep knowledge of
 I'd venture a guess that very few coders have actually sat down and read PEP8.
 Instead, many of us have learned Python style implicitly by looking at others' code, but increasingly we resort to the use of automated \textit{static analysis} tools, which can identify potential errors and reformat code without actually executing the code.\index{static analysis}
 These tools are commonly known as \textit{linters}, after the \textit{lint} static analysis tool used in the C language.
-There are numerous such tools for Python; for our examples we will use the \textit{ruff} formatter, which has become popular due in part to its speed.\index{ruff}
+There are numerous such tools for Python; for our examples I will use the \textit{ruff} formatter, which has become popular due in part to its speed.\index{ruff}
 
 A very useful feature of static analysis tools like \textit{ruff} is that they can easily be integrated into most IDEs, so that they can flag problems in the code as it is written.
 In addition, most modern IDEs will automatically suggest changes to improve the formatting of code.
@@ -1025,12 +1025,12 @@ It did not, however, change the import statement; that's a level of modification
 \subsection{Formatting code using AI agents}
 
 Unsurprisingly, AI coding agents are also quite good at fixing formatting and styling issues in code.
-Figure~\ref{AIFormatting-fig} shows a simple example where we prompt the GitHub Copilot chat within VSCode to fix the formatting in the example code from above.\index{Copilot}
+Figure~\ref{AIFormatting-fig} shows a simple example where used the chat window within my IDE to fix the formatting in the example code from above.\index{Copilot}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.75\linewidth]{files/code_formatting_ai-40a72623f14eedcac2f5e61025181eeb.png}
-\caption[Copilot Chat within VSCode]{The GitHub Copilot chat within VSCode was used to prompt the model (Claude Sonnet 4) to fix issues with the code.
+\caption[Chat within VSCode]{The chat window within VSCode was used to prompt the model (Claude Sonnet 4) to fix issues with the code.
 The model generated new code and also outlined its improvements.}
 \label{AIFormatting-fig}
 \end{figure}
@@ -1052,7 +1052,7 @@ The model could certainly be prompted to make more extensive changes on more com
 
 Given that even professional programmers make errors on a regular basis, it seems almost certain that researchers writing code for their scientific projects will make their fair share of errors too. \textit{Defensive coding} means writing code in a way that tries to protect against errors.
 One essential aspect of defensive coding is a thorough suite of tests for all important functions; I will dive much more deeply into this in the next chapter.
-Here I focus on robustness to \textit{runtime errors}; that is, errors that are not necessarily due to errors in the code per se, but rather due to errors in the logic of the code or errors or invalid assumptions about the data that are being used by code. 
+Here I focus on robustness to \textit{runtime errors}; that is, errors that are not necessarily due to syntax errors in the code per se, but rather due to errors in the logic of the code or errors or invalid assumptions about the data that are being used by code. 
 
 A central aspect of defensive coding is to detect errors and announce them in a loud way.
 For example, in a recent code review in our group, a researcher showed the following code:
@@ -1080,7 +1080,7 @@ def get_subject_label(file):
 \end{lstlisting}
 
 When I asked the question ``Should there ever be a file path that doesn't include a subject label?'', the answer was ``No'', meaning that this code allows what amounts to an error to occur without announcing its presence.
-When we looked at the place where this function was used in the code, there was no check for whether the output was \texttt{None}, meaning that such an error would go unnoticed until it caused an error later when \texttt{subject\_label} was assumed to be a string but turned out to be \texttt{None}.
+When I looked at the place where this function was used in the code, there was no check for whether the output was \texttt{None}, meaning that such an error would go unnoticed until it caused an error later when \texttt{subject\_label} was assumed to be a string but turned out to be \texttt{None}.
 Also note that the docstring for this function is misleading, as it states that a message will be printed if the return value is \texttt{None}, but no message is actually printed.\index{docstring}
 In general, printing a message is a poor way to signal the potential presence of a problem, particularly if the code has a large amount of text output in which the message might be lost.
 
@@ -1118,7 +1118,7 @@ Cell In[1], line 3, in get_subject_label(file)
 AttributeError: 'NoneType' object has no attribute 'group'
 \end{lstlisting}
 
-In other cases we might want to handle the exception without halting the program, in which case we can embed the function call in a \texttt{try/catch} statement that tries to run the function and then handles any exceptions that might occur.
+In other cases we might want to handle the exception without halting the program, in which case we can embed the function call in a \texttt{try/except} statement that tries to run the function and then handles any exceptions that might occur.
 Let's say that we simply want to skip over any files for which there is no subject label:
 
 \begin{lstlisting}[style=repl]
@@ -1132,7 +1132,7 @@ s001
 no subject label, skipping: /tmp/foo
 \end{lstlisting}
 
-In most cases our \texttt{try/catch} statement should catch specific errors.
+In most cases our \texttt{try/except} statement should catch specific errors.
 In this case, we know that the function will return an \texttt{AttributeError} its input is a string that doesn't contain a subject label.
 But what if the input is \texttt{None}?
 
@@ -1159,7 +1159,7 @@ Cell In[1], line 2, in get_subject_label(file)
 TypeError: expected string or bytes-like object, got 'NoneType'
 \end{lstlisting}
 
-Because \texttt{None} is not a string and \texttt{re.search()} expects a string, we get a \texttt{TypeError}, which is not caught by the catch statement and subsequently stops the execution.  While it can be tempting to use try/catch with a ``bare exception'' (i.e. catching all possible exceptions rather than specific exceptions), this should be avoided, particularly because it can make debugging very challenging if it results in unexpected exceptions being ignored.
+Because \texttt{None} is not a string and \texttt{re.search()} expects a string, we get a \texttt{TypeError}, which is not caught by the catch statement and subsequently stops the execution.  While it can be tempting to use try/except with a ``bare exception'' (i.e. catching all possible exceptions rather than specific exceptions), this should be avoided, particularly because it can make debugging very challenging if it results in unexpected exceptions being ignored.
 
 \subsection{Checking assumptions using assertions}
 
@@ -1239,10 +1239,10 @@ Instead, that information should be specified outside of the code, for which the
 
 \subsection{Environment variables}
 
-Environment variables are variables that exist in the environment and are readable from within the code; here we use examples from the UNIX shell.
+Environment variables are variables that exist in the environment and are readable from within the code; here I will use examples from the UNIX shell.
 Environment variables can be set from the command line using the \texttt{export} command:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ export MY_API_KEY='5lkjdlvkni5lkj5sklc'
 $ echo $MY_API_KEY
 5lkjdlvkni5lkj5sklc
@@ -1251,7 +1251,7 @@ $ echo $MY_API_KEY
 In addition, these environment variables can be made persistent by adding them to shell startup files (such as .bashrc for the \texttt{bash} shell), in which case they are loaded whenever a new shell is opened.
 The values of these environment variables can then be obtained within Python using the \texttt{os.environ} object:
 
-\begin{lstlisting}[style=repl, numbers=none]
+\begin{lstlisting}[style=replshort]
 >>> import os
 >>> os.environ['MY_API_KEY']
 '5lkjdlvkni5lkj5sklc'
@@ -1260,7 +1260,7 @@ The values of these environment variables can then be obtained within Python usi
 Often we may have environment variables that are project-specific, such that we only want them loaded when working on that project.
 A good solution for this problem is to create a \texttt{.env} file within the project and include those settings within this file.
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ echo "PROJECT_KEY=934kjdflk5k5ks592kskx" > .env
 $ cat .env
 PROJECT_KEY=934kjdflk5k5ks592kskx
@@ -1279,9 +1279,9 @@ True
 
 \subsection{Configuration files}
 
-Often one may want more flexibility in the specification of configuration settings than provided by environment variables.
+Often one may want more flexibility in the specification of configuration settings than is provided by environment variables.
 In this case, another alternative is to use \textit{configuration files}, which are text files that allow a more structured and flexible organization of configuration variables.
-There are many different file formats that can be used to specify configuration files; here we will focus on the YAML file format, which is highly readable and provides substantial flexibility for configuration data structures.\index{YAML}
+There are many different file formats that can be used to specify configuration files; here I will focus on the YAML file format, which is highly readable and provides substantial flexibility for configuration data structures.\index{YAML}
 Here is an example of what a YAML configuration file might look like:
 
 \begin{lstlisting}[style=yaml]
@@ -1346,7 +1346,7 @@ We can easily load this configuration file into Python using the \texttt{PyYAML}
 
 It is important to ensure that configuration files do not get checked into version control, since this could expose them to the world if the project is shared.
 For this reason, one should always add any configuration files to the \texttt{.gitignore} file, which will prevent them from being checked into the repository by accident.
-Another layer of protection can be obtained through the use of automated secret scanning tools, which can be enabled as a \textit{pre-commit hook} in \texttt{git}, such that any secrets that are accidentally checked into git will be caught prior to committing the code.
+Another layer of protection can be obtained through the use of automated tools that scan for secrets in checked-in files, which can be enabled as a \textit{pre-commit hook} in \texttt{git}, such that any secrets that are accidentally checked into git will be caught prior to committing the code.
 
 \section{Managing technical debt}
 
@@ -1372,7 +1372,7 @@ At the same time, there are very good reasons for using well-maintained packages
 \item Using a well-maintained package can save a great deal of time compared to writing one's own implementation
 \end{itemize}
 
-While we don't want to suggest that one shouldn't use any old package from PyPI that happens to solve an important problem, we think it's important to keep in mind the fact that when we come to rely on a package, we are taking on technical debt and assuming some degree of risk.
+While I don't want to suggest that one shouldn't use any old package from PyPI that happens to solve an important problem, I think it's important to keep in mind the fact that when we come to rely on a package, we are taking on technical debt and assuming some degree of risk.
 The level of concern about this will vary depending upon the expected reuse of the code: If you expect to reuse the code in the future, then you should pay more attention to how well the code is maintained.
 To see what an example of a well-maintained package look like, visit the Github repository for the Scikit-learn project (github.com/scikit-learn).\index{scikit-learn}
 This is a long-lived project with more than 2000 contributors and a consistent history of commits over many years.
@@ -1389,7 +1389,7 @@ You may well decide that the code from a project that doesn't meet these standar
 
 \section{Code review}
 
-\textit{Code review} is the process of having someone else examine one's code.  It might seem like the main rationale for code review is to find bugs in the code. While that \textit{is} an important goal of code review, an even more important goal is ensuring the clarity of the code; that is, can someone else read it and understand it.  Thus, code review is an essential check on the cleanliness of the code.
+\textit{Code review} is the process of having someone else examine one's code.  It might seem like the main rationale for code review is to find bugs in the code. While that \textit{is} an important goal of code review, an even more important goal is ensuring the clarity of the code; that is, can someone else read it and understand it?  Thus, code review is an essential check on the cleanliness of the code.
 
 Code review is particularly important when working with AI coding agents, since they can generate well-formatted code that can have subtle problems.  As I will discuss later, AI coding agents are trained to please, which means that they often produce code that seems to ``work'' at the expense of correctness and robustness. Some particular issues that are likely to arise include:
 
@@ -1419,9 +1419,9 @@ It's also important to establish some ground rules for code review (expanding up
 \begin{itemize}
 \item \textbf{Be kind.} The most important is that it's a review of the code, not the owner .  It's best if the language of the reviewer focuses on the code itself (``I see that there is a loop here where a vectorized operation would be more efficient.'') rather than the person (``I see that you used a loop, why did you do that?'').  As Ariel Rokem said in his article ``Ten simple rules for scientific code review'' \citep{Rokem:2024aa} (which I would recommend for more on the topic), ``Be kind.''
 \item \textbf{Provide a reason.} Another important ground rule is that comments on the code should include the rationale for the change (e.g. ``You should consider vectorizing this operation, since vectorized operations are generally much faster than loops.''). Otherwise the review misses out on an important learning opportunity for the owner.
-\item \textbf{Make clear must-haves verus nice-to-haves}: Comments should make clear whether the owner must make the change (e.g. to fix a clear inaccuracy) or whether it would be nice to have (e.g. to improve performance or to make the code cleaner)
-\item **Praise good code.**Finally, it's important to point out what's good in addition to noting criticisms and making suggestions for change, especially for relatively novice coders who aren't yet confident in their abilities.
-\item \textbf{Keep PRs short}: This rule applied to the coder rather than the reviewer: If the code review is happening via PRs, it's also important to keep them relatively small and focused on a single feature or logical change. This will make it more likely that the reviewer can perform the review quickly without losing focus or feeling overloaded.
+\item \textbf{Make clear must-haves verus nice-to-haves} Comments should make clear whether the owner must make the change (e.g. to fix a clear inaccuracy) or whether it would be nice to have (e.g. to improve performance or to make the code cleaner)
+\item \textbf{Praise good code.} Finally, it's important to point out what's good in addition to noting criticisms and making suggestions for change, especially for relatively novice coders who aren't yet confident in their abilities.
+\item \textbf{Keep PRs short} This rule applied to the coder rather than the reviewer: If the code review is happening via PRs, it's also important to keep them relatively small and focused on a single feature or logical change. This will make it more likely that the reviewer can perform the review quickly without losing focus or feeling overloaded.
 \end{itemize}
 
 If you don't have anyone else to serve as a code reviewer, it is definitely possible to self-review one's own code. This is best done after stepping away from the code for a day or more, to help the details fade from memory a bit. It is also possible to use AI tools as a code reviewer, either through a chat interface or by requesting an AI-driven code review from Github when submitting a pull request.  The AI reviewer will not necessarily have the depth of scientific knowledge to detect issues related to the logic of the code, but they are very good at identifying problems in code implementation.  Reading the AI code reviews is also a great way to learn to become a better code reviewer, but it's important to remember that AI tools will sometimes confidently recommend problematic changes or misunderstand the goal of the code.\index{pull request}
@@ -1581,14 +1581,11 @@ The term ``bug'' is often dated back to September 9, 1947, when Grace Hopper sup
 
 Whereas AI coding tools have been a game-changer for code generation, they are more like a revelation when it comes to debugging.  Simply by pasting the error message into a chat window in the IDE (which also has access to the code), it's now generally very easy to debug many problems using AI. Mostly gone are the days of beating one's head against the wall for hours trying to find out why a program is failing. Unfortunately, the AI tools don't always get it right, and sometimes the proposed fix can be worse than the initial problem, so it remains necessary to be able to understand how to debug code.
 
-There are two main types of bugs.  \textit{Loud bugs} are those that result in a program failure at runtime; in Python this could be an unhandled exception that causes a crash, or a system problem (like an out-of-memory situation) that causes the program to be killed by the operating system, sometimes with no information about the cause.  \textit{Silent bugs} are those that cause the program to perform incorrect computations without any evidence of problems.  Loud bugs are always preferred to silent bugs, since they stop the program in its tracks, whereas code with a silent bug can provide seemingly reasonable but incorrect results that can ultimately make it into scientific publications.  Another axis along which to classify bugs is whether they are \textit{deterministic} (i.e. they occur every time) or \textit{stochastic}, occurring in a seemingly unpredictable manner depending on other factors.  These latter bugs, sometimes referred to as ``Heisenbugs'' after Heisenberg's uncertainty principle, can be particularly challenging to diagnose, even with AI tools.
+There are two main types of bugs.  \textit{Loud bugs} are those that result in a program failure at runtime; in Python this could be an unhandled exception that causes a crash, or a system problem (like an out-of-memory situation) that causes the program to be killed by the operating system, sometimes with no information about the cause.  \textit{Silent bugs} are those that cause the program to behave incorrectly without any evidence of problems.  Loud bugs are always preferred to silent bugs, since they stop the program in its tracks, whereas code with a silent bug can provide seemingly reasonable but incorrect results that can ultimately make it into scientific publications.  Another axis along which to classify bugs is whether they are \textit{deterministic} (i.e. they occur every time) or \textit{stochastic}, occurring in a seemingly unpredictable manner depending on other factors.  These latter bugs, sometimes referred to as ``Heisenbugs'' after Heisenberg's uncertainty principle, can be particularly challenging to diagnose, even with AI tools.
 
 \subsection{Debugging loud bugs}
 
-\begin{itemize}
-\item learn how to read tracebacks
 The most common type of loud bug occurs when a program stops executing due to an unhandled exception.  For example, here is a simple Python program with an error, which may not be obvious to a novice Python programmer:
-\end{itemize}
 
 \begin{lstlisting}[style=Pythonshort]
 x = set([1, 2, 3])
@@ -1686,7 +1683,7 @@ if __name__ == "__main__":
 
 We can use the \texttt{faulthandler.\_sigsegv()} function to cause a segmentation fault (or \textit{segfault}), which in this case will occur whenever the assignment statement \texttt{x[4] = 0} fails.  If we were to run the present version (which has invalid data), the program would simply stop; the only way that we would know that there was a problem is that nothing would be printed to the screen.  This highlights the utility of Python's exceptions, which loudly announce problems.
 
-One useful tool for diagnosing system problems is the \textit{faulthandler} module. We used it to artificially generate a segfault in the previous example, but it also has a very useful feature: It can enable reporting of system errors instead of having them occur silently.  This can be enabled at the command line simply by adding \texttt{-X faulthandler} to the python call:
+One useful tool for diagnosing system problems is the \textit{faulthandler} module. I used it to artificially generate a segfault in the previous example, but it also has a very useful feature: It can enable reporting of system errors instead of having them occur silently.  This can be enabled at the command line simply by adding \texttt{-X faulthandler} to the python call:
 
 \begin{lstlisting}[style=shell]
 $ uv run python -X faulthandler exception_test4.py
@@ -1765,7 +1762,7 @@ There are several strategies that I find very useful when debugging.
 \begin{itemize}
 \item \textbf{Reproduce the bug}: If you can't reliably reproduce the bug then it will be very difficult to verify that you have fixed it, so first figure out how to reliably reproduce it.
 \item \textbf{Create a minimal example}: Isolating and simplifying the problem to its essence can often be very helpful, and generating a minimal example that still triggers the bug.  This will also help make it easier for AI agents to identify the cause, and it also essential if one wants to submit a bug report for a software package.
-\item \textbf{Write a test to verify that it's fixed}: In the next chapter we will dive deep into software testing, and a principle that you will learn there is \textit{bug-driven testing}: Any time you find a bug, create a test that will only pass once the bug is fixed. This has the added benefit that it will signal if the bug is ever re-introduced.
+\item \textbf{Write a test to verify that it's fixed}: In the next chapter I will dive deep into software testing, and a principle that you will learn there is \textit{bug-driven testing}: Any time you find a bug, create a test that will only pass once the bug is fixed. This has the added benefit that it will signal if the bug is ever re-introduced.
 \item \textbf{Check assumptions}: Very often bugs occur when the code makes assumptions that are not fulfilled.  If you can't figure out a bug, think through what the assumptions are that the code is making.
 \item \textbf{Talk to an inanimate object}: Programmers often refer to \textit{rubber-duck debugging}, which is the idea that whenever one can't figure out a problem they should try to describe it to someone else, or to an inanimate object like a rubber duck (or, increasingly, an AI agent). Very often one will suddenly discover the solution in the course of describing the problem.
 \end{itemize}
@@ -1854,7 +1851,7 @@ This shows how we can run the code (using the \texttt{\%run} operator), and then
 
 \subsection{Debugging using AI coding tools}
 
-As I mentioned above, AI tools are exceptionally good at debugging.  As an example, I gave the code above to Claude Sonnet 4.5 within the VSCode Copilot Chat, so that it had access to the code, with the prompt:\index{Claude}
+As I mentioned above, AI tools are exceptionally good at debugging.  As an example, I used the chat window in my IDE (which had access to the code) with the following prompt:
 
 \begin{quote}
 This code is outputting a mean improvement of -34.3\%, but all of the subjects clearly have a positive response. please fix this error.
