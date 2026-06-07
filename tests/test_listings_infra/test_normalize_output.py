@@ -22,6 +22,24 @@ def test_pytest_timings_leaves_non_timing_text_untouched():
     assert NORMALIZERS["pytest_timings"](text) == text
 
 
+def test_strip_testing_chapter_dir_removes_prefix_everywhere():
+    """The tests/testing_chapter/ prefix is removed from every occurrence."""
+    text = (
+        "$ pytest --no-header tests/testing_chapter/test_distance.py\n"
+        "tests/testing_chapter/test_distance.py::test_distance PASSED\n"
+    )
+    result = NORMALIZERS["strip_testing_chapter_dir"](text)
+    assert result == (
+        "$ pytest --no-header test_distance.py\n"
+        "test_distance.py::test_distance PASSED\n"
+    )
+
+
+def test_strip_testing_chapter_dir_leaves_other_text_untouched():
+    text = "tests/other/test_foo.py::test_bar PASSED"
+    assert NORMALIZERS["strip_testing_chapter_dir"](text) == text
+
+
 def test_memory_addresses_collapses_hex_pointers():
     text = "<function allclose at 0x101403370>"
     result = NORMALIZERS["memory_addresses"](text)

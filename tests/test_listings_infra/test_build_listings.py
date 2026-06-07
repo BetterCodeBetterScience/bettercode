@@ -243,6 +243,30 @@ def test_build_prepends_pytest_command_line(tmp_repo):
     assert lines[0] == "$ pytest --no-header -q test_sample.py"
 
 
+def test_build_strips_testing_chapter_dir_from_command_and_output(tmp_repo):
+    """The strip_testing_chapter_dir normalizer cleans the prompt line too."""
+    test_dir = tmp_repo / "tests" / "testing_chapter"
+    test_dir.mkdir(parents=True)
+    (test_dir / "test_sample.py").write_text("def test_ok():\n    assert True\n")
+    manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
+    manifest.write_text(
+        "chapter: testing\n"
+        "outputs:\n"
+        "  - id: pytest_sample\n"
+        "    description: a real pytest run\n"
+        '    command: ["python", "-m", "pytest", "--no-header", "-v",'
+        ' "tests/testing_chapter/test_sample.py"]\n'
+        '    output_file: "latex/generated/testing/pytest_sample.txt"\n'
+        "    expected_exit_code: 0\n"
+        "    normalize: [strip_testing_chapter_dir]\n"
+    )
+    result = _run_cli(["build", "testing"], cwd=tmp_repo)
+    assert result.returncode == 0, result.stderr
+    text = (tmp_repo / "latex" / "generated" / "testing" / "pytest_sample.txt").read_text()
+    assert "tests/testing_chapter/" not in text
+    assert text.splitlines()[0] == "$ pytest --no-header -v test_sample.py"
+
+
 def test_verify_still_fails_on_substantive_drift_with_timings(tmp_repo):
     """Verify should still fail when non-timing content differs."""
     manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
