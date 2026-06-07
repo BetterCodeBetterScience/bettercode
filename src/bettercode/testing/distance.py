@@ -1,5 +1,5 @@
-# generate a function that calculates the distance between two points
-# where each point is defined as a tuple of two numbers
+# generate a function that calculates the distance between two 
+# points where each point is defined as a tuple of two numbers
 
 import math
 
