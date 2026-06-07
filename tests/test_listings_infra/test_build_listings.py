@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pytest
 
+import build_listings
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BUILD_SCRIPT = REPO_ROOT / "scripts" / "build_listings.py"
 
@@ -200,6 +202,45 @@ def test_verify_ignores_pytest_timing_only_drift(tmp_repo):
     assert result.returncode == 0, (
         f"expected verify to ignore timing-only drift; stderr:\n{result.stderr}"
     )
+
+
+def test_command_prompt_strips_uv_run_wrapper():
+    """A pytest command renders as `$ pytest ...` with the uv wrapper dropped."""
+    cmd = ["uv", "run", "pytest", "--tb=short", "tests/foo.py"]
+    assert build_listings._command_prompt(cmd) == "$ pytest --tb=short tests/foo.py"
+
+
+def test_command_prompt_quotes_args_with_spaces():
+    """Arguments containing spaces are shell-quoted."""
+    cmd = ["uv", "run", "pytest", "-m", "not unit"]
+    assert build_listings._command_prompt(cmd) == "$ pytest -m 'not unit'"
+
+
+def test_command_prompt_returns_none_for_non_pytest():
+    """Non-pytest commands get no prompt line (output is left untouched)."""
+    assert build_listings._command_prompt(["python", "-c", "print('x')"]) is None
+
+
+def test_build_prepends_pytest_command_line(tmp_repo):
+    """Generated output for a pytest entry starts with the `$ pytest ...` line."""
+    test_file = tmp_repo / "test_sample.py"
+    test_file.write_text("def test_ok():\n    assert True\n")
+    manifest = tmp_repo / "latex" / "manifests" / "testing.yaml"
+    manifest.write_text(
+        "chapter: testing\n"
+        "outputs:\n"
+        "  - id: pytest_sample\n"
+        "    description: a real pytest run\n"
+        '    command: ["python", "-m", "pytest", "--no-header", "-q", "test_sample.py"]\n'
+        '    output_file: "latex/generated/testing/pytest_sample.txt"\n'
+        "    expected_exit_code: 0\n"
+        "    normalize: []\n"
+    )
+    result = _run_cli(["build", "testing"], cwd=tmp_repo)
+    assert result.returncode == 0, result.stderr
+    out_file = tmp_repo / "latex" / "generated" / "testing" / "pytest_sample.txt"
+    lines = out_file.read_text().splitlines()
+    assert lines[0] == "$ pytest --no-header -q test_sample.py"
 
 
 def test_verify_still_fails_on_substantive_drift_with_timings(tmp_repo):
