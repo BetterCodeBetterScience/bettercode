@@ -1,7 +1,7 @@
-$ uv run pytest --tb=short --no-header test_markers.py -m "not unit" -v
+$ pytest --tb=short --no-header test_markers.py -m 'not unit' -v
 ============================= test session starts ==============================
 collecting ... collected 3 items / 2 deselected / 1 selected
 
-tests/testing_chapter/test_markers.py::test_integration PASSED           [100%]
+test_markers.py::test_integration PASSED           [100%]
 
 ======================= 1 passed, 2 deselected in 0.08s ========================

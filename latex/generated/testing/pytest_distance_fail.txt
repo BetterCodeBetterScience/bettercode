@@ -1,16 +1,17 @@
+$ pytest --tb=short --no-header _demos/test_distance_v1_failing.py
 ============================= test session starts ==============================
 collected 6 items
 
-tests/testing_chapter/_demos/test_distance_v1_failing.py ...F..          [100%]
+_demos/test_distance_v1_failing.py ...F..          [100%]
 
 =================================== FAILURES ===================================
 _______________________ test_distance_mixed_coordinates ________________________
-tests/testing_chapter/_demos/test_distance_v1_failing.py:20: in test_distance_mixed_coordinates
+_demos/test_distance_v1_failing.py:20: in test_distance_mixed_coordinates
     assert distance((1, -2), (-4, 6)) == math.sqrt(125)
 E   assert 9.433981132056603 == 11.180339887498949
 E    +  where 9.433981132056603 = distance((1, -2), (-4, 6))
 E    +  and   11.180339887498949 = <built-in function sqrt>(125)
 E    +    where <built-in function sqrt> = math.sqrt
 =========================== short test summary info ============================
-FAILED tests/testing_chapter/_demos/test_distance_v1_failing.py::test_distance_mixed_coordinates
-========================= 1 failed, 5 passed in 0.13s ==========================
+FAILED _demos/test_distance_v1_failing.py::test_distance_mixed_coordinates
+========================= 1 failed, 5 passed in 0.12s ==========================

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -24,6 +25,19 @@ from normalize_output import apply_normalizers  # noqa: E402
 
 def _manifest_path(chapter: str) -> Path:
     return Path("latex") / "manifests" / f"{chapter}.yaml"
+
+
+def _command_prompt(cmd: list[str]) -> str | None:
+    """Return a `$ pytest ...` shell-prompt line for a pytest command.
+
+    The displayed command starts at the `pytest` token, dropping any runner
+    wrapper such as `uv run` or `python -m`. Returns None for non-pytest
+    commands, whose output is shown without a prompt line.
+    """
+    if "pytest" not in cmd:
+        return None
+    tokens = cmd[cmd.index("pytest"):]
+    return "$ " + shlex.join(tokens)
 
 
 def _run_entry(entry: ManifestEntry) -> str:
@@ -45,6 +59,9 @@ def _run_entry(entry: ManifestEntry) -> str:
             f"[{entry.id}] expected exit code {entry.expected_exit_code}, "
             f"got {proc.returncode}\n--- captured output ---\n{combined}"
         )
+    prompt = _command_prompt(cmd)
+    if prompt is not None:
+        combined = f"{prompt}\n{combined}"
     return apply_normalizers(combined, entry.normalize)
 
 

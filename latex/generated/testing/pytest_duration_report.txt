@@ -1,16 +1,16 @@
-$ uv run pytest --tb=short --no-header test_duration.py --durations=0 -v
+$ pytest --tb=short --no-header test_duration.py --durations=0 -v
 ============================= test session starts ==============================
 collecting ... collected 3 items
 
-tests/testing_chapter/test_duration.py::test_duration_3 PASSED           [ 33%]
-tests/testing_chapter/test_duration.py::test_duration_5 PASSED           [ 66%]
-tests/testing_chapter/test_duration.py::test_duration_1 PASSED           [100%]
+test_duration.py::test_duration_3 PASSED           [ 33%]
+test_duration.py::test_duration_5 PASSED           [ 66%]
+test_duration.py::test_duration_1 PASSED           [100%]
 
 ============================== slowest durations ===============================
-5.00s call     tests/testing_chapter/test_duration.py::test_duration_5
-3.00s call     tests/testing_chapter/test_duration.py::test_duration_3
-1.01s call     tests/testing_chapter/test_duration.py::test_duration_1
-0.03s setup    tests/testing_chapter/test_duration.py::test_duration_3
+5.00s call     test_duration.py::test_duration_5
+3.01s call     test_duration.py::test_duration_3
+1.01s call     test_duration.py::test_duration_1
+0.02s setup    test_duration.py::test_duration_3
 
 (5 durations < 0.005s hidden.  Use -vv to show these durations.)
-============================== 3 passed in 9.12s ===============================
+============================== 3 passed in 9.14s ===============================

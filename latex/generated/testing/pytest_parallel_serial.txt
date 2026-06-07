@@ -1,16 +1,16 @@
-$ uv run pytest --tb=short --no-header test_parallel.py -v
+$ pytest --tb=short --no-header test_parallel.py -v
 ============================= test session starts ==============================
 collecting ... collected 10 items
 
-tests/testing_chapter/test_parallel.py::test_parallel[0] PASSED          [ 10%]
-tests/testing_chapter/test_parallel.py::test_parallel[1] PASSED          [ 20%]
-tests/testing_chapter/test_parallel.py::test_parallel[2] PASSED          [ 30%]
-tests/testing_chapter/test_parallel.py::test_parallel[3] PASSED          [ 40%]
-tests/testing_chapter/test_parallel.py::test_parallel[4] PASSED          [ 50%]
-tests/testing_chapter/test_parallel.py::test_parallel[5] PASSED          [ 60%]
-tests/testing_chapter/test_parallel.py::test_parallel[6] PASSED          [ 70%]
-tests/testing_chapter/test_parallel.py::test_parallel[7] PASSED          [ 80%]
-tests/testing_chapter/test_parallel.py::test_parallel[8] PASSED          [ 90%]
-tests/testing_chapter/test_parallel.py::test_parallel[9] PASSED          [100%]
+test_parallel.py::test_parallel[0] PASSED          [ 10%]
+test_parallel.py::test_parallel[1] PASSED          [ 20%]
+test_parallel.py::test_parallel[2] PASSED          [ 30%]
+test_parallel.py::test_parallel[3] PASSED          [ 40%]
+test_parallel.py::test_parallel[4] PASSED          [ 50%]
+test_parallel.py::test_parallel[5] PASSED          [ 60%]
+test_parallel.py::test_parallel[6] PASSED          [ 70%]
+test_parallel.py::test_parallel[7] PASSED          [ 80%]
+test_parallel.py::test_parallel[8] PASSED          [ 90%]
+test_parallel.py::test_parallel[9] PASSED          [100%]
 
-============================= 10 passed in 10.19s ==============================
+============================= 10 passed in 10.20s ==============================

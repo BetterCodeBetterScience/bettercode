@@ -1,3 +1,4 @@
+$ pytest --tb=short test_textmining.py --cov=bettercode.testing.textmining --cov-report=term-missing --no-header -q
 ...............                                                          [100%]
 ================================ tests coverage ================================
 ______________ coverage: platform darwin, python 3.13.11-final-0 _______________

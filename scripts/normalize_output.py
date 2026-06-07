@@ -29,6 +29,12 @@ def pytest_timings(text: str) -> str:
     return re.sub(r"\b\d+\.\d+s\b", "X.XXs", text)
 
 
+@register("strip_testing_chapter_dir")
+def strip_testing_chapter_dir(text: str) -> str:
+    """Remove the 'tests/testing_chapter/' path prefix wherever it appears."""
+    return text.replace("tests/testing_chapter/", "")
+
+
 @register("memory_addresses")
 def memory_addresses(text: str) -> str:
     """Replace hex memory addresses like '0x101403370' with '0xADDR'."""

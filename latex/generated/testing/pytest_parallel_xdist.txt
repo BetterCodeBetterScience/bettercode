@@ -1,4 +1,4 @@
-$ uv run pytest --tb=short --no-header test_parallel.py -v -n auto
+$ pytest --tb=short --no-header test_parallel.py -n auto -v
 ============================= test session starts ==============================
 created: 16/N workers
 N workers [10 items]
@@ -6,24 +6,24 @@ N workers [10 items]
 scheduling tests via LoadScheduling
 
 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[0] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[1] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[2] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[3] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[4] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[5] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[6] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[7] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[8] 
-[gwN] [NNN%] PASSED tests/testing_chapter/test_parallel.py::test_parallel[9] 
-tests/testing_chapter/test_parallel.py::test_parallel[0] 
-tests/testing_chapter/test_parallel.py::test_parallel[1] 
-tests/testing_chapter/test_parallel.py::test_parallel[2] 
-tests/testing_chapter/test_parallel.py::test_parallel[3] 
-tests/testing_chapter/test_parallel.py::test_parallel[4] 
-tests/testing_chapter/test_parallel.py::test_parallel[5] 
-tests/testing_chapter/test_parallel.py::test_parallel[6] 
-tests/testing_chapter/test_parallel.py::test_parallel[7] 
-tests/testing_chapter/test_parallel.py::test_parallel[8] 
-tests/testing_chapter/test_parallel.py::test_parallel[9] 
-============================== 10 passed in 4.53s ==============================
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[0] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[1] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[2] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[3] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[4] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[5] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[6] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[7] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[8] 
+[gwN] [NNN%] PASSED test_parallel.py::test_parallel[9] 
+test_parallel.py::test_parallel[0] 
+test_parallel.py::test_parallel[1] 
+test_parallel.py::test_parallel[2] 
+test_parallel.py::test_parallel[3] 
+test_parallel.py::test_parallel[4] 
+test_parallel.py::test_parallel[5] 
+test_parallel.py::test_parallel[6] 
+test_parallel.py::test_parallel[7] 
+test_parallel.py::test_parallel[8] 
+test_parallel.py::test_parallel[9] 
+============================== 10 passed in 4.40s ==============================

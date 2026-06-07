@@ -1,7 +1,8 @@
+$ pytest --tb=short --no-header test_ordering.py -v
 ============================= test session starts ==============================
 collecting ... collected 2 items
 
-tests/testing_chapter/test_ordering.py::test_first PASSED                [ 50%]
-tests/testing_chapter/test_ordering.py::test_second PASSED               [100%]
+test_ordering.py::test_first PASSED                [ 50%]
+test_ordering.py::test_second PASSED               [100%]
 
-============================== 2 passed in 0.09s ===============================
+============================== 2 passed in 0.07s ===============================

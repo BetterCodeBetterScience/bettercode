@@ -1,6 +1,7 @@
+$ pytest --tb=short --no-header test_find_outliers.py
 ============================= test session starts ==============================
 collected 2 items
 
-tests/testing_chapter/test_find_outliers.py ..                           [100%]
+test_find_outliers.py ..                           [100%]
 
-============================== 2 passed in 0.08s ===============================
+============================== 2 passed in 0.07s ===============================
