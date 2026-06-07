@@ -1,10 +1,10 @@
 \chapter{Data Organization and Management}
 
-Research data are like the water of science: When they stop flowing and dry up, everything withers and ultimately dies.  In this chapter we discuss the principles and practices for good research data management and organization.
+Research data are like the water of science: When they stop flowing and dry up, everything withers and ultimately dies.  In this chapter I discuss the principles and practices for good research data management and organization.
 
 \section{Principles of data management}
 
-Research data vary in value, and in some cases can be highly valuable.  For example, the Large Hadron Collider at CERN, which was responsible for the data supporting the discovery of the Higgs Boson in 2012, has annual computing costs alone estimated at about \$286 Million\footnote{https://en.as.com/latest\_news/how-much-money-did-cerns-large-hadron-collider-cost-to-build-and-who-paid-for-it-n/}, such that the loss of the resulting data from those computations would have enormous costs. And in some cases where unique events are detected, such as the LIGO gravitational wave detector or telescope images of cosmic events, the data cannot be recreated if they are lost, making them immensely valuable.  For this reason, scientific agencies have long focused on developing frameworks for research data management. In the US, the National Institute of Standards and Technology (NIST) has developed a Research Data Framework\footnote{https://www.nist.gov/programs-projects/research-data-framework-rdaf} that provides researchers with a detailed set of best practices for research data management, though these principles are far too bureaucratic for most researchers.
+Research data vary in value, and in some cases can be highly valuable.  For example, the Large Hadron Collider at CERN, which was responsible for the data supporting the discovery of the Higgs Boson in 2012, has annual computing costs alone estimated at about \$286 Million\footnote{https://en.as.com/latest\_news/how-much-money-did-cerns-large-hadron-collider-cost-to-build-and-who-paid-for-it-n/}, such that the loss of the resulting data from those computations would have enormous costs. And in some cases where unique events are detected, such as the LIGO gravitational wave detector or telescope images of cosmic events, the data cannot be recreated if they are lost, making them immensely valuable.  For this reason, scientific agencies have long focused on developing frameworks for research data management. In the US, the National Institute of Standards and Technology (NIST) has developed a Research Data Framework\footnote{https://www.nist.gov/programs-projects/research-data-framework-rdaf} that provides researchers with a detailed set of best practices for research data management, though these principles are far too bureaucratic for many researchers.
 
 \subsection{The FAIR Principles}\index{FAIR principles}
 
@@ -65,7 +65,7 @@ An important concept in research data management is the \textit{data lifecycle},
 
 \section{Planning a study}
 
-It is essential to think about data management from the inception of a study, in order to ensure that early decisions don't lead to pain down the road.  Here are some examples of problems that might arise:
+It is essential to think about data management from the inception of a study, to ensure that early decisions don't lead to pain down the road.  Here are some examples of problems that might arise:
 
 \begin{itemize}
 \item If data quality control measures are not put in place at the beginning of the study, then problems with the data might not be discovered until data collection is complete.
@@ -161,9 +161,9 @@ For these reasons, I generally recommend to researchers in my lab that they shou
 
 Research data are often stored on network drives.  These can vary from a network-attached storage system dedicated to one or more users within a research group, to large-scale network drives managed by an institutional computing center.  One common feature of network storage is the use of redundant drive systems, such as RAID (Redundant Array of Independent Disks). These systems combine multiple individual hard drives in ways that provide some degree of redundancy, such that the system can withstand the loss of one or more individual disks (depending on the setup) with no data loss.  However, it is critically important to remember that while RAID does provide some degree of fault-tolerance, it \textit{does not} provide the disaster recovery benefits of a true backup.
 
-Many researchers run and manage their own RAID systems for their group's use, either attached to a single workstation or to a network.  This can be a cost-effective solution for large data storage, especially in situations where institutional data storage resources are not available.  However, I think that the apparent robustness of RAID systems can provide a false sense of security to their users.  Take the most common RAID setup for redundant storage, RAID 5, in which the system is robust to the failure of one of its hard drives.  When a drive fails, the system enters a ``degraded'' mode, often providing a notice to the user such as a flashing red light or beeping sounds.  If this failure goes unnoticed, or the system administrator puts off fixing it, the failure of a second drive during degraded mode or during the rebuilding of the array after replacing the first failed drive (which can often take many hours) can lead to complete data loss.  Similarly, if the rebuilding of the array fails (for example, due to power loss during the rebuild or an unrecoverable error in reading from the other drives), this can compromise the data. Safe use of RAID arrays requires consistent attention (including email notifications of failure if possible) and a strong backup strategy.
+Many researchers run and manage their own RAID systems for their group's use, either attached to a single workstation or to a network.  This can be a cost-effective solution for large data storage, especially in situations where institutional data storage resources are not available.  However, I think that the apparent robustness of RAID systems can provide a false sense of security to their users.  Take the most common RAID setup for redundant storage, RAID 5, in which the system is robust to the failure of one of its hard drives.  When a drive fails, the system enters a ``degraded'' mode, often providing a notice to the user such as a flashing red light or beeping sounds.  If this failure goes unnoticed, or the system administrator puts off fixing it, the failure of a second drive during degraded mode or during the rebuilding of the array after replacing the first failed drive (which can often take many hours) can lead to complete data loss.  Similarly, if the rebuilding of the array fails (for example, due to power loss during the rebuild or an unrecoverable error in reading from the other drives), this can compromise the data. Safe use of RAID arrays requires consistent attention (including robust notifications of failure) and a strong backup strategy.
 
-Most research institutions now offer large network-attached storage systems for research data, often connected directly to high-performance computing systems.  We have used systems like these for our research data for more than 15 years, and I personally would never go back to running my group's own RAID system (which I did for years beforehand).  Foremost, the system administration and hardware management resources of an institutional computing center will almost always outstrip those of most research groups.  These large systems will have monitoring and repair procedures in place to ensure against data loss, and in the 15 years that we have used these systems (at Stanford and the University of Texas), we have never experienced data loss due to hardware failure, but these systems have top-notch resources and staff support that may not be available in many centers, and the systems are still liable to potential disasters.  These systems are also highly performant, providing parallel access to the data through high-speed interconnections with the compute system.\index{high-performance computing}
+Most research institutions now offer large network-attached storage systems for research data, often connected directly to high-performance computing systems.  We have used systems like these for our research data for more than 15 years, and I personally would never go back to running my group's own RAID system (which I did for years beforehand).  Foremost, the system administration and hardware management resources of an institutional computing center will almost always outstrip those of most research groups.  These large systems will have monitoring and repair procedures in place to ensure against data loss, and in the 15 years that we have used these systems (at Stanford and the University of Texas), we have never experienced data loss due to hardware failure. However, it is important to note that these systems have top-notch resources and staff support that may not be available in many centers, and the systems are still liable to potential disasters.  These systems are also highly performant, providing parallel access to the data through high-speed interconnections with the compute system.\index{high-performance computing}
 
 Backing up one's data from a large network drive is a great idea in theory, but in our experience it has often been either impossible or too costly, given the many terabytes of research data that we store on the systems.  Given the relatively low likelihood of failure, we have adopted a more risk-tolerant strategy to big data storage:
 
@@ -172,7 +172,7 @@ Backing up one's data from a large network drive is a great idea in theory, but 
 \item Software code is stored on a separate partition that is backed up by the computing center, as well as being pushed to Github.
 \end{itemize}
 
-In this way, we have redundant copies of the code and original data that could be used to recreate the processed data if necessary.  This is a risky strategy, but the more risk-averse alternative of continuously backing up an entire 250TB data partition would be cost-prohibitive for most research labs.
+In this way, we have redundant copies of the code and original data that could be used to recreate the processed data if necessary.  This is a risky strategy, but the more risk-averse alternative of continuously backing up an entire 250TB data partition would be cost-prohibitive for many research labs.
 
 \subsection{Cloud drives}
 
@@ -184,7 +184,7 @@ Cloud drives, such as Dropbox or Google Drive, have become very popular for stor
 \item These systems also are not optimized for large files, and network speed may result in long synchronization times.
 \end{itemize}
 
-In addition, many institutions have specific restrictions regarding the use of specific cloud drives, especially with regard to private or protected information.
+In addition, many institutions have specific restrictions regarding the use of cloud drives, especially with regard to private or protected information.
 
 If a research group is going to use cloud drives for storage, it is essential to make sure that the drive is owned by the PI rather than by a lab member. I have heard of cases where a cloud drive belonging to a lab member was used to store important data, and when that lab member left the lab the cloud drive was deleted and the files were lost.
 
@@ -216,7 +216,7 @@ One important feature of a relational databases is that they generally implement
 
 \begin{itemize}
 \item \textit{Atomicity}: Transactions are atomic, meaning that they either commit an entire transaction or none at all: there are no partial transactions.  If an attempt to commit a transaction fails then the database remains in the state it was in prior to the failed attempt.
-\item \textit{Consistency}: A transaction is required to leave the database in a valid state.  Any transaction that attempts to violate any constraints or rules (such as the requirement that every measurement includes a valid device key) will be rejected.
+\item \textit{Consistency}: A transaction is required to leave the database in a valid state.  Any transaction that attempts to violate any constraints or rules (such as a requirement that every measurement includes a valid device key) will be rejected.
 \item \textit{Isolation}: Individual transactions do not interfere with one another, such that they would never see any partial changes due to another transaction.  Thus, one can submit many transactions at once and be sure that they will each be processed correctly without interference from others. 
 \item \textit{Durability}:  Transactions are durable, such that once they are written they will be permanent despite failures such as power outages or system crashes (as long as the server is not damaged).
 \end{itemize}
@@ -225,17 +225,17 @@ The adherence of relational database systems to these principles helps ensure th
 
 \subsubsection{Analytic databases}
 
-There is a particular kind of relational database known as an \textit{analytic database} that is specialized for operations that work across many rows in the database, rather than the focus on individual records in a standard relational database.  One widely-used analytic database in the Python ecosystem is \href{https://duckdb.org/}{\textit{DuckDB}}, which supports very fast operations on large datasets, and integrates well with Pandas and other tools. Unlike traditional relational database systems, it doesn't require any specialized server setup.  In the later chapter on performance optimization I will show how analytic databases can be used to perform some types of computations very quickly.\index{Pandas}\index{DuckDB}
+There is a particular kind of relational database known as an \textit{analytic database} that is specialized for operations that work across many rows in the database, rather than the focus on individual records in a standard relational database.  One widely-used analytic database in the Python ecosystem is \href{https://duckdb.org/}{\textit{DuckDB}}, which supports very fast operations on large datasets, and integrates well with Pandas and other tools. Unlike traditional relational database systems, it doesn't require any specialized server setup.  In the later chapter on performance optimization I will show how analytic databases can be used to perform some types of analytic computations very quickly.\index{Pandas}\index{DuckDB}
 
 \subsubsection{NoSQL databases}
 
 While relational databases were the only game in town for many years, there are now a number of other kinds of database, collectively referred to as \textit{NoSQL} databases because they use non-relational data models (like documents, graphs, or key-value pairs) rather than the tables with fixed schemas that define a standard relational database.  Each of these can be very useful for specific problems that match the database's strengths. Some, but not all, NoSQL databases are ACID compliant.  It's important to ensure that one has the right safeguards in place when using a non-compliant database system.
 
-Here I provide a brief overview of several popular forms of NoSQL databases; see the Appendix to this chapter for a full-stack example that combines several of these.
+Here I provide a brief overview of several popular forms of NoSQL databases.
 
 \textbf{Document stores}
 
-A \textit{document store} is basically what it sounds like: a system into which one can dump documents and then query them. I think of this as in some ways the opposite of a SQL database.  In the SQL database, most of the work comes in designing the database schema, which will determine up front how the data are represented; after that, querying is fairly straightforward.  In a document store, one can insert documents with varying structure into the database without the need for a predefined schema. The hard work in a document store comes in figuring out how to structure queries and indexes effectively, especially when the structure of the data varies.  For most of the tasks where I have used databases I have chosen document stores over relational databases because of the flexibility that they offer. The line between document stores and relational databases has become blurred as some relational databases (such as \textit{PostgreSQL}) can now store JSON objects in a way that looks very similar to an object store.\index{PostgreSQL}\index{JSON}
+A \textit{document store} is basically what it sounds like: a system into which one can dump documents and then query them. I think of this as in some ways the opposite of a SQL database.  In the SQL database, most of the work comes in designing the database schema, which will determine up front how the data are represented; after that, querying is fairly straightforward.  In a document store, one can insert documents with varying structure into the database without the need for a predefined schema. The hard work in a document store comes in figuring out how to structure queries and indexes effectively, especially when the structure of the data varies.  For most of the tasks where I have used databases I have chosen document stores over relational databases because of the flexibility that they offer. The line between document stores and relational databases has become blurred as some relational databases (such as \textit{PostgreSQL}) can now store JSON objects in a way that acts similarly to an object store.\index{PostgreSQL}\index{JSON}
 
 \textbf{Graph databases}
 
@@ -243,7 +243,7 @@ A graph database is built to efficiently store and query graph-structured data. 
 
 \textbf{Vector databases}
 
-A relatively recent entry into the database field is the \textit{vector database}, which is optimized for finding similar numerical vectors.  These have become essential in the context of AI, because they can be used to quickly find similar items that are embedded in a vector space, typically using neural networks.  These items can include text documents, images, molecular structures, or any other kind of data that can be embedded in a vector space.  Vector databases differ in that can return ranked similarity ratings in addition to a discrete set of matches, and thus they are best for performing analyses that involve similarity-based search.  Here too the boundaries have become fuzzy, with extensions to relational databases like PostgreSQL that allow them to be used as vector databases.\index{neural networks}
+A relatively recent entry into the database field is the \textit{vector database}, which is optimized for finding similar numerical vectors.  These have become essential in the context of AI, because they can be used to quickly find similar items that are embedded in a vector space, typically using neural networks.  These items can include text documents, images, molecular structures, or any other kind of data that can be embedded in a vector space.  Vector databases differ in that they can return ranked similarity ratings in addition to a discrete set of matches, and thus they are best for performing analyses that involve similarity-based search.  Here too the boundaries have become fuzzy, with extensions to relational databases like PostgreSQL that allow them to be used as vector databases.\index{neural networks}
 
 \section{Managing original data}
 
@@ -571,7 +571,7 @@ H3 & Prs & 4 & 25 \\
 
 \textbf{Single type of observational unit spread across multiple tables}
 
-Sometimes we might have different data frames for each observation unit, such as a different data frame for each hospital in our example. To fix this we can simple merge the data frames by concatenating them:
+Sometimes we might have different data frames for each observation unit, such as a different data frame for each hospital in our example. To fix this we can simply merge the data frames by concatenating them:
 
 \begin{lstlisting}[style=Pythonshort]
 df_merged = pd.concat([df1, df2, df3], ignore_index=True)
@@ -581,11 +581,11 @@ This assumes that there is a variable that defines different groups (in this cas
 
 \subsubsection{Tabular file formats}
 
-The most common file formats are \textit{comma-separated value} (CSV) or \textit{tab-separated value} (TSV) files.  Both of these have the benefit of being represented in plain text, so their contents can be easily examined without any special software.  I generally prefer to use tabs rather than commas as the separator (or \textit{delimiter}), primarily because they can more easily naturally represent longer pieces of text that may include commas. These can also be represented using CSV, but they require additional processing in order to \textit{escape} the commas within the text so that they are not interpreted as delimiters.\index{CSV}
+The most common tabular file formats are \textit{comma-separated value} (CSV) or \textit{tab-separated value} (TSV) files.  Both of these have the benefit of being represented in plain text, so their contents can be easily examined without any special software.  I generally prefer to use tabs rather than commas as the separator (or \textit{delimiter}), primarily because they can more easily naturally represent longer pieces of text that may include commas. These can also be represented using CSV, but they require additional processing in order to \textit{escape} the commas within the text so that they are not interpreted as delimiters.\index{CSV}
 
-Text file formats like CSV and TSV are nice for their ease of interpretability, but they are highly inefficient for large data compared to optimized file formats, such as the \textit{Parquet} format.  To see this in action, I loaded a brain image and saved all of the non-zero data points (857,785 to be exact) to a data frame, which I then saved to CSV and Parquet formats; see \href{src/bettercode/data\_management.ipynb}{the management notebook} for details.  Looking at the resulting files, we can see that the Parquet file is only about 20\% the size of the CSV file:\index{Parquet}
+Text file formats like CSV and TSV are nice for their ease of interpretability, but they are highly inefficient for large data compared to optimized file formats, such as the \textit{Parquet} format.  To see this in action, I loaded a brain image and saved all of the non-zero data points (857,785 to be exact) to a data frame, which I then saved to CSV and Parquet formats.  Looking at the resulting files, we can see that the Parquet file is only about 20\% the size of the CSV file:\index{Parquet}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ du -sk /tmp/brain_tabular.*
 19464	/tmp/brain_tabular.csv
 3804	/tmp/brain_tabular.parquet
@@ -615,7 +615,7 @@ print(f"Parquet load time: {parquet_time:.4f} seconds")
 print(f'ratio {csv_time/parquet_time:.2f}')
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell]
+\begin{lstlisting}[style=shellshort]
 CSV load time: 0.0719 seconds
 Parquet load time: 0.0082 seconds
 ratio 8.77
@@ -645,14 +645,14 @@ I will occasionally use Microsoft Excel to visualize a data file, but I think th
 
 Many forms of data are represented as multidimensional arrays.  For example, many forms of microscopy data are represented as either two-dimensional (slice) or three-dimensional (volume) arrays, while dynamic imaging modalities are often represented as three- or four-dimensional data, with the first two or three dimensions representing space and the final dimension reflecting time.  Within Python these are generally processed using \textit{NumPy}, which efficiently processes large multidimensional arrays.  As an example, I loaded a three-dimensional brain template.  After loading the data into a \textit{NumPy} array, we can see its shape:\index{NumPy}
 
-\begin{lstlisting}[style=repl]
-In : data.shape
-Out: (91, 109, 91)
+\begin{lstlisting}[style=replshort]
+>>> data.shape
+(91, 109, 91)
 \end{lstlisting}
 
 In this case, the three dimensions are represent the left/right, front/back, and up/down axes of the brain.  We can also use the \texttt{imshow} function from \texttt{matplotlib.pyplot} to view a two-dimensional slice of the image (in this case, the 40th slice in the array), as shown in Figure~\ref{MR-slice-fig}:\index{matplotlib}
 
-\begin{lstlisting}[style=Python]
+\begin{lstlisting}[style=pythonshort]
 import matplotlib.pyplot as plt
 slice_z = 40
 plt.imshow(data[:, :, slice_z], cmap='gray')
@@ -684,7 +684,7 @@ However, the \texttt{.npy} format also has a number of drawbacks for scientific 
 \item It doesn't support storage of metadata alongside the data
 \end{itemize}
 
-There are several other commonly used standard file formats for array data; we will focus on \textit{HDF5} and \textit{Zarr}.  HDF5 is a longstanding format for storage of large datasets, which is supported by nearly all programming languages. It has built-in support for compression, and allows access to specific chunks without loading the entire dataset.  However, many researchers (at least within the Python ecosystem) are moving towards the \textit{Zarr} format, which stores data in a set of smaller chunk files rather than a single large file as in HDF5.  \textit{Zarr} has several advantages over HDF5:\index{HDF5}\index{Zarr}
+There are several other commonly used standard file formats for array data; we will focus on \textit{HDF5} and \textit{Zarr}. \textit{HDF5} is a longstanding format for storage of large datasets, which is supported by nearly all programming languages. It has built-in support for compression, and allows access to specific chunks without loading the entire dataset.  However, many researchers (at least within the Python ecosystem) are moving towards the \textit{Zarr} format, which stores data in a set of smaller chunk files rather than a single large file as in HDF5.  \textit{Zarr} has several advantages over HDF5:\index{HDF5}\index{Zarr}
 
 \begin{itemize}
 \item \textit{Zarr} is much more efficient for cloud storage, since only the specific chunk file needs to be accessed
@@ -693,11 +693,11 @@ There are several other commonly used standard file formats for array data; we w
 \end{itemize}
 
 Let's use some other brain imaging data where the first three dimensions are spatial and the final
-dimension reflects 512 different components that define a probabilistic atlas of the brain, mapping membership of each spatial location in each of the components in the atlas.  This is a dataset that is highly sparse; after thresholding to remove very small values, only about 0.1\% of the values are nonzero.  This means that we should be able to get a high degree of compression for this dataset, given the redundancy of the data.  Let's first save the data to a .npy file and look at its (uncompressed) size:
+dimension reflects 512 different components that define a probabilistic atlas of the brain, mapping membership of each spatial location in each of the components in the atlas.  This is a dataset that is highly sparse; after thresholding to remove very small values, only about 0.1\% of the values are nonzero.  This redundancy means that we should be able to get a high degree of compression for this dataset.  Let's first save the data to a .npy file and look at its (uncompressed) size:
 
-\begin{lstlisting}[style=repl]
-In : np.save('/tmp/difumo.npy', difumo_data)
-In : !du -sm /tmp/difumo.npy
+\begin{lstlisting}[style=replshort]
+> np.save('/tmp/difumo.npy', difumo_data)
+> !du -sm /tmp/difumo.npy
 
 3526	/tmp/difumo.npy
 \end{lstlisting}
@@ -705,10 +705,10 @@ In : !du -sm /tmp/difumo.npy
 That's about 3.5 gigabytes.  Now let's save it to HDF5:
 
 \begin{lstlisting}[style=repl]
-In : import h5py
-...: with h5py.File('/tmp/difumo.h5', 'w') as f:
-...:     f.create_dataset('difumo', data=difumo_data, compression='gzip')
-...: !du -sm /tmp/difumo.h5
+>>> import h5py
+... with h5py.File('/tmp/difumo.h5', 'w') as f:
+...     f.create_dataset('difumo', data=difumo_data, compression='gzip')
+>>> !du -sm /tmp/difumo.h5
 
 785	/tmp/difumo.h5
 \end{lstlisting}
@@ -717,11 +717,11 @@ In : import h5py
 Due to the compression by HDF5, the data file is about 5 times smaller with HDF5! We can also look at the same with Zarr:
 
 \begin{lstlisting}[style=repl]
-In : import zarr
-...: zarr_data = zarr.open('/tmp/difumo.zarr', mode='w',
-...:     shape=difumo_data.shape, dtype=difumo_data.dtype)
-...: zarr_data[:] = difumo_data
-...: !du -sm /tmp/difumo.zarr
+>>> import zarr
+... zarr_data = zarr.open('/tmp/difumo.zarr', mode='w',
+...     shape=difumo_data.shape, dtype=difumo_data.dtype)
+... zarr_data[:] = difumo_data
+>>> !du -sm /tmp/difumo.zarr
 
 763	/tmp/difumo.zarr
 \end{lstlisting}
@@ -756,15 +756,15 @@ for ext in ['npy', 'h5', 'zarr']:
     print(f"Average loading time for {ext}: {avg_load_time:.6f} seconds")
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell]
+\begin{lstlisting}[style=shellshort]
 Average loading time for npy: 0.313126 seconds
 Average loading time for h5: 7.218049 seconds
 Average loading time for zarr: 0.875727 seconds
 \end{lstlisting}
 
-This shows that \textit{Zarr} is slightly slower than the native \textit{NumPy} file loader for these data, but much faster than HDF5.  Note, however, that performance for HDF5 and Zarr will depend on the details of the type of file, compression algorithm, and chunking scheme used for the data, so 
+This shows that \textit{Zarr} is slightly slower than the native \textit{NumPy} file loader for these data, but much faster than HDF5.  Note, however, that performance for \textit{HDF5} and \textit{Zarr} will depend on the details of the type of file, compression algorithm, and chunking scheme used for the data, so 
 
-I would suggest that unless you have a strong need for HDF5 compatibility, that you use \textit{Zarr} files to store large binary data files such as matrices.
+I would suggest that you use \textit{Zarr} files to store large binary data files such as matrices unless you have a strong need for \textit{HDF5} compatibility.
 
 \subsubsection{Symmetrical matrices}
 
@@ -791,7 +791,7 @@ G.add_edges_from(friends)
 G.edges
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 EdgeView([('Bill', 'Sally'), ('Bill', 'Mark'), ('Bill', 'Elise'), ('Mark', 'Elise'), ('Mark', 'Lisa')])
 \end{lstlisting}
 
@@ -854,11 +854,11 @@ There is always a tension between using a domain-specific standard versus a gene
 
 It is essential to use a consistent data organization scheme for one's research data. This is obvious when the data are shared with other researchers, but even if the data will never be shared with anyone else, good organization is essential when one looks back at one's own data in the future. Thus, good data organization is a gift to your future self!
 
-In this section I discuss data organization. The most important principle of data organization is that the scheme should be easily understood and consistently applied.  If a standard scheme exists in one's field of research, then I would strongly suggest using that scheme, or at least adapting it to one's local requirements. A second important principle is that file and folder names should be machine readable. Increasingly we want to use automated tools to parse large datasets, and a machine-readable organization scheme (as I discuss below) is essential to doing this effectively.
+The most important principle of data organization is that the scheme should be easily understood and consistently applied.  If a standard scheme exists in one's field of research, then I would strongly suggest using that scheme, or at least adapting it to one's local requirements. A second important principle is that file and folder names should be machine readable. Increasingly we want to use automated tools to parse large datasets, and a machine-readable organization scheme (as I discuss below) is essential to doing this effectively.
 
 \subsection{File granularity}
 
-One common decision that we need to make when managing data is to save data in more smaller files versus fewer larger files.  The right answer to this question depends in part on how we will have to access the data.  If we only need to access a small portion of the data and we can easily determine which file to open to obtain those data, then it probably makes sense to save many small files.  However, if we need to combine data across many small files, then it likely makes sense to save the data as one large file.  For example, in the \href{src/bettercode/data\_management.ipynb}{data management notebook} there is an example where we create a large (10000 x 100000) matrix of random numbers, and save them either to a single file or to a separate file for each row.  When loading these data, the loading of the single file is about 5 times faster than loading the individual files.
+One common decision that we need to make when managing data is to save data in more smaller files versus fewer larger files.  The right answer to this question depends in part on how we will have to access the data.  If we only need to access a small portion of the data and we can easily determine which file to open to obtain those data, then it probably makes sense to save many small files.  However, if we need to combine data across many small files, then it likely makes sense to save the data as one large file.  For example, in the \href{src/bettercode/data\_management.ipynb}{data management notebook} there is an example where I create a large (10000 x 100000) matrix of random numbers, and save them either to a single file or to a separate file for each row.  When loading these data, the loading of the single file is about 5 times faster than loading the individual files.
 
 Another consideration about the number of files has to do with storage systems that are commonly used on high-performance computing systems.  On these systems, it is common to have separate quotas for total space used (e.g., in terabytes) as well as for the number of \textit{inodes}, which are structures that store information about files and folders on a UNIX filesystem. Thus, generating many small files (e.g., millions) can sometimes cause problems on these systems. For this reason, we generally err on the side of generating fewer larger files versus more smaller files when working on high-performance computing systems (as I discuss further in the later chapter on high-performance computing).
 
@@ -885,7 +885,7 @@ extension, key_values = split_filename(filename)
 print(key_values)
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 {'desc': 'Diffusion', 'sess': '1A', 'sub': '001', 'suffix': 'fa'}
 \end{lstlisting}
 
@@ -914,7 +914,7 @@ An important feature of metadata is that it needs to be \textit{machine-readable
 
 For example, let's say that I wanted to represent information about an author (myself) in JSON, which I might do like this:
 
-\begin{lstlisting}[style=json]
+\begin{lstlisting}[style=jsonshort]
 {
   "name": "Russell Poldrack",
   "affiliation": "Stanford University",
@@ -939,7 +939,7 @@ Now let's say that someone else wanted to search across datasets to find researc
 
 \section{Data documentation}
 
-While metadata is generally meant to be used by computers, it is also important to provide human-readable documentation for a dataset, so that other researchers (or one's own self in the future) can understand and reuse the data successfully.  There are two forms of documentation that can be important to provide.
+While metadata is generally meant to be used by computers, it is also important to provide human-readable documentation for a dataset, so that other researchers (or one's own self in the future) can understand and reuse the data successfully.  There are two forms of documentation that can be important to provide: data dictionaries and codebooks.
 
 \subsection{Data dictionaries}
 
@@ -1011,7 +1011,7 @@ A codebook is meant to be a more human-friendly description of the content of th
 \item Version: 1.0
 \end{itemize}
 
-It is essential to generate data dictionaries and codebooks upon the generation of the dataset; otherwise important details may be lost.
+It is essential to create data dictionaries and codebooks upon the generation of the dataset; otherwise important details may be lost.
 
 \section{Provenance}
 
@@ -1032,7 +1032,7 @@ Tracking of provenance is non-trivial.  The World Wide Web Consortium (W3C) has 
 \item \textit{Agents}: People, organizations, or artifacts (such as computers) that are responsible for activities
 \end{itemize}
 
-In addition, the model defines a set of relationships between these concepts, as seen in Figure~\ref{PROV-fig}:
+In addition, the model defines a set of relationships between these concepts, as seen in Figure~\ref{PROV-fig}. This data model highlights the breadth of information that needs to be represented in order to accurately record provenance.
 
 \begin{figure}[!htbp]
 \centering
@@ -1040,8 +1040,6 @@ In addition, the model defines a set of relationships between these concepts, as
 \caption[PROV data model depiction]{A depiction of the PROV data model entities and relations.  Copyright \textcopyright  [2013]World Wide Web Consortium.}
 \label{PROV-fig}
 \end{figure}
-
-This data model highlights the breadth of information that needs to be represented in order to accurately record provenance.
 
 There are several different ways to track provenance in practice, which vary in their complexity, comprehensiveness, and ease of use.  I will discuss this further in the following chapter on workflows.
 
@@ -1115,7 +1113,7 @@ One method that is often used for large datasets is known as \textit{differentia
 
 In the case of original data we never want to allow any changes, but for derived data we will often end up making changes to our workflows that result in changes in the data.  As an example, let's say that we are analyzing RNA-sequencing data, and we receive a notice that a bug was found in the specific version of STAR that we had used for sequence alignment.  We would like to be able to track these changes, so that we know which data we are working with at any point in time. In many laboratories, this is achieved through file naming, resulting in a menagerie of files with names like ``dataset\_new\_fixed\_v2.tsv''.  This can make it difficult to determine exactly which data were used in any analysis. In Chapter 2 we discussed the many reasons why we use version control for code, and many of those also apply to data as well. In the case of data, it is particularly important to be able to track the what, when, and why of any changes to the data, which is exactly the purpose of version control systems.
 
-\subsection{Using\textit{git} for data version control}
+\subsection{Using \textit{git} for data version control}
 
 When the relevant data are small (e.g., smaller than a few megabytes) and stored in a text format (such as CSV/TSV), one can simply use \textit{git} to track changes in the data.  (We will discuss in a later chapter why GitHub is not an optimal platform for sharing data, at least not on its own.).\index{GitHub}
 
@@ -1140,13 +1138,13 @@ save(ok): . (dataset)
 create(ok): my_datalad_repo (dataset)
 \end{lstlisting}
 
-This creates a new directory, called \texttt{my\_datalad\_repo} and sets it up as a \textit{DataLad} dataset.  We then go into the directory and create a subdirectory called \texttt{data}, and then download some data files from another project.  We do this using the \texttt{datalad download-url} function, which will both download the data and save them to the datalad dataset:
+This creates a new directory, called \texttt{my\_datalad\_repo} and sets it up as a \textit{DataLad} dataset.  We then go into the directory and create a subdirectory called \texttt{data}, and then download some data files from another project.  We do this using the \texttt{datalad download-url} function, which will both download the data and save them to the datalad dataset (note that some outputs in this example have been abbreviated for clarity):
 
 \begin{lstlisting}[style=shell]
-$ datalad download-url -d . -O my_datalad_repo/data/ https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv
+$ datalad download-url -d . -O my_datalad_repo/data/ ${DATA_URL}/demographics.csv
 
-[INFO   ] Downloading 'https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv' into '/Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/'
-download_url(ok): /Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/demographics.csv (file)
+[INFO   ] Downloading ${DATA_URL}/demographics.csv into 'my_datalad_repo/data/'
+download_url(ok): my_datalad_repo/data/demographics.csv (file)
 add(ok): data/demographics.csv (file)
 save(ok): my_datalad_repo (dataset)
 add(ok): my_datalad_repo (dataset)
@@ -1154,10 +1152,10 @@ add(ok): .gitmodules (file)
 save(ok): . (dataset)
 
 
-$ datalad download-url -d . -O my_datalad_repo/data/ https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv
+$ datalad download-url -d . -O my_datalad_repo/data/ ${DATA_URL}/meaningful_variables_clean.csv
 
-[INFO   ] Downloading 'https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv' into '/Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/'
-download_url(ok): /Users/poldrack/Dropbox/code/BetterCodeBetterScience/my_datalad_repo/data/meaningful_variables_clean.csv (file)
+[INFO   ] Downloading ${DATA_URL}/meaningful_variables_clean.csv into 'my_datalad_repo/data/'
+download_url(ok): my_datalad_repo/data/meaningful_variables_clean.csv (file)
 add(ok): data/meaningful_variables_clean.csv (file)
 save(ok): my_datalad_repo (dataset)
 add(ok): my_datalad_repo (dataset)
@@ -1177,7 +1175,7 @@ Date:   Mon Dec 15 13:40:52 2025 -0800
     [DATALAD] Download URLs
 
     URLs:
-      https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv
+      ${DATA_URL}/meaningful_variables_clean.csv
 
 commit 9b4b8b29e08a21974dc52e3026405b878078f07b
 Author: Russell Poldrack <poldrack@gmail.com>
@@ -1186,7 +1184,7 @@ Date:   Mon Dec 15 13:40:29 2025 -0800
     [DATALAD] Download URLs
 
     URLs:
-      https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv
+      ${DATA_URL}/demographics.csv
 \end{lstlisting}
 
 Here we see the commit messages that were automatically created by DataLad, first for creating the new dataset and then for downloading the URLS.  The \texttt{datalad download-url} function adds the URL to the log, which is useful for provenance tracking. If one wishes to download a large number of files, there is also a \texttt{datalad addurls} command that can download multiple files based on a single text file (TSV, JSON, etc) containing the relevant URLs and information.
@@ -1195,7 +1193,7 @@ Here we see the commit messages that were automatically created by DataLad, firs
 
 Now let's say that we want to make a change to one of the files and save the changes to the dataset.  Files tracked by \textit{DataLad} are read-only (``locked'') by default.  If we want to edit them, then we need to use \texttt{datalad unlock} to unlock the file:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ datalad unlock my_datalad_repo/data/demographics.csv
 
 unlock(ok): my_datalad_repo/data/demographics.csv (file)
@@ -1203,13 +1201,13 @@ unlock(ok): my_datalad_repo/data/demographics.csv (file)
 
 We then use a Python script to make the change, which in this case is removing some columns from the dataset:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ python src/bettercode/modify_data.py my_datalad_repo/data/demographics.csv
 \end{lstlisting}
 
 We can now use \texttt{datalad status} to see that the file has been modified:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ datalad status
 
  modified: my_datalad_repo (dataset)
@@ -1229,7 +1227,7 @@ save(ok): . (dataset)
 
 DataLad doesn't have a staging area like \textit{git} does, so there is no need to first add and then commit the file; \texttt{datalad save} is equivalent to adding and then committing the changes. If we then check the status we see that there are no changes waiting to be saved:\index{Git!staging area}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ datalad status
 
 nothing to save, working tree clean
@@ -1248,7 +1246,7 @@ unlock(ok): my_datalad_repo/data/demographics.csv (file)
 Uninstalled 1 package in 1ms
 Installed 1 package in 1ms
 [INFO   ] == Command exit (modification check follows) =====
-run(ok): /Users/poldrack/Dropbox/code/BetterCodeBetterScience (dataset) [uv run src/bettercode/modif...]
+run(ok): BetterCodeBetterScience (dataset) [uv run src/bettercode/modif...]
 add(ok): data/demographics.csv (file)
 save(ok): my_datalad_repo (dataset)
 add(ok): my_datalad_repo (dataset)
@@ -1288,7 +1286,7 @@ DataLad is a particularly powerful tool for sharing data across systems.  It all
 
 We first need to install and set up the \textit{datalad-osf} Python package.  We also need to create an account on the OSF site, and obtain a Personal Access Token for login.  We can then use \textit{DataLad} to authenticate with OSF:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ datalad osf-credentials                                                1 ↵
 You need to authenticate with 'https://osf.io' credentials. https://osf.io/settings/tokens provides information on how to gain access
 token:
@@ -1297,7 +1295,7 @@ osf_credentials(ok): [authenticated as Russell Poldrack <poldrack@stanford.edu>]
 
 Having authenticated with OSF, we can now create a new OSF project using DataLad:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ datalad create-sibling-osf --title datalad-test-project -s osf
 create-sibling-osf(ok): https://osf.io/htprk/
 [INFO   ] Configure additional publication dependency on "osf-storage"
@@ -1319,7 +1317,7 @@ action summary:
 
 These data now exist on OSF, and can be cloned to our local machine using \texttt{datalad clone}:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ datalad clone osf://htprk/
 [INFO   ] Remote origin uses a protocol not supported by git-annex; setting annex-ignore
 install(ok): /Users/poldrack/Downloads/htprk (dataset)
@@ -1327,7 +1325,7 @@ install(ok): /Users/poldrack/Downloads/htprk (dataset)
 
 It's important to know that the files in the cloned dataset directory are actually symbolic links; the actual file contents are not downloaded when the dataset is cloned. We can see this if we try to look at the size of the datafile:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ wc data/demographics.csv
 wc: data/demographics.csv: open: No such file or directory
 \end{lstlisting}
