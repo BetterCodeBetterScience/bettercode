@@ -25,6 +25,9 @@ It's much easier to write tests for a simple function that does a single thing t
 Testing can also help drive modularity by causing one to think more clearly about what a function does when developing the test; the inability to easily write a test for a function can suggest that the function might be overly complex and should be refactored.
 In this way, writing tests can give us useful insights into the structure of the code.
 
+A fourth reasons to write tests is that they can serve as important documentation for the code.  
+Tests define the expected behavior of the code in a way that is particularly precise.  Thus, if we want to see how to use the code, the tests often provide the clearest and most precise documentation of its usage.
+
 A final reason to write tests is that they make it much easier to make changes to the code.
 Without a robust test suite, one is always left worried that changing some aspect of the code will have unexpected effects on its former behavior (known as a ``regression'').
 Tests can provide you with the comfort you need to make changes, knowing that you will detect any untoward effects your changes might have.
@@ -32,7 +35,7 @@ This includes refactoring, where the changes are not meant to modify the functio
 
 \section{Types of tests}
 
-There are many different types of tests that are discussed in software engineering, but here I will focus on two types that are most important for scientific code: unit tests and regression tests.\index{testing!unit}
+There are many different types of tests that are discussed in software engineering, but here I will focus on two types that are most important for scientific code: unit tests and integration tests.\index{testing!unit}
 
 \subsection{Unit tests}
 
@@ -57,7 +60,7 @@ They can be especially useful for large applications, where the full test suite 
 An initial smoke test can determine whether something is broken downstream, saving lots of wasted testing time.
 
 Full integration tests assess the function of the entire application; one can think of them as unit tests where the unit is the entire application.
-Just as with unit tests, we want integration tests that both confirm proper operation under intended conditions, as well as confirming proper behavior (such as exiting with an error message) under improper conditions.
+Just as with unit tests, we want integration tests that both confirm proper operation under intended conditions, as well as confirming appropriate behavior (such as exiting with an error message) under improper conditions.
 
 \section{The anatomy of a test}
 
@@ -89,19 +92,17 @@ For example, if we had mis-specified the expected value as 1186.0, we would have
 
 \lstinputlisting[style=shell]{generated/testing/pytest_escape_velocity_typo_fail.txt}
 
-When testing for equality of numbers (except for integers), it is essential to use a comparison method that allows for a degree of tolerance in the comparison.\index{tolerance}  For example, it might seem like the following assertion should pass, but it doesn't:
+When testing for equality of numbers (except for integers), it is essential to use a comparison method that allows for a degree of tolerance in the comparison.\index{tolerance}  For example, it might seem like the following assertion should pass, but it doesn't; Note that throughout this book, interactive Python sessions are shown using the standard Python REPL prompts (\texttt{>>>} for input, \texttt{...} for continuation).
 
-Throughout this book, interactive Python sessions are shown using the standard Python REPL prompts (\texttt{>>>} for input, \texttt{...} for continuation).
-
-\lstinputlisting[style=repl, numbers=none]{generated/testing/repl_float_assert_fail.txt}
+\lstinputlisting[style=replshort]{generated/testing/repl_float_assert_fail.txt}
 
 This happens because the result of \textit{0.1 + 0.2} is very close, but not exactly the same as \textit{0.3} due to the nature of how floating point numbers are represented:
 
-\lstinputlisting[style=repl, numbers=none]{generated/testing/repl_float_value.txt}
+\lstinputlisting[style=replshort]{generated/testing/repl_float_value.txt}
 
 Instead, we want to compare the two numbers using a method that allows for a degree of \textit{tolerance} or slight differences between the numbers at the smallest decimal places.  A commonly used tool is the \texttt{np.allclose} function:
 
-\lstinputlisting[style=repl, numbers=none]{generated/testing/repl_float_allclose.txt}
+\lstinputlisting[style=replshort]{generated/testing/repl_float_allclose.txt}
 
 Used this way the function uses default tolerances.  There are two kinds of tolerance: \textit{Absolute tolerance} is simply the absolute difference between the values (default: 1e-08), while \textit{Relative tolerance} is proportional to the size of one of the items (the second one for texttt{np.allclose}) (default: 1e-05).  This function uses a comparison that combines the relative and absolute tolerances.  What's important to keep in mind is that tolerance relates to the size of the numbers, so when working with either very small or very large numbers it's often necessary to adjust the tolerance to prevent cases where the test fails due to floating point errors or passes even when the value is incorrect.
 
@@ -136,7 +137,7 @@ As an example, take the following function:
 
 This code works to properly identify outliers:
 
-\lstinputlisting[style=repl, numbers=none]{generated/testing/repl_find_outliers_normal.txt}
+\lstinputlisting[style=replshort]{generated/testing/repl_find_outliers_normal.txt}
 
 However, it fails due to a division by zero if all of the values are equal:
 
@@ -188,7 +189,8 @@ How do we test that the output of a function is correct given the input? There a
 \subsection{Test against the interface, not the implementation}
 
 A good test shouldn't know about the internal implementation details of the function that it is testing, and changes in the internal code that do not modify the input-output relationship should not affect the test.
-That is, from the standpoint of the test, a function should be a ``black box''.\index{black (formatter)}
+That is, from the standpoint of the test, a function should be a ``black box''. 
+This is not to say that one shouldn't use knowledge of the implementation to help identify important aspects of the behavior to test; for example, if there are edge cases related to a particular implementation, then those should be tested for, but the tests should be implemented such that they will pass even if the implementation were to change, so long as the behavior remains the same.
 
 The most common way in which a test can violate this principle is by accessing the internal variables of a class that it is testing.
 For example, we might generate a class that performs a scaling operation on a numpy matrix:
@@ -378,10 +380,10 @@ We can also add additional tests to cover additional functions that we generated
 
 \section{Test coverage}
 
-It can be useful to know if there are any portions of our code that are not being exercised by our tests, which is known as \textit{code coverage}.\index{code coverage}
+It can be useful to know which portions of our code are being exercised by our tests, which is known as \textit{code coverage}.\index{code coverage}
 The \textit{pytest-cov} extension for the \textit{pytest} testing package can provide us with a report of test coverage for these tests:
 
-\lstinputlisting[style=shell]{generated/testing/pytest_textmining_coverage.txt}
+\lstinputlisting[style=shell, firstline=2]{generated/testing/pytest_textmining_coverage.txt}
 
 This report shows that of the 30 statements in our code, one of them is not covered by the tests.
 When we look at the missing code (denoted as being on line 70), we see that the missing line is this one from \texttt{get\_idlist\_from\_response}:
@@ -399,9 +401,11 @@ To check for an exception, we need to use the \texttt{pytest.raises} context man
 \lstinputlisting[style=Python, firstline=55, lastline=62]{../tests/testing_chapter/test_textmining.py}
 
 After adding this test, we see that we now have 100\% coverage.
-It's important not to get too hung up on test coverage; rather than always aspiring to 100\% coverage, I would recommend aspiring to at least 80\% coverage, while also checking to make sure that the most critical paths in the code (based on your domain knowledge) have been sufficiently well tested.
+
+It's important to keep in mind that coverage is not the be-all and end-all of testing.  
 Just because you have 100\% coverage doesn't mean that your code is perfectly tested, since there could always be situations that you haven't checked for; coverage simply states that the code has been tested in at least one way, not that all potential failures have been exhaustively examined.
-And spending too much time testing for extremely unlikely edge cases can divert your efforts from other more useful activities.
+It's particularly important to make sure that the most critical paths in the code (based on your domain knowledge) have been sufficiently well tested.
+There are many very good software projects that have less than 100\% test coverage, though most come close; for example, at time of writing, the \textit{scikit-learn} package reported 99\% coverage, and the \textit{seaborn} visualization library reported 98\% coverage.  Full coverage is worth aspiring to even if one can't get there.
 
 \section{Test fixtures}
 
