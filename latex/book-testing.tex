@@ -413,7 +413,7 @@ Sometimes we need to use a the same data for multiple tests.
 Rather than duplicating potentially time-consuming processes across each of the tests, it is often preferable to create a single instance of the object that can be used across multiple tests, which is known as a \textit{test fixture}.\index{testing!fixture}
 This also helps maintain isolation between tests, since the order of tests shouldn't matter if an appropriate fixture is generated as soon as it's needed.
 
-For our example above, it's likely that we will need to reuse the list of pubmed IDs from the search to perform various tests on the subsequent functions.
+For our example above, it's likely that we will need to reuse the list of PubMed IDs from the search to perform various tests on the subsequent functions.
 We can create a single version of this list of IDs by creating a fixture.
 In the \textit{pytest} framework we do this using a special Python operator called a \textit{decorator}, which is denoted by the symbol \texttt{@} as a prefix.\index{decorator}
 A decorator is function that takes another function as input, modifies its functionality, and returns another function.
@@ -438,7 +438,7 @@ If you wish to use session-scoped fixtures and need to modify them within the te
 
 Sometimes tests require infrastructure that is outside of the control of the tester.
 In the example above, we are assuming that the PubMed API is working correctly for our tests to run; if we were to try to run these tests without an internet connection, they would fail.
-In other cases, code may rely upon a database system that may or may not exist on a particular system.
+In other cases, code may rely upon a database system that may or may not exist on a particular system, or may involve computations that take a long time, making testing too slow.
 In these cases, we can create a \textit{mock} object that can stand in for and simulate the behavior of the system that the code needs to interact with.
 
 In our example, we want to create a mock response that looks sufficiently like a response from the real API to pass our tests.\index{testing!mocking}
@@ -484,7 +484,7 @@ def test_get_PubMedIDs_for_query_check_valid_mocked(ids_mocked):
 \end{lstlisting}
 
 Turning off my network connection shows that the mocked test passes, while the tests that require connecting to the actual API fail.
-However, my usual code review (using Google's Gemini 2.5 Pro) identified a problem with this fixture: it conflates the setup (creating the mock API) with the execution of the function that uses the mock API.\index{code review}
+However, an AI code review identified a problem with this fixture: it conflates the setup (creating the mock API) with the execution of the function that uses the mock API.\index{code review}
 A better approach is move the function execution out of the fixture and into the test:
 
 \lstinputlisting[style=Python, firstline=65, lastline=100]{../tests/testing_chapter/test_textmining.py}
@@ -497,7 +497,7 @@ In fact, it's always a good idea to have tests that specifically assess the usag
 Often a function needs to accept a range of inputs that can result in different behavior, and we want to test each of the possible inputs to ensure that the function works correctly across the range.
 When the different inputs are known, one way to achieve this is to use a \textit{parameterized test}, in which the test is repeatedly run across combinations of different possible values.
 
-For our example, let's move forward and develop the function \texttt{parse\_year\_from\_PubMed\_record} to extract the year from PubMed records, which can differ in their structure.
+For our example, let's move forward and develop a function to extract the year from PubMed records, which can differ in the specific location of the year information across different records.
 We first need to develop the function \texttt{get\_record\_from\_PubMedID} to retrieve a record based on a PubMed ID.
 Following our TDD approach, we first develop two simple tests: one to ensure that it returns a non-empty dictionary for a valid PubMed ID, and one to ensure that it raises an exception for an invalid PubMed ID.
 We also need to create empty functions so that they can be imported to run the (failing) tests:
@@ -516,11 +516,11 @@ We will generate a fixture so that the valid record and PubMed ID can be reused 
 \lstinputlisting[style=Python, firstline=22, lastline=29]{../tests/testing_chapter/test_textmining.py}
 \lstinputlisting[style=Python, firstline=106, lastline=115]{../tests/testing_chapter/test_textmining.py}
 
-Armed with these tests, we can then develop the code for \texttt{get\_record\_from\_PubMedID}:
+Armed with these tests, we can then develop our function:
 
 \lstinputlisting[style=Python, firstline=55, lastline=72]{../src/bettercode/testing/textmining.py}
 
-This passes the tests, so we can now move to writing some initial tests for \texttt{parse\_year\_from\_PubMed\_record}:
+This passes the tests, so we can now move to writing some initial tests for the year parsing function:
 
 \lstinputlisting[style=Python, firstline=121, lastline=134]{../tests/testing_chapter/test_textmining.py}
 
@@ -552,7 +552,7 @@ It would be more efficient to mock the \texttt{get\_record\_from\_PubMedID} func
 \section{Property-based testing}\index{testing!property-based}
 
 Parameterized testing can be useful when we have specific values that we want to test, but sometimes we wish to test a large range of possible values drawn from some sort of distribution.
-One approach to doing this is known as \textit{property-based testing}, which involves specifying a set of criteria (such as data types or sizes) and then generating random values that that specification and testing the code against those data.  
+One approach to doing this is known as \textit{property-based testing}, which involves specifying a set of criteria (such as data types or sizes) and then generating random values using that specification and testing the code against those data.  
 
 Property-based testing can be particularly useful for testing mathematical code, so we will develop another simple example to show how to use the \textit{hypothesis} module in Python to perform property-based testing.
 Let's say that we have developed a function to perform linear regression, taking in two vectors (X and y variables) and returning a vector of length 2 (parameter estimates for slope and intercept).
@@ -607,17 +607,17 @@ Using this, we can check the randomly generated input to see whether it should r
 \lstinputlisting[style=Python, firstline=33, lastline=54]{../tests/testing_chapter/test_property_based.py}
 
 This test passes, showing that our function closely matches the scipy reference implementation.
-Note that we restricted the range of the values generated by the test to \texttt{[-1e6, 1e6]}; when the test values were allowed to vary across the full range of 64-bit floating point values (+/- 1.79e+308), we observed minute differences in the parameter estimates between the two functions that nonetheless exceeded the tolerance limits of \texttt{np.allclose()}.
-We decided to restrict the test values to a range that is within the usual range of input data; if one were planning to work with very small or very large numbers, they would want to possibly test the input over a wider range and understand the nature and magnitude of differences in results between the methods.
+Note that I restricted the range of the values generated by the test to \texttt{[-1e6, 1e6]}; when the test values were allowed to vary across the full range of 64-bit floating point values (+/- 1.79e+308), there were minute differences in the parameter estimates between the two functions that nonetheless exceeded the tolerance limits of \texttt{np.allclose()}.
+I decided to restrict the test values to a range that is within the usual range of input data; if one were planning to work with very small or very large numbers, they would want to possibly test the input over a wider range and understand the nature and magnitude of differences in results between the methods.
 
 \section{Automated testing and continuous integration}\index{continuous integration}
 
 Once we have a set of tests for a project, it's important to integrate them into our workflow so that we ensure that new changes to the code don't break the existing code (known as a \textit{regression}).
 One useful way to ensure that the tests are run regularly is to run them automatically every time changes are pushed to version control.\index{version control}
 This is known as ``continuous integration'' (\textit{CI} for short), referring to the fact that it allows changes to be continuously integrated into the main code branch once they are confirmed to pass all of the tests.\index{Git!branching}
-There are a number of different platforms one can use for CI; we will focus on \textit{Github Actions} since it is the most tightly integrated into the Github version control system.
+There are a number of different platforms one can use for CI; I will focus on \textit{Github Actions} since it is the most tightly integrated into the Github version control system.
 Testing using CI also has a useful side effect: Since the CI system uses a virtual machine to run the tests, the use of CI for testing ensures that the code can run on a separate machine from the one where it was developed.\index{side effect}
-Because setting up the CI system also requires understanding all of the dependencies that are required for the code to run, the CI setup provides a recipe to run the code on any other system.
+Because setting up the CI system also requires understanding all of the dependencies that are required for the code to run, the CI setup provides a recipe to run the code on any other UNIX-based system.
 
 \subsection{Using GitHub Actions}\index{GitHub}
 
@@ -661,7 +661,7 @@ jobs:
 \end{lstlisting}
 
 The \texttt{runs-on} argument tells the workflow runner which virtual machine to use to run the workflows; in this case, we will use the default which is the latest release of Ubuntu Linux.
-We also tell it which versions of Python we want to test the code on, updating it to test on all current versions that are compatible with the package requirements (Python \textgreater = 3.12); this should be updated to the Python versions in common use at time of testing.
+We also tell it which versions of Python we want to test the code on, updating it to test on all current versions that are compatible with the package requirements (Python $\geq$ 3.12); this should be updated to the Python versions in common use at time of testing.
 
 We then specify the actual steps in the workflow.
 The first steps set up the workflow runner so that it can check out the repository, and set up the Python installation.
@@ -837,81 +837,6 @@ We can call pytest with \texttt{--durations=0} which will return the duration fo
 \lstinputlisting[style=shell]{generated/testing/pytest_duration_report.txt}
 
 Using the results of this, we could impose ordering on test execution so that the slowest ones are executed last, or add a \texttt{slow} marker that we could exclude from our regular testing.
-
-There are plugins for \textit{pytest} that can measure the duration of each test and order tests accordingly, but they don't seem to be very well maintained so I am avoiding them.
-However, with agentic AI coding tools we can have our AI system make the appropriate call to \textit{pytest} to obtain the durations and then add the appropriate ordering markers.
-I tried this using the agentic chat window in VSCode (with Claude Sonnet 4).\index{VSCode}\index{Claude}
-On the first pass, Claude immediately noticed that it could infer the completion times directly from the \texttt{sleep()} commands in the code.
-I asked it not to do this, and instead to use the outputs from \texttt{pytest --durations} but it had trouble waiting for the tests to finish, and ended up continuing to try to things that didn't work.
-However, Claude Code was able to successfully solve the problem; the first line marked with ``\textgreater '' was my prompt, and the remainder is Claude Code's output:
-
-\begin{lstlisting}[style=transcript]
-> the file tests/ordering/test_duration.py contains several
-  tests.  Use pytest --duration to determine the durations for
-  each of the tests in this file. DO NOT try to infer the 
-  durations from the code itself. The tests will take about
-  fifteen seconds to complete, so be sure to wait for them. 
-  Then, add marks to each test using pytest-order to specify 
-  that the fastest tests are executed first.
-
-⏺ I'll run pytest with the --durations flag to measure the 
-actual test durations, then add pytest-order marks to run the
-fastest tests first.
-
-⏺ Update Todos
-  ⎿  ☐ Run pytest with --durations flag on test_duration.py
-     ☐ Analyze test duration results
-     ☐ Add pytest-order marks to tests based on duration
-
-⏺ Bash(pytest tests/ordering/test_duration.py --durations=0 -v)
-  ⎿ ============================= test session starts =====================
-    =========
-    platform darwin -- Python 3.12.0, pytest-8.4.1, pluggy-1.5.0 -- /Users/
-    … +27 lines (ctrl+r to expand)
-
-⏺ Based on the test durations:
-  - test_duration_1: 1.00s (fastest)
-  - test_duration_3: 3.00s
-  - test_duration_5: 5.01s (slowest)
-
-⏺ Now I'll add pytest-order marks to run tests from fastest to slowest:
-
-⏺ Update(tests/ordering/test_duration.py)
-  ⎿  Updated tests/ordering/test_duration.py with 3 additions
-        2    from time import sleep
-        3
-        4
-        5 +  @pytest.mark.order(2)
-        6    def test_duration_3():
-        7        sleep(3)
-        8        assert True
-        9
-       10 +  @pytest.mark.order(3)
-       11    def test_duration_5():
-       12        sleep(5)
-       13        assert True
-       14
-       15 +  @pytest.mark.order(1)
-       16    def test_duration_1():
-       17        sleep(1)
-       18        assert True
-
-⏺ Let me verify the ordering works correctly:
-
-⏺ Bash(pytest tests/ordering/test_duration.py -v)
-  ⎿ ============================= test session starts =====================
-    =========
-    platform darwin-- Python 3.12.0, pytest-8.4.1, pluggy-1.5.0 -- /Users/
-    … +20 lines (ctrl+r to expand)
-
-⏺ Perfect! The tests now run in order from fastest to slowest:
-  1. test_duration_1 (1 second)
-  2. test_duration_3 (3 seconds)
-  3. test_duration_5 (5 seconds)
-\end{lstlisting}
-
-This is a great example of how we can increasingly rely upon AI coding models to solve problems that would once have required specialized tools.
-
 
 \subsection{Parallelizing testing}
 
