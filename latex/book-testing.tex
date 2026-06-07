@@ -232,7 +232,7 @@ These tests run correctly, but the same tests fail if we change their order such
 
 One simple way to deal with this is to set up all of the necessary structure locally within each test:
 
-\lstinputlisting[style=Python, firstline=5]{../tests/testing_chapter/test_dataframe_ops.py}
+\lstinputlisting[style=Python, firstline=6]{../tests/testing_chapter/test_dataframe_ops.py}
 
 For simple functions like these this would not cause too much computational overhead, but for computationally intensive functions we would like to be able to reuse the results from the first time each function is run.
 In a later section we will discuss the use of \textit{fixtures} which allow this kind of reuse across tests while avoiding the ordering problems that we saw above when using a global variable across tests.\index{global variable}
@@ -383,7 +383,7 @@ We can also add additional tests to cover additional functions that we generated
 It can be useful to know which portions of our code are being exercised by our tests, which is known as \textit{code coverage}.\index{code coverage}
 The \textit{pytest-cov} extension for the \textit{pytest} testing package can provide us with a report of test coverage for these tests:
 
-\lstinputlisting[style=shell, firstline=2]{generated/testing/pytest_textmining_coverage.txt}
+\lstinputlisting[style=shell]{generated/testing/pytest_textmining_coverage.txt}
 
 This report shows that of the 30 statements in our code, one of them is not covered by the tests.
 When we look at the missing code (denoted as being on line 70), we see that the missing line is this one from \texttt{get\_idlist\_from\_response}:
