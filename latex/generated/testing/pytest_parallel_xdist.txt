@@ -1,3 +1,4 @@
+$ uv run pytest --tb=short --no-header test_parallel.py -v -n auto
 ============================= test session starts ==============================
 created: 16/N workers
 N workers [10 items]

@@ -1,3 +1,4 @@
+$ uv run pytest --tb=short --no-header test_markers.py -m "not unit" -v
 ============================= test session starts ==============================
 collecting ... collected 3 items / 2 deselected / 1 selected
 

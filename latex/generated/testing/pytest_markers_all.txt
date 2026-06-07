@@ -1,3 +1,4 @@
+$ uv run pytest --tb=short --no-header test_markers.py -v
 ============================= test session starts ==============================
 collecting ... collected 3 items
 
