@@ -43,7 +43,7 @@ It's worth noting that these different desiderata will sometimes conflict with o
 
 \section{FAIR-inspired practices for workflows}\index{FAIR principles}
 
-In the earlier chapter on Data Management I discussed the FAIR (Findable, Accessible, Interoperable, and Reusable) principles for data.  Since those principles were proposed in 2016 they have been extended to many other types of research objects, including workflows \citep{Wilkinson:2025aa}.  The reader who is not an informatician may quickly glaze over when reading these articles, as they rely on concepts and jargon that will be unfamiliar to most scientists. Realizing that most scientists are unlikely to go to the lengths of a fully FAIR workflow, and preferring not to let the perfect be the enemy of the good, I think that we can take an ``80/20'' approach, meaning that we can get 80\% of the benefits for about 20\% of the effort.  We can adhere to the spirit of the FAIR Workflows principle by adopting the following principles, based in part on the ``Ten Quick Tips for Building FAIR Workflows'' presented by \citep{Visser:2023aa}:
+In the earlier chapter on Data Management I discussed the FAIR (Findable, Accessible, Interoperable, and Reusable) principles for data.  Since those principles were proposed in 2016 they have been extended to many other types of research objects, including workflows \citep{Wilkinson:2025aa}.  The reader who is not an informatician may quickly glaze over when reading these articles, as they rely on concepts and jargon that will be unfamiliar to most scientists. Realizing that most scientists are unlikely to go to the lengths of a fully FAIR workflow, and preferring not to let the perfect be the enemy of the good, I think that we can take an ``80/20'' approach, meaning that we can get 80\% of the benefits for about 20\% of the effort.  We can adhere to the spirit of the FAIR Workflows principle by adopting the following principles, building on the ``Ten Quick Tips for Building FAIR Workflows'' presented by \citet{Visser:2023aa}:
 
 \begin{itemize}
 \item \textit{Metadata}:  Provide sufficient metadata in a standard machine-readable format to make the workflow findable once it is shared.\index{metadata}
@@ -91,7 +91,7 @@ Pipes are also commonly used in the \textit{R} community, where they are a funda
 
 \subsection{Method chaining}
 
-One way that linear workflows can be built in Python is using \textit{method chaining}, where each method returns an object on which the next method is called; this is slightly different from the operation of UNIX pipes, where it is the output of each command that is being passed through the pipe rather than an entire object.  This is commonly used to perform data transformations in \textit{pandas}, as it allows composing multiple transformations into a single command.  As an example, we will work with the Eisenberg et al. dataset that we used in a previous chapter, to compute the probability of having ever been arrested separately for males and females in the sample. To do this we need to perform a number of operations:\index{Python}
+One way that linear workflows are commonly built in Python is using \textit{method chaining}, where each method returns an object on which the next method is called; this is slightly different from the operation of UNIX pipes, where it is the output of each command that is being passed through the pipe rather than an entire object.  This is commonly used to perform data transformations in \textit{pandas}, as it allows composing multiple transformations into a single command.  As an example, we will work with the Eisenberg et al. dataset that we used in a previous chapter, to compute the probability of having ever been arrested separately for males and females in the sample. To do this we need to perform a number of operations:\index{Python}
 
 \begin{itemize}
 \item drop any observations that have missing values for the \texttt{Sex} or \texttt{ArrestedChargedLifeCount} variables
@@ -116,7 +116,7 @@ arrest_stats_by_sex = (df
 print(arrest_stats_by_sex)
 \end{lstlisting}
 
-\begin{lstlisting}[style=repl]
+\begin{lstlisting}[style=replshort]
 Sex
 Female    0.156489
 Male      0.274131
@@ -124,8 +124,6 @@ Name: EverArrested, dtype: float64
 \end{lstlisting}
 
 Note that \textit{pandas} data frames also include an explicit \texttt{.pipe} method that allows using arbitrary functions within a pipeline. While these kinds of streaming workflows can be useful for simple data processing operations, they can become very difficult to debug, so I would generally avoid using complex functions within a method chain.
-
-\textbf{TODO}: Add a concrete example showing difficulty in debugging?
 
 \section{A simple workflow example}
 
@@ -139,9 +137,25 @@ Most real scientific workflows are complex and can often run for hours, and we w
 \item Generate a clustered heatmap for the correlation matrix
 \end{itemize}
 
-I have implemented each of these components as a module \href{https://github.com/BetterCodeBetterScience/bettercode/blob/main/src/bettercode/simple\_workflow.py}{here}.  The simplest possible workflow would be a script that simply imports and calls each of the methods in turn. For such a simple workflow this would be fine, but I will use this example to show how we might take advantage of more sophisticated workflow management tools.
+I implemented each of these components as a function within a module.  For example, here is the function that drops the non-numerical columns from each data frame:
 
-\textbf{TODO}: show the actual code for the scripts?
+\begin{lstlisting}[style=python]
+def filter_numerical_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Filter a dataframe to keep only numerical columns.
+
+    Args:
+        df: Input dataframe.
+
+    Returns:
+        Dataframe with only numerical columns.
+    """
+    return df.select_dtypes(include=["number"])
+
+\end{lstlisting}
+
+Note that this function really only has one line that does any work; we could just as easily have used that command within the code that calls this function, but placing it in a well-named function makes the intent of the code clear.  All of the functions can be viewed at \texttt{bettercode/simple\_workflow.py} within the project Github repository.  
+
+The simplest possible workflow would be a script that simply imports and calls each of the functions in turn. For such a simple workflow this would be fine, but I will use this example to show how we might take advantage of more sophisticated workflow management tools.
 
 \section{Running a simple workflow using GNU make}\index{Make!GNU make}
 
@@ -206,6 +220,42 @@ clean:
 \end{lstlisting}
 
 Most of the targets (except for ``clean'' and ``all'') refer to specific files that are required for the workflow. For example, the first target refers to the two files that need to be downloaded by the \texttt{download\_data.py} script. This target does not rely on the outputs of any others, so there is nothing following the colon in the target name. For the others, they require particular inputs, which come after the colon; thus, if those don't already exist then their targets will be run first.  Note that \textit{make} requires the use of tabs to indent commands, and will fail if spaces are used; thus, \texttt{Makefile} commands often need to be reformatted when copied and pasted since this often converts tabs to spaces.  This is a common source of \textit{make} problems that is easy to miss.
+
+Each step calls a Python script that is basically an interface to the relevant function. Here is the script that performs the variable filtering\footnote{The full set of scripts can be found at github.com/BetterCodeBetterScience/example-simpleworkflow/tree/main/make\_workflow/scripts}:
+
+\begin{lstlisting}[style=python]
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+from bettercode.simple_workflow import filter_numerical_columns
+
+
+def main():
+    """Filter both datasets to numerical columns."""
+    if len(sys.argv) != 2:
+        print("Usage: python filter_data.py <data_dir>")
+        sys.exit(1)
+
+    data_dir = Path(sys.argv[1])
+
+    # Filter meaningful variables
+    mv_df = pd.read_csv(data_dir / "meaningful_variables.csv", index_col=0)
+    mv_num = filter_numerical_columns(mv_df)
+    mv_num.to_csv(data_dir / "meaningful_variables_numerical.csv")
+    print(f"Filtered meaningful_variables: {mv_df.shape} -> {mv_num.shape}")
+
+    # Filter demographics
+    demo_df = pd.read_csv(data_dir / "demographics.csv", index_col=0)
+    demo_num = filter_numerical_columns(demo_df)
+    demo_num.to_csv(data_dir / "demographics_numerical.csv")
+    print(f"Filtered demographics: {demo_df.shape} -> {demo_num.shape}")
+
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
 
 We can run the entire workflow by simply running \texttt{make all}:
 
@@ -286,7 +336,7 @@ With the growth of data science within industry and research, there has been an 
 
 \section{Workflow management using Snakemake}
 
-We will use the \href{https://snakemake.readthedocs.io/en/stable/}{\textit{Snakemake}} workflow system for our example, which I chose for several reasons:
+I will use the \href{https://snakemake.readthedocs.io/en/stable/}{\textit{Snakemake}} workflow system for this example, which I chose for several reasons:
 
 \begin{itemize}
 \item It is a very well-established project that is actively maintained.
@@ -322,8 +372,8 @@ What this does is first specify a set of directories; the \texttt{BASEDIR} varia
 
 \begin{lstlisting}[style=yaml]
 # Data URLs
-meaningful_variables_url: "https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/meaningful_variables_clean.csv"
-demographics_url: "https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv"
+meaningful_variables_url: "<URL deleted for brevity>"
+demographics_url: "<URL deleted for brevity>"
 
 # Correlation settings
 correlation_method: "spearman"
@@ -479,7 +529,7 @@ This was a dry-run (flag -n). The order of jobs does not reflect the order of ex
 
 Once we have confirmed that everything is set up properly, we can then use \texttt{snakemake} to run the workflow:
 
-\begin{lstlisting}
+\begin{lstlisting}[style=shell]
 $ uv run snakemake --cores 1 -d ./output
 
 Building DAG of jobs...
@@ -507,7 +557,7 @@ localrule download_demographics:
     jobid: 7
     reason: Missing output files: output/data/demographics.csv
     resources: tmpdir=/var/folders/r2/f85nyfr1785fj4257wkdj7480000gn/T
-Downloaded 522 rows from https://raw.githubusercontent.com/IanEisenberg/Self_Regulation_Ontology/refs/heads/master/Data/Complete_02-16-2019/demographics.csv
+Downloaded 522 rows from <URL deleted for brevity>
 Saved to output/data/demographics.csv
 [Wed Dec 24 08:17:58 2025]
 Finished jobid: 7 (Rule: download_demographics)
@@ -519,7 +569,7 @@ Finished jobid: 7 (Rule: download_demographics)
 Complete log(s): .snakemake/log/2025-12-24T081757.266320.snakemake.log
 \end{lstlisting}
 
-It's important to know that when snakemake is run, it stores metadata regarding the workflow in a hidden directory called \texttt{.snakemake}, including the log file mentioned at the end of the output above. This directory can carry over hidden state from previous runs that can become confusing when debugging. It's sometimes useful to remove this directory as a last resort (when the \texttt{--force } and \texttt{--cleanup-metadata} are not sufficient).\index{debugging}
+It's important to know that when \textit{Snakemake} is run, it stores metadata regarding the workflow in a hidden directory called \texttt{.snakemake}, including the log file mentioned at the end of the output above. This directory can carry over hidden state from previous runs that can become confusing when debugging. It's sometimes useful to remove this directory as a last resort (when the \texttt{--force } and \texttt{--cleanup-metadata} are not sufficient).\index{debugging}
 
 One handy feature of \textit{Snakemake} is that, just like \textit{make}, we can give it a specific target file and it will perform only the portions of the workflow that are required to regenerate that specific file. For example, let's say that the file \texttt{output/data/demographics.csv} became corrupted and you needed to recreate it.  This could be done using the command:
 
@@ -531,7 +581,7 @@ $ uv run snakemake output/data/demographics.csv --cores 1 -d ./output
 
 Once the workflow has completed successfully, re-running it will not result in the re-execution of any of the analyses:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ uv run snakemake --cores 1 -d ./output
 
 Building DAG of jobs...
@@ -597,10 +647,10 @@ dependencies:
  - seaborn=0.13.2
 \end{lstlisting}
 
-When we run the workflow, we will see that snakemake first builds a local \textit{Conda} environment within the working directory. In this case I am running it from a different directory than the source directory, so I need to specify the location of the \texttt{Snakefile}:
+When we run the workflow, we will see that \textit{Snakemake} first builds a local \textit{Conda} environment within the working directory. In this case I am running it from a different directory than the source directory, so I need to specify the location of the \texttt{Snakefile}:
 
 \begin{lstlisting}[style=shell]
-$ uv run snakemake --sdm *Conda* --snakefile /path/to/Snakefile -d ./ --cores 15
+$ uv run snakemake --sdm conda --snakefile /path/to/Snakefile -d ./ --cores 15
 
 Building DAG of jobs...
 Creating *Conda* environment /path/to/snakemake_workflow/envs/simple.yml...
@@ -613,7 +663,7 @@ It then uses this environment to execute the code.  It's worth nothing that this
 
 \subsection{Reproducible environments with containers}
 
-As I discussed in Chapter 2, software containers are increasingly used as a means for creating reproducible software environments. \textit{Snakemake} has built-in support for the \textit{Apptainer} container tool, which is available for Linux and installed on most high-performance computing systems, but unfortunately not easily usable on Mac or Windows systems. Here I will show an example of a containerized version of the simple workflow above, running on my local Linux system.\index{Apptainer}\index{high-performance computing}
+As I discussed in Chapter 6, software containers are increasingly used as a means for creating reproducible software environments. \textit{Snakemake} has built-in support for the \textit{Apptainer} container tool, which is available for Linux and installed on most high-performance computing systems, but unfortunately not easily usable on Mac or Windows systems. Here I will show an example of a containerized version of the simple workflow above, running on my local Linux system.\index{Apptainer}\index{high-performance computing}
 
 Using containers is easiest if you can find an existing Docker container that contains all of the necessary dependencies for your code.  Fortunately there is a large number of containers available via the \href{https://hub.docker.com/}{Docker Hub}, and given the simple dependencies that our workflow requires, I was easily able to find \href{https://hub.docker.com/layers/jupyter/scipy-notebook/x86\_64-ubuntu-22.04/images/sha256-3b37958b7b31ce94c3027d7c83c98fc16acfe166fab2de2f62ae54c50e59aed3}{a container} containing the necessary packages.  I added this to my \texttt{config.yaml} file:\index{SciPy}\index{Docker}\index{Docker Hub}
 
@@ -639,7 +689,7 @@ Pulling singularity image docker://jupyter/scipy-notebook:x86_64-ubuntu-22.04.
 ...
 \end{lstlisting}
 
-As with conda, it's worth noting that \textit{Snakemake} will store the \textit{Apptainer} image within the \texttt{.snakemake} directory, which can sometimes be quite large; for the \textit{Jupyter} image linked above, it was about 1.2 GB, but I have seen containers up to 10 GB or more on occasion.\index{Jupyter}
+As with \textit{Conda}, it's worth noting that \textit{Snakemake} will store the \textit{Apptainer} image within the \texttt{.snakemake} directory, which can sometimes be quite large; for the \textit{Jupyter} image linked above, it was about 1.2 GB, but I have seen containers up to 10 GB or more on occasion.\index{Jupyter}
 
 \subsection{Best practices for \textit{Snakemake} workflows}
 
@@ -778,7 +828,7 @@ This will generate a file called \texttt{prov/snakemake.json} that contains repr
 
 and the representation of the job that created it (\texttt{filter\_meaningful\_variables}) would look like this:
 
-\begin{lstlisting}
+\begin{lstlisting}[style=json]
 {
       "id": "urn:snakemake:job/4",
       "type": "prov:Activity",
@@ -826,7 +876,7 @@ One way to prevent in-place operations altogether is to use data types that are 
 
 \subsection{Converting from \textit{Jupyter} notebook to a runnable python script}
 
-As we discussed in an earlier chapter, converting a \textit{Jupyter} notebook to a pure Python script is easy using \textit{jupytext}.  This results in a script that can be run from the command line.  However, there can be some commands that will block execution of the script; in particular, plotting commands can open windows that will block execution until they are closed.  To prevent this, and to ensure that the results of the plots are saved for later examination, I replaced all of the \texttt{plt.show()} commands that display a figure to the screen with \texttt{plt.savefig()} commands that save the figures to a file in the results directory.  (This was an easy job for the Copilot agent to complete.)\index{Copilot}
+As we discussed in an earlier chapter, converting a \textit{Jupyter} notebook to a pure Python script is easy using \textit{jupytext}.  This results in a script that can be run from the command line.  However, there can be some commands that will block execution of the script; in particular, plotting commands can open windows that will block execution until they are closed.  To prevent this, and to ensure that the results of the plots are saved for later examination, I replaced all of the \texttt{plt.show()} commands that display a figure to the screen with \texttt{plt.savefig()} commands that save the figures to a file in the results directory.  (This was an easy job for the my AI coding agent to complete.)
 
 \section{Decomposing a complex workflow}
 
@@ -871,7 +921,7 @@ In addition to a conceptual breakdown, there are also other reasons that one mig
 
 \section{Resumable workflows}
 
-I asked Claude Code to help modularize the monolithic workflow, using a prompt that provided the conceptual breakdown described above.  The resulting code ran correctly, but crashed about two hours into the process due to a resource issue that appeared to be due to asking for too many CPU cores in the differential expression analysis.  This left me in the situation of having to rerun the entire two hours of preliminary workflow simply to get to a point where I could test my fix for the differential expression component, which is not a particularly efficient way of coding.  The problem here is that the workflow execution was \textit{stateful}, in the sense that the previous steps need to be rerun prior to performing the current step in order to establish the required objects in memory.  The solution to this problem is to implement the workflow in a \textit{resumable} way, which doesn't require that earlier steps be rerun if they have already been completed.  One way to do this is by implementing a process called \textit{checkpointing}, in which the intermediate state is stored for each step.  These checkpoint files can then be used to start the workflow at any point without having to rerun all of the previous steps.\index{Claude}
+I asked my coding agent to help modularize the monolithic workflow, using a prompt that provided the conceptual breakdown described above.  The resulting code ran correctly, but crashed about two hours into the process due to a resource issue that appeared to be due to asking for too many CPU cores in the differential expression analysis.  This left me in the situation of having to rerun the entire two hours of preliminary workflow simply to get to a point where I could test my fix for the differential expression component, which is not a particularly efficient way of coding.  The problem here is that the workflow execution was \textit{stateful}, in the sense that the previous steps need to be rerun prior to performing the current step in order to establish the required objects in memory.  The solution to this problem is to implement the workflow in a \textit{resumable} way, which doesn't require that earlier steps be rerun if they have already been completed.  One way to do this is by implementing a process called \textit{checkpointing}, in which the intermediate state is stored for each step.  These checkpoint files can then be used to start the workflow at any point without having to rerun all of the previous steps.\index{checkpointing}
 
 Another important feature of a workflow related to resumability is \textit{idempotency}, which means that a workflow will result in the same answer when run multiple times.  This is related to, but not the same as, the idea of resumability.  For example, a resumable workflow that saves its outputs to cache files could fail to be idempotent if the results were appended to the output file with each execution, rather than overwriting them.  This would result in different outputs depending on how many times the workflow has been executed.  Thus, when we use caching we should be sure to either reuse the existing file or rewrite it completely with a new version.\index{idempotency}
 
@@ -907,13 +957,13 @@ include: "rules/per_cell_type.smk"
 
 \subsection{Pipeline optimization}
 
-The first time that I ran this workflow using Snakemake, I noticed that it was substantially slower than when I ran it using the custom workflow engine.  When I asked Claude about this, it gave me a reasonable answer:
+The first time that I ran this workflow using Snakemake, I noticed that it was substantially slower than when I ran it using the custom workflow engine.  When I asked my chatbot about this, it gave me a reasonable answer:
 
 \begin{quote}
 The \textit{Snakemake} rules don't specify a threads directive. By default, \textit{Snakemake} runs each job with 1 thread, which limits parallelization of computationally intensive operations like neighbor computation and UMAP (which use numba internally).\index{parallelization}
 \end{quote}
 
-I asked Claude to fix this, and it returned the following change:
+I asked the AI agent to fix this, and it returned the following change:
 
 \begin{quote}
 Fixes applied:
@@ -935,13 +985,13 @@ rule dimensionality_reduction:
     threads: 8
 \end{lstlisting}
 
-The \texttt{dimred.py} script then uses the \texttt{snakemake.threads} variable to set the relevant environment variables. This rule defines the ideal situation: that is, what is the maximum number of threads that our code can take advantage of?  In general a number from 4-8 is optimal here, given the overhead that comes with multithreading (as we will discuss further in the later chapter on Performance Optimization).  While this might seem problematic (e.g., what if there are only four cores available?), \textit{Snakemake} deals with it gracefully.  If there are more cores available than the limit, then \textit{Snakemake} will (if appropriate) spawn multiple processes in parallel. If there are fewer than the number requested, it will simply use what is available. There is a separate command line argument to \textit{Snakemake} (\texttt{--cores}) that specifies the maximum number of cores that can be utilized on the computer.\index{multithreading}
+The \texttt{dimred.py} script then uses the \texttt{snakemake.threads} variable to set the relevant environment variables. This rule defines the ideal situation: that is, what is the maximum number of threads that our code can take advantage of?  In general a number from 4-8 is optimal here, given the overhead that comes with multithreading (as I will discuss further in the later chapter on Performance Optimization).  While this might seem problematic (e.g., what if there are only four cores available?), \textit{Snakemake} deals with it gracefully.  If there are more cores available than the limit, then \textit{Snakemake} will (if appropriate) spawn multiple processes in parallel. If there are fewer than the number requested, it will simply use what is available. There is a separate command line argument to \textit{Snakemake} (\texttt{--cores}) that specifies the maximum number of cores that can be utilized on the computer.\index{multithreading}
 
 \subsection{Parametric sweeps}
 
 A common pattern in some computational research domains is the \textit{parametric sweep}, where a workflow is run using a range of values for specific parameters in the workflow.  A key to successful execution of parametric sweeps is proper organization of the outputs so that they can be easily processed by downstream tools.  \textit{Snakemake} provides the ability to easily implement parametric sweeps simply by specifying a list of parameter values in the configuration file.  For example, let's say that we wanted to assess predictive accuracy using several values of the regularization parameter (known as \textit{alpha}) for a ridge regression model.  We could first specify a setting within our \texttt{config.yaml} file containing these values:\index{regularization}
 
-\begin{lstlisting}[style=yaml]
+\begin{lstlisting}[style=yaml, numbers=none, caption={}]
 ridge_alpha:
   - 0.1
   - 1.0
@@ -988,14 +1038,14 @@ I will leave the question of analytic accuracy to be addressed in the following 
 
 Because I didn't use test-driven development to generate this workflow, I was faced with the task of having to generate a substantial amount of testing code for the completed workflow. To get a feel for the scale, the source code for our RNA-seq analysis contained 83 functions defined across 13 files.  In total these files included 3,239 lines, though there are actually many fewer lines of code, since many lines are blank or contain comments.  In addition many individual commands are split across lines to increase readability.  Using the \href{https://radon.readthedocs.io/en/latest/}{\textit{radon}} package for source code analysis, we can compute the \textit{logical lines of code}, which is the number of executable statements:\index{test-driven development}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $  uv run radon raw *.py | awk '/LLOC:/ {sum += $2} END {print sum}'
 1038
 \end{lstlisting}
 
 Thus, we need to generate tests for 83 functions comprising more than 1000 statements!  As I discussed in Chapter 4, we can use AI tools to help generate test code, though this code \textit{must} be examined in detail by a knowledgeable human in order to ensure that the tests adequately exercise the relevant functions.
 
-I started by generating a \texttt{CLAUDE.md} file to create the test framework:
+I started by generating a Markdown file specifying the test framework:
 
 \begin{lstlisting}[style=transcript]
 This is a set of implementations of an analysis workflow for single-cell RNA-seq data analysis. These are meant to exemplify different ways of building a workflow.  The main goal of this development project is to develop a testing framework for this workflow.  This will involve two main steps:
@@ -1021,13 +1071,13 @@ This dataset should be saved to tests/data/testdata.h5ad.
 - Use functions rather than classes for tests. Use pytest fixtures to share resources between tests.
 \end{lstlisting}
 
-Claude Code took about 20 minutes to generate an entire test framework for the code, comprising 215 test functions and 19 test fixtures.  Interestingly, Claude disregarded my instructions to use functions rather than classes for tests, generating 78 test classes.  While I usually prefer tests to be in pure functions rather than classes so that novices can more easily understand them, I decided in this case to stay with the class-based implementation since I don't mind it and it does make the organization of the tests a bit cleaner.
+My agent took about 20 minutes to generate an entire test framework for the code, comprising 215 test functions and 19 test fixtures.  Interestingly, the agent disregarded my instructions to use functions rather than classes for tests, generating 78 test classes.  While I usually prefer tests to be in pure functions rather than classes so that novices can more easily understand them, I decided in this case to stay with the class-based implementation since I don't mind it and it does make the organization of the tests a bit cleaner.
 
-The initial test set for this project had no tests for one of the modules, and other modules with significant portions untested.  I was able to improve this by having Claude Code analyze the code coverage report and identify important parts of the code that were not currently covered, which moved the test coverage from 69\% to 88\% of the 870 statements in the code that were identified by the \texttt{coverage} tool.\index{code coverage}
+The initial test set for this project had no tests for one of the modules, and other modules with significant portions untested.  I was able to improve this by having the agent analyze the code coverage report and identify important parts of the code that were not currently covered, which moved the test coverage from 69\% to 88\% of the 870 statements in the code that were identified by the \texttt{coverage} tool.\index{code coverage}
 
 \subsection{Avoiding the happy path}
 
-Because it is essential for AI-generated tests to be assessed by a knowledgeable human, I proceeded to read all of the tests that had been generated by Claude.  Fortunately they were all easily readable and clearly named, which made it relatively easy to see some potential problems right away. Several kinds of issues arose.
+Because it is essential for AI-generated tests to be assessed by a knowledgeable human, I proceeded to read all of the tests that had been generated by the agent.  Fortunately they were all easily readable and clearly named, which made it relatively easy to see some potential problems right away. Several kinds of issues arose.
 
 Because AI agents have a strong tendency to generate tests that pass, they will sometimes miss potential problems - this is commonly referred to as following the ``happy path''. Several of the tests performed very minimal checking of outputs that would miss potential problems.  For example, it generated the following test which, according to its name, should test whether a PCA embedding is generated using the \textit{harmonypy} package:
 
@@ -1078,11 +1128,11 @@ result = run_pseudobulk_pipeline(
 
 Pseudobulking is an operation that should summarize all cells of a given type for each donor, but none of the test conditions actually check that it has been properly applied.  In fact, these tests could pass if \texttt{run\_pseudobulk\_pipeline()} simply passed the original data back without doing anything to it!  This is a case where domain knowledge is essential to get the tests right and avoid the happy path.  In several other cases the tests called \texttt{pytest.skip()} (which causes the test to be skipped) for outcomes that really should have triggered a test failure.  For example, it skipped the integration tests for the full dataset if the dataset hadn't already been created, and it also skipped the \textit{Snakemake} integration functions if the \textit{Snakemake} call failed (which it initially did because of a missing argument).\index{pytest}
 
-These examples highlight the need to closely examine the test code that is generated by AI agents.  However it's worth noting that although it took a significant amount of human time to read over the AI-generated tests, the time spent was still far less than if I had undertaken writing the test code without AI assistance, and Claude was also able to fix all of the issues to my satisfaction after I raised them. 
+These examples highlight the need to closely examine the test code that is generated by AI agents.  However it's worth noting that although it took a significant amount of human time to read over the AI-generated tests, the time spent was still far less than if I had undertaken writing the test code without AI assistance, and the coding agent was also able to fix all of the issues to my satisfaction after I raised them. 
 
 \subsection{Property-based testing for workflows}\index{testing!property-based}
 
-The tests initially developed for this workflow were built around the known characteristics of the expected data. However, there are many ``unknown unknowns'' when it comes to input data, and it's important to make sure that the code deals gracefully with problematic inputs. We can test this using a \textit{property-based testing} approach; as I discussed in Chapter 4, this involves the generation of many different datasets that vary, and checking whether the code deals with them appropriately.  When I asked the coding agent to identify plausible candidates for property-based testing using the Hypothesis package, it generated \href{https://github.com/BetterCodeBetterScience/example-rnaseq/blob/main/tests/test\_hypothesis.py}{tests} centered on several different properties:
+The tests initially developed for this workflow were built around the known characteristics of the expected data. However, there are many ``unknown unknowns'' when it comes to input data, and it's important to make sure that the code deals gracefully with problematic inputs. We can test this using a \textit{property-based testing} approach; as I discussed in Chapter 4, this involves the generation of many different datasets that follow a particular specification, and checking whether the code deals with them appropriately.  When I asked the coding agent to identify plausible candidates for property-based testing using the Hypothesis package, it generated \href{https://github.com/BetterCodeBetterScience/example-rnaseq/blob/main/tests/test\_hypothesis.py}{tests} centered on several different properties:
 
 \begin{itemize}
 \item Proper parsing of a range of filenames for the BIDS format parser used in caching\index{BIDS (Brain Imaging Data Structure)}
@@ -1091,7 +1141,7 @@ The tests initially developed for this workflow were built around the known char
 \item Proper processing of input lists with a range of inputs
 \end{itemize}
 
-These are all good applications of property-based testing because they focus on invariant features that should be true regardless of the inputs (i.e. the same input should always generate the same hash, or loading a serialized dataset should return the same values as the original). I further pushed it to identify plausible candidates for testing of the effects of numerical edge cases, such as division by zero, which is another valuable use case for property-based testing. This paid off when the property-based tests generated by Claude identified a bug that had not been caught by the previous tests:
+These are all good applications of property-based testing because they focus on invariant features that should be true regardless of the inputs (i.e. the same input should always generate the same hash, or loading a serialized dataset should return the same values as the original). I further pushed it to identify plausible candidates for testing of the effects of numerical edge cases, such as division by zero, which is another valuable use case for property-based testing. This paid off when the property-based tests generated by the agent identified a bug that had not been caught by the previous tests:
 
 \begin{lstlisting}[style=transcript]
 The property-based test found a real bug! The prepare\_enrichr\_plot\_data function produces infinity when computing -log10(0) for zero p-values. The GSEA version handles this with + 1e-10, but the Enrichr version doesn't.
