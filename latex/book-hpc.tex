@@ -1,21 +1,21 @@
 \chapter{High-performance computing}
 
-In previous chapters we have worked with examples where the code can be feasibly run on a standard personal computer, but at some point datasets get large enough that it's simply not feasible to do the work on a single machine.  For many scientists, the next move is to use a \textit{cluster}, which involves a number of computers connected to one another.  It is certainly possible to build one's own cluster, and some researchers insist on running their own cluster; occasionally there are good reasons for running one's own cluster (I did it for several years early in my career), but if centralized high-performance computing (HPC) resources are available at one's institution (as they are at many universities) then it often makes sense to take advantage of these resources. First, they are generally administered by professional system administrators (known as \textit{sysadmins}), who can ensure that they operate smoothly and securely. This also helps one avoid having to spend one's personal time scrambling to get the cluster working after a problem occurs. Second, they are generally going to be much larger than any system that an individual researcher or research group can afford to create. While it might make sense to have dedicated hardware if a group can utilize it at full capacity most of the time, it's more common for researchers to have usage patterns that are \textit{bursty} such that they only occasionally need a large system, meaning that a dedicated system would be sitting idle most of the time.  Third, centralized systems will generally have dedicated power and cooling resources, whereas it's not uncommon for the ``cluster in a closet'' to overheat or overload the power system that wasn't designed to handle such a load.\index{high-performance computing}
+In previous chapters we have worked with examples where the code can be feasibly run on a standard personal computer, but at some point datasets get large enough that it's simply not feasible to do the work on a single machine.  For many scientists, the next move is to use a \textit{cluster}, which involves a number of computers connected to one another.  It is certainly possible to build one's own cluster, and some researchers insist on running their own cluster; occasionally there are good reasons for running one's own cluster (I did it for several years early in my career), but if centralized high-performance computing (HPC) resources are available at one's institution (as they are at many universities) then it often makes sense to take advantage of these resources. First, they are generally administered by professional system administrators (known as \textit{sysadmins}), who can ensure that they operate smoothly and securely. This also helps one avoid having to spend one's personal time scrambling to get the cluster working after a problem occurs. Second, they are generally going to be much larger than any system that an individual researcher or research group can afford to create. While it might make sense to have dedicated hardware if a group can utilize it at full capacity most of the time, it's more common for researchers to have usage patterns that are \textit{bursty} such that they only occasionally need a large system, meaning that a dedicated system would be sitting idle most of the time.  Third, centralized systems will generally have dedicated power and cooling resources, whereas it's not uncommon for the ``cluster in a closet'' to overheat or overload a power system that wasn't designed to handle such a load.\index{high-performance computing}
 
-There are two different kinds of high-performance computing resources that one might take advantage of.  The first is \textit{on-premise} (often called ``on-prem'') resources, which are physically located within the institutions. Most large research institutions have an on-prem system that is available to researchers, often for free. The other alternative is \textit{cloud} systems, which are run by commercial cloud vendors and come with costs included machine usage and data ingress/egress costs.  Because most scientists end up using on-prem HPC resources, I am going to focus on those in this chapter, but I will later discuss cloud computing options.
+There are two different kinds of high-performance computing resources that one might take advantage of.  The first is \textit{on-premise} (often called ``on-prem'') resources, which are physically located within an institution. Most large research institutions have an on-prem system that is available to researchers, often for free. The other alternative is \textit{cloud} systems, which are run by commercial cloud vendors and come with costs including machine usage and data ingress/egress costs.  Because most scientists end up using on-prem HPC resources, I am going to focus on those in this chapter, but I will also discuss commercial cloud computing options.
 
 \section{Anatomy of an HPC system}
 
-A high-performance computer (often called a \textit{supercomputer}) is composed of a set of individual computers that are known as \textit{nodes}.  These are usually compact rack-mounted systems that can be stacked tightly into a data center.  Most of the nodes in a large HPC system are known as \textit{compute} nodes because their primary role is to perform computations; users generally cannot log into these nodes unless they are actively performing computations on them.  A small number of nodes are known as \textit{login nodes}, which are available for users to log into in order to use the system. While logging in through SSH is most common, many systems also provide web-based interfaces that allow use of Jupyter notebooks or other graphical interfaces.  Login nodes also usually have less compute resources (cores/RAM) than compute nodes.\index{Jupyter}
+An HPC system (often called a \textit{supercomputer}) is composed of a set of individual computers that are known as \textit{nodes}.  These are usually compact rack-mounted systems that can be stacked tightly into a data center.  Most of the nodes in a large HPC system are known as \textit{compute} nodes because their primary role is to perform computations; users generally cannot log into these nodes unless they are actively performing computations on them.  A small number of nodes are known as \textit{login nodes}, which are available for users to log into in order to use the system. While logging in through SSH is most common, many systems also provide web-based interfaces that allow use of Jupyter notebooks or other graphical interfaces.  Login nodes also usually have less compute resources (cores/RAM) than compute nodes.\index{Jupyter}
 
-Most compute-intensive jobs on an HPC system are run in a \textit{batch mode}, in which the jobs are submitted to a \textit{queue} via a \textit{job scheduler} and then run when sufficient resources are available. This is a very different model from the \textit{interactive mode} when one is using one's own computer, where you can simply run the job directly.  The most important rule of working on shared HPC system is this: \textit{never run computing jobs on a login node}!  Because the login nodes are shared by all users, they can sometimes have hundreds of users logged in on a popular system. If even just a few of these ran computationally intensive jobs, the node would quickly grind to a halt. On most HPC systems, the sysadmins will quickly kill any large jobs that are run, and may revoke one's access privileges if they are a serial abuser of the policy. I'll discuss later how to obtain a login where it's allowable to run computationally intensive jobs in an interactive manner, but this is not generally the mode that is used when working on an HPC system.
+Most compute-intensive jobs on an HPC system are run in a \textit{batch mode}, in which the jobs are submitted to a \textit{queue} via a \textit{job scheduler} and then run when sufficient resources are available. This is a very different model from the \textit{interactive mode} when one is using one's own computer, where you can simply run the job directly.  The most important rule of working on shared HPC system is this: \textit{never run computing jobs on a login node}!  Because the login nodes are shared by all users, they can sometimes have hundreds of users logged in on a popular system. If even just a few of these ran computationally intensive jobs, the node would quickly grind to a halt. On most HPC systems, the sysadmins will quickly kill any large jobs that are run on a login node, and may revoke one's access privileges if they are a serial abuser of the policy. I'll discuss later how to obtain a login where it's allowable to run computationally intensive jobs in an interactive manner, but this is not generally the mode that is used when working on an HPC system.
 
 \begin{framed}
 \textbf{Tip}\\
 It's always helpful to be on good terms with the sysadmin of your local HPC system. They are much more likely to be helpful if they trust that you are a good citizen.
 \end{framed}
 
-The nodes in an HPC system, which can number into the thousands on major systems, are connected to one another by a high-performance network, either an \textit{Infiniband} network or a high-speed (10-100 Gb) Ethernet network. This is important because while both of these network fabrics have high bandwidth (meaning that they can push a large amount of data at once), Infiniband has much lower latency, meaning that the messages travel much more quickly (by at least an order of magnitude).  Further, Infiniband offers a special ability called Remote Direct Memory Access (RDMA), which allows it to inject information directly into memory without going through the kernel, which reduces CPU overhead. For distributed computations across many nodes this provide a massive performance boost by allowing the CPU to focus solely on computing rather than on memory management.  I'll return to this later when I discuss distributed computing on HPC systems.\index{distributed computing}
+The nodes in an HPC system, which can number into the thousands on major systems, are connected to one another by a high-performance network, either an \textit{Infiniband} network or a high-speed (10-100 Gb) Ethernet network. This is important because while both of these network fabrics have high bandwidth (meaning that they can push a large amount of data at once), Infiniband has much lower latency, meaning that the messages travel much more quickly (by at least an order of magnitude).  Further, Infiniband offers a special ability called Remote Direct Memory Access (RDMA), which allows it to inject information directly into memory without going through the operating system kernel, which reduces CPU overhead. For distributed computations across many nodes this can provide a massive performance boost by allowing the CPU to focus solely on computing rather than on memory management.  I'll return to this later when I discuss distributed computing on HPC systems.\index{distributed computing}
 
 \subsection{HPC filesystems}
 
@@ -23,7 +23,7 @@ Most HPC systems have several different filesystems with different purposes/use 
 
 \subsubsection{Home}
 
-The \textit{home} filesystem is the place where user's home directories are located.  This system will generally have relatively small storage limits.  They are generally mounted using the Network File System (NFS) protocol, which is a common and reliable way to share file systems but is not optimized for high-speed data transfer or parallel access.  For this reason, it's important to never use the home directory as an output location for jobs run on an HPC system, as it could both reduce performance of the job as well as degrading performance of the system for other users.  The home filesystem is likely to be backed up regularly.
+The \textit{home} filesystem is the place where user's home directories are located.  This system will generally have relatively small storage limits.  They are generally mounted using the Network File System (NFS) protocol, which is a common and reliable way to share file systems but is not optimized for high-speed data transfer or parallel access.  For this reason, it's important to never use the home directory as an output location for jobs run on an HPC system, as it could reduce performance of the job as well as degrading performance of the system for other users.  The home filesystem is likely to be backed up regularly.
 
 \subsubsection{High-performance (``scratch'') storage}
 
@@ -48,43 +48,43 @@ The fastest storage available on a high-performance computing system is the loca
 
 \section{Job schedulers}
 
-When I was a postdoc, we had a couple of computers in the lab that were used to analyze brain imaging data (a Sun Microsystems workstation and a Linux box). Because there were several people in the lab analyzing data, it was a constant struggle to avoid overloading the machines by running too many jobs at once.  This is exactly the role that a \textit{job scheduler} plays: ensuring that the resources of the system are used as efficiently and consistently as possible while preventing overloads.  The most common job scheduler in use today is the Simple Linux Utility for Resource Management (\textit{Slurm}), which I will focus on in my discussion.  However, it is important to know that Slurm installations can differ substantially between different HPC systems, so some of the suggestions below may not work on all systems.\index{Slurm}
+When I was a postdoc, we had a couple of computers in the lab that were used to analyze brain imaging data (a Sun Microsystems workstation and a Linux box). Because there were several people in the lab analyzing data, it was a constant struggle to avoid overloading the machines by running too many jobs at once.  This is exactly the role that a \textit{job scheduler} plays: ensuring that the resources of the system are used as efficiently and consistently as possible while preventing overloads.  The most common job scheduler in use today is the Simple Linux Utility for Resource Management (\textit{Slurm}), which I will focus on in my discussion.  However, it is important to know that \textit{Slurm} installations can differ substantially between different HPC systems, so some of the suggestions below may not work on all systems.\index{Slurm}
 
 Working on a shared HPC system generally involves submitting a \textit{batch job} to the job scheduler.  This is very different from ``running a program'' on a personal computer. Instead of executing the program immediately, the scheduler puts the job into a \textit{queue}, in which the program waits until the resources required to run it are available. The job request includes details about the amount of compute (number of nodes/cores and amount of RAM) as well as the maximum amount of time requested. If the job requires few resources and requests a small amount of time then it may run in seconds; if it requests many resources and/or a long run time, it might have to wait a significant amount of time in the queue until the resources become available, depending on how busy the system is.  HPC systems often become very busy in the weeks before major conference abstract deadlines, leading to very long wait times; this is simply the tradeoff that one must make to gain access to such large systems.  On the large systems I have used at Stanford and the University of Texas, I have seen large jobs wait a day or two to run during busy times.  On some systems it is possible for researchers to purchase their own nodes which are put into a private queue, allowing dedicated resources for the group while still allowing those resources to be used by others when they are idle.
 
-Job schedulers generally use a \textit{Fairshare} system to allocate resources to users. This system computes the resources used by each user according to a sliding window over time, and assigns priority in such a way that users with heavy recent usage have a lower priority score for job execution.  One can see their priority score using the \texttt{sshare} command on systems using Slurm for scheduling:
+Job schedulers generally use a \textit{Fairshare} system to allocate resources to users. This system computes the resources used by each user according to a sliding window over time, and assigns priority in such a way that users with heavy recent usage have a lower priority score for job execution.  One can see their priority score using the \texttt{sshare} command on systems using \textit{Slurm} for scheduling:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ sshare
 Account        User  RawShares  NormShares  RawUsage  EffectvUsage  FairShare
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+----------------------------------------------------------------------------- 
  russpold  russpold        100    0.033333      6533      0.000065   0.816451
 \end{lstlisting}
 
-The important number here is the ``FairShare'' value of 0.81. This is a value that ranges from 1 (lowest usage, highest priority) to zero (very high usage, lowest priority), with 0.5 representing having used one's ``fair share'', with neutral priority.  In order to protect one's FairShare score, it can be useful to spread jobs out over time.  If you end up with a low score, it should improve after a few days with low usage.
+The important number here is the \textit{Fairshare} value of 0.81. This is a value that ranges from 1 (lowest usage, highest priority) to zero (very high usage, lowest priority), with 0.5 representing having used one's ``fair share'', with neutral priority.  In order to protect one's \textit{Fairshare} score, it can be useful to spread jobs out over time.  If you end up with a low score, it should improve after a few days with low usage.
 
 \subsection{Anatomy of a batch job}
 
-A batch job is defined by a \textit{batch file}, which has a specific format depending on the scheduler; I will focus here on the Slurm format.  Here is the first part of a Slurm file that runs a single Python program:\index{Python}
+A batch job is defined by a \textit{batch file}, which has a specific format depending on the scheduler; I will focus here on the \textit{Slurm} format.  Here is the first part of a \textit{Slurm} file that runs a single Python program:\index{Python}
 
 \begin{lstlisting}[style=shell]
 #!/bin/bash
-# - - - - - - - - - - - - - - - -SLURM Parameters - - - - - - - - - - - - - - - -
-#SBATCH - -partition=normal
-#SBATCH - -nodes=1
-#SBATCH - -ntasks=4
-#SBATCH - -cpus -per -task=4
-#SBATCH - -mem=32G
-#SBATCH - -time=02:00:00
-#SBATCH - -mail -user=myemail@university.edu
-#SBATCH - -mail -type=END,FAIL
+#----------------SLURM Parameters----------------
+#SBATCH --partition=normal
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --time=02:00:00
+#SBATCH --mail-user=myemail@university.edu
+#SBATCH --mail-type=END,FAIL
 #SBATCH -J my_python_job
 #SBATCH -D /scratch/workdir/pyjob
-#SBATCH -o pyjob -%j.out
-#SBATCH -e pyjob -%j.err
+#SBATCH -o pyjob-%j.out
+#SBATCH -e pyjob-%j.err
 \end{lstlisting}
 
-Note the Bash directive at the top of the file; a Slurm script is simply a Bash script that includes some \textit{directives} (the lines starting with \texttt{\#SBATCH}) for Slurm to use in creating the job request:
+Note the Bash directive at the top of the file; a \textit{Slurm} script is simply a Bash script that includes some \textit{directives} (the lines starting with \texttt{\#SBATCH}) for \textit{Slurm} to use in creating the job request:
 
 \begin{itemize}
 \item \texttt{--partition=normal}: the partition (or queue) that the job should be run in, in this case using the queue called \textit{normal}
@@ -101,14 +101,14 @@ Note the Bash directive at the top of the file; a Slurm script is simply a Bash 
 \item \texttt{-e pyjob-\%j.err}: file containing standard error from the job
 \end{itemize}
 
-After specifying these directives, then we specify the modules to be loaded (more about that below) and then the commands that we want to run:
+After specifying these directives, then we specify the modules to be loaded (more about that below) and then the commands that we want to run (which are calls to a script that computes the $N$th Fibonacci number, where $N$, is specified using the \texttt{-i} flag):
 
 \begin{lstlisting}[style=shell]
-# - - - - - - - - - - - - - - - -Modules - - - - - - - - - - - - - - - - - - - - - - - -
+#----------------Modules----------------- 
 module load python/3.12.1
 
-# - - - - - - - - - - - - - - - -Commands - - - - - - - - - - - - - - - - - - - - - - - -
-# 1. PREVENT OVER -SUBSCRIPTION
+#----------------Commands----------------
+# 1. PREVENT OVER-SUBSCRIPTION
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export MKL_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
@@ -119,38 +119,38 @@ python3 fibnumber.py -i 1000003 &
 python3 fibnumber.py -i 1000004 &
 
 # 3. THE "WAIT" COMMAND
-# Without this, the script finishes immediately, and Slurm kills your Python jobs.
+# Without this, the script finishes immediately, and \textit{Slurm} kills your Python jobs.
 wait
 \end{lstlisting}
 
-There are three sections in the commands portion of the file, the first of which sets some important environment variables (\texttt{OMP\_NUM\_THREADS} and \texttt{MKL\_NUM\_THREADS}) that are used by Numpy and other packages to determine how many cores are available for multithreading.  If these variables are not set then Numpy will by default try to use all of the available cores, which can lead to excessive \textit{context-switching} that can actually cause the code to run slower.  The second section runs the commands in parallel.  Ending each line with \texttt{\&} causes it to be run in the background, which allows the next job to start; otherwise the runner would wait for that line to complete before starting the next command.  The final section includes a \texttt{wait} command, which basically tells Slurm to wait until the parallel jobs are complete before ending the job.\index{multithreading}
+There are three sections in the commands portion of the file, the first of which sets some important environment variables (\texttt{OMP\_NUM\_THREADS} and \texttt{MKL\_NUM\_THREADS}) that are used by Numpy and other packages to determine how many cores are available for multithreading.  If these variables are not set then Numpy will by default try to use all of the available cores, which can lead to excessive \textit{context-switching} that can actually cause the code to run slower.  The second section runs the commands in parallel.  Ending each line with \texttt{\&} causes it to be run in the background, which allows the next job to start; otherwise the runner would wait for that line to complete before starting the next command.  The final section includes a \texttt{wait} command, which basically tells \textit{Slurm} to wait until the parallel jobs are complete before ending the job.\index{multithreading}
 
 \subsection{Running a batch job}
 
 To submit the batch job, we simply use the \texttt{sbatch} call:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ sbatch fibnumber.sbatch
 Submitted batch job 14653975
 \end{lstlisting}
 
 We can then look at the queue to see the status of the job, using the \texttt{squeue} command.  Running that command would return a very long list, depending on the size of the system. For reference, here are the results from the Sherlock supercomputer at Stanford that I used for testing:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ squeue | wc
    8473   68399  684460
 $ squeue | grep PD | wc
    1933   16076  161026
 \end{lstlisting}
 
-At the time I ran my jobs there were more than 8,000 jobs in the queue, of which almost 2000 were pending. We can use the \texttt{--user} flag to pull out the jobs that are owned by me (using my account name \texttt{russpold}) - otherwise it would be a long list of all jobs on the system:
+At the time I ran my jobs there were more than 8,000 jobs in the queue, of which almost 2000 were pending (denoted by \texttt{PD}). We can use the \texttt{--user} flag to pull out the jobs that are owned by me (using my account name \texttt{russpold}); otherwise it would be a long list of all jobs on the system:
 
-\begin{lstlisting}[style=shell, numbers=none]
-$ squeue - -user russpold
+\begin{lstlisting}[style=shellshort]
+$ squeue --user russpold
           14653975    normal fibnumbe russpold PD       0:00      1 (None)
 \end{lstlisting}
 
-The status \texttt{PD} means that the job is pending.  The parenthetical note at the end (\texttt{(None)}) specifies the reason that the job hasn't started running it.  It will initially say \texttt{None} until the scheduler has actually processed the job and determined its rank in the queue; this status should only last a few seconds.  There are several other reasons that might also be listed:
+The parenthetical note at the end (\texttt{(None)}) specifies the reason that the job hasn't started running it.  It will initially say \texttt{None} until the scheduler has actually processed the job and determined its rank in the queue; this status should only last a few seconds.  There are several other reasons that might also be listed:
 
 \begin{itemize}
 \item \texttt{Priority}: there are other jobs in the queue that are ahead of yours
@@ -160,66 +160,67 @@ The status \texttt{PD} means that the job is pending.  The parenthetical note at
 \item \texttt{ReqNodeNotAvail}: there is a hardware problem or upcoming maintenance window
 \end{itemize}
 
-If you find yourself stuck for a long time due to Resources, it likely suggests that you are requesting too much resources for your project.
+If you find yourself stuck for a long time due to \texttt{Resources}, it likely suggests that you are requesting too many resources for your project.
 
 Once your job starts running, the status turns to \texttt{R}:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ squeue | grep russpold
-          14654437    normal fibnumbe russpold  R       1:11      1 sh02 -01n36
+          14654437    normal fibnumbe russpold  R       1:11      1 sh02-01n36
 \end{lstlisting}
 
 The information at the end (\texttt{sh02-01n36}) is the name of the compute node where the job is running. In general it's only possible to SSH into a compute node while one has an active job running, as I did here in order to look at the processes running under my name:
 
 \begin{lstlisting}[style=shell]
-$ ssh sh02 -01n36
+$ ssh sh02-01n36
 
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+----------------------------------------
  Sherlock compute node
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+----------------------------------------
 
 
 $ ps aux | grep russpold
 russpold 20439  0.0  0.0 113504  1788 ?        S    10:26   0:00 /bin/bash /var/spool/slurmd/job14654437/slurm_script
-russpold 20467  0.0  0.0 116332  6580 ?        S    10:26   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 python3 fibnumber.py -i 1000001
-russpold 20468  0.0  0.0 116332  6576 ?        S    10:26   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 python3 fibnumber.py -i 1000002
-russpold 20469  0.0  0.0 116332  6576 ?        S    10:26   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 python3 fibnumber.py -i 1000003
-russpold 20470  0.0  0.0 421832  9228 ?        Sl   10:26   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 python3 fibnumber.py -i 1000004
-russpold 20480  0.0  0.0 116332  2608 ?        S    10:26   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 python3 fibnumber.py -i 1000004
+russpold 20467  0.0  0.0 116332  6580 ?        S    10:26   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 python3 fibnumber.py -i 1000001
+russpold 20468  0.0  0.0 116332  6576 ?        S    10:26   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 python3 fibnumber.py -i 1000002
+russpold 20469  0.0  0.0 116332  6576 ?        S    10:26   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 python3 fibnumber.py -i 1000003
+russpold 20470  0.0  0.0 421832  9228 ?        Sl   10:26   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 python3 fibnumber.py -i 1000004
+russpold 20480  0.0  0.0 116332  2608 ?        S    10:26   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 python3 fibnumber.py -i 1000004
 russpold 20522 12.3  0.0 150888 14224 ?        S    10:26   0:11 /share/software/user/open/python/3.12.1/bin/python3 fibnumber.py -i 1000004
 russpold 20667  1.1  0.0 115048  3516 pts/0    Ss   10:27   0:00 -bash
 russpold 20915  0.0  0.0 153564  1836 pts/0    R+   10:27   0:00 ps aux
-russpold 20916  0.0  0.0 112828  1000 pts/0    S+   10:27   0:00 grep - -color=auto russpold
+russpold 20916  0.0  0.0 112828  1000 pts/0    S+   10:27   0:00 grep --color=auto russpold
 \end{lstlisting}
 
-This output is a bit odd: for one of the inputs (\texttt{-i 1000004}) there are two srun processes along with the actual Python process, while for the others there is only a single srun process, and those Python processes never actually got run before the time expired. This occurs because Slurm assumes that each srun command has full access to all of the resources that have been requested, and the first of the srun commands to hit the slurm controller (which in this case was the \texttt{-i 1000004} one) will run while the others will be stuck in a holding pattern waiting for the required resources.  In order to cause the multiple processes to run at the same time, we need to add the \texttt{--exclusive} flag, as well as specifying that the total. memory should be shared between the processes:
-
-\begin{lstlisting}[style=shell, numbers=none]
-srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 $CODEDIR/fibnumber.py -i 1000001 &
-srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 $CODEDIR/fibnumber.py -i 1000002 &
-srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 $CODEDIR/fibnumber.py -i 1000003 &
-srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 $CODEDIR/fibnumber.py -i 1000004 &
-\end{lstlisting}
-
-Logging into the compute node we now see that each Python process is running along with two srun processes for each input:
+This output is a bit odd: for one of the inputs (\texttt{-i 1000004}) there are two \texttt{srun} processes along with the actual Python process, while for the others there is only a single \texttt{srun} process, and those Python processes never actually got run before the time expired. This occurs because \textit{Slurm} assumes that each \texttt{srun} command has full access to all of the resources that have been requested, and the first of the \texttt{srun} commands to hit the \textit{Slurm} controller (which in this case was the \texttt{-i 1000004} one) will run while the others will be stuck in a holding pattern waiting for the required resources.  In order to cause the multiple processes to run at the same time, we need to add the \texttt{--exclusive} flag, as well as specifying that the total. memory should be shared between the processes:
 
 \begin{lstlisting}[style=shell]
+srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 $CODEDIR/fibnumber.py -i 1000001 &
+srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 $CODEDIR/fibnumber.py -i 1000002 &
+srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 $CODEDIR/fibnumber.py -i 1000003 &
+srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 $CODEDIR/fibnumber.py -i 1000004 &
+\end{lstlisting}
+
+Logging into the compute node we now see that each Python process is running along with two \texttt{srun} processes for each input:
+
+\begin{lstlisting}[style=shell]
+$ ps aux | grep russpold
 russpold 30556  0.0  0.0 113504  1788 ?        S    11:05   0:00 /bin/bash /var/spool/slurmd/job14658999/slurm_script
-russpold 30611  0.4  0.0 421832  9224 ?        Sl   11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000001
-russpold 30612  0.4  0.0 421832  9216 ?        Sl   11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000002
-russpold 30613  0.4  0.0 421832  9228 ?        Sl   11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000003
-russpold 30614  0.3  0.0 421832  9232 ?        Sl   11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000004
-russpold 30634  0.0  0.0 116332  2608 ?        S    11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000004
-russpold 30635  0.0  0.0 116332  2608 ?        S    11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000003
-russpold 30648  0.0  0.0 116332  2604 ?        S    11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000001
-russpold 30658  0.0  0.0 116332  2608 ?        S    11:05   0:00 srun - -ntasks=1 - -nodes=1 - -cpus -per -task=1 - -mem=250M - -exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000002
+russpold 30611  0.4  0.0 421832  9224 ?        Sl   11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000001
+russpold 30612  0.4  0.0 421832  9216 ?        Sl   11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000002
+russpold 30613  0.4  0.0 421832  9228 ?        Sl   11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000003
+russpold 30614  0.3  0.0 421832  9232 ?        Sl   11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000004
+russpold 30634  0.0  0.0 116332  2608 ?        S    11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000004
+russpold 30635  0.0  0.0 116332  2608 ?        S    11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000003
+russpold 30648  0.0  0.0 116332  2604 ?        S    11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000001
+russpold 30658  0.0  0.0 116332  2608 ?        S    11:05   0:00 srun --ntasks=1 --nodes=1 --cpus-per-task=1 --mem=250M --exclusive python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000002
 russpold 30731 44.8  0.0 150888 14228 ?        S    11:05   0:09 /share/software/user/open/python/3.12.1/bin/python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000004
 russpold 30746 45.1  0.0 150508 13716 ?        S    11:05   0:09 /share/software/user/open/python/3.12.1/bin/python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000003
 russpold 30751 57.1  0.0 150044 13388 ?        S    11:05   0:11 /share/software/user/open/python/3.12.1/bin/python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000002
 russpold 30754 56.9  0.0 149892 13296 ?        S    11:05   0:11 /share/software/user/open/python/3.12.1/bin/python3 /home/users/russpold/code/bettercode/src/bettercode/slurm/fibnumber.py -i 1000001
 \end{lstlisting}
 
-Why are there two srun processes?  It turns out that srun first starts a lead process, whose job it is to communicate with the Slurm controller (in this case that's PID 30614 for the \texttt{-i 1000004} job).  This is how the job can be cancelled if the user cancels it (using \texttt{scancel}) or when the allotted time expires.  This process then starts a \textit{helper} process (in this case PID 30634), which sets up the environment and actually runs the Python script, which is running in PID 30731. These processes are treated as part of a single group, which ensures that if the lead runner gets killed, the helper and actual Python script also get killed, preventing zombie processes from persisting on the compute node.
+Why are there two \texttt{srun} processes?  It turns out that \texttt{srun} first starts a lead process, whose job it is to communicate with the \textit{Slurm} controller (in this case that's PID 30614 for the \texttt{-i 1000004} job).  This is how the job can be cancelled if the user cancels it (using \texttt{scancel}) or when the allotted time expires.  This process then starts a \textit{helper} process (in this case PID 30634), which sets up the environment and actually runs the Python script, which is running in PID 30731. These processes are treated as part of a single group, which ensures that if the lead runner gets killed, the helper and actual Python script also get killed, preventing zombie processes from persisting on the compute node.
 
 \subsection{Parametric sweeps}
 
@@ -228,29 +229,29 @@ A very common use case on HPC systems is a \textit{parametric sweep}, where we w
 \begin{itemize}
 \item It only submits a single job to the scheduler, which makes it easier to monitor or cancel the job
 \item It allows one to limit the number of jobs run at once
-\item It is easy to create an index file that contains the relevant parameters and then read those into the sbatch file or the code directly
+\item It is easy to create an index file that contains the relevant parameters and then read those into the \texttt{sbatch} file or the code directly
 \end{itemize}
 
-First let's implement our previous analysis as a job array; we wouldn't usually use a job array for such a small set, but it's a useful example.  Here is what the sbatch file would look like:
+First let's implement our previous analysis as a job array; we wouldn't usually use a job array for such a small set, but it's a useful example.  Here is what the \texttt{sbatch} file would look like:
 
 \begin{lstlisting}[style=shell]
 #!/bin/bash
-#SBATCH - -partition=normal
-#SBATCH - -nodes=1
-#SBATCH - -ntasks=1
-#SBATCH - -cpus -per -task=1
-#SBATCH - -mem=250M
-#SBATCH - -time=00:05:00
-#SBATCH - -mail -user=russpold@stanford.edu
-#SBATCH - -mail -type=END,FAIL
+#SBATCH --partition=normal
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=250M
+#SBATCH --time=00:05:00
+#SBATCH --mail-user=russpold@stanford.edu
+#SBATCH --mail-type=END,FAIL
 #SBATCH -J fibnumber
 
 # 1. Use small indices (1, 2, 3, 4)
-#SBATCH - -array=1 -4
+#SBATCH --array=1 -4
 
 # 2. use indices and job ID in the output file names
-#SBATCH -o fibnumber -%A_%a.out
-#SBATCH -e fibnumber -%A_%a.err
+#SBATCH -o fibnumber-%A_%a.out
+#SBATCH -e fibnumber-%A_%a.err
 #SBATCH -D /scratch/users/russpold/bettercode/fibnumber
 
 module load python/3.12.1
@@ -265,21 +266,21 @@ echo "Running task $SLURM_ARRAY_TASK_ID with iteration value $ITER_VALUE"
 srun python3 $CODEDIR/fibnumber.py -i $ITER_VALUE
 \end{lstlisting}
 
-First note that this batch file specifies the resources needed for each individual job, rather than the combined job like it did before; this is because jobs in a job array are treated separately.  We create array numbers that are used to index the jobs (from 1 to 4); these will end up in the file names for the error and output files, by including \texttt{\%a} in the file name specifiers.  This script is then called once for each value of the array index, and the environment variable \texttt{\$SLURM\_ARRAY\_TASK\_ID} contains the value of the array; we add 100000 to this to get the values that we want to pass along to the Python script. Once the job begins, we see this in the Slurm queue:
+First note that this batch file specifies the resources needed for each individual job, rather than the combined job like it did before; this is because jobs in a job array are treated separately.  We create array numbers that are used to index the jobs (from 1 to 4); these will end up in the file names for the error and output files, by including \texttt{\%a} in the file name specifiers.  This script is then called once for each value of the array index, and the environment variable \texttt{\$SLURM\_ARRAY\_TASK\_ID} contains the value of the array; we add 1000000 to this to get the values that we want to pass along to the Python script, since we are looking for Fibonacci numbers starting at 1000001. Once the job begins, we see this in the \textit{Slurm} queue:
 
 \begin{lstlisting}[style=shell]
 $ squeue | grep russpold
-        14679499_1    normal fibnumbe russpold  R       2:46      1 sh02 -01n49
-        14679499_2    normal fibnumbe russpold  R       2:46      1 sh02 -01n49
-        14679499_3    normal fibnumbe russpold  R       2:46      1 sh02 -01n41
-        14679499_4    normal fibnumbe russpold  R       2:46      1 sh02 -01n41
+        14679499_1    normal fibnumbe russpold  R       2:46      1 sh02-01n49
+        14679499_2    normal fibnumbe russpold  R       2:46      1 sh02-01n49
+        14679499_3    normal fibnumbe russpold  R       2:46      1 sh02-01n41
+        14679499_4    normal fibnumbe russpold  R       2:46      1 sh02-01n41
 \end{lstlisting}
 
 There is a single job number (14679499), but each individual job in the array is shown separately in the queue; also notice that two different nodes are being used for the different jobs.
 
-Job arrays become very useful when one wants to run a large number of parametric variations.  In these cases it can be useful to specify the parameters in a text file and then read that file into the slurm script, rather than using Bash to create the parameters. For example, let's say that we have a prediction problem and we want to run a multiverse analysis to assess analytic variability across models and crossvalidation schemes, running each combination with 100 different random seeds.  We could generate a text file called \texttt{params.txt} containing columns with each of these:
+Job arrays become very useful when one wants to run a large number of parametric variations.  In these cases it can be useful to specify the parameters in a text file and then read that file into the \textit{Slurm} script, rather than using Bash to create the parameters. For example, let's say that we have a prediction problem and we want to run a multiverse analysis to assess analytic variability across models and crossvalidation schemes, running each combination with 100 different random seeds.  We could generate a text file called \texttt{params.txt} containing columns with each of these:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 Lasso  ShuffleSplit  42
 Ridge  ShuffleSplit  593
 ...
@@ -287,18 +288,18 @@ Ridge  ShuffleSplit  593
 
 We could then pass the task ID to our Python script, which would read in the parameter file and select the row specified by the task ID to retrieve the parameters for that run:
 
-\begin{lstlisting}[style=shell, numbers=none]
-#SBATCH - -array=1 -100%10  # Run 100 tasks, but only 10 at a time (%)
+\begin{lstlisting}[style=shellshort]
+#SBATCH --array=1-100%10  # Run 100 tasks, but only 10 at a time (%)
 
 # The task ID tells the Python script which line to use from the parameter file
 python3 runmodel.py $SLURM_ARRAY_TASK_ID
 \end{lstlisting}
 
-Job arrays work well up to about 1000 jobs, beyond which schedulers often become unreliable; it's often useful to think about reorganizing the work so that there are fewer jobs but each job does more work. It's very important to include a throttle on the job array (the 10 in \texttt{--array=1-100\%10}) when the array is large, which causes it to run only a subset of the jobs at once, in order to prevent the filesystem from being overwhelmed if one is reading data.  It's also useful to create a file for each job that specifies that it completed successfully, which then allows rerunning the array in order to rerun any jobs that crashed, without rerunning those that were successful; alternatively one might consider using Snakemake, which interoperates very well with Slurm.\index{Snakemake}
+Job arrays work well up to about 1000 jobs, beyond which schedulers often become unreliable; it's often useful to think about reorganizing the work so that there are fewer jobs but each job does more work. It's very important to include a throttle on the job array (the 10 in \texttt{--array=1-100\%10}) when the array is large, which causes it to run only a subset of the jobs at once, in order to prevent the filesystem from being overwhelmed if one is reading data.  It's also useful to create a file for each job that specifies that it completed successfully, which then allows rerunning the array in order to rerun any jobs that crashed, without rerunning those that were successful; alternatively one might consider using \textit{Snakemake}, which interoperates very well with Slurm.\index{Snakemake}
 
 \subsection{Job dependencies}
 
-Sometimes there are dependencies between jobs, such that one job must complete before another can start.  These are the kinds of dependencies that would often be handled by a workflow engine, but they can also be specified directly in Slurm using the \texttt{--dependency} flag. There are several dependency flags that can be used:
+Sometimes there are dependencies between jobs, such that one job must complete before another can start.  These are the kinds of dependencies that would often be handled by a workflow engine, but they can also be specified directly in \textit{Slurm} using the \texttt{--dependency} flag. There are several dependency flags that can be used:
 
 \begin{itemize}
 \item \texttt{afterok:jobid}: only run after \texttt{jobid} has completed successfully
@@ -310,21 +311,21 @@ Sometimes there are dependencies between jobs, such that one job must complete b
 
 For example, if you had a job that you wanted to run only after job 999444 had completed, you could use:
 
-\begin{lstlisting}[style=shell, numbers=none]
-$ sbatch - -dependency=afterok:999444 part2.sbatch
+\begin{lstlisting}[style=shellshort]
+$ sbatch --dependency=afterok:999444 part2.sbatch
 \end{lstlisting}
 
-You can also retrieve the job ID from an sbatch command more easily by using the \texttt{--parseable} flag, which allows easy chaining of jobs:
+You can also retrieve the job ID from an \texttt{sbatch} command more easily by using the \texttt{--parseable} flag, which allows easy chaining of jobs:
 
 \begin{lstlisting}[style=shell]
 # Submit first job, capture job ID
-JOB1=$(sbatch - -parsable preprocess.sbatch)
+JOB1=$(sbatch --parsable preprocess.sbatch)
 
 # Second job waits for first
-JOB2=$(sbatch - -parsable - -dependency=afterok:$JOB1 analyze.sbatch)
+JOB2=$(sbatch --parsable --dependency=afterok:$JOB1 analyze.sbatch)
 
 # Third job waits for second
-sbatch - -dependency=afterok:$JOB2 postprocess.sbatch
+sbatch --dependency=afterok:$JOB2 postprocess.sbatch
 \end{lstlisting}
 
 \section{Resource estimation}
@@ -338,9 +339,9 @@ Effective and efficient use of HPC resources requires a good understanding of th
 \item Time/run: How long will the entire run take?
 \end{itemize}
 
-Time/run and jobs/run trade off against each other directly: More jobs take more time to complete, holding other resources constant.  In addition, longer jobs generally spend a longer time in the queue before being executed.  Most schedulers also have a maximum time limit (usually 24-72 hours), though longer runs can often be allowed upon special request (another reason to be kind to the sysadmin). In general, I aim to keep jobs to no more than 12 hours, as I have found that longer jobs will often sit in the queue for a very long time.
+Time/run and jobs/run trade off against each other directly: More jobs take more time to complete, holding other resources constant.  In addition, longer jobs generally spend a longer time in the queue before being executed.  Most schedulers also have a maximum time limit (usually 24-72 hours), though longer runs can often be allowed upon special request (another reason to be kind to the sysadmin). In general, I aim to keep jobs to no more than 12 hours, as I have found that longer jobs will often sit in the queue for a very long time on the systems I use.
 
-Estimating the CPUs required for each job requires an understanding of the parallelism that the job can take advantage of.  For example, code that performs operations using Numpy without any explicit multiprocessing might seem like it only needs a single CPU, but remember that Numpy actually takes advantage of implicit parallelization when multiple cores are available.  Thus, optimal performance might occur with more cores per job; keeping in mind the diminshing returns of increasing parallelism, something like 4 cores per job is probably a sweet spot for Numpy jobs, though it's worth doing some benchmarking for large jobs where performance is a major concern.\index{parallelization}\index{multiprocessing}
+Estimating the cores required for each job requires an understanding of the parallelism that the job can take advantage of.  For example, code that performs operations using Numpy without any explicit multiprocessing might seem like it only needs a single core, but remember that Numpy actually takes advantage of implicit parallelization when multiple cores are available.  Thus, optimal performance might occur with more cores per job; keeping in mind the diminshing returns of increasing parallelism, something like 4 cores per job is probably a sweet spot for Numpy jobs, though it's worth doing some benchmarking for large jobs where performance is a major concern.\index{parallelization}\index{multiprocessing}
 
 In my experience, memory is the resource that is trickiest to estimate and causes the most problems, in part because it is often used in a bursty way across the computation.  I have seen workflows that require less than 1 GB of RAM for most of their runtime, but then require over 10GB for a very short period.  The memory allocation request must be sufficient to cover the maximum amount needed for the entire run.  If a workflow has a single operation that takes a large amount of RAM, then it might make sense to isolate this operation as a separate job, since requesting large amounts of RAM for a long-running workflow can result in long waits in the queue.
 
@@ -351,6 +352,7 @@ When estimating resource needs, it's generally a good idea to pad the estimated 
 One essential tool for resource estimation is the \texttt{seff} tool (a community tool often installed alongside Slurm), which provides a report for completed jobs on their resource usage.  Here is an example from one of the example jobs run earlier:
 
 \begin{lstlisting}[style=shell]
+$ seff 14654437
 Job ID: 14654437
 Cluster: sherlock
 User/Group: russpold/russpold
@@ -358,8 +360,8 @@ State: TIMEOUT (exit code 0)
 Nodes: 1
 Cores per node: 4
 CPU Utilized: 00:00:01
-CPU Efficiency: 0.07% of 00:22:28 core -walltime
-Job Wall -clock time: 00:05:37
+CPU Efficiency: 0.07% of 00:22:28 core-walltime
+Job Wall-clock time: 00:05:37
 Memory Utilized: 20.83 MB
 Memory Efficiency: 2.03% of 1.00 GB (1.00 GB/node)
 \end{lstlisting}
@@ -370,7 +372,7 @@ This report tells us that I requested much more CPU time and more RAM than I uti
 
 I previously discussed the challenge of jobs with long-tailed completion time distributions, which are also a problem for HPC resource estimation: If we estimate the runtime based on the worst-case scenario, then we could end up sitting on a lot of resources while a few long-running jobs finish.  If we request less runtime, then we will end up with some jobs being cancelled, wasting computation.  For this reason, it's good practice to use checkpoints to save intermediate results so that computations don't have to be repeated, and to save information that specifies which jobs have been completed successfully. This allows a multi-stage process where we first run the entire set of jobs with a moderate runtime limit, and then rerun any jobs that failed with a longer time limit.
 
-We already discussed checkpointing in the context of workflows, and their ability to easily implement checkpointing is a good reason to consider using a workflow manager in the context of HPC. However, it's worth mentioning that this adds a layer of complexity that can make debugging of problems challenging.\index{debugging}
+I already discussed checkpointing in the context of workflows, and their ability to easily implement checkpointing is a good reason to consider using a workflow manager in the context of HPC. However, it's worth mentioning that this adds a layer of complexity that can make debugging of problems challenging.\index{debugging}
 
 \section{Software configuration on HPC systems}
 
@@ -390,7 +392,7 @@ Currently Loaded Modules:
   4) cuda/11.5.0 (g)   8) munge/0.5.16
 
   Where:
-   S:  Module is Sticky, requires - -force to unload or purge
+   S:  Module is Sticky, requires --force to unload or purge
    g:  GPU support
    m:  MPI support
 \end{lstlisting}
@@ -400,11 +402,11 @@ A listing of all available modules can be printed using \texttt{module avail}, b
 \begin{lstlisting}[style=shell]
 $ module spider python
 
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+----------------------------------------------------------------------------
   python:
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+----------------------------------------------------------------------------
     Description:
-      Python is an interpreted, interactive, object -oriented programming
+      Python is an interpreted, interactive, object-oriented programming
       language.
 
      Versions:
@@ -414,21 +416,21 @@ $ module spider python
         python/3.12.1 (devel)
         python/3.14.2 (devel)
      Other possible modules matches:
-        py -biopython  py -bx -python  py -cuda -python  py -cuquantum -python  ...
+        py-biopython  py-bx-python  py-cuda-python  py-cuquantum-python  ...
 \end{lstlisting}
 
 Let's say that I want to load the latest version of Python.  By default our system provides access to an older version of Python 3:
 
-\begin{lstlisting}[style=shell, numbers=none]
-$ python3 - -version
+\begin{lstlisting}[style=shellshort]
+$ python3 --version
 Python 3.6.8
 \end{lstlisting}
 
 By loading the \texttt{python/3.14.2} module, we can gain access a newer version:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 $ module load python/3.14.2
-$ python3 - -version
+$ python3 --version
 Python 3.14.2
 \end{lstlisting}
 
@@ -442,15 +444,11 @@ Throughout the book I have talked about the utility of virtual environments, and
 
 Containers solve at least two important problems for HPC users.  First, as I noted in the earlier discussion, they provide a strong platform for reproducible computing; given that the HPC user has no control over operating system upgrades, containers help ensure that software dependencies will remain consistent over time.  Second, they allow users to install software that may not be runnable on the HPC system; for example, the user may require a version of a package that is too old to run on the HPC's current operating system.  For these reasons, containers have become very popular on HPC systems.
 
-However, there is a rub: Because Docker requires that the user have root access to the system, it can't be run by users on HPC systems (which restrict root access to sysadmnins).  Instead, most HPC systems support Apptainer (formerly called Singularity) as a platform for running containers.\index{Docker}\index{Apptainer}\index{Singularity}
-
-\textbf{TODO}: discuss --fakeroot option for apptainer
-
-However, Apptainer can't actually build the container; it can only use existing containers, defined through an image file or downloaded from an image registry such as Dockerhub.  In many cases, there are existing containers on Dockerhub that have the appropriate software installed, which can be called directly from Apptainer. However, if no suitable pre-existing container image is available, the user will need to first generate a container using Docker on a system where they have administrative access (usually their own personal computer), and then convert the Docker image into an Apptainer image for use on the HPC system.  This can lead to long debugging cycles if there are problems with the container that require rebuilding, but once it's working it should continue working in the long term.
+Because Docker requires that the user have root access to the system, it can't be run by users on HPC systems (which restrict root access to sysadmnins).  Instead, most HPC systems support \textit{Apptainer} (formerly called \textit{Singularity}) as a platform for running containers.Historically \textit{Apptainer} couldn't actually build the container; it could only use existing containers, defined through an image file or downloaded from an image registry such as Dockerhub.  Fortunately, recent versions of \textit{Apptainer} have an option called \texttt{--fakeroot} that (if enabled) allows users to build containers, relieving them of having to separately build a \textit{Docker} container and then convert it. \index{Docker}\index{Apptainer}\index{Singularity}
 
 \subsection{Interactive access to HPC systems}
 
-I have focused so far primarily on usage of HPC systems from the command line shell, which for many years was the only way to access these systems. However, HPC systems increasingly offer graphical interfaces to interact with their system.  One common platform is \textit{OnDemand}, which offers access to a large number of applications on an HPC system via a web interface.  Other systems offer access to Jupyter notebooks via \textit{JupyterHub}, and RStudio Server for R users.  These interactive tools still usually require launching a Slurm job, which is done automatically, but this means that one can still end up waiting in a queue before being able to access the system.
+I have focused so far primarily on usage of HPC systems from the command line shell, which for many years was the only way to access these systems. However, HPC systems increasingly offer graphical interfaces to interact with their system.  One common platform is \textit{OnDemand}, which offers access to a large number of applications on an HPC system via a web interface.  Other systems offer access to Jupyter notebooks via \textit{JupyterHub}, and \textit{RStudio Server} for R users.  These interactive tools still usually require launching a \textit{Slurm} job, which is done automatically, but this means that one can still end up waiting in a queue before being able to access the system.
 
 \subsection{Software development on an HPC system}
 
@@ -460,15 +458,15 @@ First, I develop the code using a small version of the problem on my laptop.  Th
 
 Second, I would install the code on the HPC system and run it interactively within an interactive development shell, which is available using the \texttt{srun} command:
 
-\begin{lstlisting}[style=shell, numbers=none]
-$ srun - -nodes=1 - -ntasks=1 - -cpus -per -task=4 - -mem=16G - -time=2:00:00 - -pty bash
+\begin{lstlisting}[style=shellshort]
+$ srun --nodes=1 --ntasks=1 --cpus-per-task=4 --mem=16G --time=2:00:00 --pty bash
 \end{lstlisting}
 
-This provides an interactive shell on a compute node, so that one can run computationally intensive jobs.  I would run my code in this shell in order to ensure that it executes successfully on the system, and also to profile its memory usage for the slurm batch job.
+This provides an interactive shell on a compute node, so that one can run computationally intensive jobs.  I would run my code in this shell in order to ensure that it executes successfully on the system, and also to profile its memory usage for the \textit{Slurm} batch job.
 
-Third, once the code is running properly in the interactive shell I would implement a small Slurm batch job that checks to see whether the code runs properly in the batch environment.  I would start with a very short runtime (e.g. 5 minutes) and a single core, simply to check if the code is able to run; often this will uncover environment issues, such as modules that need to be loaded or environment variables that need to be set in the Slurm batch script.  Using a short runtime and a single core helps the test job make it through the queue more effectively.
+Third, once the code is running properly in the interactive shell I would implement a small \textit{Slurm} batch job that checks to see whether the code runs properly in the batch environment.  I would start with a very short runtime (e.g. 5 minutes) and a single core, simply to check if the code is able to run; often this will uncover environment issues, such as modules that need to be loaded or environment variables that need to be set in the \textit{Slurm} batch script.  Using a short runtime and a single core helps the test job make it through the queue more effectively.
 
-Finally, I would create the Slurm script to run the full job at scale on the system.  This workflow is probably overkill for small jobs, but for large jobs that require many hours across many CPUs it can save a lot of time, since those jobs may spend hours or even days in the queue before they are run.
+Finally, I would create the \textit{Slurm} script to run the full job at scale on the system.  This workflow is probably overkill for small jobs, but for large jobs that require many hours across many CPUs it can save a lot of time, since those jobs may spend hours or even days in the queue before they are run.
 
 \section{Distributed computing using MPI}\index{MPI (Message Passing Interface)}
 
@@ -476,7 +474,7 @@ So far I have focused on using HPC resources for jobs that are embarrassingly pa
 
 \section{GPU computing on HPC systems}\index{GPU computing}
 
-\textbf{TODO}:  how to request GPUs in Slurm (`--gres=gpu:1`), basics of GPU frameworks, and multi-GPU training.
+\textbf{TODO}:  how to request GPUs in \textit{Slurm} (`--gres=gpu:1`), basics of GPU frameworks, and multi-GPU training.
 
 \section{Cloud computing}
 
@@ -491,4 +489,4 @@ In addition to the HPC resources available at many research institutions, anothe
 
 Benefits of commercial cloud computing are that the resources are generally available immediately, and that the user has complete control and root access to the resources.  The downside of commercial cloud computing is that it can become very expensive very quickly.  Every component costs money: computing time, data storage, and data egress, as well as other features (e.g. database hosting).  There are ways to reduce costs, such as using pre-emptible resources (which may be interrupted), but these systems can still be very costly for large data/compute needs.
 
-We have used cloud computing for various projects, and it can be very useful to obtain specific kinds of compute resources quickly.  However, I generally feel that pay-to-play is a bad model for scientific computing, because it inhibits the kind of creativity and exploration that I think scientists need to be able to engage in.  When every computing cycle costs money, researchers are less likely to play and possible discover something new.  That said, they are an important tool in the computational toolbox, and can often help solve problems that would be intractable using on-prem HPC resources.
+We have used cloud computing for various projects, and it can be very useful to obtain specific kinds of compute resources quickly.  However, I generally feel that pay-to-play is a bad model for scientific computing, because it inhibits the kind of creativity and exploration that I think scientists need to be able to engage in.  When every computing cycle costs money, researchers are less likely to play and possibly discover something new.  That said, they are an important tool in the computational toolbox, and can often help solve problems that would be intractable using on-prem HPC resources.

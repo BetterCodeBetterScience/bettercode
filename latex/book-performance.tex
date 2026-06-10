@@ -15,13 +15,13 @@ I raise these comparisons to highlight the fact that any attempts to optimize th
 
 \section{Avoiding premature optimization}\index{optimization!premature}
 
-Donald Knuth, one of the founders of the modern field of computer science, is famous for saying the following about code optimization:\index{Knuth, Donald}
+Donald Knuth, one of the founders of the modern field of computer science, is famous for saying the following about code optimization \citep{Knuth:1974aa}:\index{Knuth, Donald}
 
 \begin{quote}
-The real problem is that programmers have spent far too much time worrying about efficiency in the wrong places and at the wrong times; premature optimization is the root of all evil (or at least most of it) in programming. - Donald Knuth
+The real problem is that programmers have spent far too much time worrying about efficiency in the wrong places and at the wrong times; premature optimization is the root of all evil (or at least most of it) in programming.
 \end{quote}
 
-I think that it's important to know how to optimize code, but also important to know when to optimize code and when not do do so.  In their book \textit{The Elements of Programming Style}, \citet{Kernighan:1978aa} proposed a set of organizing principles for optimization of existing code, which highlight the tradeoffs involved in optimization:
+I think that it's important to know how to optimize code, but also important to know when to optimize code and when not do do so.  In their book \textit{The Elements of Programming Style}, \citet{Kernighan:1978aa} proposed a set of organizing principles for optimization of existing code that  highlight the tradeoffs involved in optimization:
 
 \begin{itemize}
 \item ``Make it right before you make it faster''
@@ -38,7 +38,7 @@ That is, there is a tradeoff between accuracy, clarity, and speed that one must 
 
 \section{A brief introduction to computational complexity}
 
-Computational complexity refers to how the resources needed by a particular algorithm to solve a particular problem increases with the size of its input. We usually describe complexity in terms of what is known as ``big-O'' notation, describing how the resources (such as time or memory) needed to solve the problem scales with the size of the input.  More precisely, it provides an upper bound on the scaling, ignoring constant and lower-order factors.  For example, an $O(N)$ problem scales linearly with the size of the input, an $O(N^2)$ problem scales quadratically, and an $O(2^N)$ scales exponentially. In general we would consider problems with exponential scaling to be practically uncomputable for anything but the smallest datasets. It's important to keep in mind that these not meant to reflect actual performance, but rather meant to classify problems in terms of their worst-case difficulty as the input grows.  The fact that constant and lower-order factors are ignored also means that complexity differences may not become evident in real performance until inputs get very large.
+Computational complexity refers to how the resources needed to solve a particular problem with a particular algorithm scale with the size of the input. We usually describe complexity in terms of what is known as ``big-O'' notation, describing how the resources (such as time or memory) needed to solve the problem scales with the size of the input.  More precisely, it provides an upper bound on the scaling, ignoring constant and lower-order factors.  For example, an $O(N)$ problem scales linearly with the size of the input, an $O(N^2)$ problem scales quadratically, and an $O(2^N)$ scales exponentially. In general we would consider problems with exponential scaling to be practically uncomputable for anything but the smallest datasets. It's important to keep in mind that these not meant to reflect actual performance, but rather meant to classify problems in terms of their worst-case difficulty as the input grows.  The fact that constant and lower-order factors are ignored also means that complexity differences may not become evident in real performance until inputs get very large.
 
 There are two aspects of complexity that are important to understand.  First, any particular problem has a lower bound on its complexity, such that no algorithm can perform better than this bound.  For example, finding the minimum of a list of numbers is $O(N)$, since finding the minimum requires looking at all of the numbers (at least), and thus no algorithm can do better than $O(N)$. Comparison-based sorting of a list, on the other hand, is $O(N log N)$, because it takes about $log_2 N$ splits of a list to get to the individual elements.  Second, while the problem defines the lower bound, different algorithms may scale differently with input size for the same problem.  For example, merge sort (which recursively splits lists into half and then interleaves them) achieves the lower bound of $O(N log N)$ since an $O(N)$ operation is required for each merge.  On the other hand, bubble sort, which repeatedly scans the list and swaps elements that are out of order, is $O(N^2)$ since each scan is $O(N)$ and it can take up to N scans, and thus fails to achieve optimal performance.
 
@@ -64,13 +64,13 @@ def validate_records(records: list) -> None:
 
 This has two levels of looping, but only one of the levels scales with the number of records, so it is still $O(N)$.
 
-In addition to time complexity, it's also important to keep in mind the \textit{memory complexity} of algorithms.  Increasingly scientific work will run into memory limits before it hits time limits, meaning that the scaling of memory with input size must also be taken into account in considering algorithms for a problem.\index{time complexity}
+In addition to time complexity, it's also important to keep in mind the \textit{memory complexity} of algorithms.  Scientific work with large datasets will often run into memory limits before it hits time limits, meaning that the scaling of memory with input size must also be taken into account in considering algorithms for a problem.\index{time complexity}
 
 \section{Code profiling}\index{profiling}
 
-Complexity analysis tells us about the worst case performance of our code, but there are many reasons for slow code that are unrelated to complexity.  \textit{Profiling} is the activity of empirically analyzing the performance of our code in order to identify specific parts of the code that might cause poor performance.  It's often the case that slow performance arises from specific portions of the code, which we refer to as \textit{bottlenecks}.  These bottlenecks can be difficult to intuit, which is why it's important to empirically analyze performance in order to identify the location of those bottlenecks,  which can then help us focus our efforts.  However, it's also important to keep complexity in mind when we analyze code; in particular, we should always profile the code using realistic input sizes, so that we will see any complexity-related slowdowns if they exist.
+Complexity analysis tells us about the worst case performance of our code, but there are many reasons for slow code even when complexity is low.  \textit{Profiling} is the activity of empirically analyzing the performance of our code in order to identify specific parts of the code that might cause poor performance.  It's often the case that slow performance arises from specific portions of the code, which we refer to as \textit{bottlenecks}.  These bottlenecks can be difficult to intuit, which is why it's important to empirically analyze performance in order to identify the location of those bottlenecks,  which can then help us focus our efforts.  However, it's also important to keep complexity in mind when we analyze code; in particular, we should always profile the code using realistic input sizes, so that we will see any complexity-related slowdowns if they exist.
 
-There are a couple of important points to know when profiling code. First, it's important to remember that profiling has overhead and can sometimes distort results. In particular, when code involves many repetitions of a very fast operation, the overhead due to profiling the operation can add up, making it seem worse than it is.  The profiler can also compete with your code for memory and CPU time, potentially distorting results (e.g. for processes involving lots of memory).  Second, it's important to keep in mind the distinction between \textit{CPU time}, which refers to the time actually spent by the CPU doing processing, and \textit{wall time}, which includes CPU time as well as time due to other sources such as input/output. If the wall time is much greater than the CPU time, then this suggests that optimizing the computations may not have much impact on the overall execution time.  Also note that sometimes the CPU time can actually be \textit{greater} than the wall time, if multiple cores are used for the computation, since the time spent by each core is added together.
+There are a couple of important points to know when profiling code. First, it's important to remember that profiling has overhead and can sometimes distort results. In particular, when code involves many repetitions of a very fast operation, the overhead due to profiling the operation can add up, making it seem worse than it is.  The profiler can also compete with your code for memory and CPU time, potentially distorting results (e.g. for processes involving lots of memory).  Second, it's important to keep in mind the distinction between \textit{CPU time}, which refers to the time actually spent by the CPU doing processing, and \textit{wall time}, which includes CPU time as well as time due to other sources such as input/output. If the wall time is much greater than the CPU time, then this suggests that optimizing the computations may not have much impact on the overall execution time.  Also note that sometimes the CPU time can actually be \textit{greater} than the wall time if multiple cores are used for the computation, since the time spent by each core is added together.
 
 \subsection{Function profiling}
 
@@ -110,7 +110,7 @@ These functions look remarkably similar, so it wouldn't be obvious that one is m
 import cProfile
 import pstats
 import io
-import numpy as np
+import \textit{NumPy} as np
 
 def compare_duplicate_finding(data_size: int = 10000) -> None:
     data = list(range(data_size)) + list(range(data_size // 2))
@@ -167,7 +167,7 @@ Profiling duplicate finding with set (data_size=10000):
 
 Here we can see that there is a huge difference in the time taken by the two functions (0.31 seconds versus 0.002 seconds). This is due to the fact that membership (\texttt{in}) operations on sets are $O(1)$ whereas membership operations on lists are $O(N)$.  Once they are put into a loop this becomes $O(N)$ versus $O(N^2)$, which can make a huge difference as the number of inputs increases.
 
-I also learned something quite interesting in the process of writing this example. I worked with Claude Code to generate code for examples of problems where there might be a subtle issue that could cause a bottleneck.  In several cases, Claude generated code that was meant to demonstrate major performance bottlenecks, but the bottlenecks didn't actually occur.  The reason was that those particular issues were once problematic, but the latest version of the CPython interpreter (the standard implementation of Python) is now optimized to eliminate the bottlenecks!  This highlights the importance of verifying claims made by coding agents rather than blindly trusting them.  It also shows how optimization is a moving target, since code that was inefficient in a previous Python version can become optimal in a later version.\index{Claude}
+I also learned something quite interesting in the process of writing this example. I worked with my coding agent to generate code for examples of problems where there might be a subtle issue that could cause a bottleneck.  In several cases, the agent generated code that was meant to demonstrate major performance bottlenecks, but the bottlenecks didn't actually occur.  The reason was that those particular issues were once problematic, but the latest version of the CPython interpreter (the standard implementation of Python) is now optimized to eliminate the bottlenecks!  This highlights the importance of verifying claims made by coding agents rather than blindly trusting them.  It also shows how optimization is a moving target, since code that was inefficient in a previous Python version can become optimal in a later version.\index{Claude}
 
 \subsection{Line profiling}
 
@@ -222,7 +222,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     60         1         20.0     20.0      0.2      return list(duplicates)
 \end{lstlisting}
 
-This confirms that the slowdown comes specifically from the lines in which \texttt{in} is used with a list rather than a set. Specifically, the ``per hit'' metric shows that line 40 in the inefficient version takes 17.5 units of time, versus 0.2 for the equivalent line (55) in the efficient version.  Even if we didn't know about the optimization of membership testing for Python sets, this would make it clear that those two lines are the place to look to learn more about the slowdown, due to the fact that they are so much more time-consuming than the first \texttt{in} usage.  Note that the \texttt{@profile} decorator is not a built-in Python function, but instead is injected by \texttt{kernprof} when it runs; this, the decorator would need to be removed to avoid a \texttt{NameError} when it was run using the Python interpreter.
+This confirms that the slowdown comes specifically from the lines in which \texttt{in} is used with a list rather than a set. Specifically, the ``per hit'' metric shows that line 40 in the inefficient version takes 17.5 units of time, versus 0.2 for the equivalent line (55) in the efficient version.  Even if we didn't know about the optimization of membership testing for Python sets, this would make it clear that those two lines are the place to look to learn more about the slowdown.  Note that the \texttt{@profile} decorator is not a built-in Python function, but instead is injected by \texttt{kernprof} when it runs; this, the decorator would need to be removed to avoid a \texttt{NameError} when it was run using the Python interpreter.
 
 The results above also highlight the overhead that occurs with line profiling; while the efficient function took 0.002 seconds to complete in the function profiling example, it took 0.01 seconds in the line profiling example.
 
@@ -264,7 +264,7 @@ def process_without_copies(n_rows: int = 2000000) -> np.ndarray:
     return result
 \end{lstlisting}
 
-The \texttt{process\_without\_copies()} function doesn't copy the dataset at all; rather, it only saves transformations on the original data, or performs operations in place (\texttt{**= 2}).  Running these two functions we see substantial differences in the memory used during execution:
+The \texttt{process\_without\_copies()} function doesn't copy the dataset at all; rather, it only saves transformations on the original data, or performs operations in place (such as \texttt{**= 2}).  Running these two functions we see substantial differences in the memory used during execution:
 
 \begin{lstlisting}[style=shell]
 UNNECESSARY COPIES EXAMPLE (BAD VERSION)
@@ -315,7 +315,7 @@ There is a caveat to this kind of memory profiling, which is that it is less exa
 
 \subsubsection{Memory profiling in \textit{pandas}}
 
-\textit{pandas} data frames can exhibit some surprising memory usage features, and memory profiling can often be useful to optimize \textit{pandas} workflows.  \texttt{pandas} has a built-in memory profiling function for data frames, called \texttt{.memory\_usage()}.  Here we will use this to see an example of a surprising memory usage feature.  We first create functions to generate a data frame with a number of string variables, and to analyze the memory footprint of the data frame. Note that it's important to use \texttt{deep=True} when using the memory analyzer, since otherwise it will only report the size of the pointers in memory and not the size of the actual data that are being pointed to:
+\textit{pandas} data frames can exhibit some surprising memory usage features, and memory profiling can often be useful to optimize \textit{pandas} workflows.  \textit{pandas} has a built-in memory profiling function for data frames, called \texttt{pandas.memory\_usage()}.  Here we will use this to see an example of a surprising memory usage feature.  We first create functions to generate a data frame with a number of string variables, and to analyze the memory footprint of the data frame. Note that it's important to use \texttt{deep=True} when using the memory analyzer, since otherwise it will only report the size of the pointers in memory and not the size of the actual data that are being pointed to:
 
 \begin{lstlisting}[style=Python]
 def create_sample_data(n_rows: int = 100000) -> pd.DataFrame:
@@ -398,7 +398,7 @@ Now we turn to the various causes of slow code execution and how to address them
 
 \subsection{Slow algorithm}
 
-A common source of slow execution is use of an inefficient algorithm.  Let's reuse our earlier example of finding duplicate elements within a list.  A simple way to implement this could be perform nested loops to compare each item to each other.  This has computational complexity of greater than $O(N^2)$ in the worst case.  In this example we will use the \texttt{\%timeit} function with the \textit{Jupyter} notebook, which repeats the function multiple times in order to get a more precise estimate of execution time:\index{Jupyter}
+A common source of slow execution is use of an inefficient algorithm.  Let's reuse our earlier example of finding duplicate elements within a list.  A simple way to implement this could be perform nested loops to compare each item to each other.  This has computational complexity of at least $O(N^2)$ in the worst case.  In this example we will use the \texttt{\%timeit} function with the \textit{Jupyter} notebook, which repeats the function multiple times in order to get a more precise estimate of execution time:\index{Jupyter}
 
 \begin{lstlisting}[style=Python]
 import random
@@ -416,10 +416,10 @@ def find_duplicates_slow(lst: list) -> list:
 lst = create_random_list(10000)
 \end{lstlisting}
 
-\begin{lstlisting}[style=repl, numbers=none]
-In : timeit find_duplicates_slow(lst)
-Out:
-833 ms \pm 5.85 ms per loop (mean \pm std. dev. of 7 runs, 1 loop each)
+\begin{lstlisting}[style=replshort, mathescape=true]
+>>> timeit find_duplicates_slow(lst)
+
+833 ms $\pm$ 5.85 ms per loop (mean $\pm$ std. dev. of 7 runs, 1 loop each)
 \end{lstlisting}
 
 This is in fact worse than $O(N^2)$, because the added check for \texttt{lst[i] not in duplicates} scales with the number of duplicates, such that it could approach $O(N^3)$ if there were a high number of duplicates. We can speed this up substantially by using a dictionary and keeping track of how many times each item appears.  This only requires a single loop, giving it a time complexity of O(N).
@@ -439,10 +439,10 @@ def find_duplicates_fast(lst: list) -> list:
 
 \end{lstlisting}
 
-\begin{lstlisting}[style=repl, numbers=none]
-In : timeit find_duplicates_fast(lst)
-Out:
-446 \mus \pm 1.06 \mus per loop (mean \pm std. dev. of 7 runs, 1,000 loops each)
+\begin{lstlisting}[style=replshort, mathescape=true]
+>>> timeit find_duplicates_fast(lst)
+
+446 $\mu$s $\pm$ 1.06 $\mu$s per loop (mean $\pm$ std. dev. of 7 runs, 1,000 loops each)
 \end{lstlisting}
 
 Notice that the first results are reported in milliseconds and the second in microseconds: That's a speedup of almost 1900X for our better algorithm, which would become even bigger with larger inputs (as the gap between $N$ and $N^2$ grows).  We could do even better by using the built-in Python \texttt{Counter} object:
@@ -456,21 +456,21 @@ def find_duplicates_counter(lst: list) -> list:
 
 \end{lstlisting}
 
-\begin{lstlisting}[style=repl, numbers=none]
-In : timeit find_duplicates_counter(lst)
-Out:
-327 \mus \pm 2 \mus per loop (mean \pm std. dev. of 7 runs, 1,000 loops each)
+\begin{lstlisting}[style=replshort, mathescape=true]
+>>> timeit find_duplicates_counter(lst)
+
+327 $\mu$s $\pm$ 2 $\mu$s per loop (mean $\pm$ std. dev. of 7 runs, 1,000 loops each)
 \end{lstlisting}
 
 That's about a 36\% speedup, which is much less than we got moving from our poor algorithm to the better one, but it could be significant if working with big data, and it also makes for cleaner code.  In general, built-in functions will be faster than hand-written ones as well as being better-tested, so it's always a good idea to use an existing solution if it exists.  Fortunately AI assistants are quite good at recommending optimized versions of code, but should always be verified, since I have seen cases where supposedly ``optimized'' code turned out to be even slower than the original.
 
 \subsection{Slow operations in \textit{pandas}}
 
-Many researchers use \textit{pandas} because of its powerful data manipulation methods, but some of its operations are notoriously slow.  Here we show an example of how incrementally inserting data into an existing data frame can be remarkably slower than using standard python objects and then converting them to a \textit{pandas} data frame in a single step:
+Many researchers use \textit{pandas} because of its powerful data manipulation methods, but some of its operations are notoriously slow.  Here we show an example of how incrementally inserting data into an existing data frame can be remarkably slower than using standard Python objects and then converting them to a \textit{pandas} data frame in a single step:
 
 \begin{lstlisting}[style=Python]
 import pandas as pd 
-import numpy as np
+import \textit{NumPy} as np
 import timeit
 
 nrows, ncolumns = 1000, 100
@@ -488,10 +488,10 @@ def fill_df_slow(random_data: np.ndarray) -> pd.DataFrame:
 
 \end{lstlisting}
 
-\begin{lstlisting}[style=repl, numbers=none]
-In : timeit fill_df_slow(random_data)
-Out:
-121 ms \pm 418 \mus per loop (mean \pm std. dev. of 7 runs, 10 loops each)
+\begin{lstlisting}[style=replshort, mathescape=true]
+>>> timeit fill_df_slow(random_data)
+
+121 ms $\pm$ 418 $\mu$s per loop (mean $\pm$ std. dev. of 7 runs, 10 loops each)
 \end{lstlisting}
 
 We can compare this to a function that also loops through each row of data, but instead of adding the data to a data frame it adds them to a dictionary, and then converts the dictionary to a data frame:
@@ -505,10 +505,10 @@ def fill_df_fast(random_data: np.ndarray) -> pd.DataFrame:
 
 \end{lstlisting}
 
-\begin{lstlisting}[style=repl, numbers=none]
-In : timeit fill_df_fast(random_data)
-Out:
-255 \mus \pm 885 ns per loop (mean \pm std. dev. of 7 runs, 1,000 loops each)
+\begin{lstlisting}[style=replshort, mathescape=true]
+>>> timeit fill_df_fast(random_data)
+
+255 $\mu$s $\pm$ 885 ns per loop (mean $\pm$ std. dev. of 7 runs, 1,000 loops each)
 \end{lstlisting}
 
 Again notice the difference in units between the two measurements.  This method gives us an almost 500X speedup!  The fundamental reason for this is that \textit{pandas} data frames are not meant to serve as dynamic objects.  Every time \texttt{.loc[i]} is called on a index value that doesn't exist, \textit{pandas} may reallocate the entire data frame in memory to accommodate the new row. Since that allocation process scales with the input size, this turns an $O(N)$ operation into a potentially $O(N^2)$ operation.
@@ -524,13 +524,13 @@ def fill_df_superfast(random_data: np.ndarray) -> pd.DataFrame:
 
 \end{lstlisting}
 
-\begin{lstlisting}[style=repl, numbers=none]
-In : timeit fill_df_superfast(random_data)
-Out:
-18.7 \mus \pm 279 ns per loop (mean \pm std. dev. of 7 runs, 100,000 loops each)
+\begin{lstlisting}[style=replshort, mathescape=true]
+>>> timeit fill_df_superfast(random_data)
+
+18.7 $\mu$s $\pm$ 279 ns per loop (mean $\pm$ std. dev. of 7 runs, 100,000 loops each)
 \end{lstlisting}
 
-This gives more than 10X speedup compared to the previous solution, and thus a staggering 6000X speedup over the original slow solution. In general, one should avoid any operations with data frames that involve looping, and instead use the built-in vectorized operations in \textit{pandas} and NumPy.  It's also important to avoid building data frames incrementally, preferring instead to generate a list of Python dicts and then convert it into a data frame in one step.
+This gives more than 10X speedup compared to the previous solution, and thus a staggering 6000X speedup over the original slow solution. In general, one should avoid any operations with data frames that involve looping, and instead use the built-in vectorized operations in \textit{pandas} and NumPy.  It's also important to avoid building data frames incrementally, preferring instead to generate a list of Python objects (such as dicts or named tuples) and then convert it into a data frame in one step.
 
 \subsection{Use of suboptimal object types}
 
@@ -550,7 +550,7 @@ Set & 0.007625 & 0.00999999 \\
 
 \bigskip
 
-Here we see that there are major differences between data types.  Sets are by far the fastest, which is due to the fact that they use a hash table algorithm that has $O(1)$ complexity; the 7 nanoseconds for the set operation is basically the minimum time needed for Python to perform a single operation, requiring about 25 clock cycles on my 4 GHz CPU. Second, we see that \textit{NumPy}/\textit{pandas} objects are roughly 30 times faster than Python lists for integers; this likely reflects the fact that \textit{NumPy} can load the entire dataset into contiguous memory, whereas the list requires a lookup and retrieval of the value from an unpredictable location in memory for each item.  Third, we see that strings are generally slower than integers, which reflects both the fact that the representation of strings is larger than the representation of integers and that comparing a string requires more operations than comparing integers. When timing matters, it's usually useful to do some prototype testing across different types of objects to find the most performant.  The million-fold difference between the performance of sets and other data types on this problem is a great example of how algorithmic complexity is the single most important factor we should consider when optimizing code.
+Here we see that there are major differences between data types.  Sets are by far the fastest, which is due to the fact that they use a hash table algorithm that has $O(1)$ complexity; the 7 nanoseconds for the set operation is basically the minimum time needed for Python to perform a single operation, requiring about 25 clock cycles on my 4 GHz CPU. Second, we see that \textit{NumPy}/\textit{pandas} objects are roughly 30 times faster than Python lists for integers; this likely reflects the fact that \textit{NumPy} can load the entire dataset into contiguous memory, whereas the list requires a lookup and retrieval of the value from an unpredictable location in memory for each item.  Third, we see that strings are generally slower than integers, which reflects both the fact that the representation of strings is larger than the representation of integers and that comparing a string requires more operations than comparing integers. When timing matters, it's usually useful to do some prototype testing across different types of objects to find the most performant.  The million-fold difference between the performance of sets and other data types on this problem is a great example of how the performance features of specific data types may be the single most important factor we should consider when optimizing code.
 
 \subsection{Unnecessary looping}
 
@@ -562,20 +562,20 @@ def dotprod_by_hand(a: np.ndarray, b: np.ndarray) -> float:
 \end{lstlisting}
 
 \begin{lstlisting}[style=repl]
-In : npts = 1000
-In : a = np.random.rand(npts)
-In : b = np.random.rand(npts)
-In : timeit dotprod_by_hand(a, b)
-Out:
-103 \mus \pm 759 ns per loop (mean \pm std. dev. of 7 runs, 10,000 loops each)
+>>> npts = 1000
+>>> a = np.random.rand(npts)
+>>> b = np.random.rand(npts)
+>>> timeit dotprod_by_hand(a, b)
+
+103 $\mu$s $\pm$ 759 ns per loop (mean $\pm$ std. dev. of 7 runs, 10,000 loops each)
 \end{lstlisting}
 
 Compare this to the result using the built-in dot product operator in NumPy, which gives a speedup of almost 170X compared to our hand-built code:
 
-\begin{lstlisting}[style=repl, numbers=none]
-In : timeit np.dot(a, b)
-Out:
-609 ns \pm 2.17 ns per loop (mean \pm std. dev. of 7 runs, 1,000,000 loops each)
+\begin{lstlisting}[style=replshort, mathescape=true]
+>>> timeit np.dot(a, b)
+
+609 ns $\pm$ 2.17 ns per loop (mean $\pm$ std. dev. of 7 runs, 1,000,000 loops each)
 \end{lstlisting}
 
 The practice of replacing loops with functions that act on entire arrays at once is known as \textit{vectorization}. \textit{NumPy} achieves this speedup by handing the entire operation to a lower-level library, which in this case would be the BLAS (Basic Linear Algebra Subprograms) library.  This library uses highly-optimized code that can take advantage of CPU features like SIMD (Single Instruction, Multiple Data), which allows the CPU to apply a single operation (such as multiplication) to multiple data points simultaneously in a single clock cycle.\index{vectorization}
@@ -584,7 +584,7 @@ In addition to optimizing performance, vectorized calls often also make the code
 
 \subsection{Suboptimal API usage}
 
-When using a web API to obtain data, the proper use of the API is important to avoid suboptimal performance.  As an example we will use the \texttt{Bio.Entrez} module from the \texttt{Biopython} package, which enables the programmatic searching and downloading of abstracts from the PubMed database.  We first use the API to obtain the PubMed IDs for the 100 most recent publications for a particular search term (see [here] for the full example):\index{Biopython}
+When using a web API to obtain data, the proper use of the API is important to avoid suboptimal performance.  As an example we will use the \texttt{Bio.Entrez} module from the \texttt{Biopython} package, which enables the programmatic searching and downloading of abstracts from the PubMed database.  We first use the API to obtain the PubMed IDs for the 100 most recent publications for a particular search term:\index{Biopython}
 
 \textbf{TODO}: No error handling for network failures, rate limiting, or API errors. NCBI's Entrez API requires `Entrez.email` and has rate limits. Add error handling guidance for production use.
 
@@ -648,17 +648,17 @@ Time saved:              54.33 seconds
 
 Note that part of the difference in time is due to the \texttt{time.sleep()} commands, but that only amounts to 10 seconds in total, so the majority of the speedup is due to using a single optimized API call rather than many individual calls.  This speedup reflects the high degree of overhead related to network processes that occurs for each API call.
 
-Batch processing is not simply about optimizing performance; it is also a feature of good Internet citizenship.  Because lots of API calls can overload a server, many APIs will ban (either temporarily or permanently) IP addresses that send too many requests too quickly.  Depending on the nature of the API calls it may be necessary to \textit{batch} them, since many servers also have a limit on the number of queries that can be made in any call.
+Batch processing is not simply about optimizing performance; it is also a feature of good Internet citizenship.  Because lots of API calls can overload a server, many APIs will ban (either temporarily or permanently) IP addresses that send too many requests too quickly.  Depending on the nature of the API calls it may be necessary to batch them, since many servers also have a limit on the number of queries that can be made in any call.
 
 \subsection{Slow I/O}
 
-For data-intensive workflows, especially when the data are too large to fit completely in memory, a substantial amount of execution time may be spent waiting for data to be read and/or written to a filesystem or database. For I/O benchmarking it's important to know that some filesystems (particularly those used on high-performance computing systems) will cache recently used data, such that the first access of the data might be slow but subsequent accesses are much faster. Thus, if you are repeatedly opening the same file, be sure to perform benchmarking on the same system that will be used for the full analysis since results may differ drastically across systems.
+For data-intensive workflows, especially when the data are too large to fit completely in memory, a substantial amount of execution time may be spent waiting for data to be read from and/or written to a filesystem or database. For I/O benchmarking it's important to know that some filesystems (particularly those used on high-performance computing systems) will cache recently used data, such that the first access of the data might be slow but subsequent accesses are much faster. Thus, if you are repeatedly opening the same file in your workflow, be sure to perform benchmarking on the same system that will be used for the full analysis since results may differ drastically across systems depending on their caching policies.
 
-Input/output speed can sometimes vary greatly depending on how the files are saved. In particular, some file types (including HDF5 and Parquet) have grouping structure within the file, and the alignment of the grouping structure with the data access pattern can have a major impact on performance. In addition, these data types store data in chunks, and the misalignment of chunk size with data access patterns can result in poor performance. As an example of how chunking can interact with data access patterns, I generated simulated data for a 3-d image timeseries, with 1000 timepoints on the first and 512 x 512 2-d image dimensions on the second and third axes  (full notebook [here]).  These data were saved to HDF5 files using several different chunking strategies (with the shape of the chunks in parentheses):\index{Parquet}\index{HDF5}
+Input/output speed can sometimes vary greatly depending on how the files are saved. In particular, some file types (including HDF5 and Parquet) have grouping structure within the file, and the alignment of the grouping structure with the data access pattern can have a major impact on performance. In addition, these data types store data in chunks, and the misalignment of chunk size with data access patterns can result in poor performance. As an example of how chunking can interact with data access patterns, I generated simulated data for a 3-d image timeseries, with 1000 timepoints on the first and 512 x 512 2-d image dimensions on the second and third axes.  These data were saved to HDF5 files using several different chunking strategies (with the shape of the chunks in parentheses):\index{Parquet}\index{HDF5}
 
 \begin{itemize}
 \item no chunking
-\item Framewise chunks (1 x 512 x 512):
+\item Framewise chunks (1 x 512 x 512)
 \item Multi-frame chunks (10 x 512 x 512)
 \item Small chunks (1 x 64 x 64)
 \item Tiny chunks (1 x 32 x 32)
@@ -668,7 +668,7 @@ Figure~\ref{hdfchunking-fig} shows the loading times with each of these strategi
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.01\linewidth]{files/hdf5_chunking_perfor-e757060360f19775744a4099e1041632.png}
+\includegraphics[width=0.85\linewidth]{files/hdf5_chunking_perfor-e757060360f19775744a4099e1041632.png}
 \caption[Interaction between HDF5 chunking patterns and data access on performance]{A demonstration of the interaction between HDF5 chunking patterns and data access on performance.  Left panel shows performance of the five chunking strategies on reading a single individual frame, while the right panel show performance on accessing a small region of interest (64 x 64) across all frames.}
 \label{hdfchunking-fig}
 \end{figure}
@@ -713,7 +713,7 @@ print(f"*DuckDB* analysis completed in {end_time - start_time:.2f} seconds")
 print(f"Total route-month combinations: {len(duckdb_results):,}")
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 *DuckDB* analysis completed in 2.31 seconds
 Total route-month combinations: 3,339,788
 \end{lstlisting}
@@ -729,7 +729,7 @@ This call was able to extract data from 120 parquet files and summarize them in 
 
 \subsection{Large analyses with Polars}
 
-\textit{Polars} (pola.rs) is a Python package that is meant to bring high performance to analyses with data frames. While it's not exactly a plug-in replacement for \textit{pandas}, it's similar enough that one can adapt \textit{pandas}-based workflows with relatively little effort.  Here is an example of the same analysis as above, implemented in Polars. You can see that the structure of the \textit{Polars} method chain follows very closely the structure of the SQL query in the \textit{DuckDB} analysis:
+\textit{Polars} is a Python package that is meant to bring high performance to analyses with data frames. While it's not exactly a plug-in replacement for \textit{pandas}, it's similar enough that one can adapt \textit{pandas}-based workflows with relatively little effort.  Here is an example of the same analysis as above, implemented in Polars. You can see that the structure of the \textit{Polars} method chain follows very closely the structure of the SQL query in the \textit{DuckDB} analysis:
 
 \begin{lstlisting}[style=Python]
 import polars as pl
@@ -773,7 +773,7 @@ print(f"Polars analysis completed in {end_time - start_time:.2f} seconds")
 print(f"Total route-month combinations: {len(polars_results):,}")
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 Polars analysis completed in 3.42 seconds
 Total route-month combinations: 3,339,788
 \end{lstlisting}
@@ -841,7 +841,7 @@ if __name__ == "__main__":
 
 Note that we implemented our own random number generator so that the algorithm would be identical to the one used in the Rust code. Running this from the command line, we get the following output:\index{generator}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 Average time (Python): 0.1053 seconds
 \end{lstlisting}
 
@@ -902,17 +902,12 @@ fn main() {
 We first need to compile this, which creates the executable file (\texttt{rng\_benchmark}) which we can then run:
 
 \begin{lstlisting}[style=shell]
-rustc -O rng_benchmark.rs -o rng_benchmark
-./rng_benchmark
-\end{lstlisting}
-
-which gives the following output:
-
-\begin{lstlisting}[style=shell]
+$ rustc -O rng_benchmark.rs -o rng_benchmark
+$ ./rng_benchmark
 Average time (Rust): 0.0010 seconds
 \end{lstlisting}
 
-The compiled code has a roughly 95X speedup compared to the pure Python code!  We can make Python faster for this problem by using NumPy, which uses compiled code to optimize many of its operations, by replacing the primary function:
+The compiled code has a roughly 95X speedup compared to the pure Python code!  We can make Python faster for this problem by using \textit{NumPy}, which uses compiled code to optimize many of its operations, by replacing the primary function:
 
 \begin{lstlisting}[style=Pythonshort]
 def sum_of_squares(n: int, seed: int) -> float:
@@ -922,7 +917,7 @@ def sum_of_squares(n: int, seed: int) -> float:
 
 which results in much better performance, though it's still roughly three times slower than Rust:
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 Average time (NumPy): 0.0029 seconds
 \end{lstlisting}
 
@@ -971,7 +966,7 @@ def sum_of_squares_numba_object(n: int) -> float:
     return sum(values)
 \end{lstlisting}
 
-Comparing these, we see that the numba-optimized version is still more than 12X faster than the non-optimized version, though this kind of speedup doesn't always happen.  Any time one uses a function that is executed repeatedly, it's worth testing out \textit{Numba} to see if it can improve performance.  It's important to note that JIT compilation is not free, and it can take substantial time the first time the function is executed in order to do the compilation. For this reason, JIT compilation is most useful for functions that are executed many times.  This is why my benchmark code included a ``warm-up'' call to the function prior to the actual benchmarking, so
+Comparing these, we see that the numba-optimized version is still more than 12X faster than the non-optimized version, though this kind of speedup doesn't always happen.  Any time one uses a function that is executed repeatedly, it's worth testing out \textit{Numba} to see if it can improve performance.  It's important to note that JIT compilation is not free, and it can take substantial time the first time the function is executed in order to do the compilation. For this reason, JIT compilation is most useful for functions that are executed many times.  This is why my benchmark code included a ``warm-up'' call to the function prior to the actual benchmarking.
 
 \section{Using Einstein summation notation}
 
@@ -1011,7 +1006,7 @@ Benchmarking these two functions we see that the einsum implementation is about 
 
 \section{A brief introduction to parallelism and multithreading}\index{multithreading}
 
-At the beginning of this chapter I presented data showing the inexorable increase in transistor number within CPUs since the 1970's.  However, I didn't mention the fact that processor speeds have stalled since the 2000s, due to power/heat limits; what has changed that has allowed CPUs to continue growing is the addition of multiple \textit{cores}.  You can think of each core as a separate processor that can execute code on its own, with all of the cores sharing memory and other processor features.  As of 2026 it's not uncommon to see CPUs with 16 cores (like the laptop I'm writing on now), and I've seen supercomputer systems with as many as 100 cores per CPU.  It is the move to multi-core systems that has allowed Moore's law to continue unabated. In this chapter I will focus primarily on utilizing multiple cores on a single system; in the later chapter on high-performance computing I'll discuss the use of supercomputers that can spread computations across thousands of CPUs.
+At the beginning of this chapter I presented data showing the inexorable increase in transistor number within CPUs since the 1970's.  However, I didn't mention the fact that individual processor speeds have stalled since the 2000s, due to power/heat limits; what has changed that has allowed CPUs to continue growing is the addition of multiple \textit{cores}.  You can think of each core as a separate processor that can execute code on its own, with all of the cores sharing memory and other processor features.  As of 2026 it's not uncommon to see CPUs with 16 cores (like the laptop I'm writing on now), and I've seen supercomputer systems with as many as 100 cores per CPU.  It is the move to multi-core systems that has allowed Moore's law to continue unabated. In this chapter I will focus primarily on utilizing multiple cores on a single system; in the later chapter on high-performance computing I'll discuss the use of supercomputers that can spread computations across thousands of CPUs.
 
 An important distinction must be made between \textit{cores} and \textit{threads}.  A core is a physical unit on the CPU, whereas a thread is a logical unit of computation.  I will use the term \textit{multiprocessing} to refer to spreading processes across multiple cores with separate address spaces in memory.  The term \textit{multithreading} is generally used to refer to the simultaneous execution of multiple threads that share a memory space (across one or more cores), and \textit{simultaneous multithreading} is used to refer to running multiple threads on a single core (the most common form of multithreading today).  Most modern CPUs support some degree of multithreading, with 2 threads per core being a common configuration.  The architecture of multi-core CPUs becomes important in thinking about bottlenecks that can limit computational efficiency.  Each core in the CPU usually has a relatively small amount of \textit{cache} memory associated with it (known as L1/L2 cache), which stores recently processed information.  However, cores generally share a high-level (L3) cache, which can lead to \textit{cache-thrashing} as cores repeatedly take over the high-level cache storage. An even more important bottleneck is the system's RAM, which is generally shared across cores.  Because there is a limit on the bandwidth at which information can be read and written from RAM, memory access often becomes a bottleneck for multi-core processing. Another bottleneck that specifically affects multi-threading is access to the \textit{floating point unit} (FPU) and \textit{vector processing unit} (which are the basis for Numpy's speedup, often known as SIMD units), of which there is generally one per core.  Thus, if one's computations rely heavily on floating point arithmetic (which is common in scientific workflows), there will be very little benefit to simultaneous multithreading, and often a cost due to the overhead of switching between threads.  Thus, for numerical processing it's generally best to target the number of cores rather than the number of threads. It's also worth noting that some computer manufacturers have begun to move away from simultaneous mulththreading, such as Apple's M-series chip, so this distinction may become less relevant in the future.\index{multiprocessing}
 
@@ -1056,7 +1051,7 @@ Parallelization generally works poorly when the process involves I/O from disk o
 
 \subsubsection{Random seeds for parallel processes}
 
-Running simulations using parallel processing requires special care to ensure that random seeds are handled properly.  A particular failure mode would be code that used the same random seed for each parallel run, which would result in exactly the same results from each run, rendering the parallelization useless.  Numpy provides a function (\texttt{numpy.random.SeedSequence()}) that can generate a set of non-overlapping random number generators, which is best practice for parallel processing; we will see an example of this below.
+Running simulations using parallel processing requires special care to ensure that random seeds are handled properly.  A particular failure mode would be code that used the same random seed for each parallel run, which would result in exactly the same results from each run, rendering the parallelization useless.  \textit{NumPy} provides a function (\texttt{numpy.random.SeedSequence()}) that can generate a set of non-overlapping random number generators, which is best practice for parallel processing; we will see an example of this below.
 
 \section{Writing parallelized code}
 
@@ -1074,7 +1069,7 @@ where $c$ is a point on the complex plane, and $z_0 = 0$.  A point is defined as
 \item Different points vary in the time that they take to verify whether the point is bounded; unbounded points are likely to escape quickly, whereas points within the radius will take the maximum number of iterations to confirm boundedness.  This means that we need to think about load balancing across jobs of different lengths.\index{load balancing}
 \end{itemize}
 
-Here is the initial code that I generated using Claude.  First, the function to calculate the escape time for a point:
+Here is the initial code that I generated using my coding agent.  First, the function to calculate the escape time for a point:
 
 \begin{lstlisting}[style=Python]
 def get_mandelbrot_pixel(c_real: float, c_imag: float, max_iter: int) -> int:
@@ -1091,7 +1086,7 @@ def get_mandelbrot_pixel(c_real: float, c_imag: float, max_iter: int) -> int:
     return max_iter
 \end{lstlisting}
 
-Note that this function contains a pure Python loop, which we would never actually use in real production code; rather, we would either vectorize it using Numpy or apply JIT compilation using Numba, but I'm using it for this example exactly because it's so computationally intensive. We then need to break up the data in order to perform the computation in groups across a single chunk of data, which we define as a set of rows in the image:
+Note that this function contains a pure Python loop, which we would never actually use in real production code; rather, we would either vectorize it using \textit{NumPy} or apply JIT compilation using Numba, but I'm using it for this example exactly because it's so computationally intensive. We then need to break up the data in order to perform the computation in groups across a single chunk of data, which we define as a set of rows in the image:
 
 \begin{lstlisting}[style=Python]
 def compute_mandelbrot_rows(args: tuple) -> int:
@@ -1164,7 +1159,7 @@ Figure~\ref{scaling-fig} shows the results for these simulations using a range o
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.7\linewidth]{files/mandelbrot_scaling_c-7e1781fff8a79399a59a649547193978.png}
+\includegraphics[width=0.85\linewidth]{files/mandelbrot_scaling_c-7e1781fff8a79399a59a649547193978.png}
 \caption[Parallel acceleration on the Mandelbrot set problem ]{A simulation of the parallel acceleration on the Mandelbrot set problem with a chunking factor of 10. The left panel shows performance in terms of speedup factor as a function of the difficult of the problem, where perfect acceleration would occur when the speedup factor is equal to the number of cores. The gray line shows serial performance, showing that parallelization on small problems can lead to worse performance than serial processing due to overhead of parallelization.  The right panel shows efficiency (that is, the proportion of perfect acceleration) achieved, demonstrating that there are decreasing gains with increasing numbers of cores.}
 \label{scaling-fig}
 \end{figure}
@@ -1182,7 +1177,7 @@ We also see that parallelization is more effective as the number of chunks incre
 
 For workflows built around \textit{NumPy}/\textit{pandas}, the \textit{Dask} (dask.org) package is an attractive tool for parallelization.  Earlier in the chapter I discussed how we can use \textit{DuckDB} or \textit{Polars} to execute workflows on large datasets, but those workflows were limited to ones that could be implemented as an SQL query (for \textit{DuckDB}) or in the \textit{Polars} API.  What if we want to run custom Python code in parallel on data that are too large for our RAM?  This is where \textit{Dask} shines.  Here I will focus on the use of \textit{Dask} on a single system, but \textit{Dask} also supports distributed computing across multiple CPUs, which I will discuss further in the later chapter on high-performance computing.\index{distributed computing}
 
-Here is an example of using \textit{Dask} to compute the mean trip distance across all pickup locations in the NYC Taxi dataset; this is a simple computation that doesn't need Dask, but it allows for comparison with Polars.  First we need to determine how many threads we can safely use, which I cap at 8 (out of the 16 total on my machine):
+Here is an example of using \textit{Dask} to compute the mean trip distance across all pickup locations in the NYC Taxi dataset that mentioned earlier; this is a simple computation that doesn't need Dask, but it allows for comparison with Polars.  First we need to determine how many threads we can safely use, which I cap at 8 (out of the 16 total on my machine):
 
 \begin{lstlisting}[style=Python]
 import dask
@@ -1198,7 +1193,7 @@ print(f"Available memory: {available_gb:.1f} GB")
 print(f"Using {safe_threads} threads (to limit concurrent partitions in memory)")
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 Available memory: 77.7 GB
 Using 8 threads (to limit concurrent partitions in memory)
 \end{lstlisting}
@@ -1227,20 +1222,20 @@ print(f"Single-threaded:         {single_time:.2f} seconds")
 print(f"\nSpeedup: {single_time / parallel_time:.2f}x")
 \end{lstlisting}
 
-\begin{lstlisting}[style=shell, numbers=none]
+\begin{lstlisting}[style=shellshort]
 Parallel (8 threads): 4.07 seconds
-Single-threaded:         16.77 seconds
+Single-threaded:      16.77 seconds
 
 Speedup: 4.12x
 \end{lstlisting}
 
-I also implemented the same computation using Polars, which completed in 3.98 seconds, basically equivalent to Dask's performance in parallel mode.  Because \textit{Dask} shines with custom computations, I implemented a more complex computation on the NYC Taxi dataset: computing the bootstrap confidence intervals for the number of daily trips for each of the 262 taxi zones across the entire dataset.  This took quite a bit of effort to get it working (with numerous failed attempts by Claude Code), but it finally \href{dask\_parallel\_example.py}{worked}, completing the bootstrap estimation problem in less than four seconds.  The speed with which one can do this kind of computation on a dataset that wouldn't even fit in memory shows the power of \textit{Dask} for data science applications.
+I also implemented the same computation using Polars, which completed in 3.98 seconds, basically equivalent to Dask's performance in parallel mode.  Because \textit{Dask} shines with custom computations, I implemented a more complex computation on the NYC Taxi dataset: computing the bootstrap confidence intervals for the number of daily trips for each of the 262 taxi zones across the entire dataset.  This took quite a bit of effort to get it working (with numerous failed attempts by my coding agent), but it finally worked, completing the bootstrap estimation problem in less than four seconds.  The speed with which one can do this kind of computation on a dataset that wouldn't even fit in memory shows the power of \textit{Dask} for data science applications.
 
 \section{GPU acceleration}
 
-The graphics processing unit (GPU) is a specific component in a computer that was initially designed to perform a particular kind of computation that is involved in computer graphics.  Unlike the CPU, which is optimized to perform a single stream of computations very quickly (i.e. low latency), the GPU is optimized to perform a large number of operations in parallel (i.e. high throughput), since many operations in graphics rendering (such as transformations or shading) involve applying the same operations across many pixels at once.  Researchers in the 2000s began to realize that GPUs could be used for computations beyond graphics, though in the early days one had to disguise the computations as graphical computations in order to run them on the GPU hardware.  This changed with the release of the CUDA platform by NVIDIA (a major manufacturer of GPUs) in 2006, which allowed researchers to more easily perform general-purpose computations directly on the GPU.  GPU computation is one of the main reasons why deep neural networks (particularly large language models) have become so powerful, reflected in the fact that in January 2026 NVIDIA had the highest market capitalization of any company in the world.\index{CUDA}
+The graphics processing unit (GPU) is a specific component in a computer that was initially designed to perform a particular kind of computation that is involved in computer graphics.  Unlike the CPU, which is optimized to perform a single stream of computations very quickly (i.e. low latency), the GPU is optimized to perform a large number of operations in parallel (i.e. high throughput), since many operations in graphics rendering (such as transformations or shading) involve applying the same operations across many pixels at once.  Researchers in the 2000s began to realize that GPUs could be used for computations beyond graphics, though in the early days one had to disguise the computations as graphical computations in order to run them on the GPU hardware.  This changed with the release of the CUDA platform by NVIDIA (a major manufacturer of GPUs) in 2006, which allowed researchers to more easily perform general-purpose computations directly on the GPU.  GPU computation is one of the main reasons why deep neural networks (particularly large language models) have become so powerful, reflected in the fact that in June 2026 NVIDIA had the highest market capitalization of any company in the world.\index{CUDA}
 
-GPU computation excels on problems where one needs to perform many mathematically-intensive operations in parallel, and feedforward artificial neural networks (ANNs) are a perfect example of such a computation.  Each forward pass of an ANN involves many consecutive matrix multiplications, followed by adjustment of the weights in each layer based on the loss (achieved using automated differentiation).  To see the impact of GPU acceleration let's train a simple neural network model, using the \textit{PyTorch} package that I introduced in the earlier discussion on automatic differentiation. We first generate a dataset with 500,000 examples from 25 categories each with 784 features, and then train a neural network with four hidden layers to perform this, using either the CPU or GPU; in this case I used a relatively inexpensive NVIDIA graphics card, so we use the CUDA framework for GPU acceleration.  I generated \href{pytorch\_gpu\_acceleration.py}{this code} using Claude, and upon examining the code noticed that it seemed to be doing something suboptimal, as seen in this snippet from the model training loop:\index{PyTorch}
+GPU computation excels on problems where one needs to perform many mathematically-intensive operations in parallel, and feedforward artificial neural networks (ANNs) are a perfect example of such a computation.  Each forward pass of an ANN involves many consecutive matrix multiplications, followed by adjustment of the weights in each layer based on the loss (achieved using automated differentiation).  To see the impact of GPU acceleration let's train a simple neural network model, using the \textit{PyTorch} package that I introduced in the earlier discussion on automatic differentiation. We first generate a dataset with 500,000 examples from 25 categories each with 784 features, and then train a neural network with four hidden layers to perform this, using either the CPU or GPU; in this case I used a relatively inexpensive NVIDIA graphics card, so we use the CUDA framework for GPU acceleration.  I generated an initial implementation using my coding agent, and upon examining the code noticed that it seemed to be doing something suboptimal, as seen in this snippet from the model training loop:\index{PyTorch}
 
 \begin{lstlisting}[style=Python]
 ...
@@ -1259,7 +1254,7 @@ for epoch in range(n_epochs):
 ...
 \end{lstlisting}
 
-Here we see that each batch is copied separately to the GPU (via the \texttt{.to(device)} call).  Because video cards are generally attached via the computer's PCI bus, they are limited by its bandwidth, which is generally much lower than the bandwidth of the connection between CPU and RAM. This means that for small batch sizes there will be very many copying operations, which lead to extra memory transfer overhead that can really slow things down, whereas larger batches give the GPU enough work that it won't sit idle for too long waiting for memory transfers.  Noticing this I also asked Claude to optimize this by loading the entire dataset to the GPU prior to creating the batches; note that this requires that the GPU has sufficient memory to hold the dataset, such that it won't be possible for massive datasets:
+Here we see that each batch is copied separately to the GPU (via the \texttt{.to(device)} call).  Because video cards are generally attached via the computer's PCI bus, they are limited by its bandwidth, which is generally much lower than the bandwidth of the connection between CPU and RAM. This means that for small batch sizes there will be very many copying operations, which lead to extra memory transfer overhead that can really slow things down, whereas larger batches give the GPU enough work that it won't sit idle for too long waiting for memory transfers.  Noticing this I also asked the agent to optimize this by loading the entire dataset to the GPU prior to creating the batches; note that this requires that the GPU has sufficient memory to hold the dataset, such that it won't be possible for massive datasets:
 
 \begin{lstlisting}[style=Python]
 ...
@@ -1272,11 +1267,11 @@ Here we see that each batch is copied separately to the GPU (via the \texttt{.to
 ...
 \end{lstlisting}
 
-The train\_loader now doles out batches from an object that is already on the GPU, reducing the need for copies. Figure~\ref{gpuspeedup-fig} shows the results of this benchmarking. We see that the GPU offers benefits compared to CPU computation regardless of the batch size, but that the benefits increase as batch size increases, with greater performance for the optimized version of the code that copies all of the data into memory before creating batches.
+The revised train\_loader doles out batches from an object that is already on the GPU, reducing the need for copies. Figure~\ref{gpuspeedup-fig} shows the results of this benchmarking. We see that the GPU offers benefits compared to CPU computation regardless of the batch size, but that the benefits increase as batch size increases, with greater performance for the optimized version of the code that copies all of the data into memory before creating batches.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.7\linewidth]{files/gpu_batch_size_scali-a70bd24680d694b4844b5b797a72551f.png}
+\includegraphics[width=0.85\linewidth]{files/gpu_batch_size_scali-a70bd24680d694b4844b5b797a72551f.png}
 \caption[Effects of GPU acceleration]{Timing results for training a neural network model using either CPU or GPU.  Left panel shows how model training times decrease as a function of batch size, and the right panel shows the same data in terms of relative speedup.}
 \label{gpuspeedup-fig}
 \end{figure}
