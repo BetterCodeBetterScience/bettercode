@@ -210,6 +210,11 @@ Some researchers do all of their coding interactively within notebooks.  This is
 
 The cells in a \textit{Jupyter} notebook can be executed in any order by the user, which means that the current value of all of the variables in the workspace depends on the exact order in which the previous cells were executed.  While this can sometimes be evident from the execution numbers that are presented alongside each cell, for a complex notebook it can become very difficult to identify exactly what has happened. This is why most \textit{Jupyter} power-users learn to reflexively restart the kernel and run all of the cells in the notebook, as this is the only way to guarantee ordered execution. This is also an issue that is commonly confusing for new users; I once taught a statistics course using \textit{Jupyter} notebooks within Google Colab, and I found that student confusions were very often resolved by restarting the kernel and rerunning the notebook, reflecting their basis in out-of-order execution.  Out-of-order execution is exceedingly common; an analysis of 1.4 million notebooks from Github by \cite{Pimentel:2019aa} found that for notebooks in which the execution order was unambiguous, 36.4\% of the notebooks had cells that were executed out of order.  Fortunately there is an easy solution to this: One simply needs to restart and run the entire notebook in order before saving and committing the file.
 
+\begin{framed}
+\textbf{Tip}\\
+Always "Restart and Run All" before accepting the results of a notebook or commiting it to version control.  Otherwise it is likely to suffer from out-of-order execution.
+\end{framed}
+
 \textbf{Global workspace}
 
 As I discussed earlier in the book, global variables have a bad reputation for making debugging difficult, since changes to a global variable can have wide-ranging effects on the code that can be difficult to identify.  For this reason, it's generally a best practice to encapsulate variables so that their scope is only as wide as necessary.  However, all variables are global in a notebook, unless they are contained within a function or class defined within the notebook.  The global scope of variables in the notebook means that if there is a variable used within a function with the same name as a variable in the global namespace, that variable can be accessed within the function.  I have on more than one occasion seen tricky bugs occur when the user creates a function to encapsulate some code, but then forgets to define a variable within the function that exists in the global state.  This leads to the operation of the function changing depending on the value of the global variable, in a way that can be incredibly confusing.  It is for this reason that I always suggest moving functions out of a notebook into a module as soon as possible, to prevent these kinds of bugs from occurring (among other reasons); I describe this in more detail below.\index{namespace}\index{global variable}
@@ -446,6 +451,10 @@ repos:
 \end{lstlisting}
 
 The first section will automatically run \textit{jupytext} and generate a pure Python version of the notebook before the commit is completed.  The second section will unstage the \texttt{ipynb} files before committing, so that they will not be committed to the \texttt{git} repository (only the Python files will). This will keep the Python and \textit{Jupyter} notebook files synced while only committing the Python files to the \texttt{git} repository.
+
+% \subsection{An emerging alternative: Marimo}
+
+% \textit{Marimo} is an alternative approach to computational notebooks that tries to incorporate the best of \textit{Jupyter} into a natively pure-Python platform.  As of 2026, \textit{Marimo} is still relatively early in its development (at version \texttt{0.23.9}), so I won't go into detail about it here.  But it does have some features that seem very appealing, and if it continues to develop it will likely become a viable alternative to \textit{Jupyter}.  Marimo has two important features that distinguish it.  First, the files are stored in pure Python, with markdown sections contained with a call to \texttt{mo.md()}.  Second, and perhaps most important for reproducibiilty reasons, \textit{Marimo} notebooks are \textit{reactive}, such that they automatically rerun any cells that are impacted by each edit.  This means that the results in the notebook are always up to date, though this requires following a number of rules that are required to enforce consistency (e.g. one can't )
 
 \section{Containers}
 
