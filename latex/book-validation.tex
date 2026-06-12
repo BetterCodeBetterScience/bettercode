@@ -1057,6 +1057,10 @@ The most common way in which leakage occurs is when features (i.e. variables) ar
 \label{leakage-fig}
 \end{figure}
 
+\begin{framed}
+\textbf{Tip}\\
+Always test machine learning workflows using randomized data.  If there is still a positive result after randomization, then it's likely that leakage has occurred.
+\end{framed}
 \subsection{Positive controls}
 
 When developing analytic software, it is also important to determine whether the model can detect relevant signals when they are present, which we refer to as a \textit{positive control}.  To do this, we would generally need to inject some amount of realistic signal into the data, and then assess the model's ability to detect it.  While useful for checking code, positive control simulations are also useful for understanding how various features of the study design (such as the sample size and the intended effect size) relate to the ability to detect signals; in the context of null hypothesis statistical testing this is known as \textit{statistical power}.
