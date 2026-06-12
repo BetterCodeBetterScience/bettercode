@@ -270,6 +270,10 @@ $ md5sum file2.txt                                                       1 ↵
 
 There are various types of checksums, such as MD5 (used in the example above) or SHA-1, any of which should be suitable for validating file identity.  However, the different methods produce different checksums so it's important to document which method was used to create them.
 
+\begin{framed}
+\textbf{Tip}\\
+Set all original data files to read-only and store checksums for them, so that you can both protect them from changes and identify changes if they occur.
+\end{framed}
 \subsection{Backup}
 
 Disasters can occur that can render data irretrievable, from a major flood or earthquake to a cup of coffee spilled onto a laptop.  It is essential to maintain a backup of the original data for disaster recovery purposes.  This backup should be located on a system that is geographically separate from the main storage, such as a cloud server.
