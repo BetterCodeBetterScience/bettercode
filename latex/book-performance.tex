@@ -1,6 +1,6 @@
 \chapter{Optimizing performance}
 
-The computing power available to scientists has increased in a shockingly consistent way since the first microprocessors were manufactured in the 1970's.  The left panel in Figure~\ref{mooreslaw-fig} shows that the number of transistors on commercial CPU chips has doubled about every two years since the 1970s, very close to the two years predicted by Gordon Moore in 1965 \citep{Moore:1965} The number of transistors relates only indirectly to the computing power of the machine, and the right panel in Figure~\ref{mooreslaw-fig} shows that the computer power of the world's top supercomputer (measured in the number of floating point operations per second) has increased even faster, doubling roughly every 1.2 years.
+The computing power available to scientists has increased in a shockingly consistent way since the first microprocessors were manufactured in the 1970's.  The left panel in Figure~\ref{mooreslaw-fig} shows that the number of transistors on commercial CPU chips has doubled about every two years since the 1970s, very close to the two year doubling time predicted by Gordon Moore in 1975 \citep{Moore:1975aa}. The number of transistors relates only indirectly to the computing power of the machine, and the right panel in Figure~\ref{mooreslaw-fig} shows that the computer power of the world's top supercomputer (measured in the number of floating point operations per second) has increased even faster, doubling roughly every 1.2 years.
 
 \begin{figure}[!htbp]
 \centering
@@ -71,6 +71,11 @@ In addition to time complexity, it's also important to keep in mind the \textit{
 Complexity analysis tells us about the worst case performance of our code, but there are many reasons for slow code even when complexity is low.  \textit{Profiling} is the activity of empirically analyzing the performance of our code in order to identify specific parts of the code that might cause poor performance.  It's often the case that slow performance arises from specific portions of the code, which we refer to as \textit{bottlenecks}.  These bottlenecks can be difficult to intuit, which is why it's important to empirically analyze performance in order to identify the location of those bottlenecks,  which can then help us focus our efforts.  However, it's also important to keep complexity in mind when we analyze code; in particular, we should always profile the code using realistic input sizes, so that we will see any complexity-related slowdowns if they exist.
 
 There are a couple of important points to know when profiling code. First, it's important to remember that profiling has overhead and can sometimes distort results. In particular, when code involves many repetitions of a very fast operation, the overhead due to profiling the operation can add up, making it seem worse than it is.  The profiler can also compete with your code for memory and CPU time, potentially distorting results (e.g. for processes involving lots of memory).  Second, it's important to keep in mind the distinction between \textit{CPU time}, which refers to the time actually spent by the CPU doing processing, and \textit{wall time}, which includes CPU time as well as time due to other sources such as input/output. If the wall time is much greater than the CPU time, then this suggests that optimizing the computations may not have much impact on the overall execution time.  Also note that sometimes the CPU time can actually be \textit{greater} than the wall time if multiple cores are used for the computation, since the time spent by each core is added together.
+
+\begin{framed}
+\textbf{Tip}\\
+Always profile before you optimize, as our intuitions about software performance are very often wrong.
+\end{framed}
 
 \subsection{Function profiling}
 
