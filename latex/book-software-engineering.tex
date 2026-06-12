@@ -288,13 +288,18 @@ For many programmers, the term ``documentation'' is largely synonymous with code
 On the other hand, one of the most consistent messages from the software engineering literature is that comments are far too often used as a ``magic balm'' over bad code:
 
 \begin{itemize}
-\item ``Don't comment bad code --- rewrite it'' (Kernighan \& Plaugher)
+\item ``Don't comment bad code --- rewrite it'' (Kernighan \& Plauger)
 \item ``Clear and expressive code with few comments is far superior to cluttered and complex code with lots of comments'' (Robert Martin, Clean Code)\index{Martin, Robert}
 \item ``comments aren't a bad smell; indeed they are a sweet smell. The reason we mention comments here is that comments are often used as a deodorant. It's surprising how often you look at thickly commented code and notice that the comments are there because the code is bad.'' (Fowler, Refactoring)
 \end{itemize}
 
 The overall goal of code comments should be to help the reader know as much as the writer knows about the code.
 I will start by outlining the kinds of things that do \textit{not} warrant comments, and then turn to the legitimate uses of comments.
+
+\begin{framed}
+\textbf{Tip}\\
+What the code is doing should be clear from the code itself. Comments should explain why the code is doing what it's doing.  
+\end{framed}
 
 \subsubsection{What not to comment}
 
@@ -317,13 +322,13 @@ We could instead use understandable names to make the code more readable:
 \begin{lstlisting}[style=Python]
 def random_normal_variate(mean=0, stddev=1):
     unif = [random.random() for i in range(2)]
-    box_mueller_z0 = math.sqrt(-2 * math.log(unif[0])) * \
+    box_muller_z0 = math.sqrt(-2 * math.log(unif[0])) * \
         math.cos(2 * math.pi * unif[1])
-    return mean + stddev * box_mueller_z0
+    return mean + stddev * box_muller_z0
 \end{lstlisting}
 
 In this case, we don't need a comment to explain the function because its name and the names of its arguments make clear what its function is and how to use it.
-By using the variable name \texttt{box\_mueller\_z0} we also make clear what algorithm this computation reflects (the Box-Mueller transform).
+By using the variable name \texttt{box\_muller\_z0} we also make clear what algorithm this computation reflects (the Box-Muller transform).
 
 \textbf{The obvious}
 
@@ -368,9 +373,9 @@ It's then possible to see who is responsible for each line in a particular sourc
 ^e14a07d (Russell Poldrack 2025-02-22 07:54:37-0800 3)
 73cee79c (Russell Poldrack 2025-02-22 07:55:19-0800 4) def random_normal_variate(mean=0, stddev=1):
 ^e14a07d (Russell Poldrack 2025-02-22 07:54:37-0800 5)     unif = [random.random() for i in range(2)]
-^e14a07d (Russell Poldrack 2025-02-22 07:54:37-0800 6)     box_mueller_z0 = math.sqrt(-2 * math.log(unif[0])) * \
+^e14a07d (Russell Poldrack 2025-02-22 07:54:37-0800 6)     box_muller_z0 = math.sqrt(-2 * math.log(unif[0])) * \
 ^e14a07d (Russell Poldrack 2025-02-22 07:54:37-0800 7)         math.cos(2 * math.pi * unif[1])
-73cee79c (Russell Poldrack 2025-02-22 07:55:19-0800 8)     return mean +  stddev * box_mueller_z0
+73cee79c (Russell Poldrack 2025-02-22 07:55:19-0800 8)     return mean +  stddev * box_muller_z0
 \end{lstlisting}
 
 \subsubsection{What to comment}
