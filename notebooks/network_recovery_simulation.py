@@ -31,7 +31,7 @@ import pandas as pd
 import seaborn as sns
 from pgmpy.utils import get_example_model
 
-IMAGE_DIR = Path('../book/book/images')
+IMAGE_DIR = Path(__file__).resolve().parent.parent / 'book' / 'book' / 'images'
 
 # Load the ecoli70 model and extract its undirected skeleton.
 ecoli_model = get_example_model('ecoli70')
@@ -54,6 +54,7 @@ def build_covariance(edges, nodes, coupling):
 
 
 def simulate_data(cov, n_samples, rng):
+    """Draw n_samples from a zero-mean multivariate normal with covariance cov."""
     return rng.multivariate_normal(np.zeros(cov.shape[0]), cov, size=n_samples)
 
 
@@ -79,7 +80,7 @@ def score_recovery(true_edges, discovered_edges):
     precision = tp / len(discovered_edges) if discovered_edges else 1.0
     fdr = fp / len(discovered_edges) if discovered_edges else 0.0
     f1_denom = 2 * tp + fp + fn
-    f1 = 2 * tp / f1_denom if f1_denom else 0.0
+    f1 = 2 * tp / f1_denom
     return {'recall': recall, 'precision': precision, 'fdr': fdr, 'f1': f1}
 
 
