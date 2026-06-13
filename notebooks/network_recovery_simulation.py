@@ -70,10 +70,16 @@ def discover_edges(data, nodes, threshold):
     return discovered
 
 
-def score_recovery(true_edges, discovered_edges):
+def score_recovery(true_edges, discovered_edges, verbose=False):
     tp = len(true_edges & discovered_edges)
     fp = len(discovered_edges - true_edges)
     fn = len(true_edges - discovered_edges)
+    if verbose:
+        print(f'{len(true_edges)} true edges')
+        print(f'discovered {len(discovered_edges)} edges')
+        print(f"True positives: {tp}")
+        print(f"False positives: {fp}")
+        print(f"False negatives: {fn}")
     if not true_edges and not discovered_edges:
         return {'recall': 1.0, 'precision': 1.0, 'fdr': 0.0, 'f1': 1.0}
     recall = tp / len(true_edges) if true_edges else 1.0
@@ -88,15 +94,13 @@ def score_recovery(true_edges, discovered_edges):
 # Single recovery at moderate signal and threshold.
 rng = np.random.default_rng(42)
 n_samples = 500
-coupling, threshold = 0.4, 0.1
+coupling, threshold = 0.4, 0.15
 
 cov = build_covariance(true_edges, nodes, coupling=coupling)
 data = simulate_data(cov, n_samples, rng)
 discovered = discover_edges(data, nodes, threshold=threshold)
-stats = score_recovery(true_edges, discovered)
+stats = score_recovery(true_edges, discovered, verbose=True)
 
-print(f'{len(true_edges)} true edges')
-print(f'discovered {len(discovered)} edges')
 print(f"Recall: {stats['recall']:.2%}")
 print(f"Precision: {stats['precision']:.2%}")
 print(f"False Discovery Rate: {stats['fdr']:.2%}")
