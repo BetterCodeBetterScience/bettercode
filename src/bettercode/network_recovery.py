@@ -164,3 +164,39 @@ def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
     save_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(save_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
+
+
+def _demo() -> None:
+    rng = np.random.default_rng(42)
+    edges, nodes = load_ecoli_skeleton()
+    n_samples = 500
+    print(f"ecoli skeleton: {len(nodes)} nodes, {len(edges)} edges\n")
+
+    # Single recovery at moderate signal and threshold.
+    coupling, threshold = 0.4, 0.1
+    cov = build_covariance(edges, nodes, coupling=coupling)
+    data = simulate_data(cov, n_samples, rng)
+    discovered = discover_edges(data, nodes, threshold=threshold)
+    stats = score_recovery(edges, discovered)
+    print(f"single run @ signal={coupling}, threshold={threshold}:")
+    print(f"  {len(edges)} true edges, discovered {len(discovered)} edges")
+    print(
+        f"  recall={stats['recall']:.2%}  precision={stats['precision']:.2%}  "
+        f"fdr={stats['fdr']:.2%}  f1={stats['f1']:.2%}\n"
+    )
+
+    # Sweep over signal × threshold.
+    signals = [0.1, 0.2, 0.3, 0.4, 0.5]
+    thresholds = [0.05, 0.10, 0.15, 0.20, 0.25]
+    df = run_signal_threshold_sweep(edges, nodes, signals, thresholds, n_samples, rng)
+    print("sweep results:")
+    print(df.to_string(index=False, float_format=lambda x: f"{x:.3f}"))
+
+    image_dir = Path(__file__).resolve().parents[2] / "book" / "book" / "images"
+    save_path = image_dir / "network_recovery_performance.png"
+    plot_sweep_results(df, save_path)
+    print(f"\nfigure saved to {save_path}")
+
+
+if __name__ == "__main__":
+    _demo()
