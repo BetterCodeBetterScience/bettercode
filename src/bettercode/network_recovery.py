@@ -66,3 +66,31 @@ def discover_edges(
         if abs(partial_corr[i, j]) > threshold:
             discovered.add(tuple(sorted((nodes[i], nodes[j]))))
     return discovered
+
+
+def score_recovery(
+    true_edges: set[Edge], discovered_edges: set[Edge]
+) -> dict[str, float]:
+    """Score discovered edges against ground truth.
+
+    Returns recall, precision, false-discovery rate, and F1. Edge-case conventions
+    (chosen so ``precision + fdr == 1`` whenever both are defined and so trivial
+    cases score as perfect):
+
+    - both sets empty: recall=1, precision=1, fdr=0, f1=1
+    - discovered empty, true non-empty: recall=0, precision=1, fdr=0, f1=0
+    - true empty, discovered non-empty: recall=1, precision=0, fdr=1, f1=0
+    """
+    tp = len(true_edges & discovered_edges)
+    fp = len(discovered_edges - true_edges)
+    fn = len(true_edges - discovered_edges)
+
+    if not true_edges and not discovered_edges:
+        return {"recall": 1.0, "precision": 1.0, "fdr": 0.0, "f1": 1.0}
+
+    recall = tp / len(true_edges) if true_edges else 1.0
+    precision = tp / len(discovered_edges) if discovered_edges else 1.0
+    fdr = fp / len(discovered_edges) if discovered_edges else 0.0
+    f1_denom = 2 * tp + fp + fn
+    f1 = 2 * tp / f1_denom if f1_denom else 0.0
+    return {"recall": recall, "precision": precision, "fdr": fdr, "f1": f1}

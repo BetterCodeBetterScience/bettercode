@@ -53,3 +53,34 @@ def test_discover_edges_recovers_chain():
     data = nr.simulate_data(cov, n_samples=10000, rng=rng)
     discovered = nr.discover_edges(data, nodes, threshold=0.1)
     assert discovered == true_edges
+
+
+def test_score_recovery_basic():
+    """TP=2, FP=1, FN=1 → recall=2/3, precision=2/3, fdr=1/3, f1=2/3."""
+    true_edges = {("A", "B"), ("B", "C"), ("C", "D")}
+    discovered = {("A", "B"), ("B", "C"), ("D", "E")}
+    s = nr.score_recovery(true_edges, discovered)
+    assert s["recall"] == pytest.approx(2 / 3)
+    assert s["precision"] == pytest.approx(2 / 3)
+    assert s["fdr"] == pytest.approx(1 / 3)
+    assert s["f1"] == pytest.approx(2 / 3)
+
+
+def test_score_recovery_empty_empty():
+    """Empty true & empty discovered → vacuously perfect."""
+    s = nr.score_recovery(set(), set())
+    assert s == {"recall": 1.0, "precision": 1.0, "fdr": 0.0, "f1": 1.0}
+
+
+def test_score_recovery_empty_discovered():
+    """True edges exist, discovered nothing → recall=0, precision=1, fdr=0, f1=0."""
+    true_edges = {("A", "B"), ("B", "C")}
+    s = nr.score_recovery(true_edges, set())
+    assert s == {"recall": 0.0, "precision": 1.0, "fdr": 0.0, "f1": 0.0}
+
+
+def test_score_recovery_empty_true():
+    """No true edges, discovered some → recall=1, precision=0, fdr=1, f1=0."""
+    discovered = {("A", "B"), ("B", "C")}
+    s = nr.score_recovery(set(), discovered)
+    assert s == {"recall": 1.0, "precision": 0.0, "fdr": 1.0, "f1": 0.0}
