@@ -752,9 +752,7 @@ the autocovariances to lag 5; the coefficients of the cubic regression of the or
 
 More recently the manual identification of a set of summary statistics has been supplanted by the use of neural network models to generate low-dimensional \textit{embeddings} of the data.  Here I will use a method called \textit{Neural Posterior Estimation} \citep{greenberg:2019} in which a neural network model is trained to infer the posterior distribution of parameters from simulated data.  We also use a separate neural network model to generate a low-dimensional embedding of the observed data, which maintains information about temporal structure of the data and allows comparison of predicted and observed data in a common space.
 
-\textbf{TODO}: Give a bit more detail about pytorch? currently it comes afterwards
-
-I will use the \textit{sbi} Python package that implements several methods for simulation-based inference.  We first define our simulator, which for the Ricker model is very simple:
+I will use the \textit{sbi} Python package that implements several methods for simulation-based inference, leveraging the \textit{Pytorch} package for  acceleration of neural network modeling using graphical processing units (GPUs), to be discussed in more detail in Chapter 10. We first define our simulator, which for the Ricker model is very simple:
 
 \begin{lstlisting}[style=Python]
 def ricker_model(N: float, r: float, sigma: float = 0.3, phi: float = 10) -> tuple[float, int]:

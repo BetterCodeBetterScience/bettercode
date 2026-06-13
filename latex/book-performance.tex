@@ -591,7 +591,7 @@ In addition to optimizing performance, vectorized calls often also make the code
 
 When using a web API to obtain data, the proper use of the API is important to avoid suboptimal performance.  As an example we will use the \texttt{Bio.Entrez} module from the \texttt{Biopython} package, which enables the programmatic searching and downloading of abstracts from the PubMed database.  We first use the API to obtain the PubMed IDs for the 100 most recent publications for a particular search term:\index{Biopython}
 
-\textbf{TODO}: No error handling for network failures, rate limiting, or API errors. NCBI's Entrez API requires `Entrez.email` and has rate limits. Add error handling guidance for production use.
+% \textbf{TODO}: No error handling for network failures, rate limiting, or API errors. NCBI's Entrez API requires `Entrez.email` and has rate limits. Add error handling guidance for production use.
 
 \begin{lstlisting}[style=Python]
 import time
@@ -606,7 +606,7 @@ search_handle.close()
 pmid_list = search_results["IdList"]
 \end{lstlisting}
 
-This gives us a list of 100 pubmed IDs that we want to retrieve.  An obvious way to do this would be to loop through the list and retrieve each abstract individually:
+This gives us a list of 100 PubMed IDs that we want to retrieve.  An obvious way to do this would be to loop through the list and retrieve each abstract individually:
 
 \begin{lstlisting}[style=Python]
 abstracts = []
