@@ -10,25 +10,37 @@ def test_build_covariance_is_symmetric_positive_definite():
     """A small chain graph should produce a symmetric PD covariance."""
     nodes = ["A", "B", "C", "D"]
     edges = {("A", "B"), ("B", "C"), ("C", "D")}
-    cov = nr.build_covariance(edges, nodes, coupling=0.3)
+    cov = nr.build_covariance(edges, nodes, signal=0.3)
     assert cov.shape == (4, 4)
     assert np.allclose(cov, cov.T)
     assert (np.linalg.eigvalsh(cov) > 0).all()
 
 
-def test_build_covariance_sparsity_matches_edges():
-    """inv(cov) should have nonzeros exactly at edge positions."""
+def test_build_covariance_partial_correlations_match_signal():
+    """For connected pairs, the population partial correlation equals ``signal``."""
     nodes = ["A", "B", "C", "D"]
-    edges = {("A", "B"), ("C", "D")}  # two disjoint edges
-    cov = nr.build_covariance(edges, nodes, coupling=0.3)
+    edges = {("A", "B"), ("B", "C"), ("C", "D")}
+    signal = 0.3
+    cov = nr.build_covariance(edges, nodes, signal=signal)
     precision = np.linalg.inv(cov)
-    # off-diagonal positions: edges are nonzero, non-edges are zero
-    assert abs(precision[0, 1]) > 0.1  # A-B edge
-    assert abs(precision[2, 3]) > 0.1  # C-D edge
-    assert abs(precision[0, 2]) < 1e-10  # A-C non-edge
-    assert abs(precision[0, 3]) < 1e-10  # A-D non-edge
-    assert abs(precision[1, 2]) < 1e-10  # B-C non-edge
-    assert abs(precision[1, 3]) < 1e-10  # B-D non-edge
+    scale = np.sqrt(np.diag(precision))
+    pcor = -precision / np.outer(scale, scale)
+    # A-B, B-C, C-D are edges → partial correlation == signal
+    assert pcor[0, 1] == pytest.approx(signal)
+    assert pcor[1, 2] == pytest.approx(signal)
+    assert pcor[2, 3] == pytest.approx(signal)
+    # non-edges → partial correlation == 0
+    assert abs(pcor[0, 2]) < 1e-12
+    assert abs(pcor[0, 3]) < 1e-12
+    assert abs(pcor[1, 3]) < 1e-12
+
+
+def test_build_covariance_rejects_non_pd_signal():
+    """A signal too large for the graph raises a clear ValueError."""
+    nodes = ["A", "B", "C"]
+    edges = {("A", "B"), ("B", "C"), ("A", "C")}  # 3-clique → lambda_max(A) = 2
+    with pytest.raises(ValueError, match="not positive-definite"):
+        nr.build_covariance(edges, nodes, signal=0.6)  # 0.6 > 1/2
 
 
 def test_simulate_data_shape_and_mean():
@@ -41,14 +53,14 @@ def test_simulate_data_shape_and_mean():
 
 
 def test_discover_edges_recovers_chain():
-    """With strong coupling and many samples, partial-correlation thresholding
-    recovers the true edge set of a 4-node chain."""
+    """With strong signal and many samples, FDR-controlled partial-correlation
+    recovery returns the true edge set of a 4-node chain."""
     rng = np.random.default_rng(123)
     nodes = ["A", "B", "C", "D"]
     true_edges = {("A", "B"), ("B", "C"), ("C", "D")}
-    cov = nr.build_covariance(true_edges, nodes, coupling=0.5)
+    cov = nr.build_covariance(true_edges, nodes, signal=0.5)
     data = nr.simulate_data(cov, n_samples=10000, rng=rng)
-    discovered = nr.discover_edges(data, nodes, threshold=0.1)
+    discovered = nr.discover_edges(data, nodes, q_threshold=0.05)
     assert discovered == true_edges
 
 
@@ -97,18 +109,20 @@ def test_load_ecoli_moral_graph():
 
 
 def test_run_signal_threshold_sweep_shape():
-    """Sweep returns one row per (signal, threshold) with expected columns."""
+    """Sweep returns one row per (signal, q_threshold) with expected columns."""
     rng = np.random.default_rng(7)
     nodes = ["A", "B", "C", "D"]
     true_edges = {("A", "B"), ("B", "C"), ("C", "D")}
     signals = [0.2, 0.4]
-    thresholds = [0.05, 0.1, 0.2]
+    q_thresholds = [0.001, 0.01, 0.05]
+    n_runs = 3
     df = nr.run_signal_threshold_sweep(
-        true_edges, nodes, signals, thresholds, n_samples=500, rng=rng
+        true_edges, nodes, signals, q_thresholds, n_samples=500, n_runs=n_runs, rng=rng
     )
-    assert len(df) == 6
+    # One row per (signal, run, q_threshold)
+    assert len(df) == len(signals) * n_runs * len(q_thresholds)
     assert set(df.columns) == {
-        "signal", "threshold", "recall", "precision", "fdr", "f1",
+        "signal", "q_threshold", "recall", "precision", "fdr", "f1",
     }
     assert sorted(df["signal"].unique().tolist()) == signals
-    assert sorted(df["threshold"].unique().tolist()) == thresholds
+    assert sorted(df["q_threshold"].unique().tolist()) == q_thresholds
