@@ -133,3 +133,34 @@ def run_signal_threshold_sweep(
             stats = score_recovery(true_edges, discovered)
             rows.append({"signal": signal, "threshold": threshold, **stats})
     return pd.DataFrame(rows)
+
+
+def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
+    """Plot recall (solid) and FDR (dashed) vs. threshold, one color per signal level."""
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    signals = sorted(df["signal"].unique())
+    palette = sns.color_palette("colorblind", n_colors=len(signals))
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for color, signal in zip(palette, signals):
+        sub = df[df["signal"] == signal].sort_values("threshold")
+        ax.plot(
+            sub["threshold"], sub["recall"],
+            color=color, linestyle="-", marker="o",
+            label=f"recall (signal={signal})",
+        )
+        ax.plot(
+            sub["threshold"], sub["fdr"],
+            color=color, linestyle="--", marker="x",
+            label=f"FDR (signal={signal})",
+        )
+    ax.set_xlabel("partial-correlation threshold")
+    ax.set_ylabel("rate")
+    ax.set_ylim(-0.02, 1.02)
+    ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)
+    fig.tight_layout()
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
