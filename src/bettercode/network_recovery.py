@@ -94,3 +94,18 @@ def score_recovery(
     f1_denom = 2 * tp + fp + fn
     f1 = 2 * tp / f1_denom if f1_denom else 0.0
     return {"recall": recall, "precision": precision, "fdr": fdr, "f1": f1}
+
+
+def load_ecoli_skeleton() -> tuple[set[Edge], list[str]]:
+    """Load the ecoli70 Bayesian network from pgmpy and return its undirected skeleton.
+
+    Returns:
+        edges: set of (node1, node2) tuples with node1 < node2 lexicographically.
+        nodes: sorted list of node names (used as a canonical index ordering).
+    """
+    from pgmpy.utils import get_example_model
+
+    model = get_example_model("ecoli70")
+    nodes = sorted(model.nodes())
+    edges = {tuple(sorted((u, v))) for u, v in model.edges()}
+    return edges, nodes

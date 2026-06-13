@@ -84,3 +84,16 @@ def test_score_recovery_empty_true():
     discovered = {("A", "B"), ("B", "C")}
     s = nr.score_recovery(set(), discovered)
     assert s == {"recall": 1.0, "precision": 0.0, "fdr": 1.0, "f1": 0.0}
+
+
+@pytest.mark.integration
+def test_load_ecoli_skeleton():
+    """ecoli70 has 46 nodes and 70 edges; each edge is a lexicographically sorted str tuple."""
+    edges, nodes = nr.load_ecoli_skeleton()
+    assert len(nodes) == 46
+    assert len(edges) == 70
+    for e in edges:
+        assert isinstance(e, tuple) and len(e) == 2
+        u, v = e
+        assert isinstance(u, str) and isinstance(v, str)
+        assert u < v  # sorted
