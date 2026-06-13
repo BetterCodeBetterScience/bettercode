@@ -183,17 +183,7 @@ In some cases, we want to simulate data that have particular structure in order 
 
 Let's say that we have developed a tool that implements a novel method for the discovery of causal relationships from timeseries data.  We would like to generate data from a known causal graph (which is represented as a directed acyclic graph, just like our workflow graphs in the previous chapter). For this, we can use an existing graph; I chose one based on a dataset of gene expression in E. coli bacteria that was used by \citep{Schafer:2005aa} and is shared via the \textit{pgmpy} package:
 
-\begin{lstlisting}[style=Python]
-from IPython.display import Image
-from pgmpy.utils import get_example_model
-
-# Load the model
-ecoli_model = get_example_model('ecoli70')
-
-# Visualize the network and save to an image file
-viz = ecoli_model.to_graphviz()
-viz.draw(IMAGE_DIR / 'ecoli.png', prog='dot')
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=99, lastline=111]{../src/bettercode/network_recovery.py}
 
 Figure~\ref{ecoli-fig} shows the resulting rendering of that network, which has 46 nodes (representing individual genes) and 70 directed edges (representing causal relationships on gene expression between nodes).
 
@@ -206,159 +196,35 @@ Figure~\ref{ecoli-fig} shows the resulting rendering of that network, which has 
 
 Given this DAG, we then need to generate timeseries data for expression of each gene that reflect the causal relationships between the genes as well as the autocorrelation in gene expression within genes measured over time.  For this, we turn to the \textit{tigramite} package, which is primarily focused on causal discovery from timeseries data, but also includes a function that can generate timeseries data given a graphical model.  However, the \textit{tigramite} package requires a different representation of the graphical model than the one obtained from \textit{pgmpy}, so we have to convert the edge representation from the original to the link format required for \textit{tigramite}:\index{DAG (directed acyclic graph)}
 
-\begin{lstlisting}[style=Python]
-def generate_links_from_pgmpy_model(model, coef: float = 0.5, ar_param: float = 0.6) -> tuple[dict, dict, dict]:
-    nodes, edges = model.nodes(), model.edges()
-    noise_func = lambda x: x 
-    links = {}
-
-    # create dicts mapping node names to indices and vice versa
-    node_to_index = {node: idx for idx, node in enumerate(nodes)}
-    index_to_node = {idx: node for node, idx in node_to_index.items()}
-
-    # add edges from the pgmpy model
-    for edge in edges:
-        cause = node_to_index[edge[0]]
-        effect = node_to_index[edge[1]]
-        # for simplicity, use lag 1, constant coef and no edge noise
-        links.setdefault(effect, []).append( ((cause, -1), coef, noise_func) )
-
-    # add a self-connection to all nodes to simulate autoregressive behavior
-    for node in nodes:
-        idx = node_to_index[node]
-        links.setdefault(idx, []).append( ((idx, -1), ar_param, noise_func) )
-
-    return links, node_to_index, index_to_node
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=24, lastline=41]{../src/bettercode/network_recovery.py}
 
 We can then create a function to take in the original model, convert it, and generate timeseries data for the model:
 
-\begin{lstlisting}[style=Python]
-def generate_data(model, noise_sd=1, tslength=500, seed=42, coef=0.5, ar_param=0.6):
-    links, node_to_index, index_to_node = generate_links_from_pgmpy_model(model, 
-        coef=coef, ar_param=ar_param)
-    rng = np.random.default_rng(seed)
-    # Calculate total length including transient period
-    data, _ = structural_causal_process(links, T=tslength, seed=seed)
-    data = rng.normal(scale=noise_sd, size=data.shape) + data
-    # Prepare data for tigramite
-    return DataFrame(data), index_to_node
-
-# we will need the index_to_node mapping later
-ecoli_dataframe, _, index_to_node = generate_data(ecoli_model, noise_sd=1, 
-    tslength=500, seed=42)
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=44, lastline=48]{../src/bettercode/network_recovery.py}
 
 Now that we have the dataset we can test out our estimation method. Since I don't actually have a new method for causal estimation on timeseries, I will instead use the PCMCI method described by \citep{Runge:2019aa} and implemented in the \textit{tigramite} package:
 
-\begin{lstlisting}[style=Python]
-from tigramite.pcmci import PCMCI
-from tigramite.independence_tests.parcorr import ParCorr
-
-def run_pcmci(dataframe) -> dict:
-    # Initialize PCMCI with partial correlation-based independence test
-    pcmci = PCMCI(dataframe=dataframe, cond_ind_test=ParCorr())
-    # Run PCMCI to discover causal links
-    results = pcmci.run_pcmci(tau_max=1, pc_alpha=None)
-    return results
-
-results = run_pcmci(ecoli_dataframe)
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=51, lastline=68]{../src/bettercode/network_recovery.py}
 
 The results from this analysis include a list of all of the edges that were identified from the data using causal discovery, which we can summarize to determine how well the model performed. First we need to extract the links that were discovered from the results which pass our intended false discovery rate threshold:
 
-\begin{lstlisting}[style=Python]
-def extract_discovered_links(results: dict, index_to_node: dict, q_thresh: float = 0.00001) -> list[tuple[str, str]]:
-    discovered_links = []
-    fdr_p = results['fdr_p_matrix'][:, :, 1]  # use only lag 1 p-values
-    links = np.where(fdr_p < q_thresh)
-    for (i, j) in zip(links[0], links[1]):
-        if not i == j:
-            discovered_links.append((index_to_node[i], index_to_node[j]))
-    return discovered_links
-
-discovered_links = extract_discovered_links(results, index_to_node, .01)
-\end{lstlisting}
 
 Then we can summarize the results:
 
-\begin{lstlisting}[style=Python]
-def get_edge_stats(edges, discovered_links: list, verbose: bool = True) -> dict:
-    true_edges = set(edges)
-    discovered_edges = set(discovered_links)
-    true_positives = true_edges.intersection(discovered_edges)
-    false_positives = discovered_edges.difference(true_edges)
-    false_negatives = true_edges.difference(discovered_edges)
-
-    true_positive_rate = len(true_positives) / len(true_edges) if len(true_edges) > 0 else 0
-    
-    # Precision: proportion of discoveries that are true
-    precision = len(true_positives) / len(discovered_edges) if len(discovered_edges) > 0 else 0
-    
-    # False Discovery Rate: proportion of discoveries that are false
-    false_discovery_rate = len(false_positives) / len(discovered_edges) if len(discovered_edges) > 0 else np.nan
-    
-    f1_score = (2 * len(true_positives)) / (2 * len(true_positives) + \
-        len(false_positives) + len(false_negatives)) if (len(true_positives) + len(false_positives) + len(false_negatives)) > 0 else np.nan
-    
-    if verbose:
-        print(f'{len(true_edges)} true edges')
-        print(f'discovered {len(discovered_edges)} edges')
-        print(f"True Positive Rate (Recall): {true_positive_rate:.2%}")
-        print(f"Precision: {precision:.2%}")
-        print(f"False Discovery Rate: {false_discovery_rate:.2%}")
-        print(f"F1 Score: {f1_score:.2%}")
-
-    return {
-        'true_positives': true_positives,
-        'false_positives': false_positives,
-        'false_negatives': false_negatives,
-        'true_positive_rate': true_positive_rate,
-        'precision': precision,
-        'false_discovery_rate': false_discovery_rate,
-        'f1_score': f1_score
-    }
-
-edge_stats = get_edge_stats(ecoli_model.edges(), discovered_links)
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=71, lastline=96]{../src/bettercode/network_recovery.py}
 
 \begin{lstlisting}[style=shell]
 70 true edges
-discovered 87 edges
-True Positive Rate (Recall): 100.00%
-Precision: 80.46%
-False Discovery Rate: 19.54%
-F1 Score: 89.17%
+discovered 92 edges
+True Positive Rate (Recall): 98.57%
+Precision: 75.00%
+False Discovery Rate: 25.00%
+F1 Score: 85.19%
 \end{lstlisting}
 
 The results showed that the model performed quite well, detecting all of the true relationships and only two false relationships.  In general we would want to do additional validation to make sure that the results behave in the way that we expect. For example, we would expect better model performance with stronger signal, and we would expect fewer nodes identified when the p-value threshold is more stringent.  We can use the functions generated above to run a simulation of this:
 
-\begin{lstlisting}[style=Python]
-noise_sd = 1
-tslength = 500
-q_values =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
-signal_levels = np.arange(0, 0.7, 0.1)
-performance_results = []
-
-for signal_level in signal_levels:
-    dataframe, index_to_node = generate_data(ecoli_model, noise_sd=noise_sd, tslength=tslength, seed=42, coef=signal_level, ar_param=0.6)
-    results = run_pcmci(dataframe)
-    for q in q_values:
-        discovered_links = extract_discovered_links(results, index_to_node, q_thresh=q)
-        edge_stats = get_edge_stats(ecoli_model.edges(), discovered_links, verbose=False)
-        performance_results.append({
-        'noise_sd': noise_sd,
-        'q_value': q,
-        'tslength': tslength,
-        'signal_level': signal_level,
-        'true_positive_rate': edge_stats['true_positive_rate'],
-        'precision': edge_stats['precision'],
-        'false_discovery_rate': edge_stats['false_discovery_rate'],
-        'f1_score': edge_stats['f1_score']
-    })
-
-performance_df = pd.DataFrame(performance_results)
-\end{lstlisting}
+\lstinputlisting[style=Python, firstline=114, lastline=135]{../src/bettercode/network_recovery.py}
 
 We can then plot these results, as shown in Figure~\ref{simresults-fig}.  The results confirm that the model is performing as expected, with increasing recall as a function of increasing true signal and decreasing FDR threshold.
 
