@@ -497,34 +497,35 @@ We can see that version \texttt{11.5.0} of the CUDA module is loaded.  To check 
 \begin{lstlisting}[style=shell]
 
 $ nvidia-smi
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 550.163.01             Driver Version: 550.163.01     CUDA Version: 12.4     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:8A:00.0 Off |                  N/A |
-|  0%   26C    P8             25W /  252W |       1MiB /  11264MiB |      0%   E. Process |
-|                                         |                        |                  N/A |
-+-----------------------------------------+------------------------+----------------------+
-
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|  No running processes found                                                             |
-+-----------------------------------------------------------------------------------------+
++--------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.163.01    Driver Version: 550.163.01     CUDA Version: 12.4     |
+|--------------------------------+------------------------+----------------------+
+| GPU  Name        Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                |                        |               MIG M. |
+|================================+========================+======================|
+|   0   GeForce RTX 2080 Ti  On  |   00000000:8A:00.0 Off |                  N/A |
+|  0%   26C    P8    25W /  252W |       1MiB /  11264MiB |      0%   E. Process |
+|                                |                        |                  N/A |
++--------------------------------+------------------------+----------------------+
+| Processes:                                                                     |
+|  GPU   GI   CI  PID   Type   Process name                           GPU Memory |
+|        ID   ID                                                      Usage      |
+|================================================================================|
+|  No running processes found                                                    |
++--------------------------------------------------------------------------------+
 \end{lstlisting}
 
-We can see that in this case the scheduler has given us access to a relatively lightweight GPU (an NVIDIA GeForce RTX 2080 Ti), which is fine for testing but would be insufficient for difficult workloads.  We can also request a specific kind of GPU; for example, if we know that our system has a particular kind of GPU we can request that:
+We can see from the bottom line that there are no processes currently using the GPU.  We can also see that in this case the scheduler has given us access to a relatively lightweight GPU (an NVIDIA GeForce RTX 2080 Ti), which is fine for testing but would be insufficient for difficult workloads. We could request a specific kind of GPU; for example, if we know that our system has a particular kind of GPU we can request that; for example, we can request an \textit{NVIDIA} Tesla-class GPU, and see that we receive access to an \texttt{L40S} model:
 
-\begin{lstlisting}[style=shell]
+\begin{lstlisting}[style=shellshort]
 $ srun -p gpu -G 1 -C GPU_BRD:TESLA  --pty bash
+
+$ nvidia-smi -L
+GPU 0: NVIDIA L40S (UUID: GPU-06cac336-bd68-49db-3ba2-c34f8f5e03cf)
 \end{lstlisting}
 
-I have found that one of the trickiest aspects of using GPUs on HPC systems is getting the software stack running properly.  It's often necessary to fiddle with specific versions of libraries and/or CUDA module versions in order to get libraries to install. If you find that a package installation in \texttt{uv} is taking an inordinate amount of time, this is usually a sign that the package resolver couldn't find a binary version of the module that satifies the constraints, in which case it tries to compile the package from source, which often fails after a long wait. The solution in this case is often to either change the CUDA module version (as sometimes the system will not default to the most recent), or downgrade versions of the packages that are being installed.  For example in developing the example for this chapter, I had to pin specific versions of \textit{NumPy} and \textit{CuPY} (a library that provides GPU accelerated versions of \textit{NumPy} functions) in my \texttt{pyproject.toml} file in order to get the environment to work properly:
+I have found that one of the trickiest aspects of using GPUs on HPC systems is getting the software stack running properly.  It's often necessary to fiddle with specific versions of libraries and/or CUDA module versions in order to get libraries to install. If you find that a package installation in \texttt{uv} is taking an inordinate amount of time, this is usually a sign that the package resolver couldn't find a binary version of the module that satifies the constraints, in which case it tries to compile the package from source, which often fails after a long wait. The solution in such a case is often to either change the CUDA module version (as sometimes the system will not default to the most recent), or downgrade versions of the packages that are being installed.  In this particular example, I had to pin specific versions of \textit{NumPy} and \textit{CuPy} (a library that provides GPU accelerated versions of \textit{NumPy} functions) in my \texttt{pyproject.toml} file in order to get the environment to work properly:
 
 \begin{lstlisting}[style=shell]
 dependencies = [
@@ -533,7 +534,7 @@ dependencies = [
 ]
 \end{lstlisting}
 
-Having done that, I was able to submit a job to perform a comparison of matrix multiplication operations using CPU versus GPU, with the following \textit{Slurm} script, which also provides some verbose output regarding the GPU environment:
+Having done that, I was able to submit a job to perform a comparison of matrix multiplication operations using CPU (via \textit{NumPy}) versus GPU (via \textit{CuPy}), with the following \textit{Slurm} script, which also provides some verbose output regarding the GPU environment:
 
 \begin{lstlisting}[style=shell]
 #!/bin/bash
@@ -597,7 +598,30 @@ GPU  : 0.0005 s/iter (total 0.0015 s, checksum 520.628784)
 Speedup (CPU/GPU): 60.75x
 \end{lstlisting}  
 
-For this example, run on an \textit{NVIDIA} L40S GPU, we see a roughly 60X speedup of matrix multiplication operations compared to the CPU.  
+For this example, run on an \textit{NVIDIA} L40S GPU, we see a roughly 60X speedup of matrix multiplication operations compared to the CPU. I was also able to log into the node that was running the process, where I could see the process running on the GPU:
+
+\begin{lstlisting}[style=shell]
+$ nvidia-smi
++--------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.163.01    Driver Version: 550.163.01     CUDA Version: 12.4     |
+|--------------------------------+------------------------+----------------------+
+| GPU  Name        Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                |                        |               MIG M. |
+|================================+========================+======================|
+|   0  NVIDIA L40S           On  |   00000000:E1:00.0 Off |                    0 |
+| N/A   42C    P0   350W /  350W |    2367MiB /  46068MiB |    100%   E. Process |
+|                                |                        |                  N/A |
++--------------------------------+------------------------+----------------------+
+| Processes:                                                                     |
+|  GPU   GI   CI        PID   Type   Process name                     GPU Memory |
+|        ID   ID                                                      Usage      |
+|================================================================================|
+|    0   N/A  N/A     28813      C   ...ck-gpu-uv.venv/bin/python3       2360MiB |
++--------------------------------------------------------------------------------+
+\end{lstlisting}
+
+Slurm setups for GPU systems vary across different HPC centers, so if you have a need for more complex setups (such as multiple GPUs) then it's best to refer to the local documentation or contact your center's helpdesk directly for guidance.
 
 \section{Cloud computing}
 
