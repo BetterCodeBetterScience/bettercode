@@ -1,12 +1,19 @@
 """Recovering a known undirected network from simulated data.
 
-Pedagogical example for the validation chapter: load the ecoli70 graph from
-pgmpy, treat it as an undirected skeleton, encode that skeleton as the
-sparsity pattern of a Gaussian precision matrix, simulate multivariate-normal
-data with that precision, and recover the network by thresholding partial
-correlations estimated from the sample. Because the precision sparsity *is*
-the skeleton by construction, the partial-correlation ground truth is exactly
-the skeleton (no moral-graph subtlety).
+Pedagogical example for the validation chapter: load the ecoli70 Bayesian
+network from pgmpy, moralize it to obtain the undirected conditional
+dependence graph (the moral graph), encode that graph as the sparsity pattern
+of a Gaussian precision matrix, simulate multivariate-normal data with that
+precision, and recover the network by thresholding partial correlations
+estimated from the sample.
+
+Why moralize? For a Gaussian DAG, the conditional independence structure is
+given by the moral graph: two variables are conditionally independent given
+all the others iff they are NOT adjacent in the moral graph. The moral graph
+includes the DAG's skeleton plus undirected edges between any pair of nodes
+that share a common child ("marry the parents"). Building the precision
+matrix from the moral graph thus produces data whose true conditional
+dependence structure matches the recovery target.
 """
 
 from __future__ import annotations
@@ -100,21 +107,27 @@ def score_recovery(
     return {"recall": recall, "precision": precision, "fdr": fdr, "f1": f1}
 
 
-def load_ecoli_skeleton() -> tuple[set[Edge], list[str]]:
-    """Load the ecoli70 Bayesian network from pgmpy and return its
-    undirected skeleton.
+def load_ecoli_moral_graph() -> tuple[set[Edge], list[str]]:
+    """Load the ecoli70 Bayesian network from pgmpy and return its moral graph.
+
+    Moralization converts a DAG into the undirected graph that represents the
+    same conditional independence structure: each pair of co-parents (nodes
+    sharing a common child) gets connected, then edge directions are dropped.
+    For a Gaussian DAG, the resulting moral graph is the sparsity pattern of
+    the precision matrix.
 
     Returns:
-        edges: set of (node1, node2) tuples with node1 < node2 
+        edges: set of (node1, node2) tuples with node1 < node2
             lexicographically.
-        nodes: sorted list of node names (used as a canonical 
+        nodes: sorted list of node names (used as a canonical
             index ordering).
     """
     from pgmpy.utils import get_example_model
 
     model = get_example_model("ecoli70")
+    moral = model.moralize()
     nodes = sorted(model.nodes())
-    edges = {tuple(sorted((u, v))) for u, v in model.edges()}
+    edges = {tuple(sorted((u, v))) for u, v in moral.edges()}
     return edges, nodes
 
 
@@ -174,11 +187,11 @@ def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
 
 
 def _demo() -> None:
-    """Run an end-to-end demonstration of network recovery on the ecoli skeleton."""
+    """Run an end-to-end demonstration of network recovery on the ecoli moral graph."""
     rng = np.random.default_rng(42)
-    edges, nodes = load_ecoli_skeleton()
+    edges, nodes = load_ecoli_moral_graph()
     n_samples = 500
-    print(f"ecoli skeleton: {len(nodes)} nodes, {len(edges)} edges\n")
+    print(f"ecoli moral graph: {len(nodes)} nodes, {len(edges)} edges\n")
 
     # Single recovery at moderate signal and threshold.
     coupling, threshold = 0.4, 0.15

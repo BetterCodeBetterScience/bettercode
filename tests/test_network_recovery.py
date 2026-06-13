@@ -84,11 +84,11 @@ def test_score_recovery_empty_true():
 
 
 @pytest.mark.integration
-def test_load_ecoli_skeleton():
-    """ecoli70 has 46 nodes and 70 edges; each edge is a lexicographically sorted str tuple."""
-    edges, nodes = nr.load_ecoli_skeleton()
+def test_load_ecoli_moral_graph():
+    """ecoli70 has 46 nodes; its moral graph adds co-parent edges (84 total)."""
+    edges, nodes = nr.load_ecoli_moral_graph()
     assert len(nodes) == 46
-    assert len(edges) == 70
+    assert len(edges) == 84  # 70 skeleton edges + 14 co-parent edges
     for e in edges:
         assert isinstance(e, tuple) and len(e) == 2
         u, v = e

@@ -15,11 +15,13 @@
 # %% [markdown]
 # ## Network recovery via partial correlation
 #
-# - load the ecoli70 graph from pgmpy and treat it as an undirected skeleton
-# - encode that skeleton as the sparsity pattern of a Gaussian precision matrix
+# - load the ecoli70 Bayesian network from pgmpy
+# - moralize the DAG to get the undirected conditional dependence graph
+#   (each pair of co-parents gets connected, then directions are dropped)
+# - encode that moral graph as the sparsity pattern of a Gaussian precision matrix
 # - simulate multivariate-normal data from the implied covariance
 # - recover the network by thresholding partial correlations from the sample
-# - compare the recovered edges to the true skeleton
+# - compare the recovered edges to the true moral graph
 
 # %%
 from itertools import combinations
@@ -33,11 +35,12 @@ from pgmpy.utils import get_example_model
 
 IMAGE_DIR = Path(__file__).resolve().parent.parent / 'book' / 'book' / 'images'
 
-# Load the ecoli70 model and extract its undirected skeleton.
+# Load the ecoli70 DAG and moralize it to obtain the conditional dependence graph.
 ecoli_model = get_example_model('ecoli70')
+moral_graph = ecoli_model.moralize()
 nodes = sorted(ecoli_model.nodes())
-true_edges = {tuple(sorted((u, v))) for u, v in ecoli_model.edges()}
-print(f'{len(nodes)} nodes, {len(true_edges)} edges')
+true_edges = {tuple(sorted((u, v))) for u, v in moral_graph.edges()}
+print(f'{len(nodes)} nodes, {len(true_edges)} edges (moral graph)')
 
 
 # %%
