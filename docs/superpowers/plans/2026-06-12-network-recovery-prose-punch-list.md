@@ -69,6 +69,15 @@ In `latex/book-validation.tex`, `\subsection{Simulating data from a model}`:
    paragraph now sits awkwardly without a following code block and should
    be deleted entirely.
 
+   **Also delete the orphaned single-sentence paragraph "Then we can
+   summarize the results:"** at line 212. After the previous paragraph
+   and its code block are removed, this sentence is the lead-in to the
+   `score_recovery` listing and reads naturally there — but if you choose
+   to delete the preceding "First we need to extract…" paragraph, also
+   delete this lead-in so the flow reads: prose about applying the
+   estimation method → `discover_edges` listing → `score_recovery`
+   listing → shell-output block.
+
 9. **"The results showed that the model performed quite well, detecting all
    of the true relationships and only two false relationships."** — the
    new shell-output block reports 92 discovered edges with 25% FDR. Update
