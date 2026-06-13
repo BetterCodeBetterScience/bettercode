@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from itertools import combinations
 from pathlib import Path
-from typing import Sequence
+from collections.abc import Sequence
 
 import numpy as np
 import pandas as pd
@@ -92,7 +92,7 @@ def score_recovery(
     precision = tp / len(discovered_edges) if discovered_edges else 1.0
     fdr = fp / len(discovered_edges) if discovered_edges else 0.0
     f1_denom = 2 * tp + fp + fn
-    f1 = 2 * tp / f1_denom if f1_denom else 0.0
+    f1 = 2 * tp / f1_denom
     return {"recall": recall, "precision": precision, "fdr": fdr, "f1": f1}
 
 
