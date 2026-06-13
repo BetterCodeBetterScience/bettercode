@@ -97,3 +97,21 @@ def test_load_ecoli_skeleton():
         u, v = e
         assert isinstance(u, str) and isinstance(v, str)
         assert u < v  # sorted
+
+
+def test_run_signal_threshold_sweep_shape():
+    """Sweep returns one row per (signal, threshold) with expected columns."""
+    rng = np.random.default_rng(7)
+    nodes = ["A", "B", "C", "D"]
+    true_edges = {("A", "B"), ("B", "C"), ("C", "D")}
+    signals = [0.2, 0.4]
+    thresholds = [0.05, 0.1, 0.2]
+    df = nr.run_signal_threshold_sweep(
+        true_edges, nodes, signals, thresholds, n_samples=500, rng=rng
+    )
+    assert len(df) == 6
+    assert set(df.columns) == {
+        "signal", "threshold", "recall", "precision", "fdr", "f1",
+    }
+    assert sorted(df["signal"].unique().tolist()) == signals
+    assert sorted(df["threshold"].unique().tolist()) == thresholds

@@ -109,3 +109,27 @@ def load_ecoli_skeleton() -> tuple[set[Edge], list[str]]:
     nodes = sorted(model.nodes())
     edges = {tuple(sorted((u, v))) for u, v in model.edges()}
     return edges, nodes
+
+
+def run_signal_threshold_sweep(
+    true_edges: set[Edge],
+    nodes: list[str],
+    signal_levels: Sequence[float],
+    thresholds: Sequence[float],
+    n_samples: int,
+    rng: np.random.Generator,
+) -> pd.DataFrame:
+    """Score recovery across all (signal, threshold) combinations.
+
+    For each signal level, the precision matrix is rebuilt with that coupling
+    and fresh data is drawn. For each threshold, the same data is rescored.
+    """
+    rows = []
+    for signal in signal_levels:
+        cov = build_covariance(true_edges, nodes, coupling=signal)
+        data = simulate_data(cov, n_samples, rng)
+        for threshold in thresholds:
+            discovered = discover_edges(data, nodes, threshold)
+            stats = score_recovery(true_edges, discovered)
+            rows.append({"signal": signal, "threshold": threshold, **stats})
+    return pd.DataFrame(rows)
