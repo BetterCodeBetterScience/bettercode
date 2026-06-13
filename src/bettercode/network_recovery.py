@@ -167,6 +167,7 @@ def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
 
 
 def _demo() -> None:
+    """Run an end-to-end demonstration of network recovery on the ecoli skeleton."""
     rng = np.random.default_rng(42)
     edges, nodes = load_ecoli_skeleton()
     n_samples = 500
