@@ -179,11 +179,11 @@ It is essential to choose the right distributions for a simulation; otherwise th
 
 In some cases, we want to simulate data that have particular structure in order to test whether our code can properly identify the structure in the data. Depending on the kind of structure one needs to create, there are often existing tools that can help generate the data.  For example, the \textit{scikit-learn} package has a large number of data generators that are often useful, either on their own or as a starting point to develop a custom generator.  Similarly, the \textit{NetworkX} graph analysis package has a large number of graph generators available.\index{scikit-learn}
 
-Let's say that we have developed a function that estimates an undirected graph from network data.  We would like to generate data from a known graph and then examine our ability to identify the true edges in the graph from the data. For this, we can use an existing graph; I chose one based on a dataset of gene expression in E. coli bacteria that was used by \cite{Schafer:2005aa} and is shared via the \textit{pgmpy} package.  Specifically, we need to load a "moralized" version of the graph, which adds edges between co-parents so that the conditional independence structure properly matches what would be generated from the graph:
+Let's say that we have developed a function that estimates an undirected graph from network data.  We would like to generate data from a known graph and then examine our ability to identify the true edges in the graph from the data. For this, we can use an existing graph; I chose one based on a dataset of gene expression in E. coli bacteria that was used by \cite{Schafer:2005aa} and is shared via the \textit{pgmpy} package.  
 
-\lstinputlisting[style=Python, firstline=110, lastline=131]{../src/bettercode/network_recovery.py}
+\lstinputlisting[style=Python, firstline=137, lastline=160]{../src/bettercode/network_recovery.py}
 
-Figure~\ref{ecoli-fig} shows the resulting rendering of that network, which has 46 nodes (representing individual genes) and 70 directed edges (representing causal relationships on gene expression between nodes).  This is a \textit{directed acyclic graph} (or DAG), in which the edges have arrows that reflect causal influences from one node to another. However, our analysis method will focus only on the presence/absence of edges and not their direction, hence the term \textit{undirected graph}.  \index{DAG (directed acyclic graph)}
+Figure~\ref{ecoli-fig} shows the resulting rendering of that network, which has 46 nodes (representing individual genes) and 70 directed edges (representing causal relationships on gene expression between nodes).  This is a \textit{directed acyclic graph} (or DAG), in which the edges have arrows that reflect causal influences from one node to another. However, our analysis method will focus only on the presence/absence of edges and not their direction, hence the term \textit{undirected graph}.  \index{DAG (directed acyclic graph)}. Since we will be working with an undirected version of the graph, we need to load a "moralized" version of the directed graph, which adds edges between co-parents so that the conditional independence structure properly matches what would be generated from the graph, resulting in a total of 84 edges.
 
 \begin{figure}[!htbp]
 \centering
@@ -194,36 +194,36 @@ Figure~\ref{ecoli-fig} shows the resulting rendering of that network, which has 
 
 Given this graph, we then need to generate data for expression of each gene that reflect the causal relationships between the genes.  To do this, we use \textit{Numpy} to generate multivariate normal data with a given covariance structure that is based on the known graph.  First we need to generate the covariance matrix; to do this, we leverage the fact that the inverse of the covariance (known as the \textit{precision}) is a representation of direct influences. Since we know these direct influences (based on the graph), we can generate the precision matrix using those known edges and then invert it to obtain the covariance matrix:
 
-\lstinputlisting[style=Python, firstline=31, lastline=50]{../src/bettercode/network_recovery.py}
+\lstinputlisting[style=Python, firstline=31, lastline=60]{../src/bettercode/network_recovery.py}
 
 We can then create a function that uses this covariance matrix to generate random samples from a multivariate normal distribution:
 
-\lstinputlisting[style=Python, firstline=53, lastline=58]{../src/bettercode/network_recovery.py}
+\lstinputlisting[style=Python, firstline=63, lastline=68]{../src/bettercode/network_recovery.py}
 
-Now that we have the dataset we can test out our estimation method. We will use a very simple method that involves computing the \textit{partial correlation} between each pair of edges. This is the correlation after having removed the influence of all other edges, and thus reflects the unique direct relationship between edges, as opposed to the standard correlation which reflects both direct and indirect relationships.  The partial correlation is simply a scaled version of the inverse covariance (precision), which we can compute directly from the data.  Note that this is a suboptimal method for computing the partial correlation, which will fail when there are more nodes than data points; I use it here as a simple example.  Our function computes the partial correlation and then returns the edges whose partial correlation exceeds a specified threshold:
+Now that we have the dataset we can test out our estimation method. We will use a very simple method that involves computing the \textit{partial correlation} between each pair of edges. This is the correlation after having removed the influence of all other edges, and thus reflects the unique direct relationship between edges, as opposed to the standard correlation which reflects both direct and indirect relationships.  The partial correlation is simply a scaled version of the inverse covariance (precision), which we can compute directly from the data.  Note that this is a suboptimal method for computing the partial correlation, which will fail when there are more nodes than data points; I use it here as a simple example.  Our function computes the partial correlation and then returns the edges whose partial correlation exceeds a specified FDR-corrected threshold:
 
-\lstinputlisting[style=Python, firstline=61, lastline=79]{../src/bettercode/network_recovery.py}
+\lstinputlisting[style=Python, firstline=71, lastline=103]{../src/bettercode/network_recovery.py}
 
 The results from this analysis include a list of all of the edges that were identified from the data using causal discovery, which we can summarize to determine how well the model performed:
 
-\lstinputlisting[style=Python, firstline=82, lastline=107]{../src/bettercode/network_recovery.py}
+\lstinputlisting[style=Python, firstline=106, lastline=134]{../src/bettercode/network_recovery.py}
 
 \begin{lstlisting}[style=shell]
-single run @ signal=0.4, threshold=0.15:
-  84 true edges, discovered 59 edges
-  59 true positives, 0 false positives
-  recall=70.24%  precision=100.00%  fdr=0.00%  f1=82.52%
+single run @ signal=0.1, q_threshold=0.05:
+  84 true edges, discovered 48 edges
+  45 true positives, 3 false positives
+  recall=53.57%  precision=93.75%  fdr=6.25%  f1=68.18%
 \end{lstlisting}
 
-The results showed that the model performed fairly well, detecting 90\% of the true edges but also detecting one false edge.  In general we would want to do additional validation to make sure that the results behave in the way that we expect. For example, we would expect better model performance with stronger signal, and we would expect fewer nodes identified when the p-value threshold is more stringent.  We can use the functions generated above to run a simulation of this:
+The results showed that the model performed moderately well, detecting about 50\% of the true edges and also detecting three false edges.  In general we would want to do additional validation to make sure that the results behave in the way that we expect. For example, we would expect better model performance with stronger signal, and we would expect fewer nodes identified when the p-value threshold is more stringent.  We can use the functions generated above to run a simulation of this:
 
-\lstinputlisting[style=Python, firstline=134, lastline=155]{../src/bettercode/network_recovery.py}
+\lstinputlisting[style=Python, firstline=163, lastline=188]{../src/bettercode/network_recovery.py}
 
 We can then plot these results, as shown in Figure~\ref{simresults-fig}.  The results confirm that the model is performing as expected, with increasing recall as a function of increasing true signal and decreasing FDR threshold.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.75\linewidth]{files/network_recovery_performance.png}
+\includegraphics[width=0.8\linewidth]{files/network_recovery_performance.png}
 \caption[Plot of true/false discovery rate as threshold increases]{A plot of observed true positive rate (TPR) and false discovery rate (FDR) at increasing signal levels for varying correlation thresholds.}
 \label{simresults-fig}
 \end{figure}
@@ -306,7 +306,7 @@ We can then visualize the correlations and distributions for the original data a
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.8\linewidth]{files/sdv_distributions-497ca4c3be03a7f8ae7272ccc1ea7da5.png}
+\includegraphics[width=0.95\linewidth]{files/sdv_distributions-497ca4c3be03a7f8ae7272ccc1ea7da5.png}
 \caption[Comparison of distributions for original and synthetic data]{A comparison of the distributions of the original and synthetic data for several of the variables in the example dataset.}
 \label{sdvdist-fig}
 \end{figure}
