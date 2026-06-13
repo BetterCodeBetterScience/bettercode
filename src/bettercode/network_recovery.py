@@ -46,3 +46,23 @@ def simulate_data(
 ) -> np.ndarray:
     """Draw ``n_samples`` from a zero-mean multivariate normal with covariance ``cov``."""
     return rng.multivariate_normal(np.zeros(cov.shape[0]), cov, size=n_samples)
+
+
+def discover_edges(
+    data: np.ndarray, nodes: list[str], threshold: float
+) -> set[Edge]:
+    """Recover edges by estimating partial correlations and thresholding their magnitude.
+
+    Inverts the sample covariance to get an estimated precision matrix, then
+    computes partial correlations ``-P_{ij} / sqrt(P_{ii} * P_{jj})``. Returns
+    the set of node-name pairs (sorted lexicographically) whose partial
+    correlation magnitude exceeds ``threshold``.
+    """
+    precision = np.linalg.inv(np.cov(data, rowvar=False))
+    scale = np.sqrt(np.diag(precision))
+    partial_corr = -precision / np.outer(scale, scale)
+    discovered: set[Edge] = set()
+    for i, j in combinations(range(len(nodes)), 2):
+        if abs(partial_corr[i, j]) > threshold:
+            discovered.add(tuple(sorted((nodes[i], nodes[j]))))
+    return discovered

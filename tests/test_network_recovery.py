@@ -41,3 +41,15 @@ def test_simulate_data_shape_and_mean():
     data = nr.simulate_data(cov, n_samples=10000, rng=rng)
     assert data.shape == (10000, 5)
     assert np.all(np.abs(data.mean(axis=0)) < 0.1)
+
+
+def test_discover_edges_recovers_chain():
+    """With strong coupling and many samples, partial-correlation thresholding
+    recovers the true edge set of a 4-node chain."""
+    rng = np.random.default_rng(123)
+    nodes = ["A", "B", "C", "D"]
+    true_edges = {("A", "B"), ("B", "C"), ("C", "D")}
+    cov = nr.build_covariance(true_edges, nodes, coupling=0.5)
+    data = nr.simulate_data(cov, n_samples=10000, rng=rng)
+    discovered = nr.discover_edges(data, nodes, threshold=0.1)
+    assert discovered == true_edges
