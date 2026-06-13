@@ -19,3 +19,23 @@ import numpy as np
 import pandas as pd
 
 Edge = tuple[str, str]
+
+
+def build_covariance(
+    edges: set[Edge], nodes: list[str], coupling: float
+) -> np.ndarray:
+    """Build a covariance matrix whose precision has the given sparsity pattern.
+
+    Edges are encoded as off-diagonal nonzeros (value ``coupling``) of the
+    precision matrix. The diagonal is set to ``sum(|off-diag|) + 0.1`` per row
+    to guarantee strict diagonal dominance, which ensures positive-definiteness.
+    The returned covariance is the inverse of this precision matrix.
+    """
+    n = len(nodes)
+    node_idx = {name: i for i, name in enumerate(nodes)}
+    precision = np.zeros((n, n))
+    for u, v in edges:
+        i, j = node_idx[u], node_idx[v]
+        precision[i, j] = precision[j, i] = coupling
+    np.fill_diagonal(precision, np.abs(precision).sum(axis=1) + 0.1)
+    return np.linalg.inv(precision)
