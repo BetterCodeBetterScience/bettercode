@@ -444,7 +444,7 @@ Throughout the book I have talked about the utility of virtual environments, and
 
 Containers solve at least two important problems for HPC users.  First, as I noted in the earlier discussion, they provide a strong platform for reproducible computing; given that the HPC user has no control over operating system upgrades, containers help ensure that software dependencies will remain consistent over time.  Second, they allow users to install software that may not be runnable on the HPC system; for example, the user may require a version of a package that is too old to run on the HPC's current operating system.  For these reasons, containers have become very popular on HPC systems.
 
-Because Docker requires that the user have root access to the system, it can't be run by users on HPC systems (which restrict root access to sysadmnins).  Instead, most HPC systems support \textit{Apptainer} (formerly called \textit{Singularity}) as a platform for running containers.Historically \textit{Apptainer} couldn't actually build the container; it could only use existing containers, defined through an image file or downloaded from an image registry such as Dockerhub.  Fortunately, recent versions of \textit{Apptainer} have an option called \texttt{--fakeroot} that (if enabled) allows users to build containers, relieving them of having to separately build a \textit{Docker} container and then convert it. \index{Docker}\index{Apptainer}\index{Singularity}
+Because Docker requires that the user have root access to the system, it can't be run by users on HPC systems (which restrict root access to sysadmnins).  Instead, most HPC systems support \textit{Apptainer} (formerly called \textit{Singularity}) as a platform for running containers. Historically \textit{Apptainer} couldn't actually build the container; it could only use existing containers, defined through an image file or downloaded from an image registry such as Dockerhub.  Fortunately, recent versions of \textit{Apptainer} have an option called \texttt{--fakeroot} that (if enabled by the sysadmin) allows users to build containers directly on the HPC system, relieving them of having to separately build a \textit{Docker} container and then convert it. \index{Docker}\index{Apptainer}\index{Singularity}
 
 \subsection{Interactive access to HPC systems}
 
@@ -474,7 +474,130 @@ So far I have focused on using HPC resources for jobs that are embarrassingly pa
 
 \section{GPU computing on HPC systems}\index{GPU computing}
 
-\textbf{TODO}:  how to request GPUs in \textit{Slurm} (`--gres=gpu:1`), basics of GPU frameworks, and multi-GPU training.
+In the previous chapter I discussed the ways in which GPU computing can provide massive acceleration on particular kinds of problems.  Because of the popularity of GPU acceleration, most HPC centers now provide access to GPUs via their scheduling system.  Here I provide a brief overview of how to use GPUs on a \textit{Slurm} system.
+
+Before deploying GPU-accelerated code on an HPC system, it's important to make sure that the software stack is configured properly.  Most centers will provide the CUDA libraries as a module, which must be loaded before one can run software that leverages the CUDA environment. To see this, let's first access an interactive GPU node using the \texttt{srun} command:
+
+\begin{lstlisting}[style=shell]
+$ srun --partition=gpu --gres=gpu:1 --pty bash
+
+srun: job 29422223 queued and waiting for resources
+srun: job 29422223 has been allocated resources
+$ module list cuda
+
+Currently Loaded Modules Matching: cuda
+  1) cuda/11.5.0 (g)
+
+  Where:
+   g:  GPU support
+\end{lstlisting}
+
+We can see that version \texttt{11.5.0} of the CUDA module is loaded.  To check the status of the GPU, we can use the \texttt{nvidia-smi} command:
+
+\begin{lstlisting}[style=shell]
+
+$ nvidia-smi
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.163.01             Driver Version: 550.163.01     CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 2080 Ti     On  |   00000000:8A:00.0 Off |                  N/A |
+|  0%   26C    P8             25W /  252W |       1MiB /  11264MiB |      0%   E. Process |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+\end{lstlisting}
+
+We can see that in this case the scheduler has given us access to a relatively lightweight GPU (an NVIDIA GeForce RTX 2080 Ti), which is fine for testing but would be insufficient for difficult workloads.  We can also request a specific kind of GPU; for example, if we know that our system has a particular kind of GPU we can request that:
+
+\begin{lstlisting}[style=shell]
+$ srun -p gpu -G 1 -C GPU_BRD:TESLA  --pty bash
+\end{lstlisting}
+
+I have found that one of the trickiest aspects of using GPUs on HPC systems is getting the software stack running properly.  It's often necessary to fiddle with specific versions of libraries and/or CUDA module versions in order to get libraries to install. If you find that a package installation in \texttt{uv} is taking an inordinate amount of time, this is usually a sign that the package resolver couldn't find a binary version of the module that satifies the constraints, in which case it tries to compile the package from source, which often fails after a long wait. The solution in this case is often to either change the CUDA module version (as sometimes the system will not default to the most recent), or downgrade versions of the packages that are being installed.  For example in developing the example for this chapter, I had to pin specific versions of \textit{NumPy} and \textit{CuPY} (a library that provides GPU accelerated versions of \textit{NumPy} functions) in my \texttt{pyproject.toml} file in order to get the environment to work properly:
+
+\begin{lstlisting}[style=shell]
+dependencies = [
+  "numpy==1.26.4",
+  "cupy-cuda12x>=13.6.0",
+]
+\end{lstlisting}
+
+Having done that, I was able to submit a job to perform a comparison of matrix multiplication operations using CPU versus GPU, with the following \textit{Slurm} script, which also provides some verbose output regarding the GPU environment:
+
+\begin{lstlisting}[style=shell]
+#!/bin/bash
+#SBATCH --job-name=sherlock-gpu-demo
+#SBATCH --partition=gpu
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
+#SBATCH --time=00:10:00
+#SBATCH --gpus=1
+#SBATCH --output=logs/%x-%j.out
+
+set -euo pipefail
+export UV_LINK_MODE=copy
+
+module purge
+ml devel python/3.12.1 cuda/12.4.0
+
+PROJECT_DIR="${SLURM_SUBMIT_DIR:-$PWD}"
+cd "$PROJECT_DIR"
+mkdir -p logs
+
+echo "Running on host: $(hostname)"
+echo "Python: $(python3 --version 2>&1)"
+echo "uv: $(uv --version)"
+echo
+nvidia-smi -L
+
+echo
+echo "Syncing uv environment..."
+uv sync --python "$(which python3)"
+
+echo
+echo "Starting benchmark..."
+uv run --python "$(which python3)" python gpu_demo.py --size 2048 --repeats 3
+\end{lstlisting}
+
+This resulted in the following output:
+
+\begin{lstlisting}[style=shell]
+Running on host: sh04-01n12.int
+Python: Python 3.12.1
+uv: uv 0.11.20 (x86_64-unknown-linux-gnu)
+
+GPU 0: NVIDIA L40S (UUID: GPU-fd46edb9-d02c-59a1-ee87-6f1ae2b1340a)
+
+Syncing uv environment...
+
+Starting benchmark...
+Sherlock GPU Python demo
+================================================================================
+Hostname: sh04-01n12.int
+SLURM job id: 29014436
+CUDA_VISIBLE_DEVICES: 0
+
+Detected GPU: NVIDIA L40S | compute capability 8.9 | 44.5 GiB
+
+CPU  : 0.0300 s/iter (total 0.0900 s, checksum 512.049622)
+GPU  : 0.0005 s/iter (total 0.0015 s, checksum 520.628784)
+Speedup (CPU/GPU): 60.75x
+\end{lstlisting}  
+
+For this example, run on an \textit{NVIDIA} L40S GPU, we see a roughly 60X speedup of matrix multiplication operations compared to the CPU.  
 
 \section{Cloud computing}
 
