@@ -24,12 +24,14 @@ Edge = tuple[str, str]
 def build_covariance(
     edges: set[Edge], nodes: list[str], coupling: float
 ) -> np.ndarray:
-    """Build a covariance matrix whose precision has the given sparsity pattern.
+    """Build a covariance matrix whose precision has the given 
+    sparsity pattern.
 
-    Edges are encoded as off-diagonal nonzeros (value ``coupling``) of the
-    precision matrix. The diagonal is set to ``sum(|off-diag|) + 0.1`` per row
-    to guarantee strict diagonal dominance, which ensures positive-definiteness.
-    The returned covariance is the inverse of this precision matrix.
+    Edges are encoded as off-diagonal nonzeros (value ``coupling``)
+    of the precision matrix. The diagonal is set to ``sum(|off-diag|) + 0.1``
+    per row to guarantee strict diagonal dominance, which ensures 
+    positive-definiteness. The returned covariance is the inverse of 
+    this precision matrix.
     """
     n = len(nodes)
     node_idx = {name: i for i, name in enumerate(nodes)}
@@ -44,19 +46,21 @@ def build_covariance(
 def simulate_data(
     cov: np.ndarray, n_samples: int, rng: np.random.Generator
 ) -> np.ndarray:
-    """Draw ``n_samples`` from a zero-mean multivariate normal with covariance ``cov``."""
+    """Draw ``n_samples`` from a zero-mean multivariate normal with 
+    covariance ``cov``."""
     return rng.multivariate_normal(np.zeros(cov.shape[0]), cov, size=n_samples)
 
 
 def discover_edges(
     data: np.ndarray, nodes: list[str], threshold: float
 ) -> set[Edge]:
-    """Recover edges by estimating partial correlations and thresholding their magnitude.
+    """Recover edges by estimating partial correlations and 
+    thresholding their magnitude.
 
-    Inverts the sample covariance to get an estimated precision matrix, then
-    computes partial correlations ``-P_{ij} / sqrt(P_{ii} * P_{jj})``. Returns
-    the set of node-name pairs (sorted lexicographically) whose partial
-    correlation magnitude exceeds ``threshold``.
+    Inverts the sample covariance to get an estimated precision matrix,
+    then computes partial correlations ``-P_{ij} / sqrt(P_{ii} * P_{jj})``. 
+    Returns the set of node-name pairs (sorted lexicographically) whose 
+    partial correlation magnitude exceeds ``threshold``.
     """
     precision = np.linalg.inv(np.cov(data, rowvar=False))
     scale = np.sqrt(np.diag(precision))
@@ -73,9 +77,9 @@ def score_recovery(
 ) -> dict[str, float]:
     """Score discovered edges against ground truth.
 
-    Returns recall, precision, false-discovery rate, and F1. Edge-case conventions
-    (chosen so ``precision + fdr == 1`` whenever both are defined and so trivial
-    cases score as perfect):
+    Returns recall, precision, false-discovery rate, and F1. Edge-case
+    conventions (chosen so ``precision + fdr == 1`` whenever both are 
+    defined and so trivial cases score as perfect):
 
     - both sets empty: recall=1, precision=1, fdr=0, f1=1
     - discovered empty, true non-empty: recall=0, precision=1, fdr=0, f1=0
@@ -97,11 +101,14 @@ def score_recovery(
 
 
 def load_ecoli_skeleton() -> tuple[set[Edge], list[str]]:
-    """Load the ecoli70 Bayesian network from pgmpy and return its undirected skeleton.
+    """Load the ecoli70 Bayesian network from pgmpy and return its
+    undirected skeleton.
 
     Returns:
-        edges: set of (node1, node2) tuples with node1 < node2 lexicographically.
-        nodes: sorted list of node names (used as a canonical index ordering).
+        edges: set of (node1, node2) tuples with node1 < node2 
+            lexicographically.
+        nodes: sorted list of node names (used as a canonical 
+            index ordering).
     """
     from pgmpy.utils import get_example_model
 
@@ -174,13 +181,16 @@ def _demo() -> None:
     print(f"ecoli skeleton: {len(nodes)} nodes, {len(edges)} edges\n")
 
     # Single recovery at moderate signal and threshold.
-    coupling, threshold = 0.4, 0.1
+    coupling, threshold = 0.4, 0.15
     cov = build_covariance(edges, nodes, coupling=coupling)
     data = simulate_data(cov, n_samples, rng)
     discovered = discover_edges(data, nodes, threshold=threshold)
+    true_positive_edges = np.array([True if e in discovered else False for e in edges])
+    false_positive_edges = np.array([True if e not in edges else False for e in discovered])
     stats = score_recovery(edges, discovered)
     print(f"single run @ signal={coupling}, threshold={threshold}:")
     print(f"  {len(edges)} true edges, discovered {len(discovered)} edges")
+    print(f"  {sum(true_positive_edges)} true positives, {sum(false_positive_edges)} false positives")
     print(
         f"  recall={stats['recall']:.2%}  precision={stats['precision']:.2%}  "
         f"fdr={stats['fdr']:.2%}  f1={stats['f1']:.2%}\n"
@@ -193,7 +203,7 @@ def _demo() -> None:
     print("sweep results:")
     print(df.to_string(index=False, float_format=lambda x: f"{x:.3f}"))
 
-    image_dir = Path(__file__).resolve().parents[2] / "book" / "book" / "images"
+    image_dir = Path(__file__).resolve().parents[2] / "latex" / "files"
     save_path = image_dir / "network_recovery_performance.png"
     plot_sweep_results(df, save_path)
     print(f"\nfigure saved to {save_path}")
