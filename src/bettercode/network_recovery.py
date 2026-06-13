@@ -39,3 +39,10 @@ def build_covariance(
         precision[i, j] = precision[j, i] = coupling
     np.fill_diagonal(precision, np.abs(precision).sum(axis=1) + 0.1)
     return np.linalg.inv(precision)
+
+
+def simulate_data(
+    cov: np.ndarray, n_samples: int, rng: np.random.Generator
+) -> np.ndarray:
+    """Draw ``n_samples`` from a zero-mean multivariate normal with covariance ``cov``."""
+    return rng.multivariate_normal(np.zeros(cov.shape[0]), cov, size=n_samples)

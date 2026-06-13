@@ -32,3 +32,12 @@ def test_build_covariance_sparsity_matches_edges():
     assert abs(precision[0, 3]) < 1e-10  # A-D non-edge
     assert abs(precision[1, 2]) < 1e-10  # B-C non-edge
     assert abs(precision[1, 3]) < 1e-10  # B-D non-edge
+
+
+def test_simulate_data_shape_and_mean():
+    """Drawing N samples from p-dim MVN gives (N, p) data with near-zero mean."""
+    rng = np.random.default_rng(0)
+    cov = np.eye(5)
+    data = nr.simulate_data(cov, n_samples=10000, rng=rng)
+    assert data.shape == (10000, 5)
+    assert np.all(np.abs(data.mean(axis=0)) < 0.1)
