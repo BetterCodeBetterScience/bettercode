@@ -15,23 +15,24 @@ The most obvious reason to write tests for code is to make sure that the answers
 This becomes increasingly important as AI assistants write more of the code, to the degree that testing is becoming \textit{at least as important} as code generation as a skill for generating good scientific code.
 But creating correct code is far from the only reason for writing tests.
 
-A second reason for testing was highlighted in our earlier discussion of test-driven development.\index{test-driven development}
+A second and very important reason to write tests is that they make it much easier to make changes to the code.
+Without a robust test suite, one is always left worried that changing some aspect of the code will have unexpected effects on its former behavior (known as a ``regression'').
+Tests can provide you with the comfort you need to make changes, knowing that you will detect any untoward effects your changes might have.
+This includes refactoring, where the changes are not meant to modify the functionality but simply to make the code more robust and readable.
+
+A third reason for testing was highlighted in our earlier discussion of test-driven development.\index{test-driven development}
 Tests can provide the coder with a measure of task completion; when the tests pass, the job is done, other than refactoring the code to make it cleaner and more robust.\index{refactoring}
 Writing tests make one think harder about what exactly they want/need the code to do, and to specify those goals in as clear a way as possible.
 Focusing on tests can help keep the coder's ``eyes on the MVP prize'' and prevent generating too much extraneous code (``gold plating'').
 
-A third reason to write tests is that they can help drive modularity in the code.\index{modularity}
+A fourth reason to write tests is that they can help drive modularity in the code.\index{modularity}
 It's much easier to write tests for a simple function that does a single thing than for a complex function with many different roles.
 Testing can also help drive modularity by causing one to think more clearly about what a function does when developing the test; the inability to easily write a test for a function can suggest that the function might be overly complex and should be refactored.
 In this way, writing tests can give us useful insights into the structure of the code.
 
-A fourth reasons to write tests is that they can serve as important documentation for the code.  
-Tests define the expected behavior of the code in a way that is particularly precise.  Thus, if we want to see how to use the code, the tests often provide the clearest and most precise documentation of its usage.
+A final reason to write tests is that they can serve as important documentation for the code.  
+Tests define the expected behavior of the code in a way that is particularly precise.  Thus, if we want to see how to use the code, the tests often provide the clearest and most precise documentation of its usage.  As such they also provide AI tools with a strong basis for automated generation of correct documentation.
 
-A final reason to write tests is that they make it much easier to make changes to the code.
-Without a robust test suite, one is always left worried that changing some aspect of the code will have unexpected effects on its former behavior (known as a ``regression'').
-Tests can provide you with the comfort you need to make changes, knowing that you will detect any untoward effects your changes might have.
-This includes refactoring, where the changes are not meant to modify the functionality but simply to make the code more robust and readable.
 
 \section{Types of tests}
 
