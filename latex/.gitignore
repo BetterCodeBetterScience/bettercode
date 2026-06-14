@@ -1,3 +1,4 @@
+*.cls
 *.fdb_latexmk
 *.fls
 book.dvi
