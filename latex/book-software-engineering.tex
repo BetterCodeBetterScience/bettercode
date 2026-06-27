@@ -75,7 +75,7 @@ Importantly, the only thing that would cause this function to change is if the w
 In this way, the high level workflow manager is \textit{insulated} from the implementation details of each of the components, interacting with them only through their inputs and outputs.
 Each of the different workflow components can also be insulated from the other components, as long as they rely only upon the arguments provided to the function.
 
-Having discussed how the structure of code can increase or reduce complexity, we now turn to the nature of the development process, which also plays an important role in managing complexity.
+Having discussed how the structure of code can increase or reduce complexity, we now turn to the nature of the development process, which also plays an important role in minimizing complexity.
 
 \section{Software Development Methodologies}\index{agile development}
 
@@ -91,15 +91,11 @@ This is known as the \textit{waterfall} method for project management; it can wo
 Instead, most software development projects now use methods generally referred to as \textit{Agile}, in which there are much faster cycles between planning and development.
 One of the most important principles of the Agile movement is that ``Working software is the primary measure of progress'' \citep{Beck:2001aa}.
 It's worth noting that a lot of dogma has grown up around Agile and related software development methodologies (such as \textit{Scrum} and \textit{Kanban}), much of which is overkill for scientists producing code for research.
-But there are nonetheless some very useful concepts and processes that we can take from these methodologies to help us build scientific software better and faster.\index{Agile methodology}
-
-It's important to understand that the requirement of ``working'' software takes on a different meaning the context of scientific software. If we are building a web site or a game, then we can tell whether it's working with our eyes: The web site looks correct, and the game plays as it should, without crashing.  In science we have an added criterion: The code needs to give correct answers.  
-
+But there are nonetheless some very useful concepts and processes that we can take from these methodologies to help us build scientific software better and faster.
 In our laboratory, we focus heavily on the idea of the ``minimum viable product'' (MVP) that grows out of the Agile philosophy.
 We shoot for code that solves the scientific or technical problem at hand: no more, and no less.
-We try to write that code as cleanly as possible (as described in the next section), but we realize that the code will never be perfect, and that's ok.
-If it's code that will be reused in the future, then we will likely spend some additional time refactoring it to improve its clarity and robustness and providing additional documentation.\index{refactoring}
-This philosophy is the rationale for the ``test-driven development'' approach that I discuss in more detail later.\index{test-driven development}\index{Agile methodology}
+\index{Agile methodology}
+
 
 \section{Designing software through user stories}
 
@@ -126,7 +122,6 @@ User stories are also useful for thinking through the potential impact of new fe
 Perhaps the most common example of violations of YAGNI comes about in the development of visualization tools.
 In this example, the developer might decide to create an visualizer to show how the original dataset is being converted into the new format, with interactive features that would allow the user to view features of individual files.
 The question that you should always ask yourself is: What user stories would this feature address? If it's difficult to come up with stories that make clear how the feature would help solve particular problems for particular kinds of users, then the feature is probably not needed. 
-This is the reason that I regularly tell my trainees to post a note in their workspace with one simple mantra: ``MVP''.
 
 \section{Refactoring code}
 
@@ -151,7 +146,7 @@ Most importantly, refactoring can help make the code \textit{easier to maintain}
 This in turn often implies making it easier to read and understand, as I discuss further below in the context of \textit{clean coding}.
 For example, we might want to break a large function out into several smaller functions so that the logical structure of the code is clearer from the code itself.
 Making code easier to understand and maintain also helps make it easier to add features to in the future.
-There are many other ways in which one can improve code, which are the focus of Fowler's book; I will outline more of them below when I turn later to the problem of ``code smells''.\index{test-driven development}\index{refactoring}
+There are many other ways in which one can improve code, which are the focus of Fowler's book; I will outline more of them below when I turn to the problem of ``code smells''.\index{test-driven development}\index{refactoring}
 
 It is increasingly possible to use AI tools to refactor code.
 As long as one has a solid testing program in place, this can help save time and also help learn how to refactor code more effectively.
@@ -177,12 +172,12 @@ For example, one might start by creating a script with comments that describe ea
 A seemingly sensible way to proceed would then be march through the steps and write a function to accomplish each one, and then test the entire package once all of the functions are created.
 However, this approach has a couple of drawbacks.
 First, since you can't run the application until all of the code is written, you can't know whether each component is working properly until the entire package is built.
-Second, it's easy to end up writing code that will end up not needing, since you haven't specified exactly what the inputs and outputs are for each component.
+Second, it's easy to end up writing code that you would actually need, since you haven't specified exactly what the inputs and outputs are for each component.
 Finally, once you start integrating all of the components, you won't have a way to know if you have introduced a bug.
 
 One answer to these problems is to start the process by creating a set of \textit{tests}, which tell us whether the code has solved our intended problems.
 The process of writing tests before writing code to solve the problem is known as \textit{test-driven development} (TDD), which I think is a very useful framework to use when writing scientific code, especially if one plans to use LLMs for code generation.\index{test-driven development}
-Test-driven development is somewhat controversial within the software engineering field, in part due to the strident rhetoric of some TDD advocates, but also due to concerns about whether it might actually result in poorer software designs.   
+Test-driven development is somewhat controversial within the software engineering field, in part due to the strident rhetoric of some TDD advocates, but also due to concerns about whether it might actually result in poorer software designs\footnote{See the debate on this topic between Bob Martin and John Ousterhout in the appendix of \cite{Martin:2025aa}}.   
 But I think that when it is used in a thoughtful way, TDD can be a powerful way to increase the effectiveness and accuracy of one's code.
 In addition, TDD is very useful in the context of AI coding agents, where it can help keep the agent on track and ensure that it focuses on the main problem at hand.
 
@@ -206,7 +201,7 @@ Good programmers write code that humans can understand.'' \citep[][p. 10]{Fowler
 \end{quote}
 
 Another idea that has emerged from the Agile\index{Agile methodology} community is \textit{clean coding}\index{clean coding}, which is the idea that code should be simple, readable, and easily maintainable.
-This idea was codified in the book titled \textit{Clean Code: A Handbook of Agile Software Craftsmanship} \citep{Martin:2025aa}, published by Robert C. Martin (known in the community as ``Uncle Bob'').
+This idea was codified in the book titled \textit{Clean Code: A Handbook of Agile Software Craftsmanship} \citep{Martin:2025aa} by Robert C. Martin (known in the community as ``Uncle Bob'').
 One of the best ways to describe clean code is that it is \textit{simple}.
 Kent Beck, another Agile founder who developed the related idea of ``Extreme Programming'', laid out a set of rules for simple code:
 
@@ -222,7 +217,7 @@ And it's essential to remember that this ``other programmer'' is mostly likely t
 
 There are many different interpretations of the concept of clean code.
 Here I will lay out the principles that I think are most important for the creation of code in the context of scientific research (as opposed to commercial software development).
-Fortunately, the code generated by AI coding assistants is often quite clean, as we found in our early analyses of code generated by GPT-4 \citep{Poldrack:2023aa}.\index{GPT-4}
+Fortunately, the code generated by AI coding assistants is often quite clean; this was true even in our early analyses of code generated by GPT-4 \citep{Poldrack:2023aa}, and in my experience it has remained the case.\index{GPT-4}
 But as we work alongside these assistants, it's important to develop a mindset of continuous improvement, always seeking to make the code cleaner and simpler whenever we can.
 
 \subsection{Readability}
@@ -244,7 +239,7 @@ It's particularly important to point out that these different principles may som
 The use of different names for the same concept can lead the reader to assume that there are two different concepts at play, often known as a ``jangle fallacy''.
 This might occur when a similar concept appears across multiple functions, but is named differently; for example, a variable referring to a specific large language model is called \texttt{modelname} in one function and \texttt{llm\_label} in another.
 
-Conversely, using the same name to represent two different concepts can lead the reader to think that they are referring to the same thing, which is called a ``jingle fallacy''. For example, this could occur if one were to use the variable name \texttt{model} to refer to a model class within one function but to a string containing the model name in another function.
+Conversely, using the same name to represent two different concepts can lead the reader to think that they are referring to the same thing, which is called a ``jingle fallacy''. For example, this could occur if one were to use the variable name \texttt{model} to refer to an instance of a model class within one function but to a string containing the model name in another function.
 This problem is particularly likely to occur when one uses names that are too simple (see below).
 
 \begin{quote}
@@ -328,7 +323,7 @@ For many programmers, the term ``documentation'' is largely synonymous with code
 On the other hand, one of the most consistent messages from the software engineering literature is that comments are far too often used as a ``magic balm'' for bad code:
 
 \begin{itemize}
-\item ``Don't comment bad code --- rewrite it'' \citep(Kernighan:1978aa)
+\item ``Don't comment bad code --- rewrite it'' \citep{Kernighan:1978aa}
 \item ``Clear and expressive code with few comments is far superior to cluttered and complex code with lots of comments. Rather than spend your time writing the comments that explain the mess you’ve made, spend it cleaning that mess.'' \citep{Martin:2025aa}\index{Martin, Robert}
 \item ``comments aren't a bad smell; indeed they are a sweet smell. The reason we mention comments here is that comments are often used as a deodorant. It's surprising how often you look at thickly commented code and notice that the comments are there because the code is bad.'' \citep{Fowler:1999aa}
 \end{itemize}
@@ -466,27 +461,25 @@ Here I outline several bad smells and anti-patterns commonly found in my experie
 One of the most common smells in scientific code is the use of repeated blocks of duplicated code with only minor changes.
 For example:
 
-\begin{lstlisting}[style=Python]
-# Compute mean response time separately for each test (bad practice)
+\begin{lstlisting}[style=Pythonshort]
 mean_rt_1 = stroop_data['ResponseTime'].mean()
 mean_rt_2 = flanker_data['RT'].mean()
 mean_rt_3 = nback_data['RespTime'].mean()
 grand_mean_rt = np.mean([mean_rt_1, mean_rt_2, mean_rt_3])
 \end{lstlisting}
 
-This code might work, but it violates the commonly stated principle of ``Don't Repeat Yourself'' (DRY), and is problematic for several reasons.\index{DRY (Don't Repeat Yourself)}
+This code might work,  but it is problematic for several reasons.
 First, any changes to the intended operation (in this case computing the mean of the `ResponseTime' variable in the data frame) would require making changes on multiple lines.
-In this example the lines are close to one another so it would be easy to see that they all need to be changed, but if they were separated by many other others then one would need to be sure to make the change in each place.
-Second, imagine that we wanted to include an additional task in the dataset; we would need to add a new line to compute the mean for the added condition, and also would need to remember to add it to the computation of the grand mean.
+In this example the lines are close to one another so it would be easy to see that they all need to be changed, but if they were separated by many others then one would need to be sure to make the change in each place.
+Second, imagine that we wanted to include an additional test in the dataset; we would need to add a new line to compute the mean for the added test, and also would need to remember to add it to the computation of the grand mean.
 Third, an especially strong code smell is the use of numbers as part of variable names, rather than using a data structure such as a dictionary or data frame that inherently represents the data within a single iterable object.
-Let's say that we decided to remove the flanker task from our dataset; we would then need to remember to remove \texttt{mean\_rt\_2} from the grand mean computation, which would require working memory if those two lines were to become separated by other code.
+Let's say that we decided to remove the flanker task from our dataset; we would then need to remember to remove \texttt{mean\_rt\_2} from the grand mean computation, which could result in errors if we forgot.
 
 Here is a refactored version of the code that:
 
 \begin{itemize}
 \item extracts the task names and associated data frame column names for the response time variable for each into a dictionary
-\item creates a function that returns the mean of a given column in the data frame.  Its naming as ``get\_mean\_response\_time'' will help the reader understand that ``rt'' refers to ``response time'' in the rest of the code (which is obvious to domain experts but not necessarily to others reading the code).
-\item loops through the dictionary elements and applies the function to the relevant column, saving them to a dictionary
+\item loops through the dictionary elements and extracts the data from the relevant column, saving them to a dictionary
 \item computes the grand mean using the values from the dictionary created from each dataset
 \end{itemize}
 
@@ -497,12 +490,9 @@ rt_column_names = {
     'nback': 'RespTime'
 }
 
-def get_mean_response_time(testdata: pd.DataFrame, column_name: str) -> float:
-    return testdata[column_name].mean()
-
 mean_rt = {}
 for test, column_name in rt_column_names.items():
-    mean_rt[test] = get_mean_response_time(data[test], column_name)
+    mean_rt[test] = data[test][column_name].mean()
 
 grand_mean_rt = np.mean(list(mean_rt.values()))
 \end{lstlisting}
@@ -520,9 +510,9 @@ def proportion_significant(data):
 \end{lstlisting}
 
 What does ``3.09'' refer to? A statistically literate reader might infer that this was meant to refer to the 99.9th percentile of the standard normal (Z) distribution, but couldn't be certain without talking to the developer.
-Another particular problem with floating point magic numbers is that they often are rounded (i.e., 3.09 rather than 3.090232306167813), which could lead to imprecision in the results in some contexts.
+Another particular problem with floating point magic numbers is that they often are rounded (i.e., 3.09 rather than 3.090232306167813), which could lead to imprecise results in some contexts.
 Another problem with this example is that the value can't be changed by the user of the function.
-It would be better compute the value formally based on an explicit input of the probability, and then assign it to a named variable that makes clear what it means:
+It would be better compute the value formally based on an explicit input of the desired threshold probability, and then assign it to a named variable that makes clear what it means:
 
 \begin{lstlisting}[style=Pythonshort]
 def proportion_exceeding_threshold(data, p_threshold=.001):
@@ -530,7 +520,7 @@ def proportion_exceeding_threshold(data, p_threshold=.001):
     return np.mean(data > z_cutoff)
 \end{lstlisting}
 
-In cases where the hardcoded value is the specification, then one should use a named variable rather than simply inserting the number; this way, the reader will know what the value refers to.  It is also useful to include a comment justifying the value in cases where it wouldn't be obvious to a domain expert.
+In cases where the hardcoded value is truly the specification, then one should use a named variable rather than simply inserting the number; this way, the reader will know what the value refers to.  It is also useful to include a comment justifying the value in cases where it wouldn't be obvious to a domain expert.
 
 \subsubsection{Long parameter lists}
 
@@ -546,7 +536,7 @@ For example:
 {'myarg': 1, 'mybool': True}
 \end{lstlisting}
 
-This can be useful in specific cases, but in general should be avoided if possible, as it makes the code less clear and allows for potential type errors.
+This can be useful in specific cases, but in general should be avoided if possible, as it makes the code less clear and prevents the use of \textit{type hints} (described in detail later in the chapter) which allow the clear specification of the intended type for each argument.\index{type hints}
 
 A useful solution when one needs to pass a large number of named parameters is to create a \textit{configuration object} that contains all of these parameters.
 This can be easily accomplished using \textit{dataclasses} within Python, which are specialized classes meant to easily store data.
@@ -560,7 +550,7 @@ def run_llm_prompt(prompt,
     ...
 \end{lstlisting}
 
-We could instead first create a configuration class that allows us to define all of the optional parameters; note that this code uses \textit{type hints} which will be described in detail later in the chapter:\index{type hints}
+We could instead first create a configuration class that allows us to define all of the optional parameters (including the aforementioned type hints):
 
 \begin{lstlisting}[style=Python]
 from dataclasses import dataclass, field
@@ -698,7 +688,7 @@ def calculate(name: str, count: int) -> float:
     ...
 \end{lstlisting}
 
-The major difference between type hints in Python and the typing in statically typed languages is that type hints are not actually enforced in Python. If you were to pass in a floating point variable to the \texttt{count} argument in any of those other languages it would result in an error in compilation, whereas Python is perfectly happy to take an input that violates the type hints.  However, it is possible to check Python code for violations of type hints using \textit{mypy}. As an example, take the following Python code:\index{mypy}
+This tells us that the function takes two arguments, a string (\texttt{name}) and an integer (\texttt{count}) and returns a floating point value.  The major difference between type hints in Python and the typing in statically typed languages is that type hints are not actually enforced in Python. If you were to pass in a floating point variable to the \texttt{count} argument in any of those other languages it would result in an error in compilation, whereas Python is perfectly happy to take an input that violates the type hints.  However, it is possible to check Python code for violations of type hints using \textit{mypy}. As an example, take the following Python code:\index{mypy}
 
 \begin{lstlisting}[style=Python]
 def compute_mean(values: list[float]) -> float:
@@ -729,7 +719,7 @@ src/bettercode/mypy_example.py:5: error: Argument 1 to "compute_mean" has incomp
 Found 1 error in 1 file (checked 1 source file)
 \end{lstlisting}
 
-Even if they aren't enforced, type hints can play a huge role in making code more understandable.  Without them, a programmer may spend significant time trying to figure out what kind of variables are expected by function or what it's return type is, whereas type hints make this obvious.  They are particularly valuable for functions within a model that will be called from other code, since that's where the greatest potential for confusion lies.  In addition, IDEs will often use them to provide feedback about type mismatches.
+Even if they aren't enforced, type hints can play a huge role in making code more understandable.  Without them, a programmer may spend significant time trying to figure out what kind of variables are expected by function or what it's return type is, whereas type hints make this obvious.  They are particularly valuable for functions within a model that will be called from other code, since that's where the greatest potential for confusion lies.  In addition, IDEs will often use them to provide feedback about type mismatches, and AI coding agents can also take advantage of them when processing existing code.
 
 The examples above showed how scalar variable types like string or integer work, but there are also other types that can be very useful. Most of these are built in to standard Python (at least after version 3.10), but some additional ones are found in the \textit{typing} module:
 
@@ -868,7 +858,7 @@ A second approach is known as \textit{functional programming}.  It isn't the pre
 
 There are a couple of important differences to point out here.  First note that the functions don't change the input data; for example, rather than modifying the \texttt{state} object that is passed into \texttt{func\_add()}, the function instead uses the values within the input object to create a new object that is returned.  In fact, it wouldn't be possible for the function to change the data, since it is represented as a \textit{tuple} which is immutable.  While some functional programming languages (such as \textit{Haskell}) strictly enforce immutability, Python doesn't have a mechanism to enforce it by default, so it's up to the programmer to build it in, as we did here by using an immutable data type.
 
-The main difference is the use of the \texttt{reduce} function, which is one of the most important tools for functional programming in Python.  This operator takes three argument as input: a function to be applied, data to be supplied to the function, and a starting value for the input.  It then cumulatively applies the function across all of the data points and returns the final value.
+The main difference is the use of the \texttt{reduce} function, which is one of the most important tools for functional programming in Python.  This operator takes three arguments as input: a function to be applied, data to be supplied to the function, and a starting value for the input.  It then cumulatively applies the function across all of the data points and returns the final value.
 Running this produces the following output:
 
 \begin{lstlisting}[style=replshort]
@@ -904,7 +894,7 @@ A main goal of object-oriented programming is \textit{encapsulation}, such that 
 60.0
 \end{lstlisting}
 
-The custom in Python class definitions is to use an underscore prefix for the names of instance variables that are not meant to be accessed from outside.  For example, instead of using \texttt{self.total}, we would use \texttt{self.\_total} if we didn't mean it to be accessed from the outside.  However, Python doesn't actually enforce the privacy of these variables; they are simply meant as a signal to users that the variable is not meant to be accessed from outside of the class.
+The custom in Python class definitions is to use an underscore prefix for the names of instance variables that are not meant to be accessed from outside.  For example, instead of using \texttt{self.total}, we would use \texttt{self.\_total} if we didn't mean it to be accessed from the outside.  However, Python doesn't actually enforce the privacy of these variables; they are simply meant as a signal to users that the variable is an implementation detail that is not meant to be accessed from outside of the class.
 
 Finally, note that the \texttt{mean()} method is preceded by a \texttt{@property} decorator.  This means that while it is defined in the class as a method (in the sense that it returns a value when called), it is treated from the outside as a instance variable, which is why \texttt{compute\_oop\_result} returns \texttt{running.mean} rather than \texttt{running.mean()}.  This is useful because it ensures that the mean value that is returned will always be up to date, since it is computed on the fly when requested.
 
@@ -956,7 +946,7 @@ We can create an instance of the summarizer and then apply it to some data:
 
 None of these classes are particularly deep, but that's an artifice of the example; in reality we would be using much deeper classes for each of the steps.  What's particularly useful here is that the top-level class (\texttt{Summarizer}) doesn't need to know anything about which classes might be used as cleaners or statistics or any details about their internal implementations; any class that has the right interface (a \texttt{.clean()} method for cleaners and a \texttt{.compute()} method for statistics) can be used.  
 
-Inheritance and composition both have their place, depending on the kind of relationships that are inherent between objects.  However, inheritance does tend to result in more coupling, since any changes to a top-level class have the potential to affect any class that inherits it.  Composition, on the other hand, tends to reduce coupling. It is for this reason that \cite{Gamma:1995aa} proposed the following as one of their principles of object-oriented programming: ``Favor object composition over class inheritance.''
+Inheritance and composition both have their place, depending on the kind of relationships that are inherent between objects.  However, inheritance does tend to result in more coupling and thus more complexity, since any changes to a top-level class have the potential to affect any class that inherits it.  Composition, on the other hand, tends to reduce coupling. It is for this reason that \cite{Gamma:1995aa} proposed the following as one of their principles of object-oriented programming: ``Favor object composition over class inheritance.''
 
 
 \subsubsection{Avoiding the ``God Object''}
@@ -1080,7 +1070,7 @@ The use of separate functions (rather than class methods) to perform the process
 
 \subsection{When to use Classes Versus Functions}
 
-Pretty much any problem can be solved in Python using either a procedural (functions + data structures) or an object-oriented approach.  I always default to a procedural approach at first, and only move to using classes if it becomes clear that it will actually reduce complexity.  Classes become particularly useful when they hide a significant amount of complexity behind their interface.  John Ousterhout refers to these as \textit{deep} classes, where depth is defined by the ratio of complexity of the implementation (data and methods) compared to the complexity of interface.  A \textit{shallow} class is one that does relatively little, such that it's not hiding a lot of complexity and thus not really earning its keep.  
+Pretty much any problem can be solved in Python using either a procedural (functions + data structures) or an object-oriented approach.  I always default to a procedural approach at first, and only move to using classes if it becomes clear that it will actually reduce complexity.  Classes become particularly useful when they hide a significant amount of complexity behind their interface.  \cite{Ousterhout:2021aa} refers to these as \textit{deep} classes, where depth is defined by the ratio of complexity of the implementation (data and methods) to the complexity of interface.  A \textit{shallow} class is one that does relatively little, such that it's not hiding a lot of complexity and thus not really earning its keep.  
 
 Here are some cases when it makes sense to at least consider using classes instead of functions and data structures:
 
@@ -1331,7 +1321,7 @@ In general, printing a message is a poor way to signal the potential presence of
 \subsection{Announcing errors loudly using exceptions}
 
 A better practice here would be to raise an \textit{exception}.
-Unlike passing \texttt{None}, raising an exception will cause the program to stop unless the exception is handled.
+Unlike passing \texttt{None}, raising an exception will cause the program to stop unless the exception is explicitly handled.
 In the previous example, we could do the following (removing the docstring for brevity):
 
 \begin{lstlisting}[style=Pythonshort]
@@ -1434,12 +1424,12 @@ Cell In[1], line 2, in get_subject_label(file)
 TypeError: expected string or bytes-like object, got 'NoneType'
 \end{lstlisting}
 
-Because \texttt{None} is not a string and \texttt{re.search()} expects a string, we get a \texttt{TypeError}, which is not caught by the catch statement and subsequently stops the execution.  While it can be tempting to use try/except with a ``bare exception'' (i.e. catching all possible exceptions rather than specific exceptions), this should be avoided, particularly because it can make debugging very challenging if it results in unexpected exceptions being ignored.
+Because \texttt{None} is not a string and \texttt{re.search()} expects a string, we get a \texttt{TypeError}, which is not caught by the catch statement and subsequently stops the execution.  While it can be tempting to use try/except with a ``bare exception'' (i.e. catching all possible exceptions rather than specific exceptions), this should be avoided, particularly because it can make debugging very challenging by causing unexpected exceptions to be ignored.
 
 \subsection{Checking assumptions using assertions}
 
 In 2013, a group of researchers published a paper in the journal \textit{PLOS One} reporting a relationship between belief in conspiracy theories and rejection of science \citep{Lewandowsky:2013aa}.
-This result was based on a panel of participants (presumably adults) who completed a survey regarding a number of topics along with reporting their age and gender.
+This result was based on a panel of adult participants who completed a survey regarding a number of topics along with reporting their age and gender.
 In order to rule out the potential for age to confound the relationships that they identified, they reported that ``Age turned out not to correlate with any of the indicator variables''.
 They were later forced to issue a correction to the paper after a reader examined the dataset (which had been shared along with the paper, as required by the journal) and found the following: ``The dataset included two notable age outliers (reported ages 5 and 32757).''
 
@@ -1489,7 +1479,7 @@ assert mass_number in carbon_isotope_mass_numbers
 
 Where should assertions go? On the one hand, it's a good idea to create assertions as early as possible, so as to avoid doing unnecessary computation before hitting an error.  On the other hand, if it's possible that the values of variables will be modified between their creation and use, then it makes sense to place the assertions close to where they will be accessed, to ensure that any changes don't result in uncaught violations.  
 
-Note that asserts will be skipped if python is called with the "-O" ("optimize") flag.  A more robust method for validating data is to use the \textit{Pydantic} package, which is discussed in more detail below.
+Note that asserts will be skipped if python is called with the "-O" ("optimize") flag.  A more robust method for validating data is to use the \textit{Pydantic} package discussed earlier.
 
 \section{Coding portably}
 
@@ -1622,7 +1612,7 @@ We can easily load this configuration file into Python using the \texttt{PyYAML}
 
 \subsubsection{Configuration objects using \textit{Pydantic}}
 
-Once configuration files exist they will need to be loaded in a represented in a Python object. One particularly useful feature of both dataclasses and Pydantic classes is the ability to create immutable instances via the \texttt{frozen=True} argument.  This is useful for configuration objects because it ensures that the configuration can't be modified once it is created.  Here is an example of a simple configuration object specifying a user profile using \textit{Pydantic}:
+Once configuration files exist they will need to be loaded and represented in a Python object. One particularly useful feature of both dataclasses and Pydantic classes is the ability to create immutable instances via the \texttt{frozen=True} argument.  This is useful for configuration objects because it ensures that the configuration can't be modified once it is created.  Here is an example of a simple configuration object specifying a user profile using \textit{Pydantic}:
 
 \begin{lstlisting}[style=Python]
 from pydantic import BaseModel, ConfigDict, EmailStr
@@ -1731,14 +1721,14 @@ At the same time, there are very good reasons for using well-maintained packages
 
 While I don't want to suggest that one shouldn't use any old package from PyPI that happens to solve an important problem, I think it's important to keep in mind the fact that when we come to rely on a package, we are taking on technical debt and assuming some degree of risk.
 The level of concern about this will vary depending upon the expected reuse of the code: If you expect to reuse the code in the future, then you should pay more attention to how well the code is maintained.
-To see what an example of a well-maintained package look like, visit the Github repository for the Scikit-learn project (github.com/scikit-learn).\index{scikit-learn}
+To see what an example of a well-maintained package looks like, visit the Github repository for the Scikit-learn project (github.com/scikit-learn).\index{scikit-learn}
 This is a long-lived project with more than 2000 contributors and a consistent history of commits over many years.
 Most projects will never reach this level of maturity, but we can use this as a template for what to look for in a well-maintained project:
 
 \begin{itemize}
 \item Multiple active contributors (not just a single developer)
 \item Automated testing with a high degree of code coverage\index{code coverage}
-\item Testing across multiple python versions, including recent ones
+\item Testing across multiple Python versions, including recent ones
 \item An active issues page, with developers responding to issues relatively quickly
 \end{itemize}
 
@@ -1896,7 +1886,7 @@ There is probably no aspect of computer programming that is so replete with memo
 ``Everyone knows that debugging is twice as hard as writing a program in the first place. So if you're as clever as you can be when you write it, how will you ever debug it?'' \citep{Kernighan:1978aa}.
 \end{quote}
 
-The term ``bug'' is often dated back to September 9, 1947, when Grace Hopper supposedly discovered a moth in the Mark II computer that she was working with Figure~\ref{bug-fig}, though this historical priority has been disputed \citep{Shapiro:1987aa}. Regardless of its etymology, ``bug'' a term that is burned into the brain of anyone who learned to program prior to AI coding tools, and most of us at some point experienced a bug that was much more than twice as difficult to debug than it was to write the initial code.
+The term ``bug'' is often dated back to September 9, 1947, when Grace Hopper supposedly discovered a moth in the Mark II computer that she was working with (see Figure~\ref{bug-fig}), though this historical priority has been disputed \citep{Shapiro:1987aa}. Regardless of its etymology, ``bug'' a term that is burned into the brain of anyone who learned to program prior to AI coding tools, and most of us at some point experienced a bug that was much more than twice as difficult to debug than it was to write the initial code.
 
 \begin{figure}[!htbp]
 \centering
@@ -2020,7 +2010,7 @@ Current thread 0x00000001f02b6c40 (most recent call first):
   File "src/bettercode/debugging/exception_test4.py", line 11 in <module>
 \end{lstlisting}
 
-The faulthandler module can also be enabled with the code using \texttt{faulthandler.enable()}.  This should be a go-to for debugging of system crashes.
+The faulthandler module can also be enabled within the code using \texttt{faulthandler.enable()}.  This should be a go-to for debugging of system crashes.
 
 \subsection{Debugging silent bugs}
 
