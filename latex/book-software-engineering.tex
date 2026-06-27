@@ -25,6 +25,7 @@ Coordination costs can quickly eat into the added benefit of more developers on 
 And writing good, clean code is essential to help bring new developers into a project; otherwise, the startup costs for a developer to get their head around a poorly engineered codebase can just be too large.\index{clean code}
 Similarly, poorly written code can result in a heavy reliance on a single individual to keep the code working.  This is sometimes known as a high ``bus factor'' (i.e., what happens if your lead developer gets hit by a bus?); I will talk later in this chapter about the concept of "technical debt", which becomes particularly risky when the tool in question relies upon a single individual.
 
+
 \section{Managing Complexity: The Primary Concern of Software Engineering}
 
 If you have ever written a large piece of software, you have likely encountered a situation where you start to feel overwhelmed by the complexity of the code. You want to make one simple change, but realize that the apparently simple change has cascading effects that require many different changes across the codebase.  Or even worse, things unexpectedly start to fail for reasons that you can't understand, and every fix causes a new error.  You might even get a headache and decide to go do something more pleasant, like flossing your teeth or doing burpees.  
@@ -828,128 +829,8 @@ AttributeError: Constants cannot be modified
 
 Using this method thus prevents the value of our constant from being inadvertently changed.
 
-\section{Programming paradigms}
 
-Historically there have been three primary approaches (or \textit{paradigms}) for writing computer programs: Procedural programming, functional programming, and object-oriented programming.  Although each paradigm has often been primarily associated with specific languages, Python supports all three, as I will show in examples below.  Because object-oriented programming is widely used but unfamiliar to many Python coders, I will focus on introducing it in more detail.
-
-\subsection{Procedural Programming}
-\textit{Procedural programming} is the approach that most programmers learn first.  It organizes the program around procedures (such as functions in Python), which perform operations on data and either return new data or change the state of shared variables. These are generally performed sequentially, with the flow of control specified by operations such as selection operators (like \texttt{if/else} or \texttt{match/case} statements in Python) and iteration operators (like \texttt{for} or \texttt{while} statements).
-
-As a running example across all three paradigms, I will generate code to compute the running mean of a stream of numbers.  Here is a version written using procedural programming:
-
-\lstinputlisting[style=Python, firstline=21, lastline=35]{../src/bettercode/three_paradigms.py}
-
-Here we see a couple of the defining features of procedural programming.  First, the data are represented separately from the procedures that are applied to them.  The \texttt{data} and \texttt{acc} data structures are separate objects that are passed into the relevant functions.  Second, the data objects are \textit{mutable}, meaning that they can be changed by any function that has access to them. We can see this in the action of the \texttt{proc\_add()} function, which directly modifies the contents of the accumulator \texttt{acc}; note that \texttt{proc\_add()} doesn't actually return anything.  
-
-Running this produces the following output:
-
-\begin{lstlisting}[style=replshort]
->>> from bettercode.three_paradigms import compute_procedural_result
->>> compute_procedural_result([10.0, 12.0, 14.0, 11.0, 13.0])
-12.0
-\end{lstlisting}
-
-
-\subsection{Functional Programming}
-
-A second approach is known as \textit{functional programming}.  It isn't the presence of functions that defines functional programming (since they are important in each of the approaches); rather, it's the way that they are used.  A primary goal of functional programming is to eliminate hidden state and \textit{side effects}, where the execution of a function changes the program's state in a non-transparent way.  Perhaps the biggest difference between functional programming and other paradigms is that variables are \textit{immutable}: That is, once they are created, they aren't actually variable any more!  Functional programming has a reputation for being difficult to learn. In part this is because most people learn structured programming first, and thus have to unlearn features like mutable variables. In addition, the functional programming community has a tendency to use mathematical terms (like ``monad'' and ``endofunctor'') to name concepts, making them seem especially mysterious.  Here is an implementation of the running mean using a functional programming approach in Python:
-
-\lstinputlisting[style=Python, firstline=61, lastline=75]{../src/bettercode/three_paradigms.py}
-
-There are a couple of important differences to point out here.  First note that the functions don't change the input data; for example, rather than modifying the \texttt{state} object that is passed into \texttt{func\_add()}, the function instead uses the values within the input object to create a new object that is returned.  In fact, it wouldn't be possible for the function to change the data, since it is represented as a \textit{tuple} which is immutable.  While some functional programming languages (such as \textit{Haskell}) strictly enforce immutability, Python doesn't have a mechanism to enforce it by default, so it's up to the programmer to build it in, as we did here by using an immutable data type.
-
-The main difference is the use of the \texttt{reduce} function, which is one of the most important tools for functional programming in Python.  This operator takes three arguments as input: a function to be applied, data to be supplied to the function, and a starting value for the input.  It then cumulatively applies the function across all of the data points and returns the final value.
-Running this produces the following output:
-
-\begin{lstlisting}[style=replshort]
->>> from bettercode.three_paradigms import compute_functional_result
->>> compute_functional_result([10.0, 12.0, 14.0, 11.0, 13.0])
-12.0
-\end{lstlisting}
-
-There are some Python packages (notably the \textit{JAX} package for machine learning) that make heavy use of functional programming constructs, and there is a package called \textit{Toolz} that provides access to functional programming tools for general-purpose use. However, most Python users avoid functional programming in general due to the fact that functional code is usually less readable for programmers who were trained to write procedural or object-oriented Python code.
-
-\subsection{Object-oriented Programming}
-
-The third approach is \textit{object-oriented programming}, which focuses on defining conceptual bundles (called \textit{classes} in Python) that coherently combine data structures and functions that can be applied to them (referred to as \textit{methods}). Because object-oriented programming is commonly used in Python but may not be familiar to many Python coders, I will provide a more detailed outline of it here.  Here is a simple solution of the running average problem using object-oriented programming:
-
-\lstinputlisting[style=Python, firstline=39, lastline=56]{../src/bettercode/three_paradigms.py}
-
-We first define a class (\textit{RunningMean}) that includes both the data and the functions needed to perform the computation.  Within the function \texttt{compute\_oop\_result()}, the first thing that we do is to create an \textit{instance} of the class (called \texttt{running}). After that, we loop through and add each of the data values using the \texttt{running.add()} method.  The current state is stored in the \textit{instance variables}, which are referred to as \texttt{self.count} and \texttt{self.total} within the class definition. Running this produces the following output, matching the other versions above:
-
-\begin{lstlisting}[style=replshort]
->>> from bettercode.three_paradigms import compute_oop_result
->>> compute_oop_result([10.0, 12.0, 14.0, 11.0, 13.0])
-12.0
-\end{lstlisting}
-
-A main goal of object-oriented programming is \textit{encapsulation}, such that the internal details (such as the data and internal methods) are not accessible to the outside world, which only has access to a set of methods that are publicly exposed by the class. This helps reduce \textit{coupling}, referring to the degree to which different objects are dependent upon one another. It's worth noting that while some object-oriented languages explicitly prevent access to the instance variables of a class, Python does not, as we can see by accessing the \texttt{total} instance variable from the class instance:
-
-\begin{lstlisting}[style=repl]
->>> from bettercode.three_paradigms import RunningMean
->>> running = RunningMean()
->>> for value in data:
-...     running.add(value)
->>> running.total
-60.0
-\end{lstlisting}
-
-The custom in Python class definitions is to use an underscore prefix for the names of instance variables that are not meant to be accessed from outside.  For example, instead of using \texttt{self.total}, we would use \texttt{self.\_total} if we didn't mean it to be accessed from the outside.  However, Python doesn't actually enforce the privacy of these variables; they are simply meant as a signal to users that the variable is an implementation detail that is not meant to be accessed from outside of the class.
-
-Finally, note that the \texttt{mean()} method is preceded by a \texttt{@property} decorator.  This means that while it is defined in the class as a method (in the sense that it returns a value when called), it is treated from the outside as a instance variable, which is why \texttt{compute\_oop\_result} returns \texttt{running.mean} rather than \texttt{running.mean()}.  This is useful because it ensures that the mean value that is returned will always be up to date, since it is computed on the fly when requested.
-
-\subsubsection{Inheritance and composition}
-
-A general feature of object-oriented programming is \textit{inheritance}, in which a class representing a more specific form of an object (e.g. a cat) can inherit the features of a more general version of the object (e.g. an animal). In the following example, we create an \texttt{Animal} class, and then a \texttt{Cat} class that inherits the \texttt{Animal} class.
-
-\lstinputlisting[style=Python, firstline=1, lastline=17]{../src/bettercode/oop_demo.py}
-
-The \texttt{Cat} class has all of the features of the \texttt{Animal} class (particularly the \texttt{.describe()} and \texttt{.feed()} methods), as well as having the \texttt{.speak()} method defined specifically within the \texttt{Cat} class. In addition, \texttt{Cat} has its own definition of the \texttt{.describe()} method that \textit{overrides} the version in the parent class (which is referred to as \texttt{super()} within the \texttt{Cat.describe()} definition). Here we see how these two classes work:
-
-\begin{lstlisting}[style=repl]
->>> creature = Animal("unknown")
->>> creature.describe()
-'unknown is an animal'
->>> felix = Cat("Felix")
->>> felix.describe()
-'Felix is an animal, specifically a cat'
->>> felix.speak()
-'Meow'
->>> felix.fed
-False
->>> felix.feed()
->>> felix.fed
-True
-\end{lstlisting}
-
-Inheritance reflects an \textit{is-a} relationship, in which the subclass is a kind of the class (e.g. a cat is a kind of animal). It is considered a form of \textit{white-box reuse} \citep{Gamma:1995aa}, in the sense that the children need to know the internal details of the parent implementation.  In this sense, inheritance tends to result in increased coupling between classes.
-
-There are other cases when one class has parts that can also be defined as classes (a \textit{has-a} relationship); when a class calls other classes to implement its parts, we refer to this as \textit{composition}.  For example, we can build a \texttt{Summarizer} class to summarize a list of numbers that has two components: one for cleaning the data (either keeping all values or removing negative values) and one for computing the summary (either using the mean or the maximum).  The specific implementation of each of the components is implemented as a separate classs:
-
-\lstinputlisting[style=Python, firstline=19]{../src/bettercode/oop_demo.py}
-
-We can create an instance of the summarizer and then apply it to some data:
-
-\begin{lstlisting}[style=repl]
->>> s = Summarizer(KeepAll(), Mean())
->>> data = [3, 5, 1, -4, 2]
->>> s.run(data)
-1.4
->>> s.statistic.compute(data)
-1.4
->>> s_pos = Summarizer(DropNegatives(), Mean())
->>> s.run(data)
-1.4
->>> s_pos.run(data)
-2.75
-\end{lstlisting}
-
-None of these classes are particularly deep, but that's an artifice of the example; in reality we would be using much deeper classes for each of the steps.  What's particularly useful here is that the top-level class (\texttt{Summarizer}) doesn't need to know anything about which classes might be used as cleaners or statistics or any details about their internal implementations; any class that has the right interface (a \texttt{.clean()} method for cleaners and a \texttt{.compute()} method for statistics) can be used.  
-
-Inheritance and composition both have their place, depending on the kind of relationships that are inherent between objects.  However, inheritance does tend to result in more coupling and thus more complexity, since any changes to a top-level class have the potential to affect any class that inherits it.  Composition, on the other hand, tends to reduce coupling. It is for this reason that \cite{Gamma:1995aa} proposed the following as one of their principles of object-oriented programming: ``Favor object composition over class inheritance.''
-
-
-\subsubsection{Avoiding the ``God Object''}
+\subsubsection{The ``God Object''}
 
 There is often a temptation when using object-oriented programming approaches to generate a single very large object that contains all relevant data and code for a particular problem.
 These kinds of objects are sometimes referred to as ``God objects'' since they are meant to have a God's-eye view of an entire project.
@@ -1068,26 +949,6 @@ Perhaps unsurprisingly, working with this code base became increasingly unwieldy
 I would then create a separate class to manage the execution of the full analysis workflow, or more likely use a \textit{workflow engine} like those that I will introduce in Chapter 8.
 The use of separate functions (rather than class methods) to perform the processing operations helps to separate responsibilities, and makes it easier to test the functions individually without requiring initialization of a large class.
 
-\subsection{When to use Classes Versus Functions}
-
-Pretty much any problem can be solved in Python using either a procedural (functions + data structures) or an object-oriented approach.  I always default to a procedural approach at first, and only move to using classes if it becomes clear that it will actually reduce complexity.  Classes become particularly useful when they hide a significant amount of complexity behind their interface.  \cite{Ousterhout:2021aa} refers to these as \textit{deep} classes, where depth is defined by the ratio of complexity of the implementation (data and methods) to the complexity of interface.  A \textit{shallow} class is one that does relatively little, such that it's not hiding a lot of complexity and thus not really earning its keep.  
-
-Here are some cases when it makes sense to at least consider using classes instead of functions and data structures:
-
-\begin{itemize}
-\item \textit{Persistent state}: When an object has state that needs to persist across multiple function calls, this can be a good case for using classes. An example is the statistical model classes in the \textit{scikit-learn} package, in which the model state changes over time (e.g. from initialization to after model fitting), and we want to be able to use the object to also perform other operations (such as generating predictions from the fitted model). Here the model is a coherent object that makes sense to be encapsulated as a class.
-\item \textit{Constraints on state}: Sometimes it may be necessary to limit operations based on the current state in order to adhere to constraints.  For example, when working with matrices it might be necessary to ensure that the matrix is symmetric positive definite.  This kind of coupling between state and function is a good use case for a class.
-\item \textit{Expected behavior}: In some cases, there will be an expectation for a particular behavior or interface structure that might require use of a class.  The \textit{scikit-learn} example fits here as well: The \texttt{.fit()}/\texttt{.transform()} pattern established in this package has become standard across many different packages for statistical model fitting, so any new package should strongly consider using this pattern, which requires use of a class.
-\item \textit{Many independent instances}: In cases where the code involves many instances of a particular kind of complex object (e.g. particles, people), the use of classes can make it easier to track the state of each instance.
-\end{itemize}
-
-There are also some cases where procedural programming is the clear choice:
-
-\begin{itemize}
-\item \textit{Stateless transformations}: Many data processing operations involve transformations of data without any need to maintain persistent state.  These are much more simply and cleanly implemented as pure functions.
-\item \textit{A single method}: If there is only a single method, then this is best implemented as a function, which will be simpler to test and easier to understand and maintain.
-\item \textit{Data without behavior}: This is a case where a standard class is overkill.  When working with standard data types (such as \textit{pandas} data frames) it usually makes sense to simply write functions to work with them directly.  However, there are Python features (dataclasses and \textit{Pydantic} classes) that can provide a useful stepping stone for representation of more complex groupings of data, discussed in the folllowing section.
-\end{itemize}
 
 \subsection{Python's \texttt{dataclass}}
 
