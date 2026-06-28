@@ -7,8 +7,8 @@ Software engineering is a larger discipline that uses scientific methods to unde
 Just as structural engineering is the science of creating a physical building, software engineering is the science of building software. 
 Programming without understanding the concepts of software engineering is much like building a house without understanding the concepts of structural engineering: While it's possible, the resulting software is likely to suffer from exactly the same kinds of instability and poor functionality as a house built by an amateur, especially as the project becomes larger and more complex.
 
-I have already talked about some of the basic tools of software engineering, such as version control.\index{version control}
-In this chapter I will focus on some of the ``big ideas'' from software engineering, highlighting how their adoption can improve the life of nearly anyone who develops, and especially maintains, software.
+I have already talked about some of the basic tools of software engineering, such as version control\index{version control}, and introduced the notion that that we want to reduce the complexity of our code whenever possible.  
+In this chapter I will outline some of the ``big ideas'' from software engineering, highlighting how their adoption can improve the life of nearly anyone who develops, and especially maintains, software.
 
 \section{Why software engineering matters in the age of AI-assisted coding}
 
@@ -25,7 +25,6 @@ Coordination costs can quickly eat into the added benefit of more developers on 
 And writing good, clean code is essential to help bring new developers into a project; otherwise, the startup costs for a developer to get their head around a poorly engineered codebase can just be too large.\index{clean code}
 Similarly, poorly written code can result in a heavy reliance on a single individual to keep the code working.  This is sometimes known as a high ``bus factor'' (i.e., what happens if your lead developer gets hit by a bus?); I will talk later in this chapter about the concept of "technical debt", which becomes particularly risky when the tool in question relies upon a single individual.
 
-
 \section{Managing Complexity: The Primary Concern of Software Engineering}
 
 If you have ever written a large piece of software, you have likely encountered a situation where you start to feel overwhelmed by the complexity of the code. You want to make one simple change, but realize that the apparently simple change has cascading effects that require many different changes across the codebase.  Or even worse, things unexpectedly start to fail for reasons that you can't understand, and every fix causes a new error.  You might even get a headache and decide to go do something more pleasant, like flossing your teeth or doing burpees.  
@@ -36,7 +35,7 @@ These are the symptoms of \textit{complexity}, which is the primary enemy of the
 Complexity is anything related to the structure of a software system that makes it hard to understand and modify the system.
 \end{quote}
 
-Software that solves a complex scientific problem will necessarily be complex, but the primary goal of software engineering and design is to minimize the complexity as much as possible.  
+Software that solves a complex scientific problem will necessarily be complex, but the primary goal of software engineering and design is to minimize the complexity as much as possible. \index{complexity}
 
 \subsection{Modularity}
 
@@ -760,7 +759,7 @@ The examples above showed how scalar variable types like string or integer work,
 \end{itemize}
 
 
-\subsection{Defining constants}
+\section{Defining constants}
 
 Global variables are most often used to define \textit{constants} - that is, variables that are meant to take a single value that doesn't change, such as \textit{pi} or \textit{e} in mathematics and \textit{c} (speed of light) or \textit{h} (the Planck constant) in physics.
 
@@ -829,8 +828,28 @@ AttributeError: Constants cannot be modified
 
 Using this method thus prevents the value of our constant from being inadvertently changed.
 
+\section{When to use Classes Versus Functions}
 
-\subsubsection{The ``God Object''}
+Pretty much any problem can be solved in Python using either a procedural (functions + data structures) or an object-oriented approach.  I always default to a procedural approach at first, and only move to using classes if it becomes clear that it will actually reduce complexity.  Classes become particularly useful when they hide a significant amount of complexity behind their interface.  \cite{Ousterhout:2021aa} refers to these as \textit{deep} classes, where depth is defined by the ratio of complexity of the implementation (data and methods) to the complexity of interface.  A \textit{shallow} class is one that does relatively little, such that it's not hiding a lot of complexity and thus not really earning its keep.  
+
+Here are some cases when it makes sense to at least consider using classes instead of functions and data structures:
+
+\begin{itemize}
+\item \textit{Persistent state}: When an object has state that needs to persist across multiple function calls, this can be a good case for using classes. An example is the statistical model classes in the \textit{scikit-learn} package, in which the model state changes over time (e.g. from initialization to after model fitting), and we want to be able to use the object to also perform other operations (such as generating predictions from the fitted model). Here the model is a coherent object that makes sense to be encapsulated as a class.
+\item \textit{Constraints on state}: Sometimes it may be necessary to limit operations based on the current state in order to adhere to constraints.  For example, when working with matrices it might be necessary to ensure that the matrix is symmetric positive definite.  This kind of coupling between state and function is a good use case for a class.
+\item \textit{Expected behavior}: In some cases, there will be an expectation for a particular behavior or interface structure that might require use of a class.  The \textit{scikit-learn} example fits here as well: The \texttt{.fit()}/\texttt{.transform()} pattern established in this package has become standard across many different packages for statistical model fitting, so any new package should strongly consider using this pattern, which requires use of a class.
+\item \textit{Many independent instances}: In cases where the code involves many instances of a particular kind of complex object (e.g. particles, people), the use of classes can make it easier to track the state of each instance.
+\end{itemize}
+
+There are also some cases where procedural programming is the clear choice:
+
+\begin{itemize}
+\item \textit{Stateless transformations}: Many data processing operations involve transformations of data without any need to maintain persistent state.  These are much more simply and cleanly implemented as pure functions.
+\item \textit{A single method}: If there is only a single method, then this is best implemented as a function, which will be simpler to test and easier to understand and maintain.
+\item \textit{Data without behavior}: This is a case where a standard class is overkill.  When working with standard data types (such as \textit{pandas} data frames) it usually makes sense to simply write functions to work with them directly.  However, there are Python features (dataclasses and \textit{Pydantic} classes) that can provide a useful stepping stone for representation of more complex groupings of data, discussed in more detail below.
+\end{itemize}
+
+\subsection{The ``God Object''}
 
 There is often a temptation when using object-oriented programming approaches to generate a single very large object that contains all relevant data and code for a particular problem.
 These kinds of objects are sometimes referred to as ``God objects'' since they are meant to have a God's-eye view of an entire project.
@@ -950,7 +969,7 @@ I would then create a separate class to manage the execution of the full analysi
 The use of separate functions (rather than class methods) to perform the processing operations helps to separate responsibilities, and makes it easier to test the functions individually without requiring initialization of a large class.
 
 
-\subsection{Python's \texttt{dataclass}}
+\section{Representing data in Python}
 
 It's often useful to bundle together multiple data objects into a single object that can be passed into or returned from a function. A prime example is a \textit{results bundle} - that is, a group of data objects of varying types that we want to pass together as output from an analysis. For example, results from a linear regression analysis might include the model design matrix, parameter estimates, residuals, a goodness of fit value, and statistical results. It's common to return these as a dictionary, mapping each result type to a value.  However, this is not an optimal way to structure output, since there is no schema that specifies the names and types of the components and no way to easily validate that the structure is correct.  Another example is configuration objects that contain multiple config variables.  In these kinds of cases it is common to take advantage of Python's \texttt{dataclass} feature.  Dataclasses are real classes that are designed to make it easy to generate objects that are primarily meant as containers for a group of data variables.
 
