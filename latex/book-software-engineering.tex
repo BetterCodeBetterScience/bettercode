@@ -1,13 +1,11 @@
 \chapter{Principles of software engineering}
 
-\textbf{TODO}: This intro section needs to be better aligned to the rest of the book.
-
 Programming is the activity of using a computer to solve problems by creating computer software (either on one's own or via AI coding tools).  
 Software engineering is a larger discipline that uses scientific methods to understand how to create software that is more effective, robust, efficient, secure, and maintainable. 
 Just as structural engineering is the science of creating a physical building, software engineering is the science of building software. 
 Programming without understanding the concepts of software engineering is much like building a house without understanding the concepts of structural engineering: While it's possible, the resulting software is likely to suffer from exactly the same kinds of instability and poor functionality as a house built by an amateur, especially as the project becomes larger and more complex.
 
-I have already talked about some of the basic tools of software engineering, such as version control\index{version control}, and introduced the notion that that we want to reduce the complexity of our code whenever possible.  
+In the previous chapter I introduced some of the basic tools of software engineering, such as version control\index{version control}, along with the notion that that we want to reduce the complexity of our code whenever possible.  
 In this chapter I will outline some of the ``big ideas'' from software engineering, highlighting how their adoption can improve the life of nearly anyone who develops, and especially maintains, software.
 
 \section{Why software engineering matters in the age of AI-assisted coding}
@@ -1080,7 +1078,7 @@ Figure~\ref{VSCodeFormatting-fig} shows a screenshot after adding a couple of li
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.75\linewidth]{files/code_formatting-3230cc5614320ef7710105109fcb093f.png}
+\includegraphics[width=0.75\linewidth]{figures/03/VSCodeFormatting.pdf}
 \caption[IDE suggestions]{IDE suggestions to fix poorly formatted or problematic code within VSCode.
 The top panel shows two lines of problematic code.
 The squiggly underlines reflect \textit{ruff}'s detection of problems in the code, which are detailed in the popup window as well as the \textbf{Problems} panel below.
@@ -1766,13 +1764,13 @@ There is probably no aspect of computer programming that is so replete with memo
 ``Everyone knows that debugging is twice as hard as writing a program in the first place. So if you're as clever as you can be when you write it, how will you ever debug it?'' \citep{Kernighan:1978aa}.
 \end{quote}
 
-The term ``bug'' is often dated back to September 9, 1947, when Grace Hopper supposedly discovered a moth in the Mark II computer that she was working with (see Figure~\ref{bug-fig}), though this historical priority has been disputed \citep{Shapiro:1987aa}. Regardless of its etymology, ``bug'' a term that is burned into the brain of anyone who learned to program prior to AI coding tools, and most of us at some point experienced a bug that was much more than twice as difficult to debug than it was to write the initial code.
+The term ``bug'' is often dated back to September 9, 1947, when Grace Hopper supposedly discovered a moth in the Mark II computer that she was working with (see Figure~\ref{FirstBug-fig}), though this historical priority has been disputed \citep{Shapiro:1987aa}. Regardless of its etymology, ``bug'' a term that is burned into the brain of anyone who learned to program prior to AI coding tools, and most of us at some point experienced a bug that was much more than twice as difficult to debug than it was to write the initial code.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.7\linewidth]{files/First_Computer_Bug_1-c8886f88eab468578ab2bf75f3853980.jpg}
+\includegraphics[width=0.7\linewidth]{figures/03/FirstBug.pdf}
 \caption[Grace Hopper's note featuing the first "bug"]{Grace Hopper's note from September 9, 1947, containing the actual moth that is often claimed to have initiated the use of the term ``bug'' in computer science.  From Wikimedia Commmons (https://commons.wikimedia.org/wiki/File:First\_Computer\_Bug,\_1947.jpg), image in the public domain.}
-\label{bug-fig}
+\label{FirstBug-fig}
 \end{figure}
 
 Whereas AI coding tools have been a game-changer for code generation, they are more like a revelation when it comes to debugging.  Simply by pasting the error message into a chat window in the IDE (which also has access to the code), it's now generally very easy to debug many problems using AI. Mostly gone are the days of beating one's head against the wall for hours trying to find out why a program is failing. Unfortunately, the AI tools don't always get it right, and sometimes the proposed fix can be worse than the initial problem, so it remains necessary to be able to understand how to debug code.
