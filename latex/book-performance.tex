@@ -4,7 +4,7 @@ The computing power available to scientists has increased in a shockingly consis
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.875\linewidth]{files/moores_law_compariso-1a8f2afd68f24d45cc6afe2ae5d1b285.png}
+\includegraphics[width=0.875\linewidth]{figures/10/mooreslaw.pdf}
 \caption[Increased computing power over time]{A plot of increased computing power over time.  Left panel shows transistor count in commercially available microprocessors over time on a log scaled axis, based on data from en.wikipedia.org/wiki/Transistor\_count.  The plot shows a consistent logarithmic increase in transistor count, with an estimated doubling time of about 2.16 years. Right panel shows performance of the world's top supercomputer (in GigaFLOPS - billion floating point operations per second) on a log scaled axis, showing an even faster doubling time of about 1.2 years, based on data obtained from en.wikipedia.org/wiki/History\_of\_supercomputing.}
 \label{mooreslaw-fig}
 \end{figure}
@@ -673,7 +673,7 @@ Figure~\ref{hdfchunking-fig} shows the loading times with each of these strategi
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.85\linewidth]{files/hdf5_chunking_perfor-e757060360f19775744a4099e1041632.png}
+\includegraphics[width=0.85\linewidth]{figures/10/hdfchunking.pdf}
 \caption[Interaction between HDF5 chunking patterns and data access on performance]{A demonstration of the interaction between HDF5 chunking patterns and data access on performance.  Left panel shows performance of the five chunking strategies on reading a single individual frame, while the right panel show performance on accessing a small region of interest (64 x 64) across all frames.}
 \label{hdfchunking-fig}
 \end{figure}
@@ -1164,16 +1164,17 @@ Figure~\ref{scaling-fig} shows the results for these simulations using a range o
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.85\linewidth]{files/mandelbrot_scaling_c-7e1781fff8a79399a59a649547193978.png}
-\caption[Parallel acceleration on the Mandelbrot set problem ]{A simulation of the parallel acceleration on the Mandelbrot set problem with a chunking factor of 10. The left panel shows performance in terms of speedup factor as a function of the difficult of the problem, where perfect acceleration would occur when the speedup factor is equal to the number of cores. The gray line shows serial performance, showing that parallelization on small problems can lead to worse performance than serial processing due to overhead of parallelization.  The right panel shows efficiency (that is, the proportion of perfect acceleration) achieved, demonstrating that there are decreasing gains with increasing numbers of cores.}
+% generated using src/bettercode/parallel_simulation_example.py
+\includegraphics[width=0.85\linewidth]{figures/10/scaling.pdf}
+\caption[Parallel acceleration on the Mandelbrot set problem ]{A simulation of the parallel acceleration on the Mandelbrot set problem with a chunking factor of 1. The left panel shows performance in terms of speedup factor as a function of the difficult of the problem, where perfect acceleration would occur when the speedup factor is equal to the number of cores. The gray line shows serial performance, showing that parallelization on small problems can lead to worse performance than serial processing due to overhead of parallelization.  The right panel shows efficiency (that is, the proportion of perfect acceleration) achieved, demonstrating that there are decreasing gains with increasing numbers of cores.}
 \label{scaling-fig}
 \end{figure}
 
-We also see that parallelization is more effective as the number of chunks increases.  This reflects the wide distribution of finishing times in the dataset; when the number of chunks is the same as the number of cores, then each core does a single job, and the finishing time will reflect the longest job amongst the cores, such that many cores will be sitting idle for much of the time.  Breaking the data into smaller chunks allows for a higher number of concurrent jobs, but also increases parallelization overhead.  To see the effects of chunking, I ran a simulation of the Mandelbrot problem with a 4096 x 4096 image using chunking factors ranging from 1 (i.e. as many chunks as cores) to 100 (e.g. 1400 chunks for 14 cores). Figure~\ref{chunking-fig} shows how parallel performance improves as a function of chunking up to a point, but at some point the overhead of parallel processing kicks in, such that speedup actually drops for high levels of chunking with many processors.  This highlights the need for benchmarking to understand how parallel performance scales and what the optimal size of data chunks is for the problem at hand.
+Parallelization is also more effective as the number of chunks increases.  This reflects the wide distribution of finishing times in the dataset; when the number of chunks is the same as the number of cores, then each core does a single job, and the finishing time will reflect the longest job amongst the cores, such that many cores will be sitting idle for much of the time.  Breaking the data into smaller chunks allows for a higher number of concurrent jobs, but also increases parallelization overhead.  To see the effects of chunking, I ran a simulation of the Mandelbrot problem with a 4096 x 4096 image using chunking factors ranging from 1 (i.e. as many chunks as cores) to 100 (e.g. 1400 chunks for 14 cores). Figure~\ref{chunking-fig} shows how parallel performance improves as a function of chunking up to a point, but at some point the overhead of parallel processing kicks in, such that speedup actually drops for high levels of chunking with many processors.  This highlights the need for benchmarking to understand how parallel performance scales and what the optimal size of data chunks is for the problem at hand.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.7\linewidth]{files/chunking_factor_spee-ae303a2409b06bf03be79789ece962dc.png}
+\includegraphics[width=0.7\linewidth]{figures/10/chunking.pdf}
 \caption[Effect of data chunking on parallel performance.]{A simulation of the effect of data chunking on parallel performance.  The Mandelbrot problem was run on a 4096 x 4096 image, varying the number of cores and the chunking factor (which is a multiplier on the number of cores to determine the number of chunks of data).  The y-axis shows the relative speedup, where optimal speedup would be the number of cores (line shown on the diagonal).}
 \label{chunking-fig}
 \end{figure}
@@ -1276,7 +1277,7 @@ The revised train\_loader doles out batches from an object that is already on th
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.85\linewidth]{files/gpu_batch_size_scali-a70bd24680d694b4844b5b797a72551f.png}
+\includegraphics[width=0.85\linewidth]{figures/10/gpuspeedup.pdf}
 \caption[Effects of GPU acceleration]{Timing results for training a neural network model using either CPU or GPU.  Left panel shows how model training times decrease as a function of batch size, and the right panel shows the same data in terms of relative speedup.}
 \label{gpuspeedup-fig}
 \end{figure}
