@@ -7,7 +7,7 @@ def save_fig(
     fig: Figure,
     name: str,
     chapter: int,
-    filetype: str = "pdf",
+    filetypes: list[str] | None = None,
     dpi: int = 300,
     basedir: str = "figures",
 ) -> str:
@@ -20,6 +20,9 @@ def save_fig(
         basedir = Path(basedir)
     outdir = basedir / f"{chapter:02d}"
     outdir.mkdir(parents=True, exist_ok=True)
-    outpath = outdir / f"{name}.{filetype}"
-    fig.savefig(outpath.as_posix(), format=filetype, dpi=dpi, bbox_inches="tight")
+    if filetypes is None:
+        filetypes = ["pdf", "svg"]
+    for filetype in filetypes:
+        outpath = outdir / f"{name}.{filetype}"
+        fig.savefig(outpath.as_posix(), format=filetype, dpi=dpi, bbox_inches="tight")
     return str(outpath)
