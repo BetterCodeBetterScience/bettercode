@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -39,3 +40,21 @@ def convert_pdf_to_svg(pdf_path: Path, out_svg: Path) -> None:
         ["pdftocairo", "-svg", str(pdf_path), str(out_svg)],
         check=True,
     )
+
+
+def emit_figure(pdf_relpath: str, src_dir: Path, out_dir: Path) -> str:
+    """Place a figure's SVG into out_dir, preferring a native .svg over conversion.
+
+    A native .svg exported alongside the .pdf (e.g. by the source notebooks) is
+    higher quality than a pdftocairo conversion, so it is copied verbatim when
+    present; otherwise the .pdf is converted. Returns "copied" or "converted".
+    """
+    rel_svg = svg_name(pdf_relpath)
+    out_svg = out_dir / rel_svg
+    native_svg = src_dir / rel_svg
+    if native_svg.exists():
+        out_svg.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(native_svg, out_svg)
+        return "copied"
+    convert_pdf_to_svg(src_dir / pdf_relpath, out_svg)
+    return "converted"

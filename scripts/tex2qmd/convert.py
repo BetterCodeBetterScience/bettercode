@@ -11,7 +11,7 @@ from pathlib import Path
 # put the scripts/ dir on sys.path so `import tex2qmd.*` resolves.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tex2qmd.figures import convert_pdf_to_svg, rewrite_includegraphics, svg_name  # noqa: E402
+from tex2qmd.figures import emit_figure, rewrite_includegraphics  # noqa: E402
 from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
 from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks  # noqa: E402
 from tex2qmd.preprocess import extract_listings, strip_comments, strip_index  # noqa: E402
@@ -56,7 +56,7 @@ def build_book(latex_dir: Path, out_dir: Path) -> None:
         (out_dir / out_name).write_text(qmd)
         chapter_files.append(out_name)
         for pdf in pdfs:
-            convert_pdf_to_svg(latex_dir / pdf, out_dir / svg_name(pdf))
+            emit_figure(pdf, latex_dir, out_dir)
 
     (out_dir / "_quarto.yml").write_text(
         render_quarto_yml(chapter_files, TITLE, AUTHOR, subtitle=SUBTITLE)
