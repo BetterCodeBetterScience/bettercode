@@ -21,3 +21,4 @@ def test_convert_chapter_end_to_end(tmp_path):
     assert "\\index" not in qmd
     assert "```python\nprint('hi')\n```" in qmd
     assert pdfs == ["figures/01/x.pdf"]
+    assert "figures/01/x.svg" in qmd

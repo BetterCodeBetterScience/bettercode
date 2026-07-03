@@ -6,18 +6,9 @@ import re
 import subprocess
 from pathlib import Path
 
-_FRACTION = re.compile(r"(?P<frac>[0-9.]+)\\(?:line|text|column)width")
 _INCLUDE = re.compile(
     r"\\includegraphics(?:\[(?P<opts>[^\]]*)\])?\{(?P<path>[^}]*)\}"
 )
-
-
-def latex_width_to_percent(width: str) -> str | None:
-    """Convert a fractional LaTeX width to an integer percentage string."""
-    match = _FRACTION.search(width)
-    if not match:
-        return None
-    return f"{int(float(match.group('frac')) * 100)}%"
 
 
 def svg_name(pdf_relpath: str) -> str:
@@ -34,9 +25,9 @@ def rewrite_includegraphics(tex: str) -> tuple[str, list[str]]:
         if not path.endswith(".pdf"):
             return match.group(0)
         pdfs.append(path)
-        percent = latex_width_to_percent(match.group("opts") or "")
-        opts = f"[width={percent}]" if percent else ""
-        return f"\\includegraphics{opts}{{{svg_name(path)}}}"
+        opts = match.group("opts")
+        opts_str = f"[{opts}]" if opts is not None else ""
+        return f"\\includegraphics{opts_str}{{{svg_name(path)}}}"
 
     return _INCLUDE.sub(_repl, tex), pdfs
 
