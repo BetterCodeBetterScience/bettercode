@@ -9,15 +9,11 @@ import seaborn as sns
 def compute_spearman_correlation(df: pd.DataFrame) -> pd.DataFrame:
     """Compute Spearman correlation matrix for a dataframe.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Input dataframe with numerical columns
+    Args:
+        df: Input dataframe with numerical columns.
 
-    Returns
-    -------
-    pd.DataFrame
-        Spearman correlation matrix
+    Returns:
+        Spearman correlation matrix.
     """
     return df.corr(method="spearman")
 
@@ -28,17 +24,12 @@ def compute_correlation_matrix(
 ) -> pd.DataFrame:
     """Compute correlation matrix using the specified method.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Input dataframe with numerical columns
-    method : str
-        Correlation method: 'pearson', 'spearman', or 'kendall' (default: 'spearman')
+    Args:
+        df: Input dataframe with numerical columns.
+        method: Correlation method: 'pearson', 'spearman', or 'kendall'.
 
-    Returns
-    -------
-    pd.DataFrame
-        Correlation matrix
+    Returns:
+        Correlation matrix.
     """
     return df.corr(method=method)
 
@@ -46,32 +37,24 @@ def compute_correlation_matrix(
 def filter_numerical_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Filter a dataframe to keep only numerical columns.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Input dataframe
+    Args:
+        df: Input dataframe.
 
-    Returns
-    -------
-    pd.DataFrame
-        Dataframe with only numerical columns
+    Returns:
+        Dataframe with only numerical columns.
     """
-    numerical_df = df.select_dtypes(include=["number"])
-    return numerical_df
+    return df.select_dtypes(include=["number"])
+
 
 
 def filter_meaningful_variables(df: pd.DataFrame) -> pd.DataFrame:
     """Filter meaningful variables dataframe to numerical columns only.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Meaningful variables dataframe
+    Args:
+        df: Meaningful variables dataframe.
 
-    Returns
-    -------
-    pd.DataFrame
-        Filtered dataframe with only numerical columns
+    Returns:
+        Filtered dataframe with only numerical columns.
     """
     return filter_numerical_columns(df)
 
@@ -79,15 +62,11 @@ def filter_meaningful_variables(df: pd.DataFrame) -> pd.DataFrame:
 def filter_demographics(df: pd.DataFrame) -> pd.DataFrame:
     """Filter demographics dataframe to numerical columns only.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Demographics dataframe
+    Args:
+        df: Demographics dataframe.
 
-    Returns
-    -------
-    pd.DataFrame
-        Filtered dataframe with only numerical columns
+    Returns:
+        Filtered dataframe with only numerical columns.
     """
     return filter_numerical_columns(df)
 
@@ -99,19 +78,13 @@ def join_dataframes(
 ) -> pd.DataFrame:
     """Join two dataframes based on their index.
 
-    Parameters
-    ----------
-    df1 : pd.DataFrame
-        First dataframe
-    df2 : pd.DataFrame
-        Second dataframe
-    how : str
-        Type of join: 'inner', 'outer', 'left', 'right' (default: 'inner')
+    Args:
+        df1: First dataframe.
+        df2: Second dataframe.
+        how: Type of join: 'inner', 'outer', 'left', or 'right'.
 
-    Returns
-    -------
-    pd.DataFrame
-        Joined dataframe
+    Returns:
+        Joined dataframe.
     """
     return df1.join(df2, how=how, lsuffix="_mv", rsuffix="_demo")
 
@@ -123,19 +96,13 @@ def join_meaningful_and_demographics(
 ) -> pd.DataFrame:
     """Join meaningful variables and demographics dataframes.
 
-    Parameters
-    ----------
-    meaningful_vars : pd.DataFrame
-        Meaningful variables dataframe (filtered to numerical)
-    demographics : pd.DataFrame
-        Demographics dataframe (filtered to numerical)
-    how : str
-        Type of join (default: 'inner')
+    Args:
+        meaningful_vars: Meaningful variables dataframe (filtered to numerical).
+        demographics: Demographics dataframe (filtered to numerical).
+        how: Type of join.
 
-    Returns
-    -------
-    pd.DataFrame
-        Joined dataframe
+    Returns:
+        Joined dataframe.
     """
     return join_dataframes(meaningful_vars, demographics, how=how)
 
@@ -143,17 +110,12 @@ def join_meaningful_and_demographics(
 def load_csv_from_url(url: str, index_col: int = 0) -> pd.DataFrame:
     """Load a CSV file from a URL.
 
-    Parameters
-    ----------
-    url : str
-        URL to the CSV file
-    index_col : int
-        Column to use as index (default: 0, first column)
+    Args:
+        url: URL to the CSV file.
+        index_col: Column to use as index.
 
-    Returns
-    -------
-    pd.DataFrame
-        Loaded dataframe with the first column as index
+    Returns:
+        Loaded dataframe with the first column as index.
     """
     return pd.read_csv(url, index_col=index_col)
 
@@ -164,17 +126,12 @@ def load_meaningful_variables(
 ) -> pd.DataFrame:
     """Load the meaningful variables dataset.
 
-    Parameters
-    ----------
-    url : str
-        URL to the meaningful variables CSV file
-    cache_path : Path, optional
-        If provided, save/load from this local path
+    Args:
+        url: URL to the meaningful variables CSV file.
+        cache_path: If provided, save/load from this local path.
 
-    Returns
-    -------
-    pd.DataFrame
-        Meaningful variables dataframe
+    Returns:
+        Meaningful variables dataframe.
     """
     if cache_path is not None and cache_path.exists():
         return pd.read_csv(cache_path, index_col=0)
@@ -194,17 +151,12 @@ def load_demographics(
 ) -> pd.DataFrame:
     """Load the demographics dataset.
 
-    Parameters
-    ----------
-    url : str
-        URL to the demographics CSV file
-    cache_path : Path, optional
-        If provided, save/load from this local path
+    Args:
+        url: URL to the demographics CSV file.
+        cache_path: If provided, save/load from this local path.
 
-    Returns
-    -------
-    pd.DataFrame
-        Demographics dataframe
+    Returns:
+        Demographics dataframe.
     """
     if cache_path is not None and cache_path.exists():
         return pd.read_csv(cache_path, index_col=0)
@@ -228,25 +180,16 @@ def generate_clustered_heatmap(
 ) -> sns.matrix.ClusterGrid:
     """Generate a clustered heatmap from a correlation matrix.
 
-    Parameters
-    ----------
-    corr_matrix : pd.DataFrame
-        Correlation matrix
-    output_path : Path, optional
-        If provided, save the figure to this path
-    figsize : tuple
-        Figure size (width, height) in inches
-    cmap : str
-        Colormap name (default: 'coolwarm')
-    vmin : float
-        Minimum value for color scale
-    vmax : float
-        Maximum value for color scale
+    Args:
+        corr_matrix: Correlation matrix.
+        output_path: If provided, save the figure to this path.
+        figsize: Figure size (width, height) in inches.
+        cmap: Colormap name.
+        vmin: Minimum value for color scale.
+        vmax: Maximum value for color scale.
 
-    Returns
-    -------
-    sns.matrix.ClusterGrid
-        The ClusterGrid object containing the heatmap
+    Returns:
+        The ClusterGrid object containing the heatmap.
     """
     # Create clustered heatmap
     g = sns.clustermap(
@@ -281,12 +224,9 @@ def save_correlation_matrix(
 ) -> None:
     """Save a correlation matrix to a CSV file.
 
-    Parameters
-    ----------
-    corr_matrix : pd.DataFrame
-        Correlation matrix
-    output_path : Path
-        Path to save the CSV file
+    Args:
+        corr_matrix: Correlation matrix.
+        output_path: Path to save the CSV file.
     """
     output_path.parent.mkdir(parents=True, exist_ok=True)
     corr_matrix.to_csv(output_path)

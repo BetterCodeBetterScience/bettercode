@@ -13,6 +13,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from bettercode.parallel_base import run_parallel, run_serial
+from bettercode.utils import save_fig
+
+IMAGE_DIR = Path('../../latex/figures')
+CHAPTER = 10
 
 
 def main() -> None:
@@ -127,9 +131,8 @@ def main() -> None:
     ax1.legend(title='Chunking Factor')
 
     plt.tight_layout()
-    speedup_path = output_dir_images / 'chunking_factor_speedup.png'
-    fig1.savefig(speedup_path, dpi=300, bbox_inches='tight')
-    print(f"Speedup plot saved to: {speedup_path}")
+    save_fig(fig, 'chunking', CHAPTER, basedir=IMAGE_DIR)
+
     plt.close(fig1)
 
     # Figure 2: Efficiency vs Number of Cores for each chunking factor
@@ -150,7 +153,7 @@ def main() -> None:
 
     plt.tight_layout()
     efficiency_path = output_dir_images / 'chunking_factor_efficiency.png'
-    fig2.savefig(efficiency_path, dpi=300, bbox_inches='tight')
+    #fig2.savefig(efficiency_path, dpi=300, bbox_inches='tight')
     print(f"Efficiency plot saved to: {efficiency_path}")
     plt.close(fig2)
 

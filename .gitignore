@@ -27,3 +27,10 @@ _build
 
 # profiler files
 *.lprof
+
+# LaTeX book prose lives in a separate private repo, cloned into ./latex locally.
+/latex/
+
+# Intermediate Quarto project (regenerated from ./latex by scripts/tex2qmd).
+# The rendered site is committed under docs/ and served by GitHub Pages.
+/web/

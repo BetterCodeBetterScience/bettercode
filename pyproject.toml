@@ -17,6 +17,7 @@ dependencies = [
     "pytest-cov>=5.0.0",
     "pytest-mock>=3.14.0",
     "pytest-order>=1.2.0",
+    "pytest-xdist>=3.8.0",
     "hypothesis>=6.115.3",
     # Development tools
     "ruff>=0.6.9",
@@ -49,6 +50,7 @@ dependencies = [
     "h5py>=3.15.1",
     # Utilities
     "python-dotenv>=1.0.1",
+    "pyyaml>=6.0",
     "tqdm>=4.66.5",
     "requests>=2.32.0",
     "wonderwords>=2.2.0",
@@ -86,6 +88,8 @@ dependencies = [
     "datasets>=4.0.0",
     "openai>=2.21.0",
     "zarr>=3.1.5",
+    "pydantic[email]>=2.12.5",
+    "sbi>=0.26.1",
 ]
 
 [build-system]
@@ -119,3 +123,4 @@ markers = [
     "unit: mark a test as a unit test.",
     "integration: mark a test as an integration test."
 ]
+norecursedirs = ["_demos", ".git", ".tox", ".venv", "dist", "build", "*.egg", ".hypothesis"]

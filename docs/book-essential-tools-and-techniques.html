@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Essential tools and concepts – Better Code, Better Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./book-software-engineering.html" rel="next">
+<link href="./book-introduction.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./book-essential-tools-and-techniques.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Essential tools and concepts</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Better Code, Better Science</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Better Code, Better Science</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-essential-tools-and-techniques.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Essential tools and concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-software-engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Principles of software engineering</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Software testing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-ai-coding-assistants.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coding with AI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-project-organization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Project structure and management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-data-management.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Organization and Management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Workflow Management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validating scientific software</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Optimizing performance</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-sharing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sharing Research Objects</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-tools-and-why-we-use-them" id="toc-the-tools-and-why-we-use-them" class="nav-link active" data-scroll-target="#the-tools-and-why-we-use-them"><span class="header-section-number">3.1</span> The tools and why we use them</a></li>
+  <li><a href="#why-python" id="toc-why-python" class="nav-link" data-scroll-target="#why-python"><span class="header-section-number">3.2</span> Why Python?</a></li>
+  <li><a href="#programming-paradigms-in-python" id="toc-programming-paradigms-in-python" class="nav-link" data-scroll-target="#programming-paradigms-in-python"><span class="header-section-number">3.3</span> Programming paradigms in Python</a>
+  <ul class="collapse">
+  <li><a href="#procedural-programming" id="toc-procedural-programming" class="nav-link" data-scroll-target="#procedural-programming"><span class="header-section-number">3.3.1</span> Procedural Programming</a></li>
+  <li><a href="#functional-programming" id="toc-functional-programming" class="nav-link" data-scroll-target="#functional-programming"><span class="header-section-number">3.3.2</span> Functional Programming</a></li>
+  <li><a href="#object-oriented-programming" id="toc-object-oriented-programming" class="nav-link" data-scroll-target="#object-oriented-programming"><span class="header-section-number">3.3.3</span> Object-oriented Programming</a></li>
+  </ul></li>
+  <li><a href="#version-control" id="toc-version-control" class="nav-link" data-scroll-target="#version-control"><span class="header-section-number">3.4</span> Version control</a>
+  <ul class="collapse">
+  <li><a href="#how-version-control-works" id="toc-how-version-control-works" class="nav-link" data-scroll-target="#how-version-control-works"><span class="header-section-number">3.4.1</span> How version control works</a></li>
+  <li><a href="#version-control-as-a-lab-notebook" id="toc-version-control-as-a-lab-notebook" class="nav-link" data-scroll-target="#version-control-as-a-lab-notebook"><span class="header-section-number">3.4.2</span> Version control as a lab notebook</a></li>
+  <li><a href="#version-control-best-practices" id="toc-version-control-best-practices" class="nav-link" data-scroll-target="#version-control-best-practices"><span class="header-section-number">3.4.3</span> Version control best practices</a></li>
+  <li><a href="#version-control-as-developer-productivity-tool" id="toc-version-control-as-developer-productivity-tool" class="nav-link" data-scroll-target="#version-control-as-developer-productivity-tool"><span class="header-section-number">3.4.4</span> Version control as developer productivity tool</a></li>
+  <li><a href="#collaborative-development-using-github" id="toc-collaborative-development-using-github" class="nav-link" data-scroll-target="#collaborative-development-using-github"><span class="header-section-number">3.4.5</span> Collaborative development using GitHub</a></li>
+  </ul></li>
+  <li><a href="#virtual-environments" id="toc-virtual-environments" class="nav-link" data-scroll-target="#virtual-environments"><span class="header-section-number">3.5</span> Virtual environments</a>
+  <ul class="collapse">
+  <li><a href="#environment-management-using-uv" id="toc-environment-management-using-uv" class="nav-link" data-scroll-target="#environment-management-using-uv"><span class="header-section-number">3.5.1</span> Environment management using <em>uv</em></a></li>
+  <li><a href="#environment-management-using-conda" id="toc-environment-management-using-conda" class="nav-link" data-scroll-target="#environment-management-using-conda"><span class="header-section-number">3.5.2</span> Environment management using <em>conda</em></a></li>
+  </ul></li>
+  <li><a href="#large-language-models" id="toc-large-language-models" class="nav-link" data-scroll-target="#large-language-models"><span class="header-section-number">3.6</span> Large language models</a>
+  <ul class="collapse">
+  <li><a href="#a-brief-history-of-neural-networks" id="toc-a-brief-history-of-neural-networks" class="nav-link" data-scroll-target="#a-brief-history-of-neural-networks"><span class="header-section-number">3.6.1</span> A brief history of neural networks</a></li>
+  <li><a href="#how-llms-are-built-and-trained" id="toc-how-llms-are-built-and-trained" class="nav-link" data-scroll-target="#how-llms-are-built-and-trained"><span class="header-section-number">3.6.2</span> How LLMs are built and trained</a></li>
+  <li><a href="#open-source-language-models" id="toc-open-source-language-models" class="nav-link" data-scroll-target="#open-source-language-models"><span class="header-section-number">3.6.3</span> “Open Source” language models</a></li>
+  <li><a href="#in-context-learning-and-llm-prompting" id="toc-in-context-learning-and-llm-prompting" class="nav-link" data-scroll-target="#in-context-learning-and-llm-prompting"><span class="header-section-number">3.6.4</span> In-context learning and LLM prompting</a></li>
+  <li><a href="#randomness-in-llms" id="toc-randomness-in-llms" class="nav-link" data-scroll-target="#randomness-in-llms"><span class="header-section-number">3.6.5</span> Randomness in LLMs</a></li>
+  <li><a href="#reproducibilty-challenges-of-llms" id="toc-reproducibilty-challenges-of-llms" class="nav-link" data-scroll-target="#reproducibilty-challenges-of-llms"><span class="header-section-number">3.6.6</span> Reproducibilty challenges of LLMs</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Essential tools and concepts</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="the-tools-and-why-we-use-them" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="the-tools-and-why-we-use-them"><span class="header-section-number">3.1</span> The tools and why we use them</h2>
+<p>I hope that the principles and strategies outlined in this book will transcend any particular software platform or programming language, but for the purposes of explication I will focus on a particular language (Python) and a particular set of tools for software development/engineering and AI coding assistance. Here I briefly outline the motivation for these particular tools and introduce some important concepts to help understand them.</p>
+</section>
+<section id="why-python" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="why-python"><span class="header-section-number">3.2</span> Why Python?</h2>
+<p>For the coding examples in this book I will use the Python programming language. I have chosen Python first and foremost because it is a language that I know well, as well as being one of the most popular languages today in science. Python is a relatively high level programming language, which means that it can be understandable (if written correctly) even by someone with relatively little experience. It is also free and open source, which means that anyone with a computer can download it and run it at no cost. In addition, Python is a language that has exceptionally good support from AI coding assistants, which have usually been trained on a huge corpus of Python code (along with code from many other languages as well). Python also has a large and growing ecosystem of packages and tools that make it possible to solve many different problems easily. Across many different domains of science there are specialized Python packages to solve domain-specific problems: Examples include <a href="https://www.astropy.org/">astropy</a> (astronomy), <a href="https://geopandas.org/en/stable/getting_started/introduction.html">geopandas</a> (geospatial sciences), <a href="https://quantecon.org/">quantecon</a> (economics), <a href="https://sunpy.org/">sunpy</a> (solar physics), and <a href="https://www.psychopy.org/">psychopy</a> (psychology), just to name a few. If you are interested in working on machine learning or AI, the tools in Python are especially good.</p>
+<p>I should note that different scientific communities have often converged on particular high-level languages. The above are some examples of Python packages, but in some fields the ecosystem is much more elaborated in R, Julia, Perl or Matlab. I hope that most of the lessons in this book will be relevant to these other languages as well, though some of these other languages do not provide the same level of software engineering tools as Python.</p>
+<p>It would be unfair to not also mention Python’s weaknesses. A major limitation is performance: As I will discuss in more detail in Chapter 10, Python is substantially slower than languages such as C/C++ or Rust, though I will discuss methods to improve its performance. Python also struggles with parallelism, though recent changes in Python aim to address this. Another pain point for Python is its fragmented ecosystem for package and environment management; I discuss some of these challenges later in this chapter.</p>
+<p>If you don’t already know Python, then I suggest that you try to follow along with the examples anyway; my aim is to write them in a way that anyone with a general knowledge of programming should be able to read and understand them. In some cases I will use programming constructs that are specific to Python; if you are coming from another language and you see something you don’t understand, then I would recommend asking an AI assistant to explain it to you, since current AI tools are very good at explaining the intent of Python code! Learning a new programming language is also a great way to expand your programming skills, and Python is currently a great language to learn.</p>
+</section>
+<section id="programming-paradigms-in-python" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="programming-paradigms-in-python"><span class="header-section-number">3.3</span> Programming paradigms in Python</h2>
+<p>Historically there have been three primary approaches (or <em>paradigms</em>) for writing computer programs: Procedural programming, functional programming, and object-oriented programming. Although each paradigm has often been primarily associated with specific languages, Python supports all three, as I will show in examples below. Because object-oriented programming is widely used but unfamiliar to many Python coders, I will focus on introducing it in more detail.</p>
+<section id="procedural-programming" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="procedural-programming"><span class="header-section-number">3.3.1</span> Procedural Programming</h3>
+<p><em>Procedural programming</em> is the approach that most programmers learn first. It organizes the program around procedures (such as functions in Python), which perform operations on data and either return new data or change the state of shared variables. These are generally performed sequentially, with the flow of control specified by operations such as selection operators (like <code>if/else</code> or <code>match/case</code> statements in Python) and iteration operators (like <code>for</code> or <code>while</code> statements).</p>
+<p>As a running example across all three paradigms, I will generate code to compute the running mean of a stream of numbers. Here is a version written using procedural programming:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> proc_new() <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">float</span>]:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"count"</span>: <span class="dv">0</span>, <span class="st">"total"</span>: <span class="fl">0.0</span>}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> proc_add(acc: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">float</span>], value: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    acc[<span class="st">"count"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    acc[<span class="st">"total"</span>] <span class="op">+=</span> value</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> proc_mean(acc: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> acc[<span class="st">"total"</span>] <span class="op">/</span> acc[<span class="st">"count"</span>]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_procedural_result(data: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> proc_new()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> value <span class="kw">in</span> data:</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        proc_add(acc, value)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> proc_mean(acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we see a couple of the defining features of procedural programming. First, the data are represented separately from the procedures that are applied to them. The <code>data</code> and <code>acc</code> data structures are separate objects that are passed into the relevant functions. Second, the data objects are <em>mutable</em>, meaning that they can be changed by any function that has access to them. We can see this in the action of the <code>proc_add()</code> function, which directly modifies the contents of the accumulator <code>acc</code>; note that <code>proc_add()</code> doesn’t actually return anything.</p>
+<p>Running this produces the following output:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> bettercode.three_paradigms <span class="im">import</span> compute_procedural_result</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> compute_procedural_result([<span class="fl">10.0</span>, <span class="fl">12.0</span>, <span class="fl">14.0</span>, <span class="fl">11.0</span>, <span class="fl">13.0</span>])</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fl">12.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="functional-programming" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="functional-programming"><span class="header-section-number">3.3.2</span> Functional Programming</h3>
+<p>A second approach is known as <em>functional programming</em>. It isn’t the presence of functions that defines functional programming (since they are important in each of the approaches); rather, it’s the way that they are used. A primary goal of functional programming is to eliminate hidden state and <em>side effects</em>, where the execution of a function changes the program’s state in a non-transparent way. Perhaps the biggest difference between functional programming and other paradigms is that variables are <em>immutable</em>: That is, once they are created, they aren’t actually variable any more! Functional programming has a reputation for being difficult to learn. In part this is because most people learn structured programming first, and thus have to unlearn features like mutable variables. In addition, the functional programming community has a tendency to use mathematical terms (like “monad” and “endofunctor”) to name concepts, making them seem especially mysterious. Here is an implementation of the running mean using a functional programming approach in Python:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>State <span class="op">=</span> <span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>]  <span class="co"># (count, total)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> func_add(state: State, value: <span class="bu">float</span>) <span class="op">-&gt;</span> State:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    count, total <span class="op">=</span> state</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (count <span class="op">+</span> <span class="dv">1</span>, total <span class="op">+</span> value)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> func_mean(state: State) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    count, total <span class="op">=</span> state</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total <span class="op">/</span> count</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_functional_result(data: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    final_state <span class="op">=</span> <span class="bu">reduce</span>(func_add, data, (<span class="dv">0</span>, <span class="fl">0.0</span>))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> func_mean(final_state)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There are a couple of important differences to point out here. First note that the functions don’t change the input data; for example, rather than modifying the <code>state</code> object that is passed into <code>func_add()</code>, the function instead uses the values within the input object to create a new object that is returned. In fact, it wouldn’t be possible for the function to change the data, since it is represented as a <em>tuple</em> which is immutable. While some functional programming languages (such as <em>Haskell</em>) strictly enforce immutability, Python doesn’t have a mechanism to enforce it by default, so it’s up to the programmer to build it in, as we did here by using an immutable data type.</p>
+<p>The main difference is the use of the <code>reduce</code> function, which is one of the most important tools for functional programming in Python. This operator takes three arguments as input: a function to be applied, data to be supplied to the function, and a starting value for the input. It then cumulatively applies the function across all of the data points and returns the final value. Running this produces the following output:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> bettercode.three_paradigms <span class="im">import</span> compute_functional_result</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> compute_functional_result([<span class="fl">10.0</span>, <span class="fl">12.0</span>, <span class="fl">14.0</span>, <span class="fl">11.0</span>, <span class="fl">13.0</span>])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fl">12.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There are some Python packages (notably the <em>JAX</em> package for machine learning) that make heavy use of functional programming constructs, and there is a package called <em>Toolz</em> that provides access to functional programming tools for general-purpose use. However, most Python users avoid functional programming in general due to the fact that functional code is usually less readable for programmers who were trained to write procedural or object-oriented Python code.</p>
+</section>
+<section id="object-oriented-programming" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="object-oriented-programming"><span class="header-section-number">3.3.3</span> Object-oriented Programming</h3>
+<p>The third approach is <em>object-oriented programming</em>, which focuses on defining conceptual bundles (called <em>classes</em> in Python) that coherently combine data structures and functions that can be applied to them (referred to as <em>methods</em>). Because object-oriented programming is commonly used in Python but may not be familiar to many Python coders, I will provide a more detailed outline of it here. Here is a simple solution of the running average problem using object-oriented programming:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RunningMean:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.total <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add(<span class="va">self</span>, value: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.count <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.total <span class="op">+=</span> value</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> mean(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.total <span class="op">/</span> <span class="va">self</span>.count</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_oop_result(data: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    running <span class="op">=</span> RunningMean()</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> value <span class="kw">in</span> data:</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        running.add(value)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> running.mean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We first define a class (<em>RunningMean</em>) that includes both the data and the functions needed to perform the computation. Within the function <code>compute_oop_result()</code>, the first thing that we do is to create an <em>instance</em> of the class (called <code>running</code>). After that, we loop through and add each of the data values using the <code>running.add()</code> method. The current state is stored in the <em>instance variables</em>, which are referred to as <code>self.count</code> and <code>self.total</code> within the class definition. Running this produces the following output, matching the other versions above:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> bettercode.three_paradigms <span class="im">import</span> compute_oop_result</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> compute_oop_result([<span class="fl">10.0</span>, <span class="fl">12.0</span>, <span class="fl">14.0</span>, <span class="fl">11.0</span>, <span class="fl">13.0</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fl">12.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A main goal of object-oriented programming is <em>encapsulation</em>, such that the internal details (such as the data and internal methods) are not accessible to the outside world, which only has access to a set of methods that are publicly exposed by the class. This helps reduce <em>coupling</em>, referring to the degree to which different objects are dependent upon one another. As we will see in the next chapter, reducing coupling is an important way to reduce complexity of the code, which is a primary goal of software design.</p>
+<p>It’s worth noting that while some object-oriented languages explicitly prevent access to the instance variables of a class, Python does not, as we can see by accessing the <code>total</code> instance variable from the class instance:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> bettercode.three_paradigms <span class="im">import</span> RunningMean</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> running <span class="op">=</span> RunningMean()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="cf">for</span> value <span class="kw">in</span> data:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>...     running.add(value)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> running.total</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fl">60.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The idiom in Python class definitions is to use an underscore prefix for the names of instance variables that are not meant to be accessed from outside. For example, instead of using <code>self.total</code>, we would use <code>self._total</code> if we didn’t mean it to be accessed from the outside. However, Python doesn’t actually enforce the privacy of these variables; they are simply meant as a signal to users that the variable is an implementation detail that is not meant to be accessed from outside of the class.</p>
+<p>Finally, note that the <code>mean()</code> method is preceded by a <code>@property</code> decorator. This means that while it is defined in the class as a method (in the sense that it returns a value when called), it is treated from the outside as a instance variable, which is why <code>compute_oop_result</code> returns <code>running.mean</code> rather than <code>running.mean()</code>. This is useful because it ensures that the mean value that is returned will always be up to date, since it is computed on the fly when requested.</p>
+<section id="inheritance-and-composition" class="level4" data-number="3.3.3.1">
+<h4 data-number="3.3.3.1" class="anchored" data-anchor-id="inheritance-and-composition"><span class="header-section-number">3.3.3.1</span> Inheritance and composition</h4>
+<p>A general feature of object-oriented programming is <em>inheritance</em>, in which a class representing a more specific form of an object (e.g.&nbsp;a cat) can inherit the features of a more general version of the object (e.g.&nbsp;an animal). In the following example, we create an <code>Animal</code> class, and then a <code>Cat</code> class that inherits the <code>Animal</code> class.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Animal:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, name: <span class="bu">str</span>):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.name <span class="op">=</span> name</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fed <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> describe(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>name<span class="sc">}</span><span class="ss"> is an animal"</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> feed(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Cat(Animal):</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> describe(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">super</span>().describe() <span class="op">+</span> <span class="st">", specifically a cat"</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> speak(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>Cat</code> class has all of the features of the <code>Animal</code> class (particularly the <code>.describe()</code> and <code>.feed()</code> methods), as well as having the <code>.speak()</code> method defined specifically within the <code>Cat</code> class. In addition, <code>Cat</code> has its own definition of the <code>.describe()</code> method that <em>overrides</em> the version in the parent class (which is referred to as <code>super()</code> within the <code>Cat.describe()</code> definition). Here we see how these two classes work:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> creature <span class="op">=</span> Animal(<span class="st">"unknown"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> creature.describe()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">'unknown is an animal'</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> felix <span class="op">=</span> Cat(<span class="st">"Felix"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> felix.describe()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">'Felix is an animal, specifically a cat'</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> felix.speak()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">'Meow'</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> felix.fed</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="va">False</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> felix.feed()</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> felix.fed</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Inheritance reflects an <em>is-a</em> relationship, in which the subclass is a kind of the class (e.g.&nbsp;a cat is a kind of animal). It is considered a form of <em>white-box reuse</em> <span class="citation" data-cites="Gamma:1995aa">(<a href="#ref-Gamma:1995aa" role="doc-biblioref">Gamma 1995</a>)</span>, in the sense that the children need to know the internal details of the parent implementation. In this sense, inheritance tends to result in increased coupling between classes.</p>
+<p>There are other cases when one class has parts that can also be defined as classes (a <em>has-a</em> relationship); when a class calls other classes to implement its parts, we refer to this as <em>composition</em>. For example, we can build a <code>Summarizer</code> class to summarize a list of numbers that has two components: one for cleaning the data (either keeping all values or removing negative values) and one for computing the summary (either using the mean or the maximum). The specific implementation of each of the components is implemented as a separate classs:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statistics</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># --- independent "cleaner" components ---</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> KeepAll:</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> clean(<span class="va">self</span>, values):</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> values</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DropNegatives:</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> clean(<span class="va">self</span>, values):</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [v <span class="cf">for</span> v <span class="kw">in</span> values <span class="cf">if</span> v <span class="op">&gt;=</span> <span class="dv">0</span>]</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co"># --- independent "statistic" components ---</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Mean:</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> compute(<span class="va">self</span>, values):</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> statistics.mean(values)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Maximum:</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> compute(<span class="va">self</span>, values):</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">max</span>(values)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Summarizer:</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, cleaner, statistic):</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.cleaner <span class="op">=</span> cleaner</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.statistic <span class="op">=</span> statistic</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> run(<span class="va">self</span>, values):</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        cleaned <span class="op">=</span> <span class="va">self</span>.cleaner.clean(values)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.statistic.compute(cleaned)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can create an instance of the summarizer and then apply it to some data:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> s <span class="op">=</span> Summarizer(KeepAll(), Mean())</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> data <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">4</span>, <span class="dv">2</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> s.run(data)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fl">1.4</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> s.statistic.compute(data)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fl">1.4</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> s_pos <span class="op">=</span> Summarizer(DropNegatives(), Mean())</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> s.run(data)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fl">1.4</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> s_pos.run(data)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fl">2.75</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What’s particularly useful here is that the top-level class (<code>Summarizer</code>) doesn’t need to know anything about which classes might be used as cleaners or statistics or any details about their internal implementations; any class that has the right interface (a <code>.clean()</code> method for cleaners and a <code>.compute()</code> method for statistics) can be used.</p>
+<p>Inheritance and composition both have their place, depending on the kind of relationships that are inherent between objects. However, inheritance does tend to result in more coupling and thus more complexity, since any changes to a top-level class have the potential to affect any class that inherits it. Composition, on the other hand, tends to reduce coupling. It is for this reason that <span class="citation" data-cites="Gamma:1995aa">(<a href="#ref-Gamma:1995aa" role="doc-biblioref">Gamma 1995</a>)</span> proposed the following as one of their principles of object-oriented programming: “Favor object composition over class inheritance.”</p>
+</section>
+</section>
+</section>
+<section id="version-control" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="version-control"><span class="header-section-number">3.4</span> Version control</h2>
+<p>Scientists in many fields have traditionally kept a <em>lab notebook</em> to record their experimentation. This is still the case in domains such as biology where the work often involves manual experimentation at a lab bench. Many such labs have moved to using electronic lab notebooks, making it much easier to search and find relevant information. However, an increasing amount of scientific work is now computational, and for this work it would seem somewhat inefficient to record information about the software development process separately from the code that is being written. There is in fact a tool that can provide the computational researcher with an integrated way to record the history their work, known as <em>version control.</em> While there are many tools that can be used to perform version control, <em><a href="https://git-scm.com/">git</a></em> has become by far the most prevalent within the scientific computing ecosystem, largely due to the popularity of the <a href="http://github.com">GitHub</a> website that enables the hosting and sharing of git repositories.</p>
+<p>In this section I will assume that the researcher has a basic knowledge of the <em>git</em> software tool; for researchers looking to learn <em>git</em>, there are numerous resources online, which we will not duplicate; see the suggested resources at the end of this chapter. Here I will focus on the ways in which version control tools like <em>git</em> can serve as important tools to improve scientific coding. While there are numerous graphical user interfaces (GUIs) for <em>git</em> (including those offered by various IDEs), I will focus on its use via the command line interface (CLI). Every researcher should have a basic knowledge of the <em>git</em> CLI, since this is a ubiquitous interface available across all OSes and environments. The CLI is sometimes the only interface that is available to the researcher, e.g., in a remote session on an HPC system or in the cloud. Moreover, the CLI provides an immediate exposure to available commands (see <code>git --help</code>) and options for each command (see <code>git COMMAND --help</code>), allowing users to discover a command or option that might not (yet) be exposed by any particular GUI tool.</p>
+<section id="how-version-control-works" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="how-version-control-works"><span class="header-section-number">3.4.1</span> How version control works</h3>
+<p>The goal of a version control system is to provide an annotated history of all changes that occur to the tracked files. Here I will provide a brief overview of the conceptual structure of version control, using <em>git</em> system as the example.</p>
+<p>The general workflow for version control using <em>git</em> is as follows:</p>
+<ul>
+<li><p>Initial check-in: A file is added to the database.</p></li>
+<li><p>The file is <em>modified</em> by the user, but the changes are not added to the database.</p></li>
+<li><p>The file is <em>added</em> to the staging area, which tracks the changes in the file and marks the new version to be added to the database.</p></li>
+<li><p>The file is <em>committed</em>, which stores it in the base along with a <em>commit message</em> that describes the changes.</p></li>
+</ul>
+<p>Here is an example using <em>git</em>. We first create a test directory (outside of our current <em>git</em> repository) and initialize it as a <em>git</em> repository:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd /tmp</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mkdir git-test</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd git-test</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git init</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">"test file"</span> <span class="op">&gt;</span> test_file.txt</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git status</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="ex">No</span> commits yet</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Untracked</span> files:</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git add &lt;file&gt;..."</span> to include in what will be committed<span class="kw">)</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="ex">test_file.txt</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> added to commit but untracked files present <span class="er">(</span><span class="ex">use</span> <span class="st">"git add"</span> to track<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git add test_file.txt</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git status</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="ex">No</span> commits yet</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Changes</span> to be committed:</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">(</span><span class="ex">use</span> <span class="st">"git rm - -cached &lt;file&gt;..."</span> to unstage<span class="kw">)</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="ex">new</span> file:   test_file.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">fatal:</span> your current branch <span class="st">'main'</span> does not have any commits yet</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span><span class="st">"initial add"</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> <span class="er">(</span><span class="ex">root</span> <span class="at">-commit</span><span class="kw">)</span> <span class="ex">752ca80]</span> initial add</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 1 insertion<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">create</span> mode 100644 test_file.txt</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git status</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now that all changes have been committed, we are “clean”, meaning that the files in the directory match exactly to those in the database. We can see the commit in the git log:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">commit</span> 752ca809cd662f846434dcb2c81f3000db640b4e <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Author:</span> Russell Poldrack <span class="op">&lt;</span>poldrack@gmail.com<span class="op">&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Date:</span>   Mon Feb 17 07:42:35 2025 <span class="at">-0800</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="ex">initial</span> add</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The most important role for version control is to track changes in a file, along with notes about those changes. That is, it can serve as a digital version of a lab notebook! Let’s make a change to the file to see this in action:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">"another line"</span> <span class="op">&gt;&gt;</span> test_file.txt <span class="co"># add another line of text</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git diff test_file.txt</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span> <span class="at">--git</span> a/test_file.txt b/test_file.txt</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="ex">index</span> 16b14f5..0db3737 100644</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">-</span> <span class="at">-</span> <span class="at">-</span> a/test_file.txt</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="ex">+++</span> b/test_file.txt</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="ex">@@</span> <span class="at">-1</span> +1,2 @@</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a> <span class="bu">test</span> file</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="ex">+another</span> line</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git add test_file.txt</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span><span class="st">"added a second line"</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">[main</span> 5e8c41a] added a second line</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">1</span> file changed, 1 insertion<span class="er">(</span><span class="ex">+</span><span class="kw">)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git log</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="ex">commit</span> 5e8c41a075b2ab2d954d59cab6530d924c5e3e6a <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main<span class="kw">)</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Author:</span> Russell Poldrack <span class="op">&lt;</span>poldrack@gmail.com<span class="op">&gt;</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Date:</span>   Mon Feb 17 07:56:09 2025 <span class="at">-0800</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="ex">added</span> a second line</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="ex">commit</span> 752ca809cd662f846434dcb2c81f3000db640b4e</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Author:</span> Russell Poldrack <span class="op">&lt;</span>poldrack@gmail.com<span class="op">&gt;</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Date:</span>   Mon Feb 17 07:42:35 2025 <span class="at">-0800</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">initial</span> add</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="version-control-as-a-lab-notebook" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="version-control-as-a-lab-notebook"><span class="header-section-number">3.4.2</span> Version control as a lab notebook</h3>
+<p>It is essential for a researcher to keep track of their work as it proceeds, and traditionally this has been done using a written lab notebook. This has several drawbacks; it’s impossible to search easily, and for researchers with terrible handwriting (like me, as seen in Figure&nbsp;<a href="#LabNotebook-fig" data-reference-type="ref" data-reference="LabNotebook-fig">1.1</a>) it can often be impossible to later decipher what the notes actually mean.</p>
+<figure id="LabNotebook-fig" data-latex-placement="!htbp" class="figure">
+<img src="figures/02/LabNotebook.svg" style="width:50.0%" class="figure-img">
+<figcaption>
+Scan of a page from the author’s lab notebook circa 2000.
+</figcaption>
+</figure>
+</section>
+<section id="version-control-best-practices" class="level3" data-number="3.4.3">
+<h3 data-number="3.4.3" class="anchored" data-anchor-id="version-control-best-practices"><span class="header-section-number">3.4.3</span> Version control best practices</h3>
+<p>Version control systems like <em>git</em> can serve as an outstanding alternative to a written lab notebook for the computational researcher, but only if it used well. Here are a few best practices for ensuring good record-keeping:</p>
+<section id="use-a-consistent-standard-format-for-commit-messages" class="level4" data-number="3.4.3.1">
+<h4 data-number="3.4.3.1" class="anchored" data-anchor-id="use-a-consistent-standard-format-for-commit-messages"><span class="header-section-number">3.4.3.1</span> Use a consistent standard format for commit messages</h4>
+<p>Using a particular format consistently will make it much easier to understand and search your history later on. Here is one simple format that one might use for commit messages:</p>
+<pre class="text"><code>&lt;type&gt;: &lt;summary&gt;
+
+&lt;optional longer description&gt;</code></pre>
+<p>The <em>type</em> tag describes the type of change, which could include tags like <em>feature</em>, <em>bugfix</em>, <em>refactor</em>, <em>doc</em>, <em>test</em>, and <em>cleanup</em>.</p>
+<p>The <em>summary</em> should include a brief summary (usually less than 72 characters) that summarizes what was done. You should avoid using generic or vague summaries such as “update” or “fix bug”.</p>
+<p>By <em>git</em> convention, commit messages should be written in imperative mood, as if one is giving a command. For example, the message might say “add test for infinite edge case” rather than “added test for infinite edge case”.</p>
+<p>Here is a example:</p>
+<pre class="text"><code>refactor: Make crossvalidation function cleaner
+
+Rename loop indices from `i`/`j` to `feature_idx`/`sample_idx`</code></pre>
+</section>
+<section id="explain-intent-rather-than-code" class="level4" data-number="3.4.3.2">
+<h4 data-number="3.4.3.2" class="anchored" data-anchor-id="explain-intent-rather-than-code"><span class="header-section-number">3.4.3.2</span> Explain intent rather than code</h4>
+<p>A good commit message should explain what problem was being solved and why the change was necessary, rather than detailing the specific code changes. The code changes are already evident from the change log, so the message should focus instead on details that are not evident from looking at the code itself. For example:</p>
+<pre class="text"><code>feature: Enable use of multiple APIs
+
+Previously the function only worked with the OpenAI API. This change generalizes it to allow any endpoint that follows the OpenAI API conventions.</code></pre>
+</section>
+<section id="a-single-commit-should-reflect-solution-of-a-particular-problem" class="level4" data-number="3.4.3.3">
+<h4 data-number="3.4.3.3" class="anchored" data-anchor-id="a-single-commit-should-reflect-solution-of-a-particular-problem"><span class="header-section-number">3.4.3.3</span> A single commit should reflect solution of a particular problem</h4>
+<p>One of the tricky aspects of learning to use version control is learning when to commit. One rule of thumb is that a commit should reflect a group of changes that solve a particular problem. For example, say that we have modified three source files to add the multiple API functionality listed above. We could, on the one hand, add and commit the changes from each file separately, leading to three separate commits. This is too granular; if we later decide that we want to roll back those changes (which could be difficult depending on commit messages and our memory), we have to identify the three separate commits and then roll back each one separately. At the other extreme, it’s not uncommon for users to check in all of the work that was done in a day, with a commit message like “all work from Tuesday”. If one were to later decide that part of the work from that day needed to be rolled back, it would require a lot of extra work to isolate just those changes. The sweet spot for committing is to commit changes that represent a functional bundle, or that solve a particular problem. Thinking about the commit message can be helpful in considering when to commit; if it’s difficult to give a concise functional description to the specific set of changes being committed, then the commit may be either too narrow or too broad.</p>
+</section>
+<section id="avoid-blanket-addcommit-operations" class="level4" data-number="3.4.3.4">
+<h4 data-number="3.4.3.4" class="anchored" data-anchor-id="avoid-blanket-addcommit-operations"><span class="header-section-number">3.4.3.4</span> Avoid blanket add/commit operations</h4>
+<p>Another common <em>git</em> “anti-pattern” (i.e., a commonly used but bad solution to a common problem) is to simply add all files using <code>git add .</code> (which adds all files in the current directory, including those that have not been added) or <code>git add -A</code> (which does the similar thing recursively for the entire directory tree). This kind of “blanket add/commit” is problematic for at least two reasons. First, there are often files that we don’t want to add to version control, such as files containing credentials or files with details about the local system configuration. While we would usually want to add these files to our <code>.gitignore</code> file (which prevents them from being seen by <em>git</em>), it’s best practice to explicitly add files that we are working on. A second reason to avoid blanket add/commit is that if we are working on more than one problem at a time, the resulting commit will bundle together files that address different problems and thus prevent writing a clean commit message as well as prevent a clean reversion of that code later. It would also require knowing exactly which files have been added in order to create an accurate commit message. The only time that I can imagine a blanket add/commit being reasonable is when one is initially creating a repository using a large number of files.</p>
+<p>A better practice is to explicitly name all files being added, which forces one to think about exactly what problem the commit is solving. If one is certain that they know exactly which code files have been changed, then a useful alternative can be to only add tracked files that have been modified (using <code>git add -u</code>), which can save a bit of time if there are numerous files being added. However, it’s important to make sure that the commit message always faithfully reflects the totality of the changes.</p>
+</section>
+</section>
+<section id="version-control-as-developer-productivity-tool" class="level3" data-number="3.4.4">
+<h3 data-number="3.4.4" class="anchored" data-anchor-id="version-control-as-developer-productivity-tool"><span class="header-section-number">3.4.4</span> Version control as developer productivity tool</h3>
+<p>So far I have discussed version control primarily as a way to record the history of software development. But an arguably even more powerful aspect of version control is the way that it enables developer productivity by allowing one to try out new changes and easily revert to a previous version. It’s useful to first examine how this might be done without version control. Suppose a developer has a codebase and wants to try out a major change, such as changing the database backend used in the project. They would usually save a copy of all of the source files (perhaps with a timestamped label), and then start working on the problem. If at some point they wish to completely abandon the new project, they can always go back to the copy of the original. But what if they want to abandon the latest part (e.g., a specific database) without necessarily abandoning the rest of the work that it took to get there? Unless they are saving copies at every step (which quickly becomes a bookkeeping nightmare), this will be very challenging to pull off. On the other hand, with a solid version control workflow these problems are trivial to solve, because version control is designed exactly in order to solve this bookkeeping problem.</p>
+<section id="falling-back-on-previous-commits" class="level4" data-number="3.4.4.1">
+<h4 data-number="3.4.4.1" class="anchored" data-anchor-id="falling-back-on-previous-commits"><span class="header-section-number">3.4.4.1</span> Falling back on previous commits</h4>
+<p>A <em>branch</em> in <em>git</em> is akin to a parallel version of the repository, in which one can work without affecting other branches. Branches can be <em>merged</em>, meaning that the contents of a one branch can be combined with another. All <em>git</em> repositories start with a single default branch, usually called “main” (or sometimes the previous convention, “master”). I will start first with a simple example that only involves the <code>main</code> branch of the repository. In the next section I will suggest that working directly in the main branch is not optimal, but it’s common for many research projects with a single developer to work in the the main branch so I will start there, fitting with the mantra that we should never let the perfect be the enemy of the good.</p>
+<p>Let’s say that we wish to try changing out the database backend for our project, which will require changes to several of the source files. Starting with a clean working tree (i.e., no uncommitted changes or untracked files not included in <code>.gitignore</code>), we would first create a new tag so that we can easily find the last commit in case we decide that we want to revert back to it:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> tag v0.2-pre-db-change</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We then start developing on the new code, committing as usual. Let’s say that we make a few commits on the new code, but then go down a road that we decide to abandon. It’s easy to get back to the last commit simply by typing <code>git reset --hard HEAD</code>, which takes the code back to the state it was in at the last commit (known as “HEAD”); however, you should be aware that this will permanently delete any changes that have been made to tracked files since the last commit, so use <code>git status</code> and <code>git diff</code> first to make sure you know what you are going delete. In the case that we decide to abandon the entire project and want to go back to the state of the code when we started (which is denoted by the tag we created), we simply need to find the hash for that commit and then check out that version of the repository:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git show v0.2-pre-db-change</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">commit</span> 5e8c41a075b2ab2d954d59cab6530d924c5e3e6a <span class="er">(</span><span class="ex">HEAD</span> <span class="at">-</span><span class="op">&gt;</span> main, tag: v0.2 <span class="at">-pre</span> <span class="at">-db</span> <span class="at">-change,</span> tag: v0.2<span class="kw">)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git checkout 5e8c41a07 .</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git commit <span class="at">-m</span><span class="st">"""</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="st">cleanup: Revert attempted database backend switch</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="st">We tried to replace the database backend but realized after some</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="st">development that this would not solve our problem, so we are reverting</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="st">back to the original code."""</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">On</span> branch main</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="ex">nothing</span> to commit, working tree clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A look at the output of <code>git log</code> will now show that the HEAD matches the hash for the tagged commit.</p>
+</section>
+<section id="using-branches" class="level4" data-number="3.4.4.2">
+<h4 data-number="3.4.4.2" class="anchored" data-anchor-id="using-branches"><span class="header-section-number">3.4.4.2</span> Using branches</h4>
+<p>While it’s possible to develop completely within the main branch of a repository, I generally prefer to use <em>development branches</em>, which can be thought of as different parallel versions of the repository. In my preferred workflow, whenever I want to modify code I first create and then check out a new branch, in which I will do that work. One great benefit of this is that if the main branch was working when I created the development branch, it will remain in a working state even as I make our changes in the new branch. This provides much greater freedom to try out changes with no concern about breaking existing code, and also allows development to proceed without interfering with production code.</p>
+<p>It’s important to name branches in way that makes clear what their purpose is. It is customary to use a prefix that states the general purpose of the branch; common prefixes including “feature/” (for new features), “bugfix/” (for bug fixes), “release/” (for a new package release), “docs/” (for documentation changes), and “test/” (for testing-related changes). The prefix should be followed by a description of the purpose of the branch. For example, for our example above we might use “feature/swap-db-backend”.</p>
+<p>We can create a new branch and check it out (making it the current branch) using <code>git checkout</code>:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git branch</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> main</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git checkout <span class="at">-b</span> feature/swap-db-backend</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Switched</span> to a new branch <span class="st">'feature/swap-db-backend'</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git branch</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="ex">*</span> feature/swap-db-backend</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">main</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can now go about our development work, committing as usual to the branch. If we then decide that we want to combine those changes into the main branch, we can perform a <em>merge</em>, which attempts to automatically combine the changes in the development branch into the main branch. If no changes were made to the main branch since the development branch was created, then it’s likely that the automatic merge from the development branch into main will be successful. However, if there are conflicting changes to main and to the development branch, this can cause a dreaded <em>merge conflict</em>, which can require manual editing of the files. Rather than giving a detailed explanation about how to deal with merge conflicts, I would instead suggest that you paste the details about any merge conflicts into your favorite chatbot, since they will usually have the right answer for how to fix the merge conflict.</p>
+<p>If instead I were to later decide to abandon the development branch, I would simply check out the main branch and be right back where I had left off before creating the new branch. I could then either delete the feature branch (to keep the repository clean), or keep it around in case I wish to go back and look at it again later.</p>
+</section>
+</section>
+<section id="collaborative-development-using-github" class="level3" data-number="3.4.5">
+<h3 data-number="3.4.5" class="anchored" data-anchor-id="collaborative-development-using-github"><span class="header-section-number">3.4.5</span> Collaborative development using GitHub</h3>
+<p>While git is very useful for the individual developer, it becomes even more powerful when used for collaborative development amongst a group of developers. For <em>git</em> users this is enabled by the popular <a href="http://github.com">GitHub</a> web platform for version control.</p>
+<p>Collaborative development requires choosing a workflow that the team will adhere to; a commonly used workflow for GitHub users is the “<a href="https://docs.github.com/en/get-started/using-github/github-flow">GitHub flow</a>”, which goes as follows. Let’s say that we have two developers on our team, and one of them wants to attempt the database backend project that we described above. The process would be:</p>
+<ol type="1">
+<li><p>The developer creates a branch within the repo, giving it a a clear and expressive name such as “feature/swap-db-backend”. They develop their code within this branch.</p></li>
+<li><p>If the user doesn’t have write access to the repo, they first create a <em>fork</em> of the repo, which copies it to their own account and thus allows write access.</p></li>
+<li><p>Once the feature is complete, they commit and push all of their changes to the repository on GitHub.</p></li>
+<li><p>They then create a <em>pull request</em>, which requests that the code in their branch be merged into the main branch of the primary repository.</p></li>
+<li><p>Another developer on the team reviews the pull request, and provides comments suggesting changes to the code.</p></li>
+<li><p>Once the reviewer’s comments and any merge conflicts are addressed, the code from the branch is merged into the main branch, so that the changes are now incorporated there.</p></li>
+<li><p>After merging, the branch is deleted to keep the repository clean.</p></li>
+</ol>
+<p>This type of collaborative development process powers many of the large open source projects that are commonly used today, but can be equally transformative for small groups such as a individual research lab.</p>
+</section>
+</section>
+<section id="virtual-environments" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="virtual-environments"><span class="header-section-number">3.5</span> Virtual environments</h2>
+<p>When developing software, it is essential to have a way to manage the many dependencies and software versions that are necessary, particularly for a language like Python that has a broad landscape of packages. This problem is generally solved using <em>virtual environments</em>, which provide a way to isolate a specific set of software dependencies necessary for a project.</p>
+<p>This is important for several reasons. First, it allows different projects to use different versions of specific packages without interfering with one another. One often finds the need to install an older version of a particular dependency, or an older version of Python, in order to use a specific tool. Without virtual environments, managing different dependencies across projects can become impossible. If one project requires Python <span class="math inline">\(\leq\)</span><!-- -->3.9 while another needs Python <span class="math inline">\(\geq\)</span><!-- -->3.12, conflicts arise that virtual environments can easily resolve. Second, because the virtual environment specifies the exact version of each dependency and allows these to be exported, it is possible for other users on different machines to exactly recreate the package environment required by the author (assuming that those package versions are available for the users’s operating system and that the exact package versions have been exported and stored in version control). This can greatly enhance the reproducibility of computational analyses across systems, and can also ease the implementation of software across multiple machines (e.g., when one wants to move code from a local machine into the cloud). On shared computing systems (such as academic computing clusters), virtual environments let users install their own packages without needing admin access.</p>
+<p>A virtual environment is at its heart simply a directory structure that contains a specified set of executables and software dependencies. When the virtual environment is <em>activated</em> using a special command, these directories are added to the system paths, allowing them to be accessed just like any software installed centrally on the system. They can be easily removed from the path by deactivating the environment.</p>
+<p>There are numerous tools within the Python ecosystem for package management and virtual environments, to the degree that some have called it an <a href="https://dublog.net/blog/so-many-python-package-managers/">“inexcusable pain in the ass”</a>. I will focus on two solutions here (<em>uv</em> and <em>conda</em>), realizing that things will change over time, so you may want to consult the web for the latest recommendations.</p>
+<section id="environment-management-using-uv" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="environment-management-using-uv"><span class="header-section-number">3.5.1</span> Environment management using <em>uv</em></h3>
+<p><em><a href="https://docs.astral.sh/uv/">uv</a></em> is a relatively new package management tool that has quickly gained momentum in the Python community, in large part because of its speed (particularly when resolving package dependencies) and its efficient use of disk space. To start, we simply initialize a new project, marking it as a package so that it will create the appropriate code structure:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv init <span class="at">--package</span> uv-example</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Initialized</span> project <span class="kw">`</span><span class="ex">uv-example</span><span class="kw">`</span> at <span class="kw">`</span><span class="ex">/private/tmp/uv-test/uv-example</span><span class="kw">`</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree <span class="at">--charset</span><span class="op">=</span>ascii uv-example</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv-example</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">--</span> pyproject.toml</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">--</span> README.md</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="kw">`</span><span class="ex">--</span> src</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">`</span><span class="at">--</span> uv_example</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">`</span><span class="ex">--</span> __init__.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can then create a new virtual environment using the command <code>uv venv</code>. This is stored within the directory <code>.venv</code>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd uv-example</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv venv</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Using</span> CPython 3.12.0</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Creating</span> virtual environment at: .venv</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Activate</span> with: source .venv/bin/activate</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree <span class="at">--charset</span><span class="op">=</span>ascii .venv</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">--</span> bin</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> activate</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> activate_this.py</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> activate.bat</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> activate.csh</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> activate.fish</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> activate.nu</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> activate.ps1</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> deactivate.bat</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> pydoc.bat</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> python <span class="at">-</span><span class="op">&gt;</span> ~/.local/share/uv/python/cpython-3.12.0/bin/python3.12</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">|</span><span class="ex">--</span> python3 <span class="at">-</span><span class="op">&gt;</span> python</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">`</span><span class="ex">--</span> python3.12 <span class="at">-</span><span class="op">&gt;</span> python</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">--</span> CACHEDIR.TAG</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">--</span> lib</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="kw">`</span><span class="at">--</span> python3.12</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>       <span class="kw">`</span><span class="ex">--</span> site-packages</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>           <span class="kw">|</span><span class="ex">--</span> _virtualenv.pth</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>           <span class="kw">`</span><span class="at">--</span> _virtualenv.py</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="kw">`</span><span class="ex">--</span> pyvenv.cfg</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span> directories, 16 files</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>One thing to note here is that the <code>python</code> executable is actually a symbolic link to a version that is in a central cache (under <code>.local/share/uv</code>). This means that we can create numerous virtual environments, but there will only be one copy of that particular version of Python, saving space on disk.</p>
+<p>We can activate the environment by running its activation script, after which we see that the system path will point to the virtual environment:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> source .venv/bin/activate</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> which python</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ex">/private/tmp/uv-test/uv-example/.venv/bin/python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If we wish to add dependencies, we can simply do this using <code>uv add</code>:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv add numpy</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Resolved</span> 2 packages in 3ms</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>   <span class="ex">Building</span> uv-example @ file:///private/tmp/uv-test/uv-example</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>      <span class="ex">Built</span> uv-example @ file:///private/tmp/uv-test/uv-example</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Prepared</span> 1 package in 2ms</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Installed</span> 2 packages in 8ms</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">+</span> numpy==2.4.6</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a> <span class="ex">+</span> uv-example==0.1.0 <span class="er">(</span><span class="ex">from</span> file:///private/tmp/uv-test/uv-example<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here again, if we load this module within Python we will see that it is located within the virtual environment:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Python</span> 3.13.1 <span class="er">(</span><span class="ex">main,</span> Dec 19 2024, 14:22:59<span class="kw">)</span> <span class="ex">[Clang</span> 18.1.8 ] on darwin</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> <span class="st">"help"</span>, <span class="st">"copyright"</span>, <span class="st">"credits"</span> or <span class="st">"license"</span> for more information.</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> import <span class="ex">numpy</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> print<span class="kw">(</span><span class="ex">numpy.__file__</span><span class="kw">)</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="ex">/private/tmp/uvtest/uv_example/.venv/lib/python3.13/site</span> <span class="at">-packages</span>/numpy/__init__.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>(Note that I will use <code>&gt;&gt;&gt;</code> throughout the book to denote commands with an interactive Python shell.) The details regarding the package are stored within a file called “pyproject.toml” in the main project directory. Looking inside this file we can see that it contains details about the packages that have been added, including the specific version:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cat pyproject.toml</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">[project]</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">name</span> = <span class="st">"uv-example"</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="ex">version</span> = <span class="st">"0.1.0"</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="ex">description</span> = <span class="st">"Add your description here"</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="ex">readme</span> = <span class="st">"README.md"</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="ex">authors</span> = [</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">{</span> <span class="ex">name</span> = <span class="st">"Russell Poldrack"</span>, email = <span class="st">"poldrack@gmail.com"</span> }</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="ex">]</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="ex">requires-python</span> = <span class="st">"&gt;=3.12"</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="ex">dependencies</span> = [</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"numpy&gt;=2.4.6"</span><span class="ex">,</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="ex">]</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="ex">[project.scripts]</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="ex">uv-example</span> = <span class="st">"uv_example:main"</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="ex">[build-system]</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="ex">requires</span> = <span class="pp">[</span><span class="st">"uv_build&gt;=0.9.18,&lt;0.10.0"</span><span class="pp">]</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="ex">build-backend</span> = <span class="st">"uv_build"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This file allows one to specify many other details about a Python package, as I will discuss further in Chapter 12. It not only stores dependencies but also metadata about the project, making it useful for packaging and distribution, and learning more about its features is important for anyone looking to develop Python packages.</p>
+<section id="locking-dependencies-in-uv" class="level4" data-number="3.5.1.1">
+<h4 data-number="3.5.1.1" class="anchored" data-anchor-id="locking-dependencies-in-uv"><span class="header-section-number">3.5.1.1</span> Locking dependencies in uv</h4>
+<p>Computational reproducibility requires that we be able to exactly recreate an environment, including the specific versions of all packages. If you look at the <code>pyproject.toml</code> file you will see that it doesn’t specify exact versions for Python or the dependencies; instead, it specifies a lower bound; i.e., “numpy <span class="math inline">\(\geq\)</span> 2.4.6” means that the <em>Numpy</em> version should be at least 2.4.6, but could be higher if a newer version became available. This is often fine, but for purposes of reproducibility we often wish to record the exact package versions that were used for a particular analysis. This is commonly done using a <code>requirements.txt</code> file, and <em>uv</em> allows exporting the current environment to such a file:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv pip compile pyproject.toml <span class="at">-o</span> requirements.txt</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Resolved</span> 1 package in 2ms</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This file was autogenerated by uv via the following command:</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    uv pip compile pyproject.toml -o requirements.txt</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="va">numpy</span><span class="op">=</span>=2.4.6</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># via uv-example (pyproject.toml)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>One note about locking: I have occasionally experienced conflicts when using the same code across multiple operating systems (MacOS and Linux in my case), where a package version that works on one OS causes a dependency conflict on another OS. For this reason, while committing the lock file is a best practice, I will sometimes omit it from version control for projects where I expect to be running the code across platforms, or instead commit separate copies of the lock file for different platforms (e.g.&nbsp;<em>uv.lock.macos</em>).</p>
+<p>This brief overview only scratches the surface of the many features within <em>uv</em>, which I recommend you explore in detail via the project documentation.</p>
+</section>
+</section>
+<section id="environment-management-using-conda" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="environment-management-using-conda"><span class="header-section-number">3.5.2</span> Environment management using <em>conda</em></h3>
+<p>Another popular tool for managing virtual environments is <em>Conda</em>. It has much of the same functionality as uv and has been around much longer, but we have largely moved away from it for most projects in my lab for several reasons: <em>uv</em> is relatively more efficient when it comes to disk space and it is often faster than <em>Conda</em>, especially as environments start to have many packages installed. In addition, there are sometimes conflicts between <em>Conda</em>’s native package management and the <em>pip</em> package management system. When using <em>Conda</em> it’s sometimes necessary to use <em>pip</em> to install some packages that aren’t available within the <em>Conda</em> library, but this can result in conflicts between the two package management systems.</p>
+<p>There is one important way in which <em>Conda</em> differs from <em>uv</em>. In fact, I switched to <em>uv</em> in 2024 after being a long-time user of <em>Conda</em>, but I still use <em>Conda</em> for some projects. The crucial feature of <em>Conda</em> that has kept me using it for a limited set of projects is its ability to effectively manage non-Python software elements alongside Python packages. I have found on a couple of occasions that some Python packages have dependencies that rely upon non-Python software components. Specifically, in cases where Python packages required a specific component (the LLVM compiler), I was unable to easily get the specific required version of that component working on my Mac using <em>uv</em>, whereas <em>Conda</em> simply installed the required component and worked out of the box. The speed and efficiency of <em>uv</em> generally outshine <em>Conda</em> in my experience, but in some cases <em>Conda</em> may help solve tricky non-Python dependency issues.</p>
+<p>The Python environment management landscape will continue to evolve, and the acquisition of Astral (the developer of <em>uv</em>) by OpenAI in 2026 has raised some questions regarding the future of <em>uv</em>. However, as of the time of writing, my suggestion is to use <em>uv</em> by default for projects that do not require non-Python system libraries. For those projects, use <em>miniconda</em> as the default.</p>
+</section>
+</section>
+<section id="large-language-models" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="large-language-models"><span class="header-section-number">3.6</span> Large language models</h2>
+<figure id="GPT4Haiku-fig" data-latex-placement="!htbp" class="figure">
+<img src="figures/02/GPT4Haiku.svg" style="width:50.0%" class="figure-img">
+<figcaption>
+Haiku generated by GPT-4 from the prompt: “Please generate a haiku that reflects on the experience of writing a book about coding for science using AI.”
+</figcaption>
+</figure>
+<p>Large language models (LLMs) power tools like ChatGPT, enabling them to generate human-like text responses, such as the haiku shown in Figure&nbsp;<a href="#GPT4Haiku-fig" data-reference-type="ref" data-reference="GPT4Haiku-fig">1.2</a>. Understanding how these models function can help users make better use of AI coding assistants. This section provides a brief introduction to LLMs, focusing on their structure, capabilities, and limitations.</p>
+<section id="a-brief-history-of-neural-networks" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="a-brief-history-of-neural-networks"><span class="header-section-number">3.6.1</span> A brief history of neural networks</h3>
+<p>LLMs are a type of <em>artificial neural network</em>, which are computer models composed of a huge number of computing units that are loosely patterned after neurons in the brain. Artificial neural networks were first developed in the 1940s, only to be abandoned by AI researchers after the early versions were shown to have major limitations in the kinds of problems they could solve. There was a renaissance of neural network research in the 1980’s and 1990’s arising primarily from researchers in cognitive science, but interest again waned as the field of <em>machine learning</em> developed tools that were able to solve many of the same problems in a computationally simpler manner. It was not until the late 2000’s that the latest wave of interest in neural networks came about, building on the development of methods that allowed researchers to effectively train neural networks with many layers, known as <em>deep neural networks</em> (hence the common term <em>deep learning</em>). These methods, together with the realization that graphical processing units (GPUs) could be used to train these models much more quickly and the development of large datasets for model training, led to early advances in the mid 2010’s, particularly in the domain of image recognition.</p>
+</section>
+<section id="how-llms-are-built-and-trained" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="how-llms-are-built-and-trained"><span class="header-section-number">3.6.2</span> How LLMs are built and trained</h3>
+<p>The LLMs that are most prominent as of 2026, such as GPT-5, Claude, and Google Gemini, are based on a specific neural network architecture known as a <em>transformer</em>, which was first introduced in 2017 <span class="citation" data-cites="Vaswani:2017aa">(<a href="#ref-Vaswani:2017aa" role="doc-biblioref">Vaswani <em>et al.</em> 2017</a>)</span>. Transformers were developed in order to effectively learn how to map one sequence to another sequence, such as in the case of translating from a sentence in one language to a sentence in another. However, large transformers trained on massive datasets have since shown themselves to be able to adapt to many different types of problems that they were never explicitly trained to perform. For this reason, these models (along with other kinds of large pre-trained models) have been referred to as <em>foundation models</em> <span class="citation" data-cites="Bommasani:2022aa">(<a href="#ref-Bommasani:2022aa" role="doc-biblioref">Bommasani <em>et al.</em> 2022</a>)</span>.</p>
+<p>One important feature of foundation models is that they are generally trained in a “self-supervised” way, which means that we don’t explicitly have to tell the model how it should respond for any particular input. This enables training on very large datasets, since the data don’t need to be explicitly labeled. In the case of LLM’s, they are simply given large sequences of text and trained to accurately predict the next <em>token</em> (which could refer to words, parts of words, or other elements). Note that the models themselves don’t actually see text; instead, the text is <em>tokenized</em> to convert it into numbers before it is input to the model, and the output of the model is then decoded to convert from numerical tokens back to language. The current LLMs are trained on massive amounts of text, numbering in the trillions of tokens. The model is trained to become increasingly better at predicting the next token by changing the <em>weights</em> (the strength of connections between the different units) in the model in a way that tries to incrementally correct its errors, which after many hours of training across many GPUs results in a model that can perform the prediction task well.</p>
+<p>After this training, the model has a lot of knowledge but is often not very well behaved, so model-builders generally do some form of <em>fine-tuning</em> after initial training of the model, primarily to train it to perform in a way that is more amenable to being a helpful chatbot.</p>
+</section>
+<section id="open-source-language-models" class="level3" data-number="3.6.3">
+<h3 data-number="3.6.3" class="anchored" data-anchor-id="open-source-language-models"><span class="header-section-number">3.6.3</span> “Open Source” language models</h3>
+<p>The large commercial models such as GPT-5, Claude, and Gemini are truly “black boxes” in the sense that we have no access to how they work internally or how they were trained. However, an ecosystem of “open source” language models has also burgeoned, allowing researchers to run powerful pre-trained models on their own computing hardware and providing some degree of insight into the function of the model. It’s important to point out that the label “open source” is in many cases a misnomer, since it’s relatively rare for the authors of these models to give full access to all of the code and data that went into training the model. Many of them are better described as “open-weight” models (a term I will use throughout this book), since the model weights and code necessary to perform inference are made openly available even if the training code and data are not. Despite these limitations, the availability of these open-ish models has given researchers the opportunity to work more closely with these models and see into their inner workings. They also allow users to perform further fine-tuning to augment model performance in particular domains.</p>
+<p>Running large open source models with tens of billions of parameters (such as the well known Llama models released by Meta) can require significant GPU resources, but many of these models are also released in smaller versions that can be run with reasonable speed on a laptop with a GPU; most of the examples in this book were run on a 2023 Macbook Pro M3 Max laptop. Users wishing to run the larger open-weight models can access them via service providers who provide API access to these models for a fee. I will discuss working with APIs in more detail in Chapter 5.</p>
+<p>As an example of what we can do with open-weight language models, suppose that we want to compare the output of models before and after instruction tuning. While we can’t access versions of commercial models such as GPT-5 prior to instruction tuning, there are a large number of open-weight models for which both versions are available. I will show results from the Qwen1.5-0.5B model, which is very small and thus runs relatively quickly even on a laptop.</p>
+<p>To see the difference that this fine-tuning makes, we can give the same prompt to a model with and without instruction tuning: “What is the best way to relax after a long day of Python coding?”</p>
+<p>Here is the result from the model without instruction tuning:</p>
+<pre class="text"><code>Going for a walk or having a drink with friends is a great way to relax after a long day of Python coding.
+system
+You are a helpful assistant.
+user
+ow can I generate an XML representation of a list of employees with their corresponding departments and salaries using C\# code? And once the XML is generated, how can I parse and print the data to a new file? Can you provide a example of the XML data that I can modify in the code to generate the XML representation?
+Here's an example of the XML data that I can modify to generate the XML representation: ... [continues with XML output]''</code></pre>
+<p>It’s not a very helpful response, and it’s also followed by a bunch of content that is irrelevant to the prompt. By comparison, the instruction-tuned version of the same model gives a much better response:</p>
+<pre class="text"><code>Relaxing after a long day of Python coding can be a great way to recharge and refocus.
+Here are some tips that might help you relax:
+
+1. Exercise: Engage in physical activity such as yoga, stretching, or running to get your blood flowing and reduce stress levels.
+
+2. Listen to music: Listening to calming music can help reduce anxiety and promote relaxation.
+
+3. Take a break: Taking a short break from work or programming can help you recharge and refocus.
+
+4. Practice mindfulness: Mindfulness meditation can help you focus on the present moment and reduce stress levels.
+
+5. Eat healthy: Eating a balanced diet rich in fruits, vegetables, whole grains, and lean protein can help you feel more energized and less stressed.
+
+6. Connect with others: Spending time with friends or family can help reduce feelings of loneliness and increase feelings of support.
+
+7. Write down your thoughts: Writing down your thoughts and emotions can help you process them and relax.
+
+Remember, it's important to take care of yourself both physically and mentally before returning to work.
+By taking these steps, you can help ensure that you can return to work feeling refreshed and ready to tackle any challenges that come your way.</code></pre>
+</section>
+<section id="in-context-learning-and-llm-prompting" class="level3" data-number="3.6.4">
+<h3 data-number="3.6.4" class="anchored" data-anchor-id="in-context-learning-and-llm-prompting"><span class="header-section-number">3.6.4</span> In-context learning and LLM prompting</h3>
+<p>Once the training of the model is complete, its weights are fixed and the model itself does not change unless additional training or fine-tuning is applied. Given this, how is it that these models can exhibit such a wide range of behaviors (including writing code), and how can they adapt to the details of a particular chat session? It turns out that the model is “learning” from all of the interactions that occur within a specific chat session, but this learning does not occur through modifications of the model’s weights. Instead, it occurs as the model builds up a store of information within its <em>context window</em>, which you can think of as the model’s “working memory”, similar to the way that we can hold a phone number in our mind but lose it as soon as we stop rehearsing it. The model’s response at any point in time is conditioned upon all of the content that has occurred up to that point in the chat session, up to the limit of its context window (which is now large enough for most models to hold a substantial amount of text). In this way, the model can “learn” without requiring any lasting changes in its structure.</p>
+<p>Understanding in-context learning is important for LLM power-users because it relates directly to the effectiveness of different prompting strategies. In particular, it suggests that an effective prompt should help build up enough relevant information in the context window that the model’s predictions are likely to be correct and relevant. I will discuss this in much more detail in Chapter 5.</p>
+</section>
+<section id="randomness-in-llms" class="level3" data-number="3.6.5">
+<h3 data-number="3.6.5" class="anchored" data-anchor-id="randomness-in-llms"><span class="header-section-number">3.6.5</span> Randomness in LLMs</h3>
+<p>When an output is generated from an LLM, it doesn’t uniquely specify a particular token to be output next. Instead, it outputs a set of values that are transformed into probabilities over tokens, and the next token is then chosen based on those probabilities. As an example, I ran the same prompt five times (‘Output a random vegetable.’) on a small LLM (Qwen-2.5-0.5B-Chat), removing any extraneous text generated by the model:</p>
+<pre class="text"><code>Sure, here's a random vegetable: Green beans
+Sure, here's a random vegetable: Tomato
+Sure, here's a random vegetable: broccoli!
+Sure, here's a random vegetable: Spinach.
+Sure, here's a random vegetable: Veggie: Broccoli</code></pre>
+<p>In this case I ran each prompt with a different <em>random seed</em>, which is a value that allows one to reproducibly generate a set of random numbers. Open source models, as well as some commercial models, allow specifying the random seed when submitting a prompt, usually requiring use of the API.</p>
+<p>When choosing amongst the possible responses based on their probabilities, one could simply always output the token with the highest probability, which is known as “greedy” selection. However, LLMs often introduce some variability in output (via a <em>softmax</em> operator). This procedure has a parameter known as <em>temperature</em> that allows one to scale the degree of randomness, from deterministic (greedy) responding when temperature is set to zero to greater randomness at temperature increases. These systems often default to a small degree of randomness (with temperature in the range of 0.7) to allow some exploration without enabling highly surprising or bizarre responses.</p>
+</section>
+<section id="reproducibilty-challenges-of-llms" class="level3" data-number="3.6.6">
+<h3 data-number="3.6.6" class="anchored" data-anchor-id="reproducibilty-challenges-of-llms"><span class="header-section-number">3.6.6</span> Reproducibilty challenges of LLMs</h3>
+<p>The randomness of large language models is particularly important for scientists who are using them in contexts where reproducibilty is important. Research performed using commercial/closed large language models should be considered irreproducible in principle; even if one records the system fingerprint (uniquely specifying which model was run) and sets the random seed, there is no guarantee that these models will remain available. As an example, OpenAI <a href="https://platform.openai.com/docs/deprecations">deprecated a number of models</a>, including the widely used <code>text-davinci-002</code> model, meaning that they are no longer available to users. Research performed on open-weight models is in theory reproducible if the random seed is specified along with the specific model version used. However, in many cases it is also important to ensure that any results obtained using LLMs are robust to the specific random seed chosen. One should <em>never</em> cherry pick scientific results by trying different random seeds and only reporting the results that are most consistent with the hypothesis being tested; I refer to this as “seed-hacking”, on analogy to the commonly used term “p-hacking”. This issue is discussed in more detail in Chapter 9.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-Bommasani:2022aa" class="csl-entry" role="listitem">
+Bommasani, R., Hudson, D. A., Adeli, E., … Liang, P. (2022). On the opportunities and risks of foundation models. Retrieved from <a href="https://arxiv.org/abs/2108.07258">https://arxiv.org/abs/2108.07258</a>
+</div>
+<div id="ref-Gamma:1995aa" class="csl-entry" role="listitem">
+Gamma, E. (1995). <em>Design patterns: Elements of reusable object-oriented software</em>, Reading, Mass.: Addison-Wesley.
+</div>
+<div id="ref-Vaswani:2017aa" class="csl-entry" role="listitem">
+Vaswani, A., Shazeer, N., Parmar, N., … Polosukhin, I. (2017). Attention is all you need. Retrieved from <a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a>
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./book-introduction.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./book-software-engineering.html" class="pagination-link" aria-label="Principles of software engineering">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Principles of software engineering</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
