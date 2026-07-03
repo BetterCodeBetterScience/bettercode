@@ -1,4 +1,3 @@
-from pathlib import Path
 from tex2qmd.preprocess import extract_listings
 
 
