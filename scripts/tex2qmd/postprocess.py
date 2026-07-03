@@ -23,3 +23,8 @@ def reinsert_code_blocks(md: str, blocks: list[str]) -> str:
         missing = set(range(len(blocks))) - seen
         raise ValueError(f"Code blocks never referenced: {sorted(missing)}")
     return out
+
+
+def framed_to_callout(md: str) -> str:
+    """Convert pandoc `::: framed` fenced divs to Quarto note callouts."""
+    return re.sub(r"^::: +framed\s*$", "::: {.callout-note}", md, flags=re.MULTILINE)

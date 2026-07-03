@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tex2qmd.figures import convert_pdf_to_svg, rewrite_includegraphics, svg_name  # noqa: E402
 from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
-from tex2qmd.postprocess import reinsert_code_blocks  # noqa: E402
+from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks  # noqa: E402
 from tex2qmd.preprocess import extract_listings, strip_index  # noqa: E402
 from tex2qmd.project import parse_chapter_order, qmd_name, render_quarto_yml  # noqa: E402
 
@@ -28,6 +28,7 @@ def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
     tex, blocks = extract_listings(tex, base_dir)
     md = run_pandoc(tex)
     qmd = reinsert_code_blocks(md, blocks)
+    qmd = framed_to_callout(qmd)
     return qmd, pdfs
 
 

@@ -1,5 +1,5 @@
 import pytest
-from tex2qmd.postprocess import reinsert_code_blocks
+from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks
 
 
 def test_reinsert_single_block():
@@ -30,3 +30,18 @@ def test_reinsert_unreferenced_block_raises():
     """A block that no token references is an error."""
     with pytest.raises(ValueError):
         reinsert_code_blocks("TEX2QMDCODEBLOCK0", ["```python\nx=1\n```", "```bash\nls\n```"])
+
+
+def test_framed_to_callout_converts_opening_fence():
+    """A pandoc `::: framed` div opens a Quarto note callout."""
+    md = "::: framed\n**Tip**\\\nBe clear.\n:::"
+    out = framed_to_callout(md)
+    assert "::: {.callout-note}" in out
+    assert "::: framed" not in out
+    assert out.count(":::") == 2  # opening callout + closing fence preserved
+
+
+def test_framed_to_callout_leaves_other_divs_untouched():
+    """Non-framed fenced divs are not altered."""
+    md = "::: {.column-margin}\nAside.\n:::"
+    assert framed_to_callout(md) == md
