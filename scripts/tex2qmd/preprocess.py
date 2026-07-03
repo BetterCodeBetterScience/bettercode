@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tex2qmd.listings import language_for_style
-
 
 def slice_lines(text: str, firstline: int | None, lastline: int | None) -> str:
     """Return lines [firstline, lastline] (1-indexed, inclusive) of text."""
