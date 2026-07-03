@@ -7,6 +7,15 @@ from pathlib import Path
 
 from tex2qmd.listings import language_for_style
 
+_INDEX = re.compile(r"\\index\{[^{}]*\}")
+_INPUT_LISTING = re.compile(
+    r"\\lstinputlisting(?:\[(?P<opts>[^\]]*)\])?\{(?P<path>[^}]*)\}"
+)
+_INLINE_LISTING = re.compile(
+    r"\\begin\{lstlisting\}(?:\[(?P<opts>[^\]]*)\])?\n?(?P<body>.*?)\\end\{lstlisting\}",
+    re.DOTALL,
+)
+
 
 def slice_lines(text: str, firstline: int | None, lastline: int | None) -> str:
     """Return lines [firstline, lastline] (1-indexed, inclusive) of text."""
@@ -30,18 +39,14 @@ def parse_listing_options(opts: str) -> dict[str, str]:
     return result
 
 
+def strip_index(tex: str) -> str:
+    """Remove all \\index{...} commands from the text."""
+    return _INDEX.sub("", tex)
+
+
 def render_code_block(code: str, language: str) -> str:
     """Wrap code in a fenced block tagged with language."""
     return f"```{language}\n{code.rstrip(chr(10))}\n```"
-
-
-_INPUT_LISTING = re.compile(
-    r"\\lstinputlisting(?:\[(?P<opts>[^\]]*)\])?\{(?P<path>[^}]*)\}"
-)
-_INLINE_LISTING = re.compile(
-    r"\\begin\{lstlisting\}(?:\[(?P<opts>[^\]]*)\])?\n?(?P<body>.*?)\\end\{lstlisting\}",
-    re.DOTALL,
-)
 
 
 def _token(index: int) -> str:
