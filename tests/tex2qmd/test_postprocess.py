@@ -24,3 +24,9 @@ def test_reinsert_missing_block_raises():
     md = "TEX2QMDCODEBLOCK5"
     with pytest.raises(ValueError):
         reinsert_code_blocks(md, [])
+
+
+def test_reinsert_unreferenced_block_raises():
+    """A block that no token references is an error."""
+    with pytest.raises(ValueError):
+        reinsert_code_blocks("TEX2QMDCODEBLOCK0", ["```python\nx=1\n```", "```bash\nls\n```"])
