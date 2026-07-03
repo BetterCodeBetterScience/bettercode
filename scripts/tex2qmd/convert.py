@@ -15,9 +15,15 @@ from tex2qmd.figures import convert_pdf_to_svg, rewrite_includegraphics, svg_nam
 from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
 from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks  # noqa: E402
 from tex2qmd.preprocess import extract_listings, strip_index  # noqa: E402
-from tex2qmd.project import parse_chapter_order, qmd_name, render_quarto_yml  # noqa: E402
+from tex2qmd.project import (  # noqa: E402
+    parse_chapter_order,
+    qmd_name,
+    render_cover,
+    render_quarto_yml,
+)
 
 TITLE = "Better Code, Better Science"
+SUBTITLE = "Software Engineering for Reproducible Science in the Age of AI"
 AUTHOR = "Russell A. Poldrack"
 
 
@@ -38,18 +44,21 @@ def build_book(latex_dir: Path, out_dir: Path) -> None:
     book_tex = (latex_dir / "book.tex").read_text()
     targets = parse_chapter_order(book_tex)
 
-    chapter_files: list[str] = []
-    for i, target in enumerate(targets):
+    # A generated cover page is the landing page; every \include (including
+    # the preface) becomes its own chapter that follows it.
+    (out_dir / "index.qmd").write_text(render_cover(TITLE, SUBTITLE, AUTHOR))
+    chapter_files: list[str] = ["index.qmd"]
+    for target in targets:
         tex = (latex_dir / f"{target}.tex").read_text()
         qmd, pdfs = convert_chapter(tex, latex_dir)
-        out_name = "index.qmd" if i == 0 else qmd_name(target)
+        out_name = qmd_name(target)
         (out_dir / out_name).write_text(qmd)
         chapter_files.append(out_name)
         for pdf in pdfs:
             convert_pdf_to_svg(latex_dir / pdf, out_dir / svg_name(pdf))
 
     (out_dir / "_quarto.yml").write_text(
-        render_quarto_yml(chapter_files, TITLE, AUTHOR)
+        render_quarto_yml(chapter_files, TITLE, AUTHOR, subtitle=SUBTITLE)
     )
     shutil.copy(latex_dir / "references.bib", out_dir / "references.bib")
     shutil.copy(
