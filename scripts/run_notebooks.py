@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -24,6 +25,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 _STATUS_LABELS = {"ok": "PASS", "failed": "FAIL", "timeout": "TIME"}
+_RUNNER_KERNEL = "notebook-runner"
 
 
 @dataclass
@@ -69,15 +71,44 @@ def _error_snippet(text: str, limit: int = 800) -> str:
     return text[-limit:] if len(text) > limit else text
 
 
+def provision_kernel(dest: Path, name: str = _RUNNER_KERNEL) -> str:
+    """Install a kernelspec bound to the current interpreter under dest.
+
+    The default ``python3`` kernelspec may point at a bare ``python`` that
+    resolves to the wrong interpreter. Binding a kernel to ``sys.executable``
+    guarantees notebooks run in the same environment as this script (e.g. the
+    project's uv venv, where the book's packages are installed).
+    """
+    subprocess.run(
+        [sys.executable, "-m", "ipykernel", "install", "--prefix", str(dest), "--name", name],
+        check=True,
+        capture_output=True,
+    )
+    return name
+
+
 def run_notebook(
-    notebook: Path, timeout: int = 600, kernel: str = "python3"
+    notebook: Path,
+    timeout: int = 600,
+    kernel: str = "python3",
+    jupyter_path: Path | None = None,
 ) -> NotebookResult:
-    """Execute one notebook and return its result without modifying the original."""
+    """Execute one notebook and return its result without modifying the original.
+
+    If jupyter_path is given it is prepended to JUPYTER_PATH so a provisioned
+    kernelspec located there is discoverable.
+    """
+    env = dict(os.environ)
+    if jupyter_path is not None:
+        existing = env.get("JUPYTER_PATH", "")
+        env["JUPYTER_PATH"] = f"{jupyter_path}{os.pathsep}{existing}" if existing else str(jupyter_path)
     with tempfile.TemporaryDirectory() as tmp:
         cmd = build_execute_command(notebook, Path(tmp), timeout, kernel)
         start = time.monotonic()
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout + 60)
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=timeout + 60, env=env
+            )
         except subprocess.TimeoutExpired:
             return NotebookResult(notebook, "timeout", time.monotonic() - start, f"exceeded {timeout}s")
         duration = time.monotonic() - start
@@ -117,7 +148,11 @@ def main() -> None:
     parser.add_argument("--root", default="notebooks", type=Path)
     parser.add_argument("--pattern", default="ch-*")
     parser.add_argument("--timeout", default=600, type=int, help="per-notebook timeout (s)")
-    parser.add_argument("--kernel", default="python3")
+    parser.add_argument(
+        "--kernel",
+        default="auto",
+        help="kernel name, or 'auto' (default) to run in this interpreter's environment",
+    )
     parser.add_argument("--json", type=Path, help="optional path to write results as JSON")
     args = parser.parse_args()
 
@@ -126,12 +161,21 @@ def main() -> None:
         print(f"No notebooks found under {args.root}/{args.pattern}/")
         return
 
-    results: list[NotebookResult] = []
-    for i, nb in enumerate(notebooks, 1):
-        print(f"[{i}/{len(notebooks)}] {nb} ...", flush=True)
-        result = run_notebook(nb, timeout=args.timeout, kernel=args.kernel)
-        print(f"    {_STATUS_LABELS[result.status]} ({result.duration_s:.1f}s)", flush=True)
-        results.append(result)
+    with tempfile.TemporaryDirectory() as kernel_home:
+        if args.kernel == "auto":
+            kernel = provision_kernel(Path(kernel_home))
+            jupyter_path: Path | None = Path(kernel_home) / "share" / "jupyter"
+            print(f"Running notebooks in this environment ({sys.executable})\n")
+        else:
+            kernel = args.kernel
+            jupyter_path = None
+
+        results: list[NotebookResult] = []
+        for i, nb in enumerate(notebooks, 1):
+            print(f"[{i}/{len(notebooks)}] {nb} ...", flush=True)
+            result = run_notebook(nb, timeout=args.timeout, kernel=kernel, jupyter_path=jupyter_path)
+            print(f"    {_STATUS_LABELS[result.status]} ({result.duration_s:.1f}s)", flush=True)
+            results.append(result)
 
     print("\n" + summarize(results))
     if args.json:

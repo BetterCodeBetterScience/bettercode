@@ -13,6 +13,7 @@ from run_notebooks import (
     NotebookResult,
     build_execute_command,
     find_notebooks,
+    provision_kernel,
     run_notebook,
     summarize,
 )
@@ -96,6 +97,16 @@ def test_run_notebook_success(tmp_path):
     result = run_notebook(nb, timeout=120)
     assert result.status == "ok"
     assert result.error is None
+
+
+@pytest.mark.integration
+@pytest.mark.skipif(shutil.which("jupyter") is None, reason="jupyter not installed")
+def test_provision_kernel_binds_current_interpreter(tmp_path):
+    """The provisioned kernelspec launches the interpreter running the tests."""
+    name = provision_kernel(tmp_path)
+    kernel_json = tmp_path / "share" / "jupyter" / "kernels" / name / "kernel.json"
+    argv0 = json.loads(kernel_json.read_text())["argv"][0]
+    assert argv0 == sys.executable
 
 
 @pytest.mark.integration
