@@ -1,0 +1,26 @@
+import pytest
+from tex2qmd.postprocess import reinsert_code_blocks
+
+
+def test_reinsert_single_block():
+    """A token line is replaced by its fenced code block."""
+    md = "Before.\n\nTEX2QMDCODEBLOCK0\n\nAfter."
+    blocks = ["```python\nprint(1)\n```"]
+    out = reinsert_code_blocks(md, blocks)
+    assert "```python\nprint(1)\n```" in out
+    assert "TEX2QMDCODEBLOCK0" not in out
+
+
+def test_reinsert_multiple_blocks_in_order():
+    """Multiple tokens map to their indexed blocks."""
+    md = "TEX2QMDCODEBLOCK0\n\ntext\n\nTEX2QMDCODEBLOCK1"
+    blocks = ["```bash\nls\n```", "```python\nx=1\n```"]
+    out = reinsert_code_blocks(md, blocks)
+    assert out.index("ls") < out.index("x=1")
+
+
+def test_reinsert_missing_block_raises():
+    """A token with no matching block is an error."""
+    md = "TEX2QMDCODEBLOCK5"
+    with pytest.raises(ValueError):
+        reinsert_code_blocks(md, [])
