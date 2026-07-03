@@ -313,6 +313,7 @@ window.Quarto = {
   <li><a href="#randomness-in-llms" id="toc-randomness-in-llms" class="nav-link" data-scroll-target="#randomness-in-llms"><span class="header-section-number">3.6.5</span> Randomness in LLMs</a></li>
   <li><a href="#reproducibilty-challenges-of-llms" id="toc-reproducibilty-challenges-of-llms" class="nav-link" data-scroll-target="#reproducibilty-challenges-of-llms"><span class="header-section-number">3.6.6</span> Reproducibilty challenges of LLMs</a></li>
   </ul></li>
+  <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography">References</a></li>
   </ul>
 </nav>
     </div>
@@ -896,6 +897,10 @@ Sure, here's a random vegetable: Veggie: Broccoli</code></pre>
 <p>The randomness of large language models is particularly important for scientists who are using them in contexts where reproducibilty is important. Research performed using commercial/closed large language models should be considered irreproducible in principle; even if one records the system fingerprint (uniquely specifying which model was run) and sets the random seed, there is no guarantee that these models will remain available. As an example, OpenAI <a href="https://platform.openai.com/docs/deprecations">deprecated a number of models</a>, including the widely used <code>text-davinci-002</code> model, meaning that they are no longer available to users. Research performed on open-weight models is in theory reproducible if the random seed is specified along with the specific model version used. However, in many cases it is also important to ensure that any results obtained using LLMs are robust to the specific random seed chosen. One should <em>never</em> cherry pick scientific results by trying different random seeds and only reporting the results that are most consistent with the hypothesis being tested; I refer to this as “seed-hacking”, on analogy to the commonly used term “p-hacking”. This issue is discussed in more detail in Chapter 9.</p>
 
 
+</section>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
 <div id="ref-Bommasani:2022aa" class="csl-entry" role="listitem">
 Bommasani, R., Hudson, D. A., Adeli, E., … Liang, P. (2022). On the opportunities and risks of foundation models. Retrieved from <a href="https://arxiv.org/abs/2108.07258">https://arxiv.org/abs/2108.07258</a>
@@ -907,7 +912,6 @@ Gamma, E. (1995). <em>Design patterns: Elements of reusable object-oriented soft
 Vaswani, A., Shazeer, N., Parmar, N., … Polosukhin, I. (2017). Attention is all you need. Retrieved from <a href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a>
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->

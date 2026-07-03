@@ -38,6 +38,9 @@ def test_render_quarto_yml_contains_chapters_and_bib():
     assert "book-testing.qmd" in yml
     assert "bibliography: references.bib" in yml
     assert "csl: cambridge.csl" in yml
+    # each chapter's end-of-page references get a heading
+    assert "reference-section-title:" in yml
+    assert "References" in yml
 
 
 def test_render_quarto_yml_includes_subtitle_when_given():

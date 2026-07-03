@@ -43,6 +43,7 @@ book:
 
 bibliography: references.bib
 csl: cambridge.csl
+reference-section-title: "References"
 
 format:
   html:
