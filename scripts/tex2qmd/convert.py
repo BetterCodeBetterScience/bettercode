@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import sys
 from pathlib import Path
 
-from tex2qmd.figures import convert_pdf_to_svg, rewrite_includegraphics, svg_name
-from tex2qmd.pandoc_bridge import run_pandoc
-from tex2qmd.postprocess import reinsert_code_blocks
-from tex2qmd.preprocess import extract_listings, strip_index
-from tex2qmd.project import parse_chapter_order, qmd_name, render_quarto_yml
+# Allow running as a script (uv run python scripts/tex2qmd/convert.py):
+# put the scripts/ dir on sys.path so `import tex2qmd.*` resolves.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from tex2qmd.figures import convert_pdf_to_svg, rewrite_includegraphics, svg_name  # noqa: E402
+from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
+from tex2qmd.postprocess import reinsert_code_blocks  # noqa: E402
+from tex2qmd.preprocess import extract_listings, strip_index  # noqa: E402
+from tex2qmd.project import parse_chapter_order, qmd_name, render_quarto_yml  # noqa: E402
 
 TITLE = "Better Code, Better Science"
 AUTHOR = "Russell A. Poldrack"
