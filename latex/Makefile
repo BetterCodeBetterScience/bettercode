@@ -30,4 +30,13 @@ clean:
 distclean:
 	$(LATEXMK) -C
 
-.PHONY: all watch clean distclean listings verify-listings pdf-no-verify
+# Regenerate the Quarto HTML book from the LaTeX source and render it
+quarto: verify-listings
+	cd .. && uv run python scripts/tex2qmd/convert.py --latex-dir latex --out web
+	cd ../web && quarto render
+
+# Live preview of the Quarto book during development
+quarto-serve:
+	cd ../web && quarto preview
+
+.PHONY: all watch clean distclean listings verify-listings pdf-no-verify quarto quarto-serve

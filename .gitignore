@@ -27,3 +27,6 @@ _build
 
 # profiler files
 *.lprof
+
+# Generated Quarto HTML book (regenerated from LaTeX by scripts/tex2qmd)
+/web/
