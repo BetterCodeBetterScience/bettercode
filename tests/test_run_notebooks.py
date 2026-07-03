@@ -13,6 +13,8 @@ from run_notebooks import (
     NotebookResult,
     build_execute_command,
     find_notebooks,
+    matches_skip,
+    metadata_skip_reason,
     provision_kernel,
     run_notebook,
     summarize,
@@ -86,6 +88,47 @@ def test_summarize_reports_counts_and_failures():
     assert "ok" in text
     assert "failed" in text
     assert "ch-09/b.ipynb" in text
+
+
+def test_summarize_excludes_skipped_from_run_count():
+    """Skipped notebooks are listed separately and not counted as runs."""
+    results = [
+        NotebookResult(Path("ch-05/a.ipynb"), "ok", 1.2, None),
+        NotebookResult(Path("ch-10/gpu.ipynb"), "skipped", 0.0, "requires an NVIDIA GPU"),
+    ]
+    text = summarize(results)
+    assert "1/1 succeeded" in text
+    assert "skipped" in text
+    assert "ch-10/gpu.ipynb" in text
+
+
+def test_matches_skip_by_basename_or_path():
+    """A skip pattern matches on basename or path substring, not unrelated files."""
+    nb = Path("notebooks/ch-10/plot_gpu_acceleration.ipynb")
+    assert matches_skip(nb, ["plot_gpu_acceleration"])
+    assert matches_skip(nb, ["plot_gpu_acceleration.ipynb"])
+    assert matches_skip(nb, ["ch-10/plot_gpu_acceleration.ipynb"])
+    assert not matches_skip(nb, ["numba_example"])
+    assert not matches_skip(nb, [])
+
+
+def test_metadata_skip_reason_present(tmp_path):
+    """A notebook whose metadata marks it skipped returns the reason."""
+    nb = tmp_path / "gpu.ipynb"
+    nb.write_text(json.dumps({
+        "cells": [],
+        "metadata": {"run_notebooks": {"skip": True, "reason": "requires an NVIDIA GPU"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }))
+    assert metadata_skip_reason(nb) == "requires an NVIDIA GPU"
+
+
+def test_metadata_skip_reason_absent(tmp_path):
+    """A notebook without the skip marker returns None."""
+    nb = tmp_path / "plain.ipynb"
+    nb.write_text(json.dumps({"cells": [], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}))
+    assert metadata_skip_reason(nb) is None
 
 
 @pytest.mark.integration

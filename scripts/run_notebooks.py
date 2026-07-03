@@ -47,6 +47,28 @@ def find_notebooks(root: Path, pattern: str = "ch-*") -> list[Path]:
     )
 
 
+def matches_skip(notebook: Path, patterns: list[str]) -> bool:
+    """Return True if the notebook's name or path contains any skip pattern."""
+    text = str(notebook)
+    return any(pat in text or pat == notebook.name for pat in patterns)
+
+
+def metadata_skip_reason(notebook: Path) -> str | None:
+    """Return a skip reason if the notebook's metadata marks it skip-on-execution.
+
+    A notebook opts out of execution with top-level metadata:
+        "metadata": {"run_notebooks": {"skip": true, "reason": "..."}}
+    """
+    try:
+        meta = json.loads(notebook.read_text()).get("metadata", {})
+    except (json.JSONDecodeError, OSError):
+        return None
+    marker = meta.get("run_notebooks", {})
+    if marker.get("skip"):
+        return marker.get("reason") or "marked skip in notebook metadata"
+    return None
+
+
 def build_execute_command(
     notebook: Path, output_dir: Path, timeout: int, kernel: str = "python3"
 ) -> list[str]:
@@ -119,16 +141,19 @@ def run_notebook(
 
 def summarize(results: list[NotebookResult]) -> str:
     """Render a human-readable summary of notebook execution results."""
-    lines = [
-        f"  {r.status:<7} {r.path}  ({r.duration_s:.1f}s)" for r in results
-    ]
-    failed = [r for r in results if r.status != "ok"]
-    passed = len(results) - len(failed)
+    lines = [f"  {r.status:<7} {r.path}  ({r.duration_s:.1f}s)" for r in results]
+    skipped = [r for r in results if r.status == "skipped"]
+    ran = [r for r in results if r.status != "skipped"]
+    failed = [r for r in ran if r.status != "ok"]
+    passed = len(ran) - len(failed)
     lines.append("")
-    lines.append(f"{passed}/{len(results)} succeeded, {len(failed)} failed")
+    lines.append(f"{passed}/{len(ran)} succeeded, {len(failed)} failed")
     if failed:
         lines.append("Failures:")
         lines.extend(f"  - {r.path} ({r.status})" for r in failed)
+    if skipped:
+        lines.append(f"Skipped ({len(skipped)}):")
+        lines.extend(f"  - {r.path} ({r.error})" for r in skipped)
     return "\n".join(lines)
 
 
@@ -154,7 +179,15 @@ def main() -> None:
         help="kernel name, or 'auto' (default) to run in this interpreter's environment",
     )
     parser.add_argument("--json", type=Path, help="optional path to write results as JSON")
+    parser.add_argument(
+        "--skip",
+        action="append",
+        default=[],
+        metavar="PATTERN",
+        help="skip notebooks whose path/name contains PATTERN (repeatable, or comma-separated)",
+    )
     args = parser.parse_args()
+    skip_patterns = [p for group in args.skip for p in group.split(",") if p]
 
     notebooks = find_notebooks(args.root, args.pattern)
     if not notebooks:
@@ -172,6 +205,15 @@ def main() -> None:
 
         results: list[NotebookResult] = []
         for i, nb in enumerate(notebooks, 1):
+            reason = (
+                "matched --skip"
+                if matches_skip(nb, skip_patterns)
+                else metadata_skip_reason(nb)
+            )
+            if reason:
+                print(f"[{i}/{len(notebooks)}] {nb} ... SKIP ({reason})", flush=True)
+                results.append(NotebookResult(nb, "skipped", 0.0, reason))
+                continue
             print(f"[{i}/{len(notebooks)}] {nb} ...", flush=True)
             result = run_notebook(nb, timeout=args.timeout, kernel=kernel, jupyter_path=jupyter_path)
             print(f"    {_STATUS_LABELS[result.status]} ({result.duration_s:.1f}s)", flush=True)
