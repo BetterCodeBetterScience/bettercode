@@ -28,7 +28,25 @@ docker-build:
 	docker build -t condatest .
 
 docker-shell:
-	docker run -it -w /root --entrypoint=bash condatest 
+	docker run -it -w /root --entrypoint=bash condatest
+
+# --- Quarto HTML edition (GitHub Pages) ---------------------------------
+# The book prose lives in a SEPARATE PRIVATE repo, cloned into ./latex locally.
+# This repo holds the public code examples, the tex2qmd pipeline, and the
+# rendered site under docs/ (served by Pages from `main` /docs).
+# `make site` needs ./latex present plus pandoc, quarto, and pdftocairo on PATH.
+
+site:
+	cd latex && $(MAKE) verify-listings
+	uv run python scripts/tex2qmd/convert.py --latex-dir latex --out web
+	cd web && quarto render
+	touch docs/.nojekyll   # stop GitHub Pages' Jekyll from mangling Quarto assets
+
+site-preview:
+	uv run python scripts/tex2qmd/convert.py --latex-dir latex --out web
+	cd web && quarto preview
+
+.PHONY: site site-preview
 
 
 

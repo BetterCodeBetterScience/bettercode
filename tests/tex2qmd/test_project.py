@@ -33,6 +33,7 @@ def test_render_quarto_yml_contains_chapters_and_bib():
         ["index.qmd", "book-testing.qmd"], "Better Code, Better Science", "Russell A. Poldrack"
     )
     assert "type: book" in yml
+    assert "output-dir: ../docs" in yml
     assert "index.qmd" in yml
     assert "book-testing.qmd" in yml
     assert "bibliography: references.bib" in yml

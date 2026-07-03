@@ -32,6 +32,7 @@ def render_quarto_yml(
     subtitle_line = f'  subtitle: "{subtitle}"\n' if subtitle else ""
     return f"""project:
   type: book
+  output-dir: ../docs
 
 book:
   title: "{title}"

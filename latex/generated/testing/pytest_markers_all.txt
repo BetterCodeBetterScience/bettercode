@@ -1,9 +1,0 @@
-$ pytest --tb=short --no-header test_markers.py -v
-============================= test session starts ==============================
-collecting ... collected 3 items
-
-test_markers.py::test_unit1 PASSED                 [ 33%]
-test_markers.py::test_unit2 PASSED                 [ 66%]
-test_markers.py::test_integration PASSED           [100%]
-
-============================== 3 passed in 0.07s ===============================

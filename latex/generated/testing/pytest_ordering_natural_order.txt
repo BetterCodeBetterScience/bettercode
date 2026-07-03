@@ -1,8 +1,0 @@
-$ pytest --tb=short --no-header _demos/test_ordering_v1_natural.py -v
-============================= test session starts ==============================
-collecting ... collected 2 items
-
-_demos/test_ordering_v1_natural.py::test_second PASSED [ 50%]
-_demos/test_ordering_v1_natural.py::test_first PASSED [100%]
-
-============================== 2 passed in 0.08s ===============================

@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>13&nbsp; Sharing Research Objects – Better Code, Better Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./book-hpc.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./book-sharing.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sharing Research Objects</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Better Code, Better Science</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Better Code, Better Science</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-essential-tools-and-techniques.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Essential tools and concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-software-engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Principles of software engineering</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Software testing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-ai-coding-assistants.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coding with AI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-project-organization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Project structure and management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-data-management.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Organization and Management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-workflows.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Workflow Management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validating scientific software</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Optimizing performance</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-sharing.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sharing Research Objects</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#persistent-identifiers" id="toc-persistent-identifiers" class="nav-link active" data-scroll-target="#persistent-identifiers"><span class="header-section-number">13.1</span> Persistent identifiers</a>
+  <ul class="collapse">
+  <li><a href="#pid-versioning" id="toc-pid-versioning" class="nav-link" data-scroll-target="#pid-versioning"><span class="header-section-number">13.1.1</span> PID versioning</a></li>
+  </ul></li>
+  <li><a href="#resource-accessibility" id="toc-resource-accessibility" class="nav-link" data-scroll-target="#resource-accessibility"><span class="header-section-number">13.2</span> Resource accessibility</a></li>
+  <li><a href="#interoperable-data-formats-and-software-platforms" id="toc-interoperable-data-formats-and-software-platforms" class="nav-link" data-scroll-target="#interoperable-data-formats-and-software-platforms"><span class="header-section-number">13.3</span> Interoperable data formats and software platforms</a></li>
+  <li><a href="#explicit-licensing-for-reuse" id="toc-explicit-licensing-for-reuse" class="nav-link" data-scroll-target="#explicit-licensing-for-reuse"><span class="header-section-number">13.4</span> Explicit licensing for reuse</a></li>
+  <li><a href="#sharing-code" id="toc-sharing-code" class="nav-link" data-scroll-target="#sharing-code"><span class="header-section-number">13.5</span> Sharing code</a>
+  <ul class="collapse">
+  <li><a href="#licensing-for-shared-code" id="toc-licensing-for-shared-code" class="nav-link" data-scroll-target="#licensing-for-shared-code"><span class="header-section-number">13.5.1</span> Licensing for shared code</a></li>
+  <li><a href="#persistent-identifiers-for-code" id="toc-persistent-identifiers-for-code" class="nav-link" data-scroll-target="#persistent-identifiers-for-code"><span class="header-section-number">13.5.2</span> Persistent identifiers for code</a></li>
+  <li><a href="#software-citation" id="toc-software-citation" class="nav-link" data-scroll-target="#software-citation"><span class="header-section-number">13.5.3</span> Software citation</a></li>
+  <li><a href="#software-metadata" id="toc-software-metadata" class="nav-link" data-scroll-target="#software-metadata"><span class="header-section-number">13.5.4</span> Software metadata</a></li>
+  <li><a href="#software-versioning" id="toc-software-versioning" class="nav-link" data-scroll-target="#software-versioning"><span class="header-section-number">13.5.5</span> Software versioning</a></li>
+  <li><a href="#preparing-code-for-sharing" id="toc-preparing-code-for-sharing" class="nav-link" data-scroll-target="#preparing-code-for-sharing"><span class="header-section-number">13.5.6</span> Preparing code for sharing</a></li>
+  <li><a href="#publishing-software-packages" id="toc-publishing-software-packages" class="nav-link" data-scroll-target="#publishing-software-packages"><span class="header-section-number">13.5.7</span> Publishing software packages</a></li>
+  <li><a href="#sharing-data" id="toc-sharing-data" class="nav-link" data-scroll-target="#sharing-data"><span class="header-section-number">13.5.8</span> Sharing data</a></li>
+  </ul></li>
+  <li><a href="#sharing-computational-models" id="toc-sharing-computational-models" class="nav-link" data-scroll-target="#sharing-computational-models"><span class="header-section-number">13.6</span> Sharing computational models</a>
+  <ul class="collapse">
+  <li><a href="#licenses-for-ai-models" id="toc-licenses-for-ai-models" class="nav-link" data-scroll-target="#licenses-for-ai-models"><span class="header-section-number">13.6.1</span> Licenses for AI models</a></li>
+  </ul></li>
+  <li><a href="#sharing-environments-and-platforms" id="toc-sharing-environments-and-platforms" class="nav-link" data-scroll-target="#sharing-environments-and-platforms"><span class="header-section-number">13.7</span> Sharing environments and platforms</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sharing Research Objects</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Science at its best is a communal enterprise, and the sociologist of science Robert Merton noted that “Secrecy is the antithesis of this norm; full and open communication its enactment” <span class="citation" data-cites="Merton:1942aa">(<a href="#ref-Merton:1942aa" role="doc-biblioref">Merton 1942</a>)</span>. Unfortunately scientists have not always lived up to this norm in practice. It remains unfortunately common to hear anecdotes of researchers who refuse to share data or materials even after publishing in journals that have (largely unenforced) requirements for sharing. The metascientific evidence is also consistent with this. As just one example, when <span class="citation" data-cites="Wicherts:2006aa">(<a href="#ref-Wicherts:2006aa" role="doc-biblioref">Wicherts <em>et al.</em> 2006</a>)</span> requested data from authors of papers in a number of top journals in psychology, they were unable to obtain data from 73% of the authors. More recent work by <span class="citation" data-cites="Tedersoo:2021aa">(<a href="#ref-Tedersoo:2021aa" role="doc-biblioref">Tedersoo <em>et al.</em> 2021</a>)</span> has shown a similar pattern of unavailability across many scientific fields.</p>
+<p>I will use the term “research objects” to refer generally to all forms of research materials and outputs, including data, code, and materials; while publications are also an important research object, I will not discuss them here. The open sharing of research objects has become increasingly prevalent in the 21st century, particularly with the genesis of the “open science” movement. In fact, when <span class="citation" data-cites="Tedersoo:2021aa">(<a href="#ref-Tedersoo:2021aa" role="doc-biblioref">Tedersoo <em>et al.</em> 2021</a>)</span> compared data availability between 2000–2009 and 2010–2019 they found that it had significantly increased over time. There are numerous contributors to this increase in transparency. Foremost, the reproducibility crisis across many fields of science has spurred efforts to increase the credibility of scientific research, with open sharing of data and materials being a main component of these efforts. Major scientific institutions have also made open science central to their effort, including the United States Government (which officially named 2023 as the “Year of Open Science”), the European Union, and UNESCO. Overall the scientific world is evolving strongly in the direction of making science more open and transparent, which many of us think is also a key to making it more reproducible.</p>
+<p>In this chapter I will focus on how to effectively share research objects in a way that abides by the FAIR Principles that I outlined in Chapter 6.</p>
+<section id="persistent-identifiers" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="persistent-identifiers"><span class="header-section-number">13.1</span> Persistent identifiers</h2>
+<p>While you may never have heard the phrase “link rot”, you have almost certainly encountered a URL embedded in a publication that no longer works. <em>Persistent identifiers</em> (PIDs) are meant to address the issue of <em>findability</em> by providing a durable link to the metadata for an object along with a reference to its current location. The presence of a persistent identifier doesn’t ensure that the object will always be available, but it does provide a mechanism to find it if it does exist.</p>
+<p>The need for PIDs is nowhere as clear as it is for people, especially for people with common names (think “Robert Smith” or “Mei Wang”). The need to identify individual researchers was the rationale for the ORCID (Open Researcher and Contributor ID), which provides free identifiers for researchers for life; for example, my ORCID is <code>0000-0001-6755-0259</code>, and if you search for it you will find a public record that includes information about my education, academic affiliations, publications, and more. My name is quite uncommon, but for people with common names the ability to point to a unique identifier that is not tied to an employer helps ensure that people are findable and that their metadata is accessible. In addition, if a researcher changes their name for any reason, their ORCID stays the same, ensuring that they get credit for publications under both names. (If you are a researcher and don’t have an ORCID, you should definitely register for one!)</p>
+<p>Another commonly encountered PID is the <em>digital object identifier</em> (<em>DOI</em>), which has become the most popular PID for publications and is also commonly used for other resources such as data and code. DOIs are issued by a publisher or archive, and they contain metadata about the object along with a current link to the object. If the links change (for example, the web site changes their URL structure), the publisher can easily update those links so that the DOI points to the correct link. The DOI doesn’t guarantee that the resource will always exist, but it does ensure that at least the metadata will persist even if the resource disappears. Other PIDs that are commonly encountered are RORs (Research Organization Registry) for research institutions and RRIDs (Research Resource Identifiers) for research resources in the biosciences including antibodies, cell lines, model organisms, software tools, and databases.</p>
+<section id="pid-versioning" class="level3" data-number="13.1.1">
+<h3 data-number="13.1.1" class="anchored" data-anchor-id="pid-versioning"><span class="header-section-number">13.1.1</span> PID versioning</h3>
+<p>It’s common for a resource to change over its life; as one example, preprints posted to archives like <em>arXiv</em> or <em>bioRxiv</em> to be updated when a revised manuscript is created. Some PID providers (particularly DOIs) provide <em>versioned DOIs</em> that point to specific versions of an object, where others provide <em>concept DOIs</em> that instead point to the object in general; in addition, some providers provide both. For example, the <code>Zenodo</code> archive (discussed in more detail below) allows direct sharing of software releases from a <code>Github</code> repository, which we used to share code from the NARPS project that I discussed in an earlier chapter. <code>Zenodo</code> provides a concept DOI (doi.org/10.5281/zenodo.3339821) that points to the resource (defaulting to the latest version), and also provides version DOIs that allow specific reference to any particular version. When citing a versioned resource such as code, it’s important to cite the specific version that was used in the work; otherwise, a user following a concept DOI might be referred to a newer version than the one that was actually used in the research.</p>
+</section>
+</section>
+<section id="resource-accessibility" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="resource-accessibility"><span class="header-section-number">13.2</span> Resource accessibility</h2>
+<p>The <em>accessible</em> portion of the FAIR principles states that data should be accessible by a well-specified and standard protocol. This means that “data available from the authors upon reasonable request” is a decidedly unFAIR way to share data. Accessible does not, however, mean that the data must be openly available to the world. There are many cases when data cannot be shared openly, particularly in the context of human subjects data where the sharing of identifiable information could put the subjects at risk of harm. It is rarely the case, however, that data cannot be shared at all. Instead, it is common that sensitive datasets must be shared under a <em>data usage agreement</em> (DUA), as I will discuss in more detail in the later section on data sharing. FAIR sharing of controlled-access data requires that the process for accessing the data is made clear in the metadata.</p>
+<p>Accessibility generally implies that the data are available online, potentially requiring some kind of authentication, preferably using a standardized protocol (e.g.&nbsp;ORCID login). In general it’s best to share objects via a standard archive, which will ensure that the metadata are findable and the data are broadly accessible. The use of a standard archive also helps ensure that the data will remain accessible in the long term, which is much less likely if they are shared from a lab server or private web site.</p>
+</section>
+<section id="interoperable-data-formats-and-software-platforms" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="interoperable-data-formats-and-software-platforms"><span class="header-section-number">13.3</span> Interoperable data formats and software platforms</h2>
+<p>Once the objects are findable and accessible, it’s important that others are able to work with them, which is the <em>interoperable</em> portion of the FAIR principles; here I focus primarily on the engineering aspects of interoperability rather than the semantic aspects that focus on metadata. The most important aspect of interoperability is the use of open, non-proprietary, and machine-readable file formats. I’ve already discussed a number of these that span many different types of data, including CSV/TSV, JSON, HDF5, Zarr, and Parquet. Interoperability also requires that the data are documented and annotated in a way that makes them usable by other researchers. For example, a TSV file with no column labels and no data dictionary is not particularly useful to anyone.</p>
+<p>I also believe that reproducibility requires the use of open-source software platforms such as Python or R. It is common in the social sciences (particularly economics) for researchers to use the <em>Stata</em> software package for statistical analysis. Sharing Stata code (<code>.do</code> files) allows me to read the code and potentially see what was done (though Stata’s syntax is notoriously unreadable by non-experts), but I have no way to actually run the code unless I purchase a Stata license or have access to a site license. It’s also very common for researchers in engineering and natural sciences to use the commercial package MATLAB; fortunately there is an open source alternative (<em>Octave</em>) that can run some MATLAB programs, but it will fail if the commonly used MATLAB Toolboxes are used. In my opinion, research using these closed-source commercial platforms should be considered non-reproducible, which is why I moved from MATLAB to Python as my primary computing platform in 2009.</p>
+</section>
+<section id="explicit-licensing-for-reuse" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="explicit-licensing-for-reuse"><span class="header-section-number">13.4</span> Explicit licensing for reuse</h2>
+<p>It’s quite common for individuals to post material online (such as pushing code to a public <code>Github</code> repository) without any information regarding the terms of release and then refer to the material as “open source”, but this is a misnomer. Without an explicit license granting usage rights to users, the creator holds the copyright (assuming that the material is eligible for copyright) and “all rights are reserved”, meaning that the downloader has no right to use, modify, or redistribute the material. This is why one should always include an explicit license or use agreement with shared materials, and one should <em>never</em> use materials for research without an explicit license or use agreement. Otherwise there is the potential that the owner might disallow your usage of the materials, preventing release or publication and potentially resulting in legal liability. Because the nature of these license/agreements differ between different types of research objects, I will discuss them in detail below in the context of specific types of objects.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Tip</strong><br>
+<em>Never</em> reuse research materials (code, data, or otherwise) unless you have an explicit agreement or license for their reuse. If someone offers you access to their materials, ask for an explicit agreement up front regarding authorship expectations on future publications.</p>
+</div>
+</div>
+</section>
+<section id="sharing-code" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="sharing-code"><span class="header-section-number">13.5</span> Sharing code</h2>
+<p>Ten years ago I would have started this section with an explainer about why it’s so important to share one’s research code, but today there is relatively little opposition to sharing research code; in fact, in many areas of science it has become largely expected that code will be shared (often via <code>Github</code> or some other distributed version control platform). This does not, however, mean that it’s shared in a way that is effective in affording reuse and reproducibility. Here I will focus on the most important issues around making shared code useful, building on the FAIR principles for research software <span class="citation" data-cites="Barker:2022aa">(<a href="#ref-Barker:2022aa" role="doc-biblioref">Barker <em>et al.</em> 2022</a>)</span>.</p>
+<section id="licensing-for-shared-code" class="level3" data-number="13.5.1">
+<h3 data-number="13.5.1" class="anchored" data-anchor-id="licensing-for-shared-code"><span class="header-section-number">13.5.1</span> Licensing for shared code</h3>
+<p>In the context of software, “all rights are reserved” by the copyright holder unless an explicit <em>license</em> is provided. This means that without a license, someone downloading the code does not have the legal right to use, modify, or redistribute the code. This is why one should <em>never</em> rely upon code that has been shared without a license, as it can put an entire project in legal peril. You also protect yourself, since licenses generally include conditions that explicitly limit your liability and provide no warranty for the code.</p>
+<p>There are many different licenses available for software, but they largely fall into two categories. <em>Permissive</em> licenses are those that place very few restrictions on the reuse, modification, or redistribution of the code; these generally allow commercial usage and closed-source reuse. The least prohibitive license, known as an <em>Unlicense</em>, places the code into the public domain (thus waiving any copyright claims), and only limits liability and warranty. <em>Copyleft</em> licenses (best known from the GNU <em>General Public License</em>, or <em>GPL</em>) are more restrictive, requiring full disclosure of any modifications. They are also sometimes referred to as <em>viral</em> licenses, since they also generally require that any modifications be released under the same license as the original. I tend to strongly favor permissive licenses like the <em>MIT License</em>, because they maximize the potential reuse of the code while still maintaining credit for the original authors.</p>
+<p>When using open source code, it is essential to abide by the conditions of the license of the original code. In particular, if you are reusing code licensed under the GPL then you are required to release your entire project under the GPL.</p>
+</section>
+<section id="persistent-identifiers-for-code" class="level3" data-number="13.5.2">
+<h3 data-number="13.5.2" class="anchored" data-anchor-id="persistent-identifiers-for-code"><span class="header-section-number">13.5.2</span> Persistent identifiers for code</h3>
+<p>The most common way for researchers to cite code today is through a link to a <em>Github</em> repository. This is better than not sharing at all, but it fails to achieve a couple of important goals. First, repositories change over time, and a link to a repository does not specify which particular version of the code was used for the research. This can be addressed by using a link to a specific commit or release, but these are vulnerable to deletion, since any user can delete the repositories that they own at any time. Second, it makes the assumption that <code>Github</code> will always exist and continue to provide unfettered access to all current repositories. While there is no reason to think that <code>Github</code> will go away anytime soon, we can’t trust a commercial platform to have our best interests at heart. For this reason, I believe that research code associated with a publication should be shared using a persistent identifier (such as a DOI) on an archival platform.</p>
+<p>At present, the easiest way to achieve this is to use the direct connection from <code>Github</code> to the nonprofit data archive Zenodo, which is operated by the high-energy physics lab <em>CERN</em> in Switzerland. Generating a archival code package with a DOI can be achieved in just a few steps:</p>
+<ul>
+<li><p>Create an account on <code>zenodo.org</code>, logging in using your <code>Github</code> credentials</p></li>
+<li><p>Navigate to the <code>Github Repositories</code> page for the new account, and enable the preservation of the relevant repository by clicking the “ON” button next to the repository; This must be done before the release, since <code>Zenodo</code> won’t generate DOIs retrospectively.</p></li>
+<li><p>Go to the repository page on GitHub, and create a release for the software package, which is a frozen version of the current state of the repository. This should be done immediately after completing the analyses for the project, so that the code in the release exactly matches the code used for the project.</p></li>
+<li><p><code>Zenodo</code> will then automatically generate a version DOI that can be used to cite the specific version of software in a publication, along with a concept DOI for the package that resolves to the latest version.</p></li>
+</ul>
+<p>There is another emerging standard PID for code known as the <em>Software Hash Identifier</em> (SWHID), which is being developed by the <em>Software Heritage</em> organization (softwareheritage.org) that also runs an archive for software preservation. Unlike most PIDs, which are <em>extrinsic</em> in the sense that they have no direct relation to the content of the objects that they refer to, the SWHID is an <em>intrinsic</em> identifier that is based on a hash of the content (similar to the hashes that are used for commits in <em>git</em>). This has the benefit that one can directly validate whether code matches the SWHID, and may become more prevalent in the future. Saving code to the Software Heritage archive is as easy as submitting a <em>Save Code Now</em> request on the web site.</p>
+</section>
+<section id="software-citation" class="level3" data-number="13.5.3">
+<h3 data-number="13.5.3" class="anchored" data-anchor-id="software-citation"><span class="header-section-number">13.5.3</span> Software citation</h3>
+<p>As software resources are increasingly recognized as legitimate scientific contributions, it is increasingly common for them to be cited in research papers and included on <em>curricula vitae</em> for academic advancement and hiring. <span class="citation" data-cites="Smith:2016aa">(<a href="#ref-Smith:2016aa" role="doc-biblioref">Smith <em>et al.</em> 2016</a>)</span> laid out a set of principles for the citation of software:</p>
+<ol type="1">
+<li><p><em>Importance</em>: Software should be considered an important intellectual product that is worthy of citation.</p></li>
+<li><p><em>Credit and attribution</em>: Software citation should give proper attribution and credit to its creators and maintainers.</p></li>
+<li><p><em>Unique identification</em>: Software to be cited should have a unique PID.</p></li>
+<li><p><em>Persistence</em>: Software to be cited should be available in a persistent manner; if the software is not available then at least the metadata should be persistent.</p></li>
+<li><p><em>Accessibility</em>: Software citations should make clear how to obtain the software.</p></li>
+<li><p><em>Specificity</em>: Software citations should refer to the specific version of the software that was used in the research.</p></li>
+</ol>
+<p>The <em>GitHub</em>-<em>Zenodo</em> and <em>Software Heritage</em> mechanisms described above can help fulfill these principles. Code citation can be further supported by providing citation metadata via the <code>CITATION.cff</code> file. Here is an example of the <code>CITATION.cff</code> file for the <em>bettercode</em> package associated with this book:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">cff-version</span><span class="er">:</span> <span class="dt">1.2.0</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">title</span><span class="er">:</span> <span class="dt">'Better Code, Better Science'</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">message</span><span class="er">:</span> <span class="dt">Code</span> <span class="dt">for</span> <span class="dt">examples</span> <span class="dt">in</span> <span class="dt">the</span> <span class="dt">book</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">type</span><span class="er">:</span> <span class="dt">software</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">authors</span><span class="er">:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a> <span class="dt">-</span> <span class="dt">given-names</span><span class="er">:</span> <span class="dt">Russell</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">family-names</span><span class="er">:</span> <span class="dt">Poldrack</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">email</span><span class="er">:</span> <span class="dt">russpold</span><span class="er">@</span><span class="dt">stanford.edu</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">affiliation</span><span class="er">:</span> <span class="dt">Stanford</span> <span class="dt">University</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">orcid</span><span class="er">:</span> <span class="dt">'0000-0001-6755-0259'</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="dt">repository-code</span><span class="er">:</span> <span class="dt">'https://github.com/BetterCodeBetterScience/bettercode'</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="dt">url</span><span class="er">:</span> <span class="dt">'https://bettercodebetterscience.github.io/book/'</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">abstract</span><span class="er">:</span> <span class="er">&gt;</span><span class="dt">-</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">This</span> <span class="dt">is</span> <span class="dt">code</span> <span class="dt">used</span> <span class="dt">to</span> <span class="dt">generate</span> <span class="dt">examples</span> <span class="dt">for</span> <span class="dt">the</span> <span class="dt">book</span> <span class="dt">Better</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Code</span><span class="er">,</span> <span class="dt">Better</span> <span class="dt">Science.</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="dt">keywords</span><span class="er">:</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a> <span class="dt">-</span> <span class="dt">software</span> <span class="dt">engineering</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a> <span class="dt">-</span> <span class="dt">AI</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a> <span class="dt">-</span> <span class="dt">scientific</span> <span class="dt">software</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="dt">license</span><span class="er">:</span> <span class="dt">MIT</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="dt">identifiers</span><span class="er">:</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a> <span class="dt">-</span> <span class="dt">type</span><span class="er">:</span> <span class="dt">doi</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">value</span><span class="er">:</span> <span class="dt">10.5281</span><span class="er">/</span><span class="dt">zenodo.18603014</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This file is used by both <code>Github</code> and <code>Zenodo</code> to populate citation information; see Figure&nbsp;<a href="#citationcff-fig" data-reference-type="ref" data-reference="citationcff-fig">1.1</a> for an example of how <code>Github</code> displays this information in the “Cite this repository” section. Including this file is a great way to help encourage proper citation of your code, and there are tools (such as <em>CFFinit</em>) that can help create a citation file for any project.</p>
+<figure id="citationcff-fig" data-latex-placement="!htbp" class="figure">
+<img src="figures/12/citationcff.svg" style="width:70.0%" class="figure-img">
+<figcaption>
+An example of the citation information generated automatically by <code>Github</code> on the basis of the CITATION.cff file.
+</figcaption>
+</figure>
+<p>For researchers who use software in their research, it’s important to cite the software so that the creators will receive credit. This is best done by citing it in the reference section alongside the cited papers, so that it is picked up by citation indexing systems.</p>
+</section>
+<section id="software-metadata" class="level3" data-number="13.5.4">
+<h3 data-number="13.5.4" class="anchored" data-anchor-id="software-metadata"><span class="header-section-number">13.5.4</span> Software metadata</h3>
+<p>In addition to citation information there are a number of other metadata that are important in order to make the code FAIR. A set of guidelines regarding software metadata have been laid out in the RSMD (Research Software MetaData Guidelines for End-Users) project <span class="citation" data-cites="Gruenpeter:2024aa">(<a href="#ref-Gruenpeter:2024aa" role="doc-biblioref">Gruenpeter <em>et al.</em> 2024</a>)</span>. An emerging standard for the specification of software metadata is the <code>codemeta.json</code> file, which provides a standard vocabulary for the specification of software metadata. This file uses the <em>JSON-LD</em> format that I mentioned in a previous chapter, which links the terms in the dictionary to a format vocabulary. The <em>codemeta-generator</em> tool (codemeta.github.io/codemeta-generator) provides an easy interface for generating of these files. <code>Github</code> itself doesn’t do anything special with the <code>codemeta.json</code> contents, but if the software is archived in <em>Software Heritage</em> then the project will be searchable by the specified metadata. Because this is becoming the standard, generating metadata now will also help ensure that your project remains findable in the future.</p>
+<p>Because many systems (e.g.&nbsp;the <em>PyPI</em> package archive) do not use <code>codemeta.json</code>, it’s also important to put relevant information in other files that may be used. For Python code, the <code>pyproject.toml</code> file allows specification of a number of metadata elements; in particular, it’s important to specify the name, version, description, license, authors, and keywords under the <code>[project]</code> section, and project URLs under the <code>[project.urls]</code> section, since these are used by <em>PyPI</em> for searching packages in the index.</p>
+</section>
+<section id="software-versioning" class="level3" data-number="13.5.5">
+<h3 data-number="13.5.5" class="anchored" data-anchor-id="software-versioning"><span class="header-section-number">13.5.5</span> Software versioning</h3>
+<p>It is essential to clearly version the software used in a research project to ensure reproducibility of the results, since it is common for the behavior of software to change between versions. There are two standards for software versioning. The approach recommended for most projects is <em>semantic versioning</em>, which uses a numeric format with a specific structure: <em>MAJOR.MINOR.PATCH</em>. These different levels are meant to imply different degrees of backwards-compatibility:</p>
+<ul>
+<li><p><em>Major</em> version changes (e.g.&nbsp;1.2.4 -&gt;2.0.0) are meant to imply changes that are likely to break previously working code, such as changes in the API</p></li>
+<li><p><em>Minor</em> version changes (e.g., 1.2.4 -&gt;1.3.0) are meant to imply the backwards-compatible addition of features</p></li>
+<li><p><em>Patch</em> version changes (e.g.&nbsp;1.2.4 -&gt;1.2.5) are meant to imply backwards-compatible bug fixes</p></li>
+</ul>
+<p>Because the line between different kind of changes can be fuzzy, it’s always good to be clear about the exact nature of changes in a change log. Also note that “0.x.x” generally implies that the code is unstable, so things can break between any of the version types; in other cases, researchers will use tags to further delineate versions:</p>
+<ul>
+<li><p><em>alpha</em> versions (e.g.&nbsp;1.0.0a1) are meant to imply that the code is too early for general use</p></li>
+<li><p><em>beta</em> versions (e.g.&nbsp;1.2.1b1) are meant to imply that the software is in beta-testing mode</p></li>
+<li><p><em>release candidate</em> versions (e.g.&nbsp;1.5.3rc1) are meant to imply an early release of the code for final testing by users before the official release</p></li>
+</ul>
+<p>Note that the Python versioning standard is slightly different from the official Semantic Versioning (2.0) standard that is used in some other languages, which uses hyphens (e.g.&nbsp;1.5.3-rc1).</p>
+<p>Another approach that is sometimes used in large projects is <em>calendar versioning</em>, where the version is based on the year and date (e.g.&nbsp;25.2 for the second release of 2025). For most projects the semantic versioning approach is preferred since it more clearly signals the nature of the change, but in some cases users may want to be able to tie the software to specific points in time.</p>
+</section>
+<section id="preparing-code-for-sharing" class="level3" data-number="13.5.6">
+<h3 data-number="13.5.6" class="anchored" data-anchor-id="preparing-code-for-sharing"><span class="header-section-number">13.5.6</span> Preparing code for sharing</h3>
+<p>Before sharing code, it’s important to make sure that it is ready to share, which involves three important steps: sanitization, portability, and documentation.</p>
+<section id="sanitization" class="level4" data-number="13.5.6.1">
+<h4 data-number="13.5.6.1" class="anchored" data-anchor-id="sanitization"><span class="header-section-number">13.5.6.1</span> Sanitization</h4>
+<p>The goal of sanitization is to make sure that no private or sensitive information is shared along with the code. This includes:</p>
+<ul>
+<li><p>passwords or other credentials</p></li>
+<li><p>API keys or tokens</p></li>
+<li><p>Protected Health Information (PHI) or Personally Identifiable Information (PII)</p></li>
+</ul>
+<p>The most powerful tool for sanitization is the <code>.gitignore</code> file, which helps prevent files from being checked into a <em>git</em> repository by preventing them from appearing in the status or from being added (unless the <code>-f</code> flag is used to force an add). Any files containing private or sensitive information (such as environment files or config files) should be added to the <code>.gitignore</code> file as soon as they are created. If you are sharing a package that requires configuring these files, then it can be useful to include an example version (e.g.&nbsp;<code>.env.example</code>) that shows the structure of the file without including any private information. Note that <code>.gitignore</code> only ignores files that are untracked; if a file was previously committed, then adding it to <code>.gitignore</code> will not remove it from previous commits.</p>
+</section>
+<section id="ensuring-portability" class="level4" data-number="13.5.6.2">
+<h4 data-number="13.5.6.2" class="anchored" data-anchor-id="ensuring-portability"><span class="header-section-number">13.5.6.2</span> Ensuring portability</h4>
+<p>We have already discussed coding portably in Chapter 3, by which I mean ensuring that there are no configuration details in the code that would prevent the code from running on another machine. By far the most common portability issue is the inclusion of absolute file paths, which are unlikely to resolve properly on a different computer.</p>
+</section>
+<section id="documentation" class="level4" data-number="13.5.6.3">
+<h4 data-number="13.5.6.3" class="anchored" data-anchor-id="documentation"><span class="header-section-number">13.5.6.3</span> Documentation</h4>
+<p>I have already discussed documentation in Chapter 7. If you didn’t generate documentation during the creation of the code, it’s definitely important to create at least minimal documentation prior to release. See the previous section for more details on how to create good documentation.</p>
+</section>
+</section>
+<section id="publishing-software-packages" class="level3" data-number="13.5.7">
+<h3 data-number="13.5.7" class="anchored" data-anchor-id="publishing-software-packages"><span class="header-section-number">13.5.7</span> Publishing software packages</h3>
+<p>If your code involves a module that others might want to reuse, then it’s worth considering publishing it to a package repository. This makes it easy for anyone to install your software with a single command, rather than requiring a download of the code followed by installation. The most widely used package index in the Python ecosystem is the <em>Python Package Index</em> (known as <em>PyPI</em>); if you have ever used the <em>pip</em> package installer to install a Python package, then you have used <em>PyPI</em> as it is the default package index for <em>pip</em>. In the <em>Conda</em> ecosystem, another popular package index is <em>conda-forge</em> (conda-forge.org), which can be used with the <code>conda install</code> command. Both of these systems allow versioning, so that users can install a specific version of the package to facilitate reproducibility. Here I will focus on <em>PyPI</em> and <em>uv</em> as an example.</p>
+<section id="making-a-package-installable" class="level4" data-number="13.5.7.1">
+<h4 data-number="13.5.7.1" class="anchored" data-anchor-id="making-a-package-installable"><span class="header-section-number">13.5.7.1</span> Making a package installable</h4>
+<p>To make a package installable, the first step is to create a <code>pyproject.toml</code> which is now the standard configuration file for Python projects (replacing the older <code>setup.py</code> and <code>setup.cfg</code>). One important setting is the choice of <em>build backend</em>, which is the system that is used to generate the Python package files. For this example I will use the <em>uv_build</em> backend that is now the default for <em>uv</em> projects. There are two types of files generated when the package is built. One, known as an <em>sdist</em> (for “source distribution”), is basically a tar archive containing the code and metadata. This allows the building of the package across different platforms, and serves as a transparent view of the code in the package. The other, known as a <em>wheel</em>, is a pre-built version of the package; if the package is pure Python then this will be a platform-independent package, whereas if there is any compiled code (such as C code) then this will be specific to the platform where it was compiled. Using the wheel can save time for large projects where building the package can take significant time.</p>
+<p>To build the <em>bettercode</em> package using <em>uv</em>, we simply run the build command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  uv build</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> source distribution...</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> wheel from source distribution...</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Successfully</span> built dist/bettercode-0.1.0.tar.gz</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Successfully</span> built dist/bettercode-0.1.0-py3-none-any.whl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the wheel file has <code>-none-</code> in its name, which refers to the fact that it is platform-independent. Once the package is built it is ready to push to PyPI.</p>
+</section>
+<section id="publishing-packages-to-pypi" class="level4" data-number="13.5.7.2">
+<h4 data-number="13.5.7.2" class="anchored" data-anchor-id="publishing-packages-to-pypi"><span class="header-section-number">13.5.7.2</span> Publishing packages to PyPI</h4>
+<p>Once the package is built, then we can upload it to <em>PyPI</em> for distribution. We first need to ensure that the version information is correct. This matters less for the first upload, but once you have uploaded a release to <em>PyPI</em> then you will need to update the version for future uploads to work. <em>uv</em> has a useful <code>version</code> option that that allows easily <em>bumping</em> the version according to the kind of change that is being made. For example, if we wanted to make a minor version change, we could do this:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv version</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">bettercode</span> 0.1.0</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv version <span class="at">--bump</span> minor</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">bettercode</span> 0.1.0 =<span class="op">&gt;</span> 0.2.0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This changes the metadata in <code>pyproject.toml</code> to match the new version, though we would need to rerun the <code>uv build</code> command to create the build files for the new version. Next we need to create and/or log into our account on <em>pypi.org</em>, and then make sure that the project name (specified as the “name” variable in <code>pyproject.toml</code>) is not already in use (by searching the index for that name); if it is then we will have to change the name of the project. Assuming it isn’t then we need to set up our <em>PyPI</em> authentication credentials and download a token, which can be provided at the command line with the <code>publish</code> command:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  uv publish <span class="at">--token</span> <span class="op">&lt;</span>your token here<span class="op">&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Publishing</span> 2 files to https://upload.pypi.org/legacy/</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Uploading</span> bettercode-0.2.0.tar.gz <span class="er">(</span><span class="ex">15.7MiB</span><span class="kw">)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Uploading</span> bettercode-0.2.0-py3-none-any.whl <span class="er">(</span><span class="ex">15.7MiB</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If the publish command is successful, then the project should be visible on PyPI, as this one is at <em>pypi.org/project/bettercode</em>. It’s also possible to automate the generation of new <em>PyPI</em> releases using <code>Github</code> Actions; see the <em>uv</em> documentation for more details.</p>
+</section>
+</section>
+<section id="sharing-data" class="level3" data-number="13.5.8">
+<h3 data-number="13.5.8" class="anchored" data-anchor-id="sharing-data"><span class="header-section-number">13.5.8</span> Sharing data</h3>
+<p>In Chapter 7 I covered many of the essential topics regarding data sharing. In particular, I highlighted the importance of proper metadata and data documentation, and the importance of using appropriate file formats and data organization standards. Here I will focus specifically on the mechanics of sharing.</p>
+<section id="data-use-agreements-and-licensing" class="level4" data-number="13.5.8.1">
+<h4 data-number="13.5.8.1" class="anchored" data-anchor-id="data-use-agreements-and-licensing"><span class="header-section-number">13.5.8.1</span> Data use agreements and licensing</h4>
+<p>Just as with code, it is essential that any shared data are accompanied by an explicit <em>data use agreement</em> (<em>DUA</em>). These are often referred to as <em>licenses</em>, but licenses are legal objects related to copyrighted materials; as I mentioned in Chapter 7, the degree to which data are subject to copyright varies across jurisdictions and depends on the degree of “creative activity” involved in creation and/or curation of the dataset. This is why software licenses are not appropriate for shared data: They assume that the material being shared is copyrighted, and thus would not have legal force if the data were not copyrightable. They also sometimes have terms that are specific to software, particularly with regard to patent rights.</p>
+<p>It’s more common to release data under agreements that are meant for a broader class of objects including data and databases. In particular, the <em>Creative Commons</em> licenses are often used for data release; I will refer to them as “licenses” for simplicity, noting that they may not be true licenses in the legal sense in some cases. The most permissive of these is the Public Domain Dedication (known as <em>CC0</em>), which waives all rights of the owner and places no legal restriction on the user in terms of sharing or licensing of derivative works. This is generally the preferred option for shared data when possible. Another alternative is the Attribution license (known as <em>CC-BY</em>), which legally requires attribution of credit to the creator. While many researchers feel that this is a more appropriate license given their desire for credit, it’s rare that a researcher would actually engage in legal action if the attribution clause was violated, and scientific norms generally ensure that data users will give credit to the owner even if it is not legally required.</p>
+<p>In some cases it is necessary to place additional restrictions on how the data will be used; common cases for this include the sharing of proprietary information (e.g.&nbsp;internal company data) or sensitive information (e.g., PHI/PII). In addition, some jurisdictions require a higher degree of control over the sharing of human subjects data, specifically the European countries covered by the GDPR. In these cases, it is often necessary to negotiate a DUA between institutions, which usually requires substantial time and effort. If this situation arises, it is generally best to start by talking with the relevant legal officials within one’s institution to learn more about the process, since it can vary drastically between institutions and jurisdictions.</p>
+<p>There is also a concerning development in the US, in which a legal rule initiated by the Biden administration in 2024 has restricted access of individuals from “countries of concern” (including China) to “bulk sensitive data” (specifically including “human ’omic data”) and US Government related data<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. This ruling will require additional access control (e.g.&nbsp;preventing some foreign researchers in US labs from accessing those data), and in some cases may also result in the need to use systems with a higher security level to work with those datasets.</p>
+</section>
+<section id="choosing-a-data-repository" class="level4" data-number="13.5.8.2">
+<h4 data-number="13.5.8.2" class="anchored" data-anchor-id="choosing-a-data-repository"><span class="header-section-number">13.5.8.2</span> Choosing a data repository</h4>
+<p>Once one is ready to share their data, they need to choose a repository through which to share it. It’s important to choose a repository that has the following features:</p>
+<ul>
+<li><p>It has a strong sustainability model.</p>
+<ul>
+<li>For a repository without institutional funding, it should have plan for data preservation in case the repository were to lose funding.</li>
+</ul></li>
+<li><p>It provides PIDs for deposited data.</p></li>
+<li><p>The data are immutable once shared; new versions can be posted, but the original versions remain available by versioned PIDs.</p></li>
+<li><p>It exposes relevant metadata for search engines or other sites.</p></li>
+<li><p>In cases where access control is necessary, the repository should provide the necessary mechanisms.</p></li>
+<li><p>It should provide clear licensing of datasets.</p></li>
+<li><p>It should provide standard protocols for data transfer, including APIs for machine-readable access.</p></li>
+</ul>
+<p>There are two main classes of repositories. <em>Generalist</em> repositories are those that are meant to store any kind of data; examples include the <em>Open Science Framework</em>, <em>Zenodo</em>, and <em>Dryad</em>. <em>Specialist</em> repositories are those that specialize in a particular kind of data; there are many such repositories across all domains of science, which are cataloged at <em>re3data.org</em>. These vary from databases focused on a very specific type of data, to those focused on broad scientific subfields. Notable examples include:</p>
+<ul>
+<li><p><em>GenBank</em>: a database of openly available DNA sequences, operated by the US National Institutes of Health</p></li>
+<li><p><em>Inter-university Consortium for Political and Social Research</em> (ICPSR): A data archive for the social sciences, run by the Institute for Social Research at the University of Michigan.</p></li>
+<li><p><em>OpenNeuro</em>: A database for BIDS-compliant neuroscience data, run by my laboratory at Stanford</p></li>
+<li><p><em>PANGAEA</em>: A database of earth and environmental science data, run by researchers at the Helmholtz Center for Polar- and Marine Research and University of Bremen, Germany</p></li>
+</ul>
+<p>There are important tradeoffs when choosing between a generalist versus a specialist repository. Generalist repositories generally are much larger and better funded, and provide strong sustainability features. On the other hand, specialist repositories are more likely to support the particular features of data from their subfield, and data in specialist repositories are more likely to be discovered by researchers in the subfield. I generally advise researchers to use a specialist repository for their data if one exists and is well-established, but to otherwise consider using a generalist repository.</p>
+</section>
+<section id="sharing-human-subjects-data" class="level4" data-number="13.5.8.3">
+<h4 data-number="13.5.8.3" class="anchored" data-anchor-id="sharing-human-subjects-data"><span class="header-section-number">13.5.8.3</span> Sharing human subjects data</h4>
+<p>For researchers working with human subjects data, it is important to ensure that they are shared ethically. In the US, data that have been deidentified (as discussed in Chapter 7) are not considered “human subjects data” under US Federal Regulations, and thus can legally be shared openly in most cases (unless the original consent explicitly stated that the data would not be shared). However, there are increasing concerns about the ability to reidentify subjects from data using AI tools even after the data have been “deidentified”, and the US National Institutes of Health suggested in its 2023 Policy for Data Management and Sharing<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> that controlled access should be considered even for data that have been deidentified. It is important to consider the potential harm that would occur due to reidentification as well as the potential likelihood of reidentification; datasets including features such as disease diagnoses that, if disclosed, could result in significant harm to the subject should be considered for controlled access even if it is not legally required.</p>
+<p>It is also important to ensure that informed consent for research subjects provides information regarding how the data will be shared. If the data will be shared broadly, then subjects should be informed that that data will be deidentified, but also make clear that the researcher cannot guarantee that reidentification will not be possible in the future. Subjects can then properly weigh the risks of participation. A number of model consent forms have been developed to support broad sharing; in my field of neuroimaging, the Open Brain Consent <span class="citation" data-cites="Bannier:2021aa">(<a href="#ref-Bannier:2021aa" role="doc-biblioref">Bannier <em>et al.</em> 2021</a>)</span> was developed to support researchers in the US and Europe who wish to be able to openly share their data.</p>
+</section>
+<section id="sharing-large-datasets" class="level4" data-number="13.5.8.4">
+<h4 data-number="13.5.8.4" class="anchored" data-anchor-id="sharing-large-datasets"><span class="header-section-number">13.5.8.4</span> Sharing large datasets</h4>
+<p>When datasets reach into the terabytes or beyond, it becomes very difficult to share them by standard means like web downloads. In this case, one has to decide whether to bring the data to the compute, or the compute to the data. If it’s necessary to transfer very large datasets, the most common solution is the <em>Globus</em> file transfer system (<em>globus.org</em>). <em>Globus</em> provides the ability to quickly and securely transfer very large amounts of data in a fault tolerant way. It also allows the verification of the data transfer and encryption of the data, and provides a web dashboard that allows monitoring of large transfers. Most HPC centers provide a <em>Globus</em> endpoint that allows transfer to and from other systems, and it’s also possible to mount cloud file systems using Globus.</p>
+<p>Another alternative for working with large shared datasets is to move the computing to a system that is attached to the data, rather than copying the data to one’s own computing system. This is a common workflow on cloud systems, where it’s usually straightforward to run compute instances that are in the same data center as the data, making access fast and efficient. Many open datasets (including our <em>OpenNeuro</em> dataset) are available on Amazon’s cloud systems via the AWS Data Exchange. Analyzing data in the cloud can get expensive quickly due to the cost of cloud computing, but it may become cost-efficient depending on the cost of local data storage for very large datasets.</p>
+</section>
+<section id="data-citation" class="level4" data-number="13.5.8.5">
+<h4 data-number="13.5.8.5" class="anchored" data-anchor-id="data-citation"><span class="header-section-number">13.5.8.5</span> Data citation</h4>
+<p>There are two standard ways to cite data. The most common is to use a standard citation that includes the DOI for the dataset that was issued by the archive, preferably a version DOI for the specific version of the data used in the research. However, it is increasingly common for high-value datasets to be described in a <em>data descriptor</em>, which is a standard journal publication that describes the dataset and links directly to the data. There is an increasing number of journals that publish such data descriptors, with <em>Scientific Data</em> being the most prominent as of 2026. The publication of a data descriptor allows the researcher to obtain credit in the most valuable form for academic progression: journal citations. For example, we published a paper describing a large neuroimaging dataset <span class="citation" data-cites="Poldrack:2016aa">(<a href="#ref-Poldrack:2016aa" role="doc-biblioref">Poldrack <em>et al.</em> 2016</a>)</span>, which as of early 2026 has been cited more than 450 times according to <em>Google Scholar</em>. Data descriptors are becoming an increasingly popular mechanism for researchers to obtain academic credit for their shared data.</p>
+</section>
+</section>
+</section>
+<section id="sharing-computational-models" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="sharing-computational-models"><span class="header-section-number">13.6</span> Sharing computational models</h2>
+<p>Computational models are a common form of research object. The sharing of these models has become increasingly prominent in the context of deep learning and AI models. Models actually involve several different types of objects:</p>
+<ul>
+<li><p>The code that defines the model architecture</p></li>
+<li><p>The code used for training and evaluating the model</p></li>
+<li><p>The configuration parameters used for training</p></li>
+<li><p>The learned parameters of the model (and possibly checkpoints containing parameters from intermediate steps during training)</p></li>
+<li><p>The training data used to train the model</p></li>
+</ul>
+<p>Here I focus on the sharing of model parameters, since the previous sections have covered sharing of code and data. It’s important to note here that a model should not be considered “open source” unless it shares all of these components. Many of the AI models that have been openly shared (such as the <em>Llama</em> large language models shared by the Meta Corporation) are more appropriately referred to as “open weight” models since they often have not shared all of the training data and code.</p>
+<p>Model parameters should be shared according to the same principles discussed above for code and data:</p>
+<ul>
+<li><p>They should be shared using data formats that are standard within the specific domain (which may vary depending on the class of model)</p></li>
+<li><p>They should be shared with sufficient metadata to allow interpretation and attribution of credit</p></li>
+<li><p>They should be shared with an explicit license that outlines terms of reuse</p></li>
+</ul>
+<p>The <em>Hugging Face Hub</em> (<em>huggingface.co/models</em>) has become a very prominent generalist archive for machine learning models and datasets. It supports a number of FAIR practices, including the ability to generate DOIs for models or datasets and the ability to associate an open source license with the objects. It also provides significant tooling for seamlessly downloading models and datasets. <em>Hugging Face</em> also provides access to <em>model cards</em>, which are a particular form of documentation developed within the machine learning literature <span class="citation" data-cites="Mitchell:2019aa">(<a href="#ref-Mitchell:2019aa" role="doc-biblioref">Mitchell <em>et al.</em> 2019</a>)</span> that describes the model and any potential limitations or biases in a human-readable way.</p>
+<p>There are relatively few specialist repositories for models. One notable example is the <em>Vascular Model Repository</em> (vascularmodel.com) developed by my Stanford colleague Alison Marsden and her team, which shares vascular models generated using the open-source <em>SimVascular</em> software for modeling of patient-specific blood flow patterns using images of the heart. When such a specialist repository is available it’s usually best to share the model parameters via that mechanism.</p>
+<section id="licenses-for-ai-models" class="level3" data-number="13.6.1">
+<h3 data-number="13.6.1" class="anchored" data-anchor-id="licenses-for-ai-models"><span class="header-section-number">13.6.1</span> Licenses for AI models</h3>
+<p>It is increasingly common for AI models to be released under what have come to be called <em>Responsible AI Licenses</em>, which include terms regarding the acceptable uses of the model. In particular, these licenses are meant to prohibit harmful uses of the code. As an example, here are the behavioral terms included in the <em>AI Pubs Open Rail-S</em> license (<em>www.licenses.ai/ai-pubs-open-rails-vz1</em>):</p>
+<pre class="text"><code>You agree not to use the Source Code or its Derivatives in any of the following ways:
+
+1. Legal: 
+
+    (a) In any way that violates any applicable national, federal, state, local or international law or regulation.
+
+2. Harm and Discrimination
+
+  (a) For the purpose of exploiting, Harming or attempting to exploit or Harm minors in any way;
+  (b) To generate or disseminate false information with the purpose of Harming others;
+  (c) To generate or disseminate personal identifiable information that can be used to Harm an individual;
+  (d) To defame, disparage or otherwise harass others;
+  (e) For any use intended to or which has the effect of Harming individuals or groups based on online or offline social behavior or known or predicted personal or personality characteristics
+  (f) To exploit any of the vulnerabilities of a specific group of persons based on their age, social, physical or mental characteristics, in order to materially distort the behavior of a person belonging to that group in a manner that causes or is likely to cause that person or another person Harm
+  (g) For any use intended to or which has the effect of discriminating against individuals or groups based on legally protected characteristics or categories.
+
+3. Transparency
+
+  (a) To generate or disseminate machine-generated information or content in any medium  without expressly and intelligibly disclaiming that it is machine-generated;
+  (b) To impersonate or attempt to impersonate human beings for purposes of deception;
+  (c) For fully automated decision making that adversely impacts an individual’s legal rights or otherwise creates or modifies a binding, enforceable obligation.</code></pre>
+<p>This license also makes the behavioral use terms viral, even if the copyright license is not: “Even though derivative versions of the Source Code could be released under different licensing terms, the License specifies that the use restrictions in the original License must apply to such derivatives.”</p>
+</section>
+</section>
+<section id="sharing-environments-and-platforms" class="level2" data-number="13.7">
+<h2 data-number="13.7" class="anchored" data-anchor-id="sharing-environments-and-platforms"><span class="header-section-number">13.7</span> Sharing environments and platforms</h2>
+<p>As we discussed earlier in the section on containers, complete reproducibility requires the sharing of the computational environment in which the computing was performed. At minimum, one should share a description of the dependencies that went into the computation. The <code>pyproject.toml</code> file for a project will specify the dependencies, but allows loose version constraints (e.g.&nbsp;<code>numpy&gt;=1.24</code>). While this is good for general usage, it does not ensure reproducibility since we can’t tell what specific version of the package was used in any particular analysis. Instead it is best to include a <em>lock file</em> that lists the exact versions of each dependency; when using <em>uv</em>, the <code>uv.lock</code> file contains this information. However, the lock file only contains information about the Python dependencies, and does not contain details about the system level libraries (such as the version of the <em>glibc</em> library, which is known to potentially affect numerical computations; <span class="citation" data-cites="Glatard:2015aa">(<a href="#ref-Glatard:2015aa" role="doc-biblioref">Glatard <em>et al.</em> 2015</a>)</span>). It is for this reason that we generally prefer to share containers, which encapsulate the system environment more broadly.</p>
+<p><em>Docker</em> has become the standard tooling for generating compute containers. As I described in the previous section on containers, the contents of a <em>Docker</em> container image are defined in part by a <code>Dockerfile</code>, which provides a recipe for building the container. It’s important to note that while a container image provides a reproducible computing environment, the <code>Dockerfile</code> itself does not. In a large study of Dockerfiles on GitHub, <span class="citation" data-cites="Malka:2026aa">(<a href="#ref-Malka:2026aa" role="doc-biblioref">Malka <em>et al.</em> 2026</a>)</span> found that very few containers could be perfectly reproduced or even functionally reproduced (i.e.&nbsp;including the same package versions). In fact, of a set of 5,298 Dockerfiles that were successfully built in 2023, only 72% of those could be rebuilt just two years later. This suggests that the sharing and archiving of container images is essential for reproducibility. Container images are commonly shared through the <em>Docker Hub</em> web archive. However, it is important to realize that this archive may delete images that are not accessed for a certain period of time. Container images should thus be archived using a generalist repository such as <em>Zenodo</em> or <em>OSF</em> in order to ensure their continued availability.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-Bannier:2021aa" class="csl-entry" role="listitem">
+Bannier, E., Barker, G., Borghesani, V., … Zhu, H. (2021). <a href="https://doi.org/10.1002/hbm.25351">The open brain consent: Informing research participants and obtaining consent to share brain imaging data</a>. <em>Hum Brain Mapp</em>, <strong>42</strong>(7), 1945–1951.
+</div>
+<div id="ref-Barker:2022aa" class="csl-entry" role="listitem">
+Barker, M., Chue Hong, N. P., Katz, D. S., … Honeyman, T. (2022). <a href="https://doi.org/10.1038/s41597-022-01710-x">Introducing the FAIR principles for research software</a>. <em>Sci Data</em>, <strong>9</strong>(1), 622.
+</div>
+<div id="ref-Glatard:2015aa" class="csl-entry" role="listitem">
+Glatard, T., Lewis, L. B., Ferreira da Silva, R., … Evans, A. C. (2015). <a href="https://doi.org/10.3389/fninf.2015.00012">Reproducibility of neuroimaging analyses across operating systems</a>. <em>Front Neuroinform</em>, <strong>9</strong>, 12.
+</div>
+<div id="ref-Gruenpeter:2024aa" class="csl-entry" role="listitem">
+Gruenpeter, M., Granger, S., Monteil, A., … Mejias, G. (2024, March). Guidelines for recommended metadata standard for research software within EOSC (Version V1.0), Zenodo. doi:<a href="https://doi.org/10.5281/zenodo.10786147">10.5281/zenodo.10786147</a>
+</div>
+<div id="ref-Malka:2026aa" class="csl-entry" role="listitem">
+Malka, J., Zacchiroli, S., &amp; Zimmermann, T. (2026). Docker does not guarantee reproducibility. Retrieved from <a href="https://arxiv.org/abs/2601.12811">https://arxiv.org/abs/2601.12811</a>
+</div>
+<div id="ref-Merton:1942aa" class="csl-entry" role="listitem">
+Merton, R. K. (1942). Science and technology in a democratic order. <em>Journal of Legal and Political Sociology</em>, <strong>I</strong>, 115–26.
+</div>
+<div id="ref-Mitchell:2019aa" class="csl-entry" role="listitem">
+Mitchell, M., Wu, S., Zaldivar, A., … Gebru, T. (2019). <a href="https://doi.org/10.1145/3287560.3287596">Model cards for model reporting</a>. In <em>Proceedings of the conference on fairness, accountability, and transparency</em>, ACM, pp. 220–229.
+</div>
+<div id="ref-Poldrack:2016aa" class="csl-entry" role="listitem">
+Poldrack, R. A., Congdon, E., Triplett, W., … Bilder, R. M. (2016). <a href="https://doi.org/10.1038/sdata.2016.110">A phenome-wide examination of neural and cognitive function</a>. <em>Sci Data</em>, <strong>3</strong>, 160110.
+</div>
+<div id="ref-Smith:2016aa" class="csl-entry" role="listitem">
+Smith, A., Katz, D., Niemeyer, K., &amp; Group, F. S. C. W. (2016). Software citation principles. <em>PeerJ Computer Science</em>, <strong>2</strong>, e86.
+</div>
+<div id="ref-Tedersoo:2021aa" class="csl-entry" role="listitem">
+Tedersoo, L., Küngas, R., Oras, E., … Sepp, T. (2021). <a href="https://doi.org/10.1038/s41597-021-00981-0">Data sharing practices and data availability upon request differ across scientific disciplines</a>. <em>Sci Data</em>, <strong>8</strong>(1), 192.
+</div>
+<div id="ref-Wicherts:2006aa" class="csl-entry" role="listitem">
+Wicherts, J. M., Borsboom, D., Kats, J., &amp; Molenaar, D. (2006). <a href="https://doi.org/10.1037/0003-066X.61.7.726">The poor availability of psychological research data for reanalysis</a>. <em>Am Psychol</em>, <strong>61</strong>(7), 726–8.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>www.justice.gov/nsd/media/1382521/dl?inline<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>grants.nih.gov/grants/guide/notice-files/NOT-OD-21-013.html<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./book-hpc.html" class="pagination-link" aria-label="High-performance computing">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

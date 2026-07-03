@@ -1,7 +1,0 @@
-$ pytest --tb=short --no-header test_distance.py
-============================= test session starts ==============================
-collected 6 items
-
-test_distance.py ......                            [100%]
-
-============================== 6 passed in 0.08s ===============================

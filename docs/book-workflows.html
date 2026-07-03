@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Workflow Management – Better Code, Better Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./book-validation.html" rel="next">
+<link href="./book-data-management.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./book-workflows.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Workflow Management</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Better Code, Better Science</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Better Code, Better Science</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-essential-tools-and-techniques.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Essential tools and concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-software-engineering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Principles of software engineering</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Software testing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-ai-coding-assistants.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Coding with AI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-project-organization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Project structure and management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-data-management.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Organization and Management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-workflows.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Workflow Management</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validating scientific software</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-performance.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Optimizing performance</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./book-sharing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sharing Research Objects</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-do-we-want-from-a-scientific-workflow" id="toc-what-do-we-want-from-a-scientific-workflow" class="nav-link active" data-scroll-target="#what-do-we-want-from-a-scientific-workflow"><span class="header-section-number">9.1</span> What do we want from a scientific workflow?</a></li>
+  <li><a href="#fair-inspired-practices-for-workflows" id="toc-fair-inspired-practices-for-workflows" class="nav-link" data-scroll-target="#fair-inspired-practices-for-workflows"><span class="header-section-number">9.2</span> FAIR-inspired practices for workflows</a></li>
+  <li><a href="#piping-and-chaining" id="toc-piping-and-chaining" class="nav-link" data-scroll-target="#piping-and-chaining"><span class="header-section-number">9.3</span> Piping and chaining</a>
+  <ul class="collapse">
+  <li><a href="#method-chaining" id="toc-method-chaining" class="nav-link" data-scroll-target="#method-chaining"><span class="header-section-number">9.3.1</span> Method chaining</a></li>
+  </ul></li>
+  <li><a href="#a-simple-workflow-example" id="toc-a-simple-workflow-example" class="nav-link" data-scroll-target="#a-simple-workflow-example"><span class="header-section-number">9.4</span> A simple workflow example</a></li>
+  <li><a href="#running-a-simple-workflow-using-gnu-make" id="toc-running-a-simple-workflow-using-gnu-make" class="nav-link" data-scroll-target="#running-a-simple-workflow-using-gnu-make"><span class="header-section-number">9.5</span> Running a simple workflow using GNU make</a></li>
+  <li><a href="#using-a-workflow-engine" id="toc-using-a-workflow-engine" class="nav-link" data-scroll-target="#using-a-workflow-engine"><span class="header-section-number">9.6</span> Using a workflow engine</a>
+  <ul class="collapse">
+  <li><a href="#general-purpose-versus-domain-specific-workflow-engines" id="toc-general-purpose-versus-domain-specific-workflow-engines" class="nav-link" data-scroll-target="#general-purpose-versus-domain-specific-workflow-engines"><span class="header-section-number">9.6.1</span> General-purpose versus domain-specific workflow engines</a></li>
+  </ul></li>
+  <li><a href="#workflow-management-using-snakemake" id="toc-workflow-management-using-snakemake" class="nav-link" data-scroll-target="#workflow-management-using-snakemake"><span class="header-section-number">9.7</span> Workflow management using Snakemake</a>
+  <ul class="collapse">
+  <li><a href="#snakemake-scripts" id="toc-snakemake-scripts" class="nav-link" data-scroll-target="#snakemake-scripts"><span class="header-section-number">9.7.1</span> <em>Snakemake</em> scripts</a></li>
+  <li><a href="#updating-the-workflow-when-inputs-change" id="toc-updating-the-workflow-when-inputs-change" class="nav-link" data-scroll-target="#updating-the-workflow-when-inputs-change"><span class="header-section-number">9.7.2</span> Updating the workflow when inputs change</a></li>
+  <li><a href="#reproducible-environments-with-conda" id="toc-reproducible-environments-with-conda" class="nav-link" data-scroll-target="#reproducible-environments-with-conda"><span class="header-section-number">9.7.3</span> Reproducible environments with Conda</a></li>
+  <li><a href="#reproducible-environments-with-containers" id="toc-reproducible-environments-with-containers" class="nav-link" data-scroll-target="#reproducible-environments-with-containers"><span class="header-section-number">9.7.4</span> Reproducible environments with containers</a></li>
+  <li><a href="#best-practices-for-snakemake-workflows" id="toc-best-practices-for-snakemake-workflows" class="nav-link" data-scroll-target="#best-practices-for-snakemake-workflows"><span class="header-section-number">9.7.5</span> Best practices for <em>Snakemake</em> workflows</a></li>
+  <li><a href="#report-generation" id="toc-report-generation" class="nav-link" data-scroll-target="#report-generation"><span class="header-section-number">9.7.6</span> Report generation</a></li>
+  <li><a href="#tracking-provenance" id="toc-tracking-provenance" class="nav-link" data-scroll-target="#tracking-provenance"><span class="header-section-number">9.7.7</span> Tracking provenance</a></li>
+  </ul></li>
+  <li><a href="#scaling-to-a-complex-workflow" id="toc-scaling-to-a-complex-workflow" class="nav-link" data-scroll-target="#scaling-to-a-complex-workflow"><span class="header-section-number">9.8</span> Scaling to a complex workflow</a></li>
+  <li><a href="#starting-point-one-huge-notebook" id="toc-starting-point-one-huge-notebook" class="nav-link" data-scroll-target="#starting-point-one-huge-notebook"><span class="header-section-number">9.9</span> Starting point: One huge notebook</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-of-in-place-operations" id="toc-the-problem-of-in-place-operations" class="nav-link" data-scroll-target="#the-problem-of-in-place-operations"><span class="header-section-number">9.9.1</span> The problem of in-place operations</a></li>
+  <li><a href="#converting-from-jupyter-notebook-to-a-runnable-python-script" id="toc-converting-from-jupyter-notebook-to-a-runnable-python-script" class="nav-link" data-scroll-target="#converting-from-jupyter-notebook-to-a-runnable-python-script"><span class="header-section-number">9.9.2</span> Converting from <em>Jupyter</em> notebook to a runnable python script</a></li>
+  </ul></li>
+  <li><a href="#decomposing-a-complex-workflow" id="toc-decomposing-a-complex-workflow" class="nav-link" data-scroll-target="#decomposing-a-complex-workflow"><span class="header-section-number">9.10</span> Decomposing a complex workflow</a></li>
+  <li><a href="#resumable-workflows" id="toc-resumable-workflows" class="nav-link" data-scroll-target="#resumable-workflows"><span class="header-section-number">9.11</span> Resumable workflows</a></li>
+  <li><a href="#managing-a-complex-workflow-with-snakemake" id="toc-managing-a-complex-workflow-with-snakemake" class="nav-link" data-scroll-target="#managing-a-complex-workflow-with-snakemake"><span class="header-section-number">9.12</span> Managing a complex workflow with Snakemake</a>
+  <ul class="collapse">
+  <li><a href="#pipeline-optimization" id="toc-pipeline-optimization" class="nav-link" data-scroll-target="#pipeline-optimization"><span class="header-section-number">9.12.1</span> Pipeline optimization</a></li>
+  <li><a href="#parametric-sweeps" id="toc-parametric-sweeps" class="nav-link" data-scroll-target="#parametric-sweeps"><span class="header-section-number">9.12.2</span> Parametric sweeps</a></li>
+  </ul></li>
+  <li><a href="#workflow-testing-strategies" id="toc-workflow-testing-strategies" class="nav-link" data-scroll-target="#workflow-testing-strategies"><span class="header-section-number">9.13</span> Workflow testing strategies</a>
+  <ul class="collapse">
+  <li><a href="#generating-tests-using-ai-agents" id="toc-generating-tests-using-ai-agents" class="nav-link" data-scroll-target="#generating-tests-using-ai-agents"><span class="header-section-number">9.13.1</span> Generating tests using AI agents</a></li>
+  <li><a href="#avoiding-the-happy-path" id="toc-avoiding-the-happy-path" class="nav-link" data-scroll-target="#avoiding-the-happy-path"><span class="header-section-number">9.13.2</span> Avoiding the happy path</a></li>
+  <li><a href="#property-based-testing-for-workflows" id="toc-property-based-testing-for-workflows" class="nav-link" data-scroll-target="#property-based-testing-for-workflows"><span class="header-section-number">9.13.3</span> Property-based testing for workflows</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Workflow Management</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In most areas of science today, the processing and analysis of data comprise many different steps. I will refer to such a set of steps as a computational <em>workflow</em>; while there are certainly many types of non-computational workflows in science (such as protocols in wet labs), I will focus here on computational workflows. If you have been doing science for very long, you have very likely encountered a <em>mega-script</em> that implements such a workflow. This is a script that may be hundreds or even thousands of lines long that runs a single workflow from start to end. Often these scripts are handed down to new trainees over generations, such that users become afraid to make any changes lest the entire house of cards comes crashing down. I think that most of us can agree that this is not an optimal workflow, and in this chapter I will discuss in detail how to move from a mega-script to a workflow that can provide robust and reliable answers to our scientific questions.</p>
+<section id="what-do-we-want-from-a-scientific-workflow" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="what-do-we-want-from-a-scientific-workflow"><span class="header-section-number">9.1</span> What do we want from a scientific workflow?</h2>
+<p><strong>TODO</strong>: ? add specific examples of what happens when each of these are violated?</p>
+<p>First let’s ask: What do we want from a computational scientific workflow? Here are some of the factors that I think are important. First, we care about the <em>correctness</em> of the workflow, which includes the following factors:</p>
+<ul>
+<li><p><em>Validity</em>: The workflow includes validation procedures to ensure against known problems or edge cases.</p></li>
+<li><p><em>Reproducibility</em>: The workflow can be rerun from scratch on the same data and get the same answer, at least within the limits of uncontrollable factors such as floating point imprecision and operating system differences.</p></li>
+<li><p><em>Robustness</em>: When there is a problem, the workflow fails quickly with explicit error messages, or degrades gracefully when possible.</p></li>
+</ul>
+<p>Second, we care about the <em>usability</em> of the workflow. Factors related to usability include:</p>
+<ul>
+<li><p><em>Configurability</em>: The workflow uses smart defaults, but allows the user to easily change the configuration.</p></li>
+<li><p><em>Portability</em>: We would like for the workflow to be easily runnable across multiple systems.</p></li>
+<li><p><em>Parameterizability</em>: Multiple runs of the workflow can be executed with different parameters, and the separate outputs can be tracked.</p></li>
+<li><p><em>Standards compliance</em>: The workflow leverages common standards to easily read in data and generates output using community standards for file formats and organization when available.</p></li>
+</ul>
+<p>Third, we care about the <em>engineering quality</em> of the code, which includes:</p>
+<ul>
+<li><p><em>Maintainability</em>: The workflow is structured and documented so that others (including our future selves) can easily maintain, update, and extend it in the future.</p></li>
+<li><p><em>Modularity</em>: The workflow is composed of a set of independently testable modules, which can be swapped in or out relatively easily.</p></li>
+<li><p><em>Idempotency</em>: This term from computer science means that the result of the workflow doesn’t change if it is re-run.</p></li>
+<li><p><em>Traceability</em>: All operations are logged, and provenance information is stored for outputs.</p></li>
+</ul>
+<p>Finally, we care about the <em>efficiency</em> of the workflow implementation. This includes:</p>
+<ul>
+<li><p><em>Incremental execution</em>: The workflow only reruns a module if necessary, such as when an input changes.</p></li>
+<li><p><em>Cached computation</em>: The workflow pre-computes and reuses results from expensive operations when possible.</p></li>
+</ul>
+<p>It’s worth noting that these different desiderata will sometimes conflict with one another (such as configurability versus maintainability), and that no workflow will be perfect. For example, a highly configurable workflow will often be more difficult to maintain.</p>
+</section>
+<section id="fair-inspired-practices-for-workflows" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="fair-inspired-practices-for-workflows"><span class="header-section-number">9.2</span> FAIR-inspired practices for workflows</h2>
+<p>In the earlier chapter on Data Management I discussed the FAIR (Findable, Accessible, Interoperable, and Reusable) principles for data. Since those principles were proposed in 2016 they have been extended to many other types of research objects, including workflows <span class="citation" data-cites="Wilkinson:2025aa">(<a href="#ref-Wilkinson:2025aa" role="doc-biblioref">Wilkinson <em>et al.</em> 2025</a>)</span>. The reader who is not an informatician may quickly glaze over when reading these articles, as they rely on concepts and jargon that will be unfamiliar to most scientists. Realizing that most scientists are unlikely to go to the lengths of a fully FAIR workflow, and preferring not to let the perfect be the enemy of the good, I think that we can take an “80/20” approach, meaning that we can get 80% of the benefits for about 20% of the effort. We can adhere to the spirit of the FAIR Workflows principle by adopting the following principles, building on the “Ten Quick Tips for Building FAIR Workflows” presented by <span class="citation" data-cites="Visser:2023aa">Visser <em>et al.</em> (<a href="#ref-Visser:2023aa" role="doc-biblioref">2023</a>)</span>:</p>
+<ul>
+<li><p><em>Metadata</em>: Provide sufficient metadata in a standard machine-readable format to make the workflow findable once it is shared.</p></li>
+<li><p><em>Version control</em>: All workflow code should be kept under version control and hosted on a public repository such as Github.</p></li>
+<li><p><em>Documentation</em>: Workflows should be well documented. Documentation should focus primarily on the scientific motivation and technical design of the workflow, along with instructions on how to run it and description of the outputs.</p></li>
+<li><p><em>Standard organization schemes</em>: Both the workflow files (code and configuration) and data files should follow established standards for organization.</p></li>
+<li><p><em>Standard file formats</em>: The inputs and outputs to the workflow should use established standard file formats rather than inventing new formats.</p></li>
+<li><p><em>Configurability</em>: The workflow should be easily configurable, and example configuration files should be included in the repository.</p></li>
+<li><p><em>Requirements</em>: The requirements for the workflow should be clearly specified, either in a file (such as <code>pyproject.toml</code> or <code>requirements.txt</code>) or in a container configuration file (such as a <code>Dockerfile</code>).</p></li>
+<li><p><em>Clear workflow structure</em>: The workflow structure should be easily understandable.</p></li>
+</ul>
+<p>There are certainly some contexts where a more formal structure adhering in detail to the FAIR Workflows standard may be required, as in large collaborative projects with specific compliance objectives, but these rough guidelines should get a researcher most of the way there.</p>
+</section>
+<section id="piping-and-chaining" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="piping-and-chaining"><span class="header-section-number">9.3</span> Piping and chaining</h2>
+<p>One of the simplest ways to build a workflow is to stream data directly from one command to another, such that the intermediate results are ephemeral since no information about the intermediate states is saved. Such a workflow is <em>linear</em> in the sense that there is a single pathway through the workflow. One common way that this is accomplished is through the use of <em>pipes</em>, which are a syntactic construct that feed the results of one process directly into the next process. Some readers may be familiar with pipes from the UNIX shell, where they are represented by the vertical bar “|”. For example, let’s say that we had a log file that contains the following entries:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">2024-01-15</span> 10:23:45 ERROR: Database connection failed</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">2024-01-15</span> 10:24:12 ERROR: Invalid user input</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2024-01-15</span> 10:25:33 ERROR: Database connection failed</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">2024-01-15</span> 10:26:01 INFO: Request processed</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">2024-01-15</span> 10:27:15 ERROR: Database connection failed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and that we wanted to generate a summary of errors. We could use the following pipeline:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> grep <span class="st">"ERROR"</span> app.log <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/.*ERROR: //'</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="at">-c</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-rn</span> <span class="op">&gt;</span> error_summary.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>where:</p>
+<ul>
+<li><p><code>grep "ERROR" app.log</code> extracts lines containing the word “ERROR”</p></li>
+<li><p><code>sed ’s/.*ERROR: //’</code> replaces everything up to the actual message with an empty string</p></li>
+<li><p><code>sort</code> sorts the rows alphabetically</p></li>
+<li><p><code>uniq -c</code> counts the number of appearances of each unique error message</p></li>
+<li><p><code>sort -rn</code> sorts the rows in reverse numerical order (largest to smallest)</p></li>
+<li><p><code>&gt;error_summary.txt</code> redirects the output into a file called <code>error_summary.txt</code></p></li>
+</ul>
+<p>Pipes are also commonly used in the <em>R</em> community, where they are a fundamental component of the <em>tidyverse</em> ecosystem of packages.</p>
+<section id="method-chaining" class="level3" data-number="9.3.1">
+<h3 data-number="9.3.1" class="anchored" data-anchor-id="method-chaining"><span class="header-section-number">9.3.1</span> Method chaining</h3>
+<p>One way that linear workflows are commonly built in Python is using <em>method chaining</em>, where each method returns an object on which the next method is called; this is slightly different from the operation of UNIX pipes, where it is the output of each command that is being passed through the pipe rather than an entire object. This is commonly used to perform data transformations in <em>pandas</em>, as it allows composing multiple transformations into a single command. As an example, we will work with the Eisenberg et al.&nbsp;dataset that we used in a previous chapter, to compute the probability of having ever been arrested separately for males and females in the sample. To do this we need to perform a number of operations:</p>
+<ul>
+<li><p>drop any observations that have missing values for the <code>Sex</code> or <code>ArrestedChargedLifeCount</code> variables</p></li>
+<li><p>replace the numeric values in the <code>Sex</code> variable with text labels</p></li>
+<li><p>create a new variable called <code>EverArrested</code> that binarizes the counts in the ArrestedChargedLifeCount variable</p></li>
+<li><p>group the data by the <code>Sex</code> variable</p></li>
+<li><p>select the column that we want to compute the mean of (<code>EverArrested</code>)</p></li>
+<li><p>compute the mean</p></li>
+</ul>
+<p>We can do this in a single command using method chaining in <em>pandas</em>. It’s useful to format the code in a way that makes the pipeline steps explicit, by putting parentheses around the operation; in Python, any commands within parentheses are implicitly treated as a single line, which can be useful for making complex code more readable:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>arrest_stats_by_sex <span class="op">=</span> (df</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .dropna(subset<span class="op">=</span>[<span class="st">'Sex'</span>, <span class="st">'ArrestedChargedLifeCount'</span>])</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .replace({<span class="st">'Sex'</span>: {<span class="dv">0</span>: <span class="st">'Male'</span>, <span class="dv">1</span>: <span class="st">'Female'</span>}})</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .assign(EverArrested<span class="op">=</span><span class="kw">lambda</span> x: (x[<span class="st">'ArrestedChargedLifeCount'</span>] <span class="op">&gt;</span> <span class="dv">0</span>).astype(<span class="bu">int</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">'Sex'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'EverArrested'</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    .mean()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(arrest_stats_by_sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Sex</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Female    <span class="fl">0.156489</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Male      <span class="fl">0.274131</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Name: EverArrested, dtype: float64</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that <em>pandas</em> data frames also include an explicit <code>.pipe</code> method that allows using arbitrary functions within a pipeline. While these kinds of streaming workflows can be useful for simple data processing operations, they can become very difficult to debug, so I would generally avoid using complex functions within a method chain.</p>
+</section>
+</section>
+<section id="a-simple-workflow-example" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="a-simple-workflow-example"><span class="header-section-number">9.4</span> A simple workflow example</h2>
+<p>Most real scientific workflows are complex and can often run for hours, and we will encounter such a complex workflow later in the chapter. However, we will start our discussion of workflows with a relatively simple and fast-running example that will help demonstrate the basic concepts of workflow execution. We will use the same data as above (from Eisenberg et al.) to perform a simple workflow:</p>
+<ul>
+<li><p>Load the demographic and meaningful variables files</p></li>
+<li><p>Drop any non-numeric variables from each data frame</p></li>
+<li><p>Join the data frames using their shared index</p></li>
+<li><p>Compute the correlation matrix across all variables</p></li>
+<li><p>Generate a clustered heatmap for the correlation matrix</p></li>
+</ul>
+<p>I implemented each of these components as a function within a module. For example, here is the function that drops the non-numerical columns from each data frame:</p>
+<pre class="text"><code>def filter_numerical_columns(df: pd.DataFrame) -&gt; pd.DataFrame:
+    """Filter a dataframe to keep only numerical columns.
+
+    Args:
+        df: Input dataframe.
+
+    Returns:
+        Dataframe with only numerical columns.
+    """
+    return df.select_dtypes(include=["number"])</code></pre>
+<p>Note that this function really only has one line that does any work; we could just as easily have used that command within the code that calls this function, but placing it in a well-named function makes the intent of the code clear. All of the functions can be viewed at <code>bettercode/simple_workflow.py</code> within the project Github repository.</p>
+<p>The simplest possible workflow would be a script that simply imports and calls each of the functions in turn. For such a simple workflow this would be fine, but I will use this example to show how we might take advantage of more sophisticated workflow management tools.</p>
+</section>
+<section id="running-a-simple-workflow-using-gnu-make" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="running-a-simple-workflow-using-gnu-make"><span class="header-section-number">9.5</span> Running a simple workflow using GNU make</h2>
+<p>One of the simplest ways to organize a workflow is using the GNU <em>make</em> tool, which executes commands defined in a file named <code>Makefile</code>. <em>make</em> is a very handy general-purpose tool that every user of UNIX systems should become familiar with. The <code>Makefile</code> defines a set of labeled commands, like this:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode makefile code-with-copy"><code class="sourceCode makefile"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">.PHONY:</span><span class="dt"> all clean</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dv">all:</span><span class="dt"> step1.txt step2.txt</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># this one takes no input, and outputs step1.txt</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="dv">step1.txt:</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>python step1.py</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># this one requires step1.txt as input, and outputs step2.txt</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="dv">step2.txt:</span><span class="dt"> step1.txt</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>python step2.py -i step1.txt</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="dv">clean:</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="er">    </span><span class="ch">-</span><span class="fu">rm step1.txt step2.txt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this case, the command <code>make step1.txt</code> will run the command <code>python step1.py</code> which outputs a file called <code>step1.txt</code>, unless that file already exists and the existing file is at least as new as its dependencies. This is one of the powerful features of <em>make</em>: since it checks the timestamps of existing files, it can automatically rerun commands if any of their dependencies have changed. The command <code>make step2.txt</code> requires <code>step1.txt</code>, so it will first run that action (which will do nothing if the file already exists and is at least as new as its dependencies). It will then perform <code>python step2.py -i step1.txt</code> which outputs <code>step2.txt</code>. The command <code>make all</code> will execute the <code>all</code> target, which includes both of the output files, and <code>make clean</code> will remove each of those files if they exist. The targets <code>all</code> and <code>clean</code> are referred to as <em>phony</em> targets since they are not meant to refer to a specific file but rather to an action. The <code>.PHONY</code> designation in the <code>Makefile</code> denotes this, such that those commands will run even if a file called “all” or “clean” happens to exist. This should already show you why <em>make</em> is such a handy tool: Any time there is a command that you run regularly in a particular directory, you can put it into a <code>Makefile</code> and then execute it with just a single <em>make</em> call.</p>
+<p>Here is how we could build a Makefile to run our simple workflow:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode makefile code-with-copy"><code class="sourceCode makefile"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># if OUTPUT_DIR isn't already defined, set it to the default</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dt">OUTPUT_DIR</span> <span class="ch">?=</span><span class="st"> ./output</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ot">.PHONY:</span><span class="dt"> all clean</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="dv">all:</span><span class="dt"> </span><span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span><span class="dt">/figures/correlation_heatmap.png</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="dv">$(OUTPUT_DIR)/data/demographics.csv $(OUTPUT_DIR)/data/meaningful_variables.csv:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="er">    </span><span class="ch">@</span><span class="fu">echo </span><span class="st">"Downloading data..."</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    mkdir -p <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/data <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/results <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/figures</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    uv run python scripts/download_data.py <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/data</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="dv">$(OUTPUT_DIR)/data/demographics_numerical.csv:</span><span class="dt"> </span><span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span><span class="dt">/data/demographics.csv</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="er">    </span><span class="ch">@</span><span class="fu">echo </span><span class="st">"Filtering demographics data..."</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    uv run python scripts/filter_data.py <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/data</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="dv">$(OUTPUT_DIR)/data/meaningful_variables_numerical.csv:</span><span class="dt"> </span><span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span><span class="dt">/data/meaningful_variables.csv</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="er">    </span><span class="ch">@</span><span class="fu">echo </span><span class="st">"Filtering meaningful variables data..."</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    uv run python scripts/filter_data.py <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/data</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="dv">$(OUTPUT_DIR)/data/joined_data.csv:</span><span class="dt"> </span><span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span><span class="dt">/data/demographics_numerical.csv </span><span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span><span class="dt">/data/meaningful_variables_numerical.csv</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="er">    </span><span class="ch">@</span><span class="fu">echo </span><span class="st">"Joining data..."</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    uv run python scripts/join_data.py <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/data</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="dv">$(OUTPUT_DIR)/results/correlation_matrix.csv:</span><span class="dt"> </span><span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span><span class="dt">/data/joined_data.csv</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="er">    </span><span class="ch">@</span><span class="fu">echo </span><span class="st">"Computing correlation..."</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    uv run python scripts/compute_correlation.py <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/data <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/results</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="dv">$(OUTPUT_DIR)/figures/correlation_heatmap.png:</span><span class="dt"> </span><span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span><span class="dt">/results/correlation_matrix.csv</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="er">    </span><span class="ch">@</span><span class="fu">echo </span><span class="st">"Generating heatmap..."</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    uv run python scripts/generate_heatmap.py <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/results <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span>/figures</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="dv">clean:</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>rm -rf <span class="ch">$(</span><span class="dt">OUTPUT_DIR</span><span class="ch">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Most of the targets (except for “clean” and “all”) refer to specific files that are required for the workflow. For example, the first target refers to the two files that need to be downloaded by the <code>download_data.py</code> script. This target does not rely on the outputs of any others, so there is nothing following the colon in the target name. For the others, they require particular inputs, which come after the colon; thus, if those don’t already exist then their targets will be run first. Note that <em>make</em> requires the use of tabs to indent commands, and will fail if spaces are used; thus, <code>Makefile</code> commands often need to be reformatted when copied and pasted since this often converts tabs to spaces. This is a common source of <em>make</em> problems that is easy to miss.</p>
+<p>Each step calls a Python script that is basically an interface to the relevant function. Here is the script that performs the variable filtering<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
+<pre class="text"><code>import sys
+from pathlib import Path
+
+import pandas as pd
+
+from bettercode.simple_workflow import filter_numerical_columns
+
+
+def main():
+    """Filter both datasets to numerical columns."""
+    if len(sys.argv) != 2:
+        print("Usage: python filter_data.py &lt;data_dir&gt;")
+        sys.exit(1)
+
+    data_dir = Path(sys.argv[1])
+
+    # Filter meaningful variables
+    mv_df = pd.read_csv(data_dir / "meaningful_variables.csv", index_col=0)
+    mv_num = filter_numerical_columns(mv_df)
+    mv_num.to_csv(data_dir / "meaningful_variables_numerical.csv")
+    print(f"Filtered meaningful_variables: {mv_df.shape} -&gt; {mv_num.shape}")
+
+    # Filter demographics
+    demo_df = pd.read_csv(data_dir / "demographics.csv", index_col=0)
+    demo_num = filter_numerical_columns(demo_df)
+    demo_num.to_csv(data_dir / "demographics_numerical.csv")
+    print(f"Filtered demographics: {demo_df.shape} -&gt; {demo_num.shape}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+<p>We can run the entire workflow by simply running <code>make all</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  make all</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Downloading</span> data...</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ./output/data ./output/results ./output/figures</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/download_data.py ./output/data</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Downloaded</span> meaningful_variables.csv <span class="er">(</span><span class="ex">522</span> rows<span class="kw">)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Downloaded</span> demographics.csv <span class="er">(</span><span class="ex">522</span> rows<span class="kw">)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Filtering</span> demographics data...</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/filter_data.py ./output/data</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Filtered</span> meaningful_variables: <span class="er">(</span><span class="ex">522,</span> 193<span class="kw">)</span> <span class="ex">-</span><span class="op">&gt;</span> <span class="er">(</span><span class="ex">522,</span> 193<span class="kw">)</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Filtered</span> demographics: <span class="er">(</span><span class="ex">522,</span> 33<span class="kw">)</span> <span class="ex">-</span><span class="op">&gt;</span> <span class="er">(</span><span class="ex">522,</span> 28<span class="kw">)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Joining</span> data...</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/join_data.py ./output/data</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Meaningful</span> variables: <span class="er">(</span><span class="ex">522,</span> 193<span class="kw">)</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="ex">Demographics:</span> <span class="er">(</span><span class="ex">522,</span> 28<span class="kw">)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Joined:</span> <span class="er">(</span><span class="ex">522,</span> 221<span class="kw">)</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Computing</span> correlation...</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/compute_correlation.py ./output/data ./output/results</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="ex">Loaded</span> joined data: <span class="er">(</span><span class="ex">522,</span> 221<span class="kw">)</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Saved</span> correlation matrix: <span class="er">(</span><span class="ex">221,</span> 221<span class="kw">)</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> heatmap...</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/generate_heatmap.py ./output/results ./output/figures</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="ex">Loaded</span> correlation matrix: <span class="er">(</span><span class="ex">221,</span> 221<span class="kw">)</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="ex">Saved</span> heatmap to output/figures/correlation_heatmap.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The rules that refer to specific files will only be triggered if the filename in question doesn’t exist, as we can see if we run the <em>make</em> command again:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  make all</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">make:</span> Nothing to be done for <span class="kw">`</span><span class="ex">all</span><span class="st">'.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>However, if we delete the heatmap file and rerun the <em>make</em> command, then the <code>generate_heatmap</code> action will be triggered:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  make all</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> heatmap...</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/generate_heatmap.py ./output/results ./output/figures</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Loaded</span> correlation matrix: <span class="er">(</span><span class="ex">221,</span> 221<span class="kw">)</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Saved</span> heatmap to output/figures/correlation_heatmap.png</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We could also take advantage of another feature of <em>make</em>: it only triggers the action if a file with the name of the action doesn’t exist, or if the existing file is not newer than its dependencies. Thus, if the command was <code>make results/output.txt</code>, then the action would only be triggered if the file does not exist or if it was older than the inputs. This is why we had to put the <code>.PHONY</code> command in the makefile above: it’s telling <em>make</em> that those are not meant to be interpreted as file names, but rather as commands, so that they will be run even if files named “all” or “clean” exist.</p>
+<p>For many simple workflows <em>make</em> can be a perfectly sufficient solution to workflow management, but we will see below why it’s not sufficient to manage a complex workflow. For those workflows we could either build our own more complex workflow management system, or we could use an existing software tool that is built to manage workflow execution, known as a <em>workflow engine</em>. In general I prefer to use an existing solution unless it doesn’t solve my problem, so I will now turn to discussing packages for workflow management.</p>
+</section>
+<section id="using-a-workflow-engine" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="using-a-workflow-engine"><span class="header-section-number">9.6</span> Using a workflow engine</h2>
+<p>There is a wide variety of workflow engines available for data analysis workflows, most of which are centered around the concept of an <em>execution graph</em>. This is a graph in the sense described by graph theory, which refers to a set of nodes that are connected by lines (known as <em>edges</em>). Workflow execution graphs are a particular kind of graph known as a <em>directed acyclic graph</em>, or <em>DAG</em> for short. Each node in the graph represents a single step in the workflow, and each edge represents the dependency relationships that exist between nodes. DAGs have two important features. First, the edges are directed, which means that they move in one direction that is represented graphically as an arrow. These represent the dependencies within the workflow. For example, in our workflow step 1 (obtaining the data) must occur before step 2 (filtering the data), so the graph would have an edge from step 1 with an arrow pointing at step 2. Second, the graph is <em>acyclic</em>, which means that it doesn’t have any cycles, that is, it never circles back on itself. Cycles would be problematic, since they could result in workflows that executed in an infinite loop as the cycle repeated itself.</p>
+<p>Most workflow engines provide tools to visualize a workflow as a DAG. Figure&nbsp;<a href="#simpleDAG-fig" data-reference-type="ref" data-reference="simpleDAG-fig">1.1</a> shows our example workflow visualized using the <em>Snakemake</em> tool that we will introduce below:</p>
+<figure id="simpleDAG-fig" data-latex-placement="!htbp" class="figure">
+<img src="figures/08/simpleDAG.svg" style="width:37.5%" class="figure-img">
+<figcaption>
+The execution graph for the simple example analysis workflow visualized as a DAG.
+</figcaption>
+</figure>
+<p>The use of DAGs to represent workflows provides a number of important benefits:</p>
+<ul>
+<li><p>The engine can identify independent pathways through the graph, which can then be executed in parallel</p></li>
+<li><p>If one node of the graph changes, the engine can identify which downstream nodes need to be rerun</p></li>
+<li><p>If a node fails, the engine can be configured to continue with executing the nodes that don’t depend on the failed node either directly or indirectly</p></li>
+</ul>
+<p>There are a couple of additional benefits to using a workflow engine, which I will discuss in more detail in the context of a more complex workflow. The first is that they generally deal automatically with the storage of intermediate results (known as <em>caching</em> or <em>checkpointing</em>), which can help speed up execution when nothing has changed and allow continued execution if the process is interrupted. The second is that the workflow engine uses the execution graph to optimize the schedule of computations, only performing those operations that are actually needed. This is similar in spirit to the concept of <em>lazy execution</em> used by packages like <em>Polars</em>, in which the system optimizes computational efficiency by first analyzing the full computational graph.</p>
+<section id="general-purpose-versus-domain-specific-workflow-engines" class="level3" data-number="9.6.1">
+<h3 data-number="9.6.1" class="anchored" data-anchor-id="general-purpose-versus-domain-specific-workflow-engines"><span class="header-section-number">9.6.1</span> General-purpose versus domain-specific workflow engines</h3>
+<p>With the growth of data science within industry and research, there has been an explosion of new workflow management systems that aim to solve particular problems; a list of these can be found at <a href="https://github.com/meirwah/awesome-workflow-engines">awesome-workflow-engines</a>. It’s also worth noting that there are a number of domain-specific workflow engines that are specialized for particular kinds of data and workflows. Examples include <a href="https://galaxyproject.org/"><em>Galaxy</em></a> which is specialized for bioinformatics and genomics, and <a href="https://nipype.readthedocs.io/en/latest/index.html"><em>Nipype</em></a> which is specialized for neuroimaging analysis workflows. If your research community uses one of these then it’s worth exploring that engine as your first option, since it will probably be well supported within the community. However, a benefit of using a general-purpose engine is that they will often be better maintained and supported, and AI tools will likely have more examples to work from when generating new workflows.</p>
+</section>
+</section>
+<section id="workflow-management-using-snakemake" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="workflow-management-using-snakemake"><span class="header-section-number">9.7</span> Workflow management using Snakemake</h2>
+<p>I will use the <a href="https://snakemake.readthedocs.io/en/stable/"><em>Snakemake</em></a> workflow system for this example, which I chose for several reasons:</p>
+<ul>
+<li><p>It is a very well-established project that is actively maintained.</p></li>
+<li><p>It is Python-based, which makes it easy for Python users to grasp.</p></li>
+<li><p>Because of its long history and wide use, AI coding assistants are quite familiar with it and can easily generate the necessary files for complex workflows.</p></li>
+</ul>
+<p><em>Snakemake</em> is a sort of “make on steroids”, designed specifically to manage complex computational workflows. It uses a Python-like syntax to define the workflow, from which it infers the computational graph and optimizes the computation. The <em>Snakemake</em> workflow is defined using a <code>Snakefile</code>, the most important aspect of which is a set of rules that define the different workflow steps in terms of their outputs. Here is an initial portion of the <code>Snakefile</code> for our simple workflow:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Base directory (where `Snakefile`  is located)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>BASEDIR <span class="op">=</span> workflow.basedir</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Output directories (relative to working directory set via -d)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> <span class="st">"data"</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>RESULTS_DIR <span class="op">=</span> <span class="st">"results"</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>FIGURES_DIR <span class="op">=</span> <span class="st">"figures"</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>LOGS_DIR <span class="op">=</span> <span class="st">"logs"</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Load configuration</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>configfile: <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/config/config.yaml"</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Global report</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>report: <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/report/workflow.rst"</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Default target</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>rule <span class="bu">all</span>:</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>:</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>FIGURES_DIR<span class="sc">}</span><span class="ss">/correlation_heatmap.png"</span>,</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What this does is first specify a set of directories; the <code>BASEDIR</code> variable refers to the directory where the <code>Snakefile</code> is found, while the other directories are specified with the respect to the working directory that is specified using the <code>-d</code> argument. It then specifies the location of the configuration file, which is a YAML file that defines various parameters for the workflow. Here are the contents of the config file for our simple example:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data URLs</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">meaningful_variables_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"&lt;URL deleted for brevity&gt;"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">demographics_url</span><span class="kw">:</span><span class="at"> </span><span class="st">"&lt;URL deleted for brevity&gt;"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation settings</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">correlation_method</span><span class="kw">:</span><span class="at"> </span><span class="st">"spearman"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Heatmap settings</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span><span class="kw">:</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">figsize</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">12</span><span class="kw">,</span><span class="at"> </span><span class="dv">10</span><span class="kw">]</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cmap</span><span class="kw">:</span><span class="at"> </span><span class="st">"coolwarm"</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="at">  vmin:-1.0</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vmax</span><span class="kw">:</span><span class="at"> </span><span class="fl">1.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The only rule shown above is the <code>all</code> rule, which takes as its input the correlation figure that is the final output of the workflow. If snakemake is called and that file already exists, then it won’t be rerun (since it’s the only requirement for the rule) unless 1) the <code>--force</code> flag is included, which forces rerunning the entire workflow, or 2) a rerun is triggered by one of the changes to the input files, parameters, or the code itself. If the file doesn’t exist, then <em>Snakemake</em> examines the additional rules to determine which steps need to be run in order to generate that output. In this case, it would start with the rule that generates the correlation figure:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Generate clustered heatmap</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>rule generate_heatmap:</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>:</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>RESULTS_DIR<span class="sc">}</span><span class="ss">/correlation_matrix.csv"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    output:</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        report(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>FIGURES_DIR<span class="sc">}</span><span class="ss">/correlation_heatmap.png"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            caption<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/report/heatmap.rst"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            category<span class="op">=</span><span class="st">"Results"</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    params:</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        figsize<span class="op">=</span>config[<span class="st">"heatmap"</span>][<span class="st">"figsize"</span>],</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        cmap<span class="op">=</span>config[<span class="st">"heatmap"</span>][<span class="st">"cmap"</span>],</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        vmin<span class="op">=</span>config[<span class="st">"heatmap"</span>][<span class="st">"vmin"</span>],</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        vmax<span class="op">=</span>config[<span class="st">"heatmap"</span>][<span class="st">"vmax"</span>],</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    log:</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>LOGS_DIR<span class="sc">}</span><span class="ss">/generate_heatmap.log"</span>,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    conda:</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/envs/simple.yml"</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    script:</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/scripts/generate_heatmap.py"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This step uses the <code>generate_heatmap.py</code> script to generate the correlation figure, and it requires the <code>correlation_matrix.csv</code> file as input. Note that while there is a <em>Conda</em> directive in this rule, which we will discuss further below, <em>Conda</em> is not actually used unless the <code>--use-conda</code> flag is provided. <em>Snakemake</em> would then work backward to identify which step is required to generate that file, which is the following:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Compute correlation matrix</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>rule compute_correlation:</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>DATA_DIR<span class="sc">}</span><span class="ss">/joined_data.csv"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    output:</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>RESULTS_DIR<span class="sc">}</span><span class="ss">/correlation_matrix.csv"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    params:</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        method<span class="op">=</span>config[<span class="st">"correlation_method"</span>],</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    log:</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>LOGS_DIR<span class="sc">}</span><span class="ss">/compute_correlation.log"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    conda:</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/envs/simple.yml"</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    script:</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/scripts/compute_correlation.py"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>By working backwards this way from the intended output, <em>Snakemake</em> can reconstruct the computational graph that we saw in Figure&nbsp;<a href="#simpleDAG-fig" data-reference-type="ref" data-reference="simpleDAG-fig">1.1</a>. It then uses this graph to plan the computations that will be performed.</p>
+<section id="snakemake-scripts" class="level3" data-number="9.7.1">
+<h3 data-number="9.7.1" class="anchored" data-anchor-id="snakemake-scripts"><span class="header-section-number">9.7.1</span> <em>Snakemake</em> scripts</h3>
+<p>In order for <em>Snakemake</em> to execute each of our modules, we need to wrap those modules in a script that can use the configuration information from the config file. Here is an example of what the <a href="https://github.com/BetterCodeBetterScience/example-simpleworkflow/blob/main/snakemake_workflow/scripts/generate_heatmap.py">generate_heatmap.py</a> script would look like:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bettercode.simple_workflow.visualization <span class="im">import</span> (</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    generate_clustered_heatmap,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main() <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Generate and save clustered heatmap."""</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ruff: noqa: F821</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    input_path <span class="op">=</span> Path(snakemake.<span class="bu">input</span>[<span class="dv">0</span>])</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    output_path <span class="op">=</span> Path(snakemake.output[<span class="dv">0</span>])</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    figsize <span class="op">=</span> <span class="bu">tuple</span>(snakemake.params.figsize)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    cmap <span class="op">=</span> snakemake.params.cmap</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    vmin <span class="op">=</span> snakemake.params.vmin</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    vmax <span class="op">=</span> snakemake.params.vmax</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load correlation matrix</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    corr_matrix <span class="op">=</span> pd.read_csv(input_path, index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Loaded correlation matrix: </span><span class="sc">{</span>corr_matrix<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate heatmap</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    generate_clustered_heatmap(</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        corr_matrix,</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        output_path<span class="op">=</span>output_path,</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        figsize<span class="op">=</span>figsize,</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        cmap<span class="op">=</span>cmap,</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>        vmin<span class="op">=</span>vmin,</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        vmax<span class="op">=</span>vmax,</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Saved heatmap to </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can see that the code refers to the <code>snakemake</code> module even though we haven’t explicitly imported it; this is possible because the script is executed within the <em>Snakemake</em> environment which makes the <code>snakemake</code> object available within the script’s execution namespace, containing all of the configuration details.</p>
+<p>Once the <code>Snakefile</code> and other related files are ready to go, we can first check whether they are properly formatted using <code>snakemake --lint</code>, which is a static analysis tool specifically for snakemake configuration files. Here is the result (note: some output lines are omitted for conciseness):</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">--lint</span> <span class="at">--cores</span> 1 <span class="at">-d</span> ./output</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Congratulations,</span> your workflow is in a good condition!</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We are now ready to run the <code>snakemake</code> command, which will need to include several configuration directives. Let’s first do a “dry run” which creates the execution graph but doesn’t actually execute anything:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">--dry-run</span> <span class="at">--cores</span> 1 <span class="at">-d</span> ./output</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> DAG of jobs...</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Job</span> stats:</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">job</span>                              count</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--------------------------------------</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">all</span>                                  1</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="ex">compute_correlation</span>                  1</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="ex">download_demographics</span>                1</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="ex">download_meaningful_variables</span>        1</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="ex">filter_demographics</span>                  1</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="ex">filter_meaningful_variables</span>          1</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="ex">generate_heatmap</span>                     1</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="ex">join_datasets</span>                        1</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="ex">total</span>                                8</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span> <span class="er">(</span><span class="ex">omitting</span> intermediate output<span class="kw">)</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="ex">Job</span> stats:</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="ex">job</span>                              count</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="ex">--------------------------------------</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="ex">all</span>                                  1</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="ex">compute_correlation</span>                  1</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a><span class="ex">download_demographics</span>                1</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="ex">download_meaningful_variables</span>        1</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="ex">filter_demographics</span>                  1</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="ex">filter_meaningful_variables</span>          1</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="ex">generate_heatmap</span>                     1</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a><span class="ex">join_datasets</span>                        1</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="ex">total</span>                                8</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="ex">Reasons:</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">(</span><span class="ex">check</span> individual jobs above for details<span class="kw">)</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    <span class="ex">input</span> files updated by another job:</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>        <span class="ex">all,</span> compute_correlation, filter_demographics, filter_meaningful_variables, generate_heatmap, join_datasets</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    <span class="ex">output</span> files have to be generated:</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>        <span class="ex">compute_correlation,</span> download_demographics, download_meaningful_variables, filter_demographics, filter_meaningful_variables, generate_heatmap, join_datasets</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a><span class="ex">This</span> was a dry-run <span class="er">(</span><span class="ex">flag</span> <span class="at">-n</span><span class="kw">)</span><span class="bu">.</span> The order of jobs does not reflect the order of execution.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Once we have confirmed that everything is set up properly, we can then use <code>snakemake</code> to run the workflow:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">--cores</span> 1 <span class="at">-d</span> ./output</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> DAG of jobs...</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Job</span> stats:</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="ex">job</span>                              count</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--------------------------------------</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="ex">all</span>                                  1</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="ex">compute_correlation</span>                  1</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="ex">download_demographics</span>                1</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="ex">download_meaningful_variables</span>        1</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="ex">filter_demographics</span>                  1</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="ex">filter_meaningful_variables</span>          1</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="ex">generate_heatmap</span>                     1</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="ex">join_datasets</span>                        1</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="ex">total</span>                                8</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="ex">Select</span> jobs to execute...</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="ex">Execute</span> 1 jobs...</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="ex">[Wed</span> Dec 24 08:17:57 2025]</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="ex">localrule</span> download_demographics:</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    <span class="ex">output:</span> output/data/demographics.csv</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="ex">log:</span> output/logs/download_demographics.log</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="ex">jobid:</span> 7</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="ex">reason:</span> Missing output files: output/data/demographics.csv</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="ex">resources:</span> tmpdir=/var/folders/r2/f85nyfr1785fj4257wkdj7480000gn/T</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="ex">Downloaded</span> 522 rows from <span class="op">&lt;</span>URL deleted for brevity<span class="op">&gt;</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="ex">Saved</span> to output/data/demographics.csv</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="ex">[Wed</span> Dec 24 08:17:58 2025]</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="ex">Finished</span> jobid: 7 <span class="er">(</span><span class="ex">Rule:</span> download_demographics<span class="kw">)</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="ex">1</span> of 8 steps <span class="er">(</span><span class="ex">12%</span><span class="kw">)</span> <span class="cf">done</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span> <span class="er">(</span><span class="ex">omitting</span> intermediate output<span class="kw">)</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="ex">8</span> of 8 steps <span class="er">(</span><span class="ex">100%</span><span class="kw">)</span> <span class="cf">done</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="ex">Complete</span> log<span class="er">(</span><span class="ex">s</span><span class="kw">)</span><span class="bu">:</span> .snakemake/log/2025-12-24T081757.266320.snakemake.log</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It’s important to know that when <em>Snakemake</em> is run, it stores metadata regarding the workflow in a hidden directory called <code>.snakemake</code>, including the log file mentioned at the end of the output above. This directory can carry over hidden state from previous runs that can become confusing when debugging. It’s sometimes useful to remove this directory as a last resort (when the <code>--force</code> and <code>--cleanup-metadata</code> are not sufficient).</p>
+<p>One handy feature of <em>Snakemake</em> is that, just like <em>make</em>, we can give it a specific target file and it will perform only the portions of the workflow that are required to regenerate that specific file. For example, let’s say that the file <code>output/data/demographics.csv</code> became corrupted and you needed to recreate it. This could be done using the command:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake output/data/demographics.csv <span class="at">--cores</span> 1 <span class="at">-d</span> ./output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="updating-the-workflow-when-inputs-change" class="level3" data-number="9.7.2">
+<h3 data-number="9.7.2" class="anchored" data-anchor-id="updating-the-workflow-when-inputs-change"><span class="header-section-number">9.7.2</span> Updating the workflow when inputs change</h3>
+<p>Once the workflow has completed successfully, re-running it will not result in the re-execution of any of the analyses:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">--cores</span> 1 <span class="at">-d</span> ./output</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> DAG of jobs...</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Nothing</span> to be done <span class="er">(</span><span class="ex">all</span> requested files are present and up to date<span class="kw">)</span><span class="bu">.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>However, <em>Snakemake</em> checks several features of the workflow (by default) when generating its DAG to see if anything relevant has changed. By default it checks to see if any of the following have changed (configurable using the <code>-rerun-triggers</code> flag):</p>
+<ul>
+<li><p>modification times of input files</p></li>
+<li><p>the code specified within the rule</p></li>
+<li><p>the input files or parameters for the rule</p></li>
+</ul>
+<p>Snakemake also checks for changes in the details of the software environment, but as of the date of writing this only works for <em>Conda</em> environments.</p>
+<p>As an example, I will first update the modification time of the meaningful variables file from a previous successful run using the <code>touch</code> command:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  ls <span class="at">-l</span> ./output/data/meaningful_variables.csv</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Permissions</span> Size User     Date Modified Name</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.rw-r--r--@</span> 1.2M poldrack 24 Dec 10:11  data/meaningful_variables.csv</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  touch ./output/data/meaningful_variables.csv</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  ls <span class="at">-l</span> ./output/data/meaningful_variables.csv</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Permissions</span> Size User     Date Modified Name</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="ex">.rw-r--r--@</span> 1.2M poldrack 24 Dec 10:14  data/meaningful_variables.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can see that the touch command updated the modification time of the file. Now let’s rerun the <code>snakemake</code> command:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">--cores</span> 1 <span class="at">-d</span> ./output</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> DAG of jobs...</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Job</span> stats:</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="ex">job</span>                            count</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--------------------------------------</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">all</span>                                1</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="ex">compute_correlation</span>                1</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="ex">filter_meaningful_variables</span>        1</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">generate_heatmap</span>                   1</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="ex">join_datasets</span>                      1</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="ex">total</span>                              5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Similarly, <em>Snakemake</em> will rerun the workflow if any of the scripts used to run the workflow are modified. However, it’s important to note that it will not identify changes in the modules that are imported. In that case you would need to rerun the workflow using the <code>--force</code> flag in order to re-execute the relevant steps.</p>
+</section>
+<section id="reproducible-environments-with-conda" class="level3" data-number="9.7.3">
+<h3 data-number="9.7.3" class="anchored" data-anchor-id="reproducible-environments-with-conda"><span class="header-section-number">9.7.3</span> Reproducible environments with Conda</h3>
+<p><em>Snakemake</em> comes with native support for <em>Conda</em> environments, which helps ensure reproducibility across systems. As I discussed in Chapter 2, I generally prefer <em>uv</em> over <em>Conda</em>, but <em>Snakemake</em> does not support <em>uv</em> environments at the time of writing, so <em>Conda</em> is the only option until that support becomes available. After first installing <em>Conda</em> on our system (if necessary), we then need to identify all of the packages that are necessary for our workflow to succeed, and then add those to a YAML file. Here is the example for our simple workflow, which I placed in <code>envs/simple.yaml</code>:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> bettercode</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">channels</span><span class="kw">:</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="at"> </span><span class="kw">-</span><span class="at"> conda-forge</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dependencies</span><span class="kw">:</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="at"> </span><span class="kw">-</span><span class="at"> numpy=2.4.0</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="at"> </span><span class="kw">-</span><span class="at"> pandas=2.3.3</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="at"> </span><span class="kw">-</span><span class="at"> matplotlib=3.10.8</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="at"> </span><span class="kw">-</span><span class="at"> seaborn=0.13.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When we run the workflow, we will see that <em>Snakemake</em> first builds a local <em>Conda</em> environment within the working directory. In this case I am running it from a different directory than the source directory, so I need to specify the location of the <code>Snakefile</code>:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">--sdm</span> conda <span class="at">--snakefile</span> /path/to/Snakefile <span class="at">-d</span> ./ <span class="at">--cores</span> 15</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> DAG of jobs...</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Creating</span> <span class="pp">*</span>Conda<span class="pp">*</span> environment /path/to/snakemake_workflow/envs/simple.yml...</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Downloading</span> and installing remote packages.</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Cleaning</span> up <span class="pp">*</span>Conda<span class="pp">*</span> package tarballs.</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Environment</span> for /path/to/snakemake_workflow/envs/simple.yml created <span class="er">(</span><span class="ex">location:</span> .snakemake/conda/0f65d58d0ced6388a583c7e1b77c240e_<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It then uses this environment to execute the code. It’s worth nothing that this will leave the <em>Conda</em> environment in place within the hidden <code>.snakemake</code> directory, which can take up a significant amount of disk space if there are a lot of dependencies.</p>
+</section>
+<section id="reproducible-environments-with-containers" class="level3" data-number="9.7.4">
+<h3 data-number="9.7.4" class="anchored" data-anchor-id="reproducible-environments-with-containers"><span class="header-section-number">9.7.4</span> Reproducible environments with containers</h3>
+<p>As I discussed in Chapter 6, software containers are increasingly used as a means for creating reproducible software environments. <em>Snakemake</em> has built-in support for the <em>Apptainer</em> container tool, which is available for Linux and installed on most high-performance computing systems, but unfortunately not easily usable on Mac or Windows systems. Here I will show an example of a containerized version of the simple workflow above, running on my local Linux system.</p>
+<p>Using containers is easiest if you can find an existing Docker container that contains all of the necessary dependencies for your code. Fortunately there is a large number of containers available via the <a href="https://hub.docker.com/">Docker Hub</a>, and given the simple dependencies that our workflow requires, I was easily able to find <a href="https://hub.docker.com/layers/jupyter/scipy-notebook/x86_64-ubuntu-22.04/images/sha256-3b37958b7b31ce94c3027d7c83c98fc16acfe166fab2de2f62ae54c50e59aed3">a container</a> containing the necessary packages. I added this to my <code>config.yaml</code> file:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Container image (used with --sdm apptainer)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">container</span><span class="kw">:</span><span class="at"> </span><span class="st">"docker://jupyter/scipy-notebook:x86_64-ubuntu-22.04"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and also added the definition to my <code>Snakemake</code> file:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Container image for all rules (used with --sdm apptainer)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>container: config[<span class="st">"container"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and then ran the <em>Snakemake</em> command specifying apptainer as my dependency management system:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">--cores</span> 1 <span class="at">--sdm</span> apptainer <span class="at">-d</span> ./output</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Building</span> DAG of jobs...</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Pulling</span> singularity image docker://jupyter/scipy-notebook:x86_64-ubuntu-22.04.</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As with <em>Conda</em>, it’s worth noting that <em>Snakemake</em> will store the <em>Apptainer</em> image within the <code>.snakemake</code> directory, which can sometimes be quite large; for the <em>Jupyter</em> image linked above, it was about 1.2 GB, but I have seen containers up to 10 GB or more on occasion.</p>
+</section>
+<section id="best-practices-for-snakemake-workflows" class="level3" data-number="9.7.5">
+<h3 data-number="9.7.5" class="anchored" data-anchor-id="best-practices-for-snakemake-workflows"><span class="header-section-number">9.7.5</span> Best practices for <em>Snakemake</em> workflows</h3>
+<p>The <em>Snakemake</em> team has published a set of <a href="https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html">best practices</a> for the creation of <em>Snakemake</em> workflows, some of which I will outline here, along with one of my own (the first).</p>
+<section id="using-a-working-directory" class="level4" data-number="9.7.5.1">
+<h4 data-number="9.7.5.1" class="anchored" data-anchor-id="using-a-working-directory"><span class="header-section-number">9.7.5.1</span> Using a working directory</h4>
+<p>By default <em>Snakemake</em> looks for a <code>Snakefile</code> in the current directory, so it’s tempting to run the workflow from the code repository. However, <em>Snakemake</em> creates a directory called <code>.snakemake</code> to store metadata in the directory where the workflow is run, which one generally doesn’t want to mix with the code. Thus, it’s best to run the command using the <code>--snakefile</code> directive to point to the <code>Snakefile</code> located in the code directory, and setting the working directory to the intended output directory using the <code>-d</code> flag. This will fail if you run the command from a location other than the source folder if the paths in the snakemake rules are specified using relative paths, like this:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>script:</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"scripts/aggregate_results.py"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This happens because relative paths inside the <code>Snakefile</code> are interpreted as relative to the working directory, not the directory where the <code>Snakefile</code> is located. Instead, we need to use the <code>workflow.basedir</code> prefix, which refers to the directory where the <code>Snakefile</code> is located:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>script:</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>workflow<span class="sc">.</span>basedir<span class="sc">}</span><span class="ss">/scripts/aggregate_results.py"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="workflow-organization" class="level4" data-number="9.7.5.2">
+<h4 data-number="9.7.5.2" class="anchored" data-anchor-id="workflow-organization"><span class="header-section-number">9.7.5.2</span> Workflow organization</h4>
+<p>There is a <a href="https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#distribution-and-reproducibility">standard format</a> for the organization of <em>Snakemake</em> workflow directories, which one should follow when developing new workflows.</p>
+</section>
+<section id="snakefile-formatting" class="level4" data-number="9.7.5.3">
+<h4 data-number="9.7.5.3" class="anchored" data-anchor-id="snakefile-formatting"><span class="header-section-number">9.7.5.3</span> <code>Snakefile</code> formatting</h4>
+<p><em>Snakemake</em> comes with a set of commands that help ensure that configuration files are properly formatted and follow best practices. As I mentioned above, there is a static analysis tool (i.e., a “linter”, akin to <em>ruff</em> or <em>flake8</em> for Python code), which can automatically identify syntax errors and logical problems with <em>Snakemake</em> rule files. Users of <em>uv</em> should note that the <em>Snakemake</em> linter assumes that one is using the <em>Conda</em> environment manager or a container, and it raises an issue for any rule that doesn’t specify a <em>Conda</em> or container environment. Nonetheless, if those are ignored the linter can be useful in identifying problems. There is also a formatting tool called <code>snakefmt</code> (separately installed) that optimally formats <em>Snakemake</em> files in the way that <em>black</em> or <em>ruff</em> format Python code. These can both be useful tools when developing a new workflow.</p>
+</section>
+<section id="configurability" class="level4" data-number="9.7.5.4">
+<h4 data-number="9.7.5.4" class="anchored" data-anchor-id="configurability"><span class="header-section-number">9.7.5.4</span> Configurability</h4>
+<p>Workflow configuration details should be stored in configuration files, such as the <code>config.yaml</code> files that we have used in our workflow examples. However, these files should not be used for runtime parameters, such as the number of cores or the output directory; those should instead be handled using Snakemake’s standard arguments.</p>
+</section>
+</section>
+<section id="report-generation" class="level3" data-number="9.7.6">
+<h3 data-number="9.7.6" class="anchored" data-anchor-id="report-generation"><span class="header-section-number">9.7.6</span> Report generation</h3>
+<p>One of the very handy features of <em>Snakemake</em> is its ability to generate reports for workflow execution. Report generation is as simple as:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run snakemake <span class="at">-c</span> 1 <span class="at">--report</span> output/report.html <span class="at">-d</span> output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This command uses the metadata stored in the <code>.snakemake</code> directory along with details provided in separate report formatting files that are located within the <code>report</code> directory alongside the <code>Snakefile</code>. In order for an output (such as a figure) to be included in the report, it needs to be marked with a <code>report</code> flag in the output section of the relevant rule. For example, to have a correlation heatmap added to the report, I used the following statement:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rule generate_heatmap:</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>:</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>RESULTS_DIR<span class="sc">}</span><span class="ss">/correlation_matrix.csv"</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    output:</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>        report(</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>FIGURES_DIR<span class="sc">}</span><span class="ss">/correlation_heatmap.png"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>            caption<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/report/heatmap.rst"</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>            category<span class="op">=</span><span class="st">"Results"</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        ),</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Running the report generation command generates a single self-contained HTML file, with any figures embedded within the file, making them very handy for sharing.</p>
+</section>
+<section id="tracking-provenance" class="level3" data-number="9.7.7">
+<h3 data-number="9.7.7" class="anchored" data-anchor-id="tracking-provenance"><span class="header-section-number">9.7.7</span> Tracking provenance</h3>
+<p>As I discussed in the earlier chapter on data management, it is essential to be able to track the provenance of files in a workflow. That is, how did the file come to be, and what other files did it depend on? <em>Snakemake</em> stores a substantial amount of metadata that allows us to reconstruct much of the provenance of any file generated by a workflow. The relevant data are stored within the <code>.snakemake/metadata</code> directory, which on first glance seems to contain a bunch of gibberish:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  ls .snakemake/metadata</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cmVzdWx0cy9jb3JyZWxhdGlvbl9tYXRyaXguY3N2</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">ZGF0YS9kZW1vZ3JhcGhpY3MuY3N2</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="va">ZGF0YS9kZW1vZ3JhcGhpY3NfbnVtZXJpY2FsLmNzdg</span><span class="op">=</span>=</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="va">ZGF0YS9qb2luZWRfZGF0YS5jc3Y</span><span class="op">=</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ZGF0YS9tZWFuaW5nZnVsX3ZhcmlhYmxlc19udW1lcmljYWwuY3N2</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="va">ZGF0YS9tZWFuaW5nZnVsX3ZhcmlhYmxlcy5jc3Y</span><span class="op">=</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="va">ZmlndXJlcy9jb3JyZWxhdGlvbl9oZWF0bWFwLnBuZw</span><span class="op">=</span>=</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These filenames are actually versions of the original filenames that have been encoded into a <em>base64</em> representation that makes them easily saveable as a single file. We can decode them using the <code>base64</code> python package:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>In : encoded_name</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>Out: <span class="st">'ZGF0YS9tZWFuaW5nZnVsX3ZhcmlhYmxlc19udW1lcmljYWwuY3N2'</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>In : <span class="im">import</span> base64</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>In : base64.b64decode(encoded_name).decode()</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>Out: <span class="st">'data/meaningful_variables_numerical.csv'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These files are stored in JSON format and contain a dictionary with relevant information about the provenance of each file:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>metadata_path <span class="op">=</span> <span class="ss">f".snakemake/metadata/</span><span class="sc">{</span>encoded_name<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(metadata_path) <span class="im">as</span> f:</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(md_dict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="er">'record_format_version'</span><span class="fu">:</span> <span class="dv">6</span><span class="fu">,</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a> <span class="er">'code'</span><span class="fu">:</span> <span class="er">'</span>        <span class="er">f</span><span class="st">"{BASEDIR}/scripts/filter_data.py"</span><span class="er">\n'</span><span class="fu">,</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a> <span class="er">'rule'</span><span class="fu">:</span> <span class="er">'filter_meaningful_variables'</span><span class="fu">,</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a> <span class="er">'input'</span><span class="fu">:</span> <span class="ot">[</span><span class="er">'data/meaningful_variables.csv'</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a> <span class="er">'log'</span><span class="fu">:</span> <span class="ot">[</span><span class="er">'logs/filter_meaningful_variables.log'</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a> <span class="er">'params'</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a> <span class="er">'shellcmd'</span><span class="fu">:</span> <span class="er">None</span><span class="fu">,</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a> <span class="er">'incomplete'</span><span class="fu">:</span> <span class="er">False</span><span class="fu">,</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a> <span class="er">'starttime'</span><span class="fu">:</span> <span class="fl">1767284094.3992934</span><span class="fu">,</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a> <span class="er">'endtime'</span><span class="fu">:</span> <span class="fl">1767284095.986599</span><span class="fu">,</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a> <span class="er">'job_hash'</span><span class="fu">:</span> <span class="dv">278889477</span><span class="fu">,</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a> <span class="er">'conda_env'</span><span class="fu">:</span> <span class="er">'bmFtZTogc2ltcGxlX3dvcmtmbG93CmNoYW5uZWxzOgogIC'</span><span class="fu">,</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a> <span class="er">'software_stack_hash'</span><span class="fu">:</span> <span class="er">'d41d8cd98f00b204e9800998ecf8427e'</span><span class="fu">,</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a> <span class="er">'container_img_url'</span><span class="fu">:</span> <span class="er">'docker://jupyter/scipy-notebook:x86_</span><span class="dv">64</span><span class="er">-ubuntu</span><span class="fl">-22.04</span><span class="er">'</span><span class="fu">,</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a> <span class="er">'input_checksums'</span><span class="fu">:</span> <span class="fu">{}}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Using this information we could reconstruct the DAG for the workflow, or identify the specific files that went into generating each other file.</p>
+<section id="generating-a-prov-representation-from-snakemake" class="level4" data-number="9.7.7.1">
+<h4 data-number="9.7.7.1" class="anchored" data-anchor-id="generating-a-prov-representation-from-snakemake"><span class="header-section-number">9.7.7.1</span> Generating a PROV representation from Snakemake</h4>
+<p>As I mentioned in the chapter on data management, there is a emerging standard for representation of provenance information, known as <em>PROV</em>. Although <em>Snakemake</em> does not directly support the generation of <em>PROV</em> representations, there is a package called <a href="https://pypi.org/project/makeprov/"><em>makeprov</em></a> that can generate a <em>PROV</em> representation from a <em>Snakemake</em> workflow. After running our workflow and installing the <em>makeprov</em> package, we simply need to run the <code>snakemake.makeprov</code> command to generate the PROV output from within the working directory of the workflow (where the .snakemake directory is located):</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> uv run python <span class="at">-m</span> makeprov.snakemake <span class="at">--prov</span> <span class="at">-path</span> prov/snakemake <span class="at">--</span> <span class="at">--snakefile</span> path/to/Snakefile <span class="at">--nolock</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will generate a file called <code>prov/snakemake.json</code> that contains representations of each of the entities and activities in the workflow. For example, the representation of the <code>data/meaningful_variables_numerical.csv</code> output file would look like this:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"urn:snakemake:file/data/meaningful_variables_numerical.csv"</span><span class="fu">,</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"prov:Entity"</span><span class="fu">,</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"text/csv"</span><span class="fu">,</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"extent"</span><span class="fu">:</span> <span class="dv">1191564</span><span class="fu">,</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"modified"</span><span class="fu">:</span> <span class="st">"2026-01-01T16:14:55.986599+00:00"</span><span class="fu">,</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"sha256:6e09083ea4f474b420cf1ca9f42486e4a509ad020a39f5432b4c183e7f92e519"</span><span class="fu">,</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"wasGeneratedBy"</span><span class="fu">:</span> <span class="st">"urn:snakemake:job/4"</span><span class="fu">,</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"label"</span><span class="fu">:</span> <span class="st">"data/meaningful_variables_numerical.csv"</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="er">,</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and the representation of the job that created it (<code>filter_meaningful_variables</code>) would look like this:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"urn:snakemake:job/4"</span><span class="fu">,</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"prov:Activity"</span><span class="fu">,</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"wasAssociatedWith"</span><span class="fu">:</span> <span class="st">"urn:snakemake:agent/snakemake"</span><span class="fu">,</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"used"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"urn:snakemake:file/data/meaningful_variables.csv"</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"label"</span><span class="fu">:</span> <span class="st">"filter_meaningful_variables (jobid=4)"</span><span class="fu">,</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"snakemake:rule"</span><span class="fu">:</span> <span class="st">"filter_meaningful_variables"</span><span class="fu">,</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"snakemake:status"</span><span class="fu">:</span> <span class="st">"ok"</span><span class="fu">,</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"snakemake:plan"</span><span class="fu">:</span> <span class="st">"no update"</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="er">,</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These files provide a very useful representation of the provenance for a workflow, and demonstrate the power of using a workflow engine that stores rich metadata about the workflow and its execution.</p>
+</section>
+</section>
+</section>
+<section id="scaling-to-a-complex-workflow" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="scaling-to-a-complex-workflow"><span class="header-section-number">9.8</span> Scaling to a complex workflow</h2>
+<p>We now turn to a more realistic and complex scientific data analysis workflow. For this example I will use an analysis of single-cell RNA-sequencing data to determine how gene expression in immune system cells changes with age. This analysis will utilize a <a href="https://cellxgene.cziscience.com/collections/dde06e0f-ab3b-46be-96a2-a8082383c4a1">large openly available dataset</a> that includes data from 982 people comprising about 1.3 million peripheral blood mononuclear cells (i.e.&nbsp;white blood cells) for about 35K transcripts. I chose this particular example for several reasons:</p>
+<ul>
+<li><p>It is a realistic example of a workflow that a researcher might actually perform.</p></li>
+<li><p>It has a large enough sample size to provide a robust answer to our scientific question.</p></li>
+<li><p>The data are large enough to call for a real workflow management scheme, but small enough to be processed on a single laptop (assuming it has decent memory).</p></li>
+<li><p>The workflow has many different steps, some of which can take a significant amount of time (over one hour)</p></li>
+<li><p>There is an established Python library (<a href="https://scanpy.readthedocs.io/en/stable/"><em>scanpy</em></a>) that implements the necessary workflow components.</p></li>
+<li><p>It’s an example outside of my own research domain, to help demonstrate the applicability of the book’s ideas across a broader set of data types.</p></li>
+</ul>
+<p>I will use this example to show how to move from a monolithic analysis script to a well-structured and usable workflow that meets most of the desired features described above.</p>
+</section>
+<section id="starting-point-one-huge-notebook" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="starting-point-one-huge-notebook"><span class="header-section-number">9.9</span> Starting point: One huge notebook</h2>
+<p>I developed the initial version of this workflow as many researchers would: by creating a <em>Jupyter</em> notebook that implements the entire workflow, which can be found <a href="https://github.com/BetterCodeBetterScience/example-rnaseq/blob/main/notebooks/immune_scrnaseq_2_preprocess.ipynb">here</a>. The total execution time for this notebook is about two hours on an M3 Max Macbook Pro.</p>
+<section id="the-problem-of-in-place-operations" class="level3" data-number="9.9.1">
+<h3 data-number="9.9.1" class="anchored" data-anchor-id="the-problem-of-in-place-operations"><span class="header-section-number">9.9.1</span> The problem of in-place operations</h3>
+<p>What I found as I developed the workflow was that I increasingly ran into problems that arose because the state of particular objects had changed. This occurred for two reasons at different points. In some cases it occurred because I saved a new version of the object to the same name, resulting in an object with different structure than before. Second, and more insidiously, it occurred when an object passed into a function was modified by the function internally. This is known as an <em>in-place</em> operation, in which a function modifies an object directly rather than returning a new object that can be assigned to a variable.</p>
+<p>In-place operations can make code particularly difficult to debug in the context of a <em>Jupyter</em> notebook, because it’s a case where out-of-order execution can result in very confusing results or errors, since the changes that were made in-place may not be obvious. For this reason, I generally avoid any kind of in-place operations if possible. Rather, any function should immediately create a copy of the object that was passed in, and then do its work on that copy, returning at the end of the function for assignment to a new variable. One can then re-assign it to the same variable name if desired, which is more transparent than an in-place operation but still makes the workflow dependent on the exact state of execution and can lead to confusion when debugging. Some packages allow a feature called “copy-on-write” which defers actually copying the data in memory until it is actually modified, which can make copying more efficient; this feature is becoming the default in <em>pandas</em>.</p>
+<p>If one must modify objects in-place, then it is good practice to announce this loudly. The loudest way to do this would be to put “inplace” in the function name. Another cleaner but less loud way is through conventions regarding function naming; for example, in <em>PyTorch</em> it is a convention that any function that ends with an underscore (e.g.&nbsp;<code>tensor.mul_(x)</code>) performs an in-place operation whereas the same function without the underscore (<code>tensor.mul(x)</code>) returns a new object. Another way that some packages enable explicit in-place operations is through a function argument (e.g.&nbsp;<code>inplace=True</code> in <em>pandas</em>), though this is being phased out from many functions in <em>pandas</em> because “It is generally seen (at least by several <em>pandas</em> maintainers and educators) as bad practice and often unnecessary” (<a href="https://pandas.pydata.org/pdeps/0008-inplace-methods-in-pandas.html">PDEP-8</a>).</p>
+<p>One way to prevent in-place operations altogether is to use data types that are <em>immutable</em>, meaning that they can’t be changed once created. This is one of the central principles in <em>functional programming</em> languages (such as Haskell), where all data types are immutable, such that one is required to create a new object any time data are modified. Some native data types in Python are immutable (such as tuples and frozensets), and some data science packages also provide immutable data types; in particular, the <em>Polars</em> package (which is meant to be a high-performance alternative to pandas) implements its version of a data frame as an immutable object, and the <em>JAX</em> package (for high-performance numerical computation and machine learning) implements immutable numerical arrays.</p>
+</section>
+<section id="converting-from-jupyter-notebook-to-a-runnable-python-script" class="level3" data-number="9.9.2">
+<h3 data-number="9.9.2" class="anchored" data-anchor-id="converting-from-jupyter-notebook-to-a-runnable-python-script"><span class="header-section-number">9.9.2</span> Converting from <em>Jupyter</em> notebook to a runnable python script</h3>
+<p>As we discussed in an earlier chapter, converting a <em>Jupyter</em> notebook to a pure Python script is easy using <em>jupytext</em>. This results in a script that can be run from the command line. However, there can be some commands that will block execution of the script; in particular, plotting commands can open windows that will block execution until they are closed. To prevent this, and to ensure that the results of the plots are saved for later examination, I replaced all of the <code>plt.show()</code> commands that display a figure to the screen with <code>plt.savefig()</code> commands that save the figures to a file in the results directory. (This was an easy job for the my AI coding agent to complete.)</p>
+</section>
+</section>
+<section id="decomposing-a-complex-workflow" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="decomposing-a-complex-workflow"><span class="header-section-number">9.10</span> Decomposing a complex workflow</h2>
+<p>The first thing we need to do with a large monolithic workflow is to determine how to decompose it into coherent modules. There are various reasons that one might choose a particular breakpoint between modules. First and foremost, there are usually different stages that do conceptually different things. In our example, we can break the workflow into several high-level processes:</p>
+<ul>
+<li><p>Data (down)loading</p></li>
+<li><p>Data filtering (removing subjects or cell types with insufficient observations)</p></li>
+<li><p>Quality control</p>
+<ul>
+<li><p>identifying bad cells on the basis of mitochondrial, ribosomal, or hemoglobin genes or hemoglobin contamination</p></li>
+<li><p>identifying “doublets” (two cells captured in a single barcode)</p></li>
+</ul></li>
+<li><p>Preprocessing</p>
+<ul>
+<li><p>Count normalization</p></li>
+<li><p>Log transformation</p></li>
+<li><p>Identification of high-variance features</p></li>
+<li><p>Filtering of nuisance genes</p></li>
+</ul></li>
+<li><p>Dimensionality reduction</p></li>
+<li><p>UMAP generation</p></li>
+<li><p>Clustering</p></li>
+<li><p>Pseudobulking (aggregating cells within an individual)</p></li>
+<li><p>Differential expression analysis</p></li>
+<li><p>Pathway enrichment analysis (GSEA)</p></li>
+<li><p>Overrepresentation analysis (Enrichr)</p></li>
+<li><p>Predictive modeling</p></li>
+</ul>
+<p>In addition to a conceptual breakdown, there are also other reasons that one might want to further decompose the workflow:</p>
+<ul>
+<li><p>There may be points where one might need to restart the computation (e.g.&nbsp;due to computational cost).</p></li>
+<li><p>There may be sections where one might wish to swap in a new method or different parameterization.</p></li>
+<li><p>There may be points where the output could be reusable elsewhere.</p></li>
+</ul>
+</section>
+<section id="resumable-workflows" class="level2" data-number="9.11">
+<h2 data-number="9.11" class="anchored" data-anchor-id="resumable-workflows"><span class="header-section-number">9.11</span> Resumable workflows</h2>
+<p>I asked my coding agent to help modularize the monolithic workflow, using a prompt that provided the conceptual breakdown described above. The resulting code ran correctly, but crashed about two hours into the process due to a resource issue that appeared to be due to asking for too many CPU cores in the differential expression analysis. This left me in the situation of having to rerun the entire two hours of preliminary workflow simply to get to a point where I could test my fix for the differential expression component, which is not a particularly efficient way of coding. The problem here is that the workflow execution was <em>stateful</em>, in the sense that the previous steps need to be rerun prior to performing the current step in order to establish the required objects in memory. The solution to this problem is to implement the workflow in a <em>resumable</em> way, which doesn’t require that earlier steps be rerun if they have already been completed. One way to do this is by implementing a process called <em>checkpointing</em>, in which the intermediate state is stored for each step. These checkpoint files can then be used to start the workflow at any point without having to rerun all of the previous steps.</p>
+<p>Another important feature of a workflow related to resumability is <em>idempotency</em>, which means that a workflow will result in the same answer when run multiple times. This is related to, but not the same as, the idea of resumability. For example, a resumable workflow that saves its outputs to cache files could fail to be idempotent if the results were appended to the output file with each execution, rather than overwriting them. This would result in different outputs depending on how many times the workflow has been executed. Thus, when we use caching we should be sure to either reuse the existing file or rewrite it completely with a new version.</p>
+<p>When it comes to building a resumable workflow, there are two options:</p>
+<ul>
+<li><p>Build it from scratch</p></li>
+<li><p>Use an existing workflow engine</p></li>
+</ul>
+<p>While there may sometimes be good reasons to build a workflow from scratch (and I actually do so in developing this chapter: see <a href="https://github.com/BetterCodeBetterScience/example-rnaseq/blob/main/checkpointed_workflow/run_workflow.py">here</a>), one’s first inclination should always be to see whether there is an existing tool that can solve the problem.</p>
+</section>
+<section id="managing-a-complex-workflow-with-snakemake" class="level2" data-number="9.12">
+<h2 data-number="9.12" class="anchored" data-anchor-id="managing-a-complex-workflow-with-snakemake"><span class="header-section-number">9.12</span> Managing a complex workflow with Snakemake</h2>
+<p>In this example I will focus on the <em>Snakemake</em> workflow engine. Figure&nbsp;<a href="#rnaseq-DAG-fig" data-reference-type="ref" data-reference="rnaseq-DAG-fig">1.2</a> shows the DAG generated by <em>Snakemake</em> for the RNA-seq analysis workflow.</p>
+<figure id="rnaseq-DAG-fig" data-latex-placement="!htbp" class="figure">
+<img src="figures/08/rnaseq-DAG.svg" style="width:37.5%" class="figure-img">
+<figcaption>
+The execution graph for the RNA-seq analysis workflow visualized as a DAG.
+</figcaption>
+</figure>
+<p>The <code>Snakemake</code> file is substantially larger for this complex workflow; to keep it from being even longer, we can also move some of the rules into separate rules files using the following syntax within the <code>Snakemake</code> file:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include modular rule files</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>include: <span class="st">"rules/common.smk"</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>include: <span class="st">"rules/preprocessing.smk"</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>include: <span class="st">"rules/pseudobulk.smk"</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>include: <span class="st">"rules/per_cell_type.smk"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="pipeline-optimization" class="level3" data-number="9.12.1">
+<h3 data-number="9.12.1" class="anchored" data-anchor-id="pipeline-optimization"><span class="header-section-number">9.12.1</span> Pipeline optimization</h3>
+<p>The first time that I ran this workflow using Snakemake, I noticed that it was substantially slower than when I ran it using the custom workflow engine. When I asked my chatbot about this, it gave me a reasonable answer:</p>
+<blockquote class="blockquote">
+<p>The <em>Snakemake</em> rules don’t specify a threads directive. By default, <em>Snakemake</em> runs each job with 1 thread, which limits parallelization of computationally intensive operations like neighbor computation and UMAP (which use numba internally).</p>
+</blockquote>
+<p>I asked the AI agent to fix this, and it returned the following change:</p>
+<blockquote class="blockquote">
+<p>Fixes applied:</p>
+<ol type="1">
+<li><p>Added threads: 8 to dimensionality_reduction rule</p></li>
+<li><p>Added threads: 8 to quality_control rule (Scrublet)</p></li>
+<li><p>Added threads: 4 to preprocess rule</p></li>
+<li><p>Set NUMBA_NUM_THREADS and OMP_NUM_THREADS environment variables in dimred.py In contrast, tasks run in the main process have access to all CPUs by default, which is why it was faster.</p></li>
+</ol>
+</blockquote>
+<p>This involved creating rules like this one:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>rule dimensionality_reduction:</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    threads: <span class="dv">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>dimred.py</code> script then uses the <code>snakemake.threads</code> variable to set the relevant environment variables. This rule defines the ideal situation: that is, what is the maximum number of threads that our code can take advantage of? In general a number from 4-8 is optimal here, given the overhead that comes with multithreading (as I will discuss further in the later chapter on Performance Optimization). While this might seem problematic (e.g., what if there are only four cores available?), <em>Snakemake</em> deals with it gracefully. If there are more cores available than the limit, then <em>Snakemake</em> will (if appropriate) spawn multiple processes in parallel. If there are fewer than the number requested, it will simply use what is available. There is a separate command line argument to <em>Snakemake</em> (<code>--cores</code>) that specifies the maximum number of cores that can be utilized on the computer.</p>
+</section>
+<section id="parametric-sweeps" class="level3" data-number="9.12.2">
+<h3 data-number="9.12.2" class="anchored" data-anchor-id="parametric-sweeps"><span class="header-section-number">9.12.2</span> Parametric sweeps</h3>
+<p>A common pattern in some computational research domains is the <em>parametric sweep</em>, where a workflow is run using a range of values for specific parameters in the workflow. A key to successful execution of parametric sweeps is proper organization of the outputs so that they can be easily processed by downstream tools. <em>Snakemake</em> provides the ability to easily implement parametric sweeps simply by specifying a list of parameter values in the configuration file. For example, let’s say that we wanted to assess predictive accuracy using several values of the regularization parameter (known as <em>alpha</em>) for a ridge regression model. We could first specify a setting within our <code>config.yaml</code> file containing these values:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ridge_alpha</span><span class="kw">:</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fl">0.1</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fl">1.0</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fl">10.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We would then add wildcards to the inputs and/or outputs for the relevant rules, expanding the parameters so that each unique value (e.g.&nbsp;each of our different models) becomes an expected input/output:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>rule <span class="bu">all</span>:</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>:</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>        expand(<span class="st">"results/ridge/alpha_</span><span class="sc">{param}</span><span class="st">/model.pkl"</span>,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>               param<span class="op">=</span>config[<span class="st">"ridge_alpha"</span>])</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>rule train:</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>:</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">"data/train.csv"</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    output:</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">"results/ridge/param_{param}/model.pkl"</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>    shell:</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">"python train.py --model ridge --param {wildcards.param} -o {output}"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It is also possible to generate parameters based on earlier steps in the workflow. In our RNA-seq workflow, we determine in an earlier step which specific cell types to include, based on their prevalence in the dataset. These cell types are then used to run the per-cell-type analyses in a later step, executing the same enrichment and pathway analyses on each of the selected cell types. This kind of data-dependent computational graph requires the use of the advanced checkpointing features in <em>Snakemake</em>.</p>
+<p>One could certainly perform the parametric sweep outside of the workflow engine (e.g.&nbsp;by running several <em>Snakemake</em> jobs for each set of values or by looping over the values within the main job script rather than at the workflow layer). However, there are several advantages to doing it within a coherent workflow. First, it ensures that all of the runs are performed using exactly the same software environment and workflow. If the different parameter settings were run in different workflows, then it is possible that the software environment could change between runs, so one would need to do additional validation to ensure that it was identical across runs. Second, it maximizes the use of system resources, since the workflow manager can optimally split the work across the available number of cores/threads. Running multiple snakemake jobs at once has the potential to request more threads than available, which can sometimes substantially reduce performance. Manually managing system resources can require substantial effort. Third, it enables the use of values from earlier workflow steps to determine the parameters for sweeping at later layers, as in the cell-type example above. Finally, it makes incremental changes easy and economical; if one additional value of the parameter is added, <em>Snakemake</em> will only run the computations for the new value.</p>
+</section>
+</section>
+<section id="workflow-testing-strategies" class="level2" data-number="9.13">
+<h2 data-number="9.13" class="anchored" data-anchor-id="workflow-testing-strategies"><span class="header-section-number">9.13</span> Workflow testing strategies</h2>
+<p>Software testing is just as essential for workflow development as it is for any other kind of software, but there are a few particular issues that are uniquely relevant for testing workflows:</p>
+<ul>
+<li><p>It may not be possible to perform testing using realistic datasets, either due to data size or to restrictions on data access.</p></li>
+<li><p>Smaller test datasets may not fully exercise the same behaviors as real datasets.</p></li>
+<li><p>Results are often non-deterministic, such as those involving Monte Carlo simulations or search processes with random initialization, making it difficult to test for a specific outcome.</p></li>
+<li><p>These tests often require comparison of equality between floating point numbers, but those require some degree of tolerance for floating point errors, which can be difficult to choose in order to simultaneously catch real errors and avoid false alarms.</p></li>
+<li><p>Scientific workflows often take a very long time to run (hours or even days), making full integration tests infeasible.</p></li>
+<li><p>Finally, in scientific workflows we often don’t know the right answer to expect from code, if we are performing operations that have never been done before.</p></li>
+</ul>
+<p>I will leave the question of analytic accuracy to be addressed in the following chapter on validation. Here I will focus primarily on unit testing of workflow components and integration testing using a minimal test dataset.</p>
+<section id="generating-tests-using-ai-agents" class="level3" data-number="9.13.1">
+<h3 data-number="9.13.1" class="anchored" data-anchor-id="generating-tests-using-ai-agents"><span class="header-section-number">9.13.1</span> Generating tests using AI agents</h3>
+<p>Because I didn’t use test-driven development to generate this workflow, I was faced with the task of having to generate a substantial amount of testing code for the completed workflow. To get a feel for the scale, the source code for our RNA-seq analysis contained 83 functions defined across 13 files. In total these files included 3,239 lines, though there are actually many fewer lines of code, since many lines are blank or contain comments. In addition many individual commands are split across lines to increase readability. Using the <a href="https://radon.readthedocs.io/en/latest/"><em>radon</em></a> package for source code analysis, we can compute the <em>logical lines of code</em>, which is the number of executable statements:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span>  uv run radon raw <span class="pp">*</span>.py <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'/LLOC:/ {sum += $2} END {print sum}'</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">1038</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Thus, we need to generate tests for 83 functions comprising more than 1000 statements! As I discussed in Chapter 4, we can use AI tools to help generate test code, though this code <em>must</em> be examined in detail by a knowledgeable human in order to ensure that the tests adequately exercise the relevant functions.</p>
+<p>I started by generating a Markdown file specifying the test framework:</p>
+<pre class="text"><code>This is a set of implementations of an analysis workflow for single-cell RNA-seq data analysis. These are meant to exemplify different ways of building a workflow.  The main goal of this development project is to develop a testing framework for this workflow.  This will involve two main steps:
+
+- develop unit tests for the functions defined within src/example_rnaseq
+- develop integration tests for the snakemake workflow defined in snakemake_workflow
+
+Some of these tests can be performed using automatically generated data. However, the integration tests will require a test dataset. this should be based on the actual data that can be found at $DATADIR/dataset-OneK1K_subset-immune_raw.h5ad.  To minimize the size of this dataset, we should first select a subset of 30 donors from the dataset.  we should look for donors that vary in the number of cells, with some having high numbers and some having low numbers. The donors should also vary in age so that the subset covers the entire distribution of ages in the dataset. then we should select a subset of about 500 genes.  these should include:
+
+- a set of genes from a pathway (TNF-alpha Signaling via NF-KB) known to be associated with aging, found in tests/data/HALLMARK_TNFA_SIGNALING_VIA_NFKB.v2025.1.Hs.json
+- a set of about 200 other highly variable genes
+- a set of about 100 weakly variable genes
+
+This dataset should be saved to tests/data/testdata.h5ad.
+
+## Coding guidelines
+
+- Think about the problem before generating code.
+- Write code that is clean and modular. Prefer shorter functions/methods over longer ones.
+- Prefer reliance on widely used packages (such as numpy, pandas, and scikit-learn); avoid unknown packages from Github.
+- Do not include *any* code in `__init__.py` files.
+- Use pytest for testing.
+- Use functions rather than classes for tests. Use pytest fixtures to share resources between tests.</code></pre>
+<p>My agent took about 20 minutes to generate an entire test framework for the code, comprising 215 test functions and 19 test fixtures. Interestingly, the agent disregarded my instructions to use functions rather than classes for tests, generating 78 test classes. While I usually prefer tests to be in pure functions rather than classes so that novices can more easily understand them, I decided in this case to stay with the class-based implementation since I don’t mind it and it does make the organization of the tests a bit cleaner.</p>
+<p>The initial test set for this project had no tests for one of the modules, and other modules with significant portions untested. I was able to improve this by having the agent analyze the code coverage report and identify important parts of the code that were not currently covered, which moved the test coverage from 69% to 88% of the 870 statements in the code that were identified by the <code>coverage</code> tool.</p>
+</section>
+<section id="avoiding-the-happy-path" class="level3" data-number="9.13.2">
+<h3 data-number="9.13.2" class="anchored" data-anchor-id="avoiding-the-happy-path"><span class="header-section-number">9.13.2</span> Avoiding the happy path</h3>
+<p>Because it is essential for AI-generated tests to be assessed by a knowledgeable human, I proceeded to read all of the tests that had been generated by the agent. Fortunately they were all easily readable and clearly named, which made it relatively easy to see some potential problems right away. Several kinds of issues arose.</p>
+<p>Because AI agents have a strong tendency to generate tests that pass, they will sometimes miss potential problems - this is commonly referred to as following the “happy path”. Several of the tests performed very minimal checking of outputs that would miss potential problems. For example, it generated the following test which, according to its name, should test whether a PCA embedding is generated using the <em>harmonypy</em> package:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_creates_harmony_embedding(<span class="va">self</span>, adata_with_pca):</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Test that Harmony creates a new embedding."""</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>        adata, use_rep <span class="op">=</span> run_harmony_integration(adata_with_pca.copy())</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> use_rep <span class="op">==</span> <span class="st">"X_pca_harmony"</span>:</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> <span class="st">"X_pca_harmony"</span> <span class="kw">in</span> adata.obsm</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> adata.obsm[<span class="st">"X_pca_harmony"</span>].shape[<span class="dv">0</span>] <span class="op">==</span> adata.n_obs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>use_rep</code> variable contains “X_pca_harmony” if the <em>harmonypy</em> package is installed and successfully applied to the data, otherwise it falls back on standard PCA and sets <code>use_rep</code> to “X_pca”. But it’s clear here that this package only checks for the harmony embedding in the case that it was successfully created (‘if use_rep == “X_pca_harmony”’), in which case it makes sure that it is present in the dataset and has the right shape. Thus, the test could pass even if the harmony embedding was not successfully created. Here is the improved version to address this issue:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_creates_harmony_embedding(<span class="va">self</span>, adata_with_pca):</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""Test that Harmony creates a new embedding with correct shape."""</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>        pytest.importorskip(<span class="st">"harmonypy"</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>        adata, use_rep <span class="op">=</span> run_harmony_integration(adata_with_pca.copy())</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> use_rep <span class="op">==</span> <span class="st">"X_pca_harmony"</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="st">"X_pca_harmony"</span> <span class="kw">in</span> adata.obsm</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> adata.obsm[<span class="st">"X_pca_harmony"</span>].shape[<span class="dv">0</span>] <span class="op">==</span> adata.n_obs</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> adata.obsm[<span class="st">"X_pca_harmony"</span>].shape <span class="op">==</span> adata.obsm[<span class="st">"X_pca"</span>].shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In other cases, the tests that were generated were too minimal, allowing obvious failure cases to pass. For example, the integration test named “test_pseudobulk_pipeline_runs” included the following code:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run_pseudobulk_pipeline(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>            adata,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>            group_col<span class="op">=</span><span class="st">"cell_type"</span>,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>            donor_col<span class="op">=</span><span class="st">"donor_id"</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>            metadata_cols<span class="op">=</span>[<span class="st">"development_stage"</span>, <span class="st">"sex"</span>],</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>            min_cells<span class="op">=</span><span class="dv">1</span>,  <span class="co"># Low threshold for test data</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>            figure_dir<span class="op">=</span>temp_output_dir,</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Check outputs</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> result <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> result.n_obs <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="st">"n_cells"</span> <span class="kw">in</span> result.obs.columns</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="st">"cell_type"</span> <span class="kw">in</span> result.obs.columns</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="st">"donor_id"</span> <span class="kw">in</span> result.obs.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Pseudobulking is an operation that should summarize all cells of a given type for each donor, but none of the test conditions actually check that it has been properly applied. In fact, these tests could pass if <code>run_pseudobulk_pipeline()</code> simply passed the original data back without doing anything to it! This is a case where domain knowledge is essential to get the tests right and avoid the happy path. In several other cases the tests called <code>pytest.skip()</code> (which causes the test to be skipped) for outcomes that really should have triggered a test failure. For example, it skipped the integration tests for the full dataset if the dataset hadn’t already been created, and it also skipped the <em>Snakemake</em> integration functions if the <em>Snakemake</em> call failed (which it initially did because of a missing argument).</p>
+<p>These examples highlight the need to closely examine the test code that is generated by AI agents. However it’s worth noting that although it took a significant amount of human time to read over the AI-generated tests, the time spent was still far less than if I had undertaken writing the test code without AI assistance, and the coding agent was also able to fix all of the issues to my satisfaction after I raised them.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Tip</strong><br>
+Break the code on purpose and see if the tests catch it. That’s a powerful way to see whether AI-generated tests are actually valid.</p>
+</div>
+</div>
+</section>
+<section id="property-based-testing-for-workflows" class="level3" data-number="9.13.3">
+<h3 data-number="9.13.3" class="anchored" data-anchor-id="property-based-testing-for-workflows"><span class="header-section-number">9.13.3</span> Property-based testing for workflows</h3>
+<p>The tests initially developed for this workflow were built around the known characteristics of the expected data. However, there are many “unknown unknowns” when it comes to input data, and it’s important to make sure that the code deals gracefully with problematic inputs. We can test this using a <em>property-based testing</em> approach; as I discussed in Chapter 4, this involves the generation of many different datasets that follow a particular specification, and checking whether the code deals with them appropriately. When I asked the coding agent to identify plausible candidates for property-based testing using the Hypothesis package, it generated <a href="https://github.com/BetterCodeBetterScience/example-rnaseq/blob/main/tests/test_hypothesis.py">tests</a> centered on several different properties:</p>
+<ul>
+<li><p>Proper parsing of a range of filenames for the BIDS format parser used in caching</p></li>
+<li><p>Consistency of hashing operations</p></li>
+<li><p>Proper JSON serialization of a range of values</p></li>
+<li><p>Proper processing of input lists with a range of inputs</p></li>
+</ul>
+<p>These are all good applications of property-based testing because they focus on invariant features that should be true regardless of the inputs (i.e.&nbsp;the same input should always generate the same hash, or loading a serialized dataset should return the same values as the original). I further pushed it to identify plausible candidates for testing of the effects of numerical edge cases, such as division by zero, which is another valuable use case for property-based testing. This paid off when the property-based tests generated by the agent identified a bug that had not been caught by the previous tests:</p>
+<pre class="text"><code>The property-based test found a real bug! The prepare\_enrichr\_plot\_data function produces infinity when computing -log10(0) for zero p-values. The GSEA version handles this with + 1e-10, but the Enrichr version doesn't.</code></pre>
+<p>This highlights the utility of property-based testing alongside standard unit tests.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-Visser:2023aa" class="csl-entry" role="listitem">
+Visser, C. de, Johansson, L. F., Kulkarni, P., … Niehues, A. (2023). <a href="https://doi.org/10.1371/journal.pcbi.1011369">Ten quick tips for building FAIR workflows</a>. <em>PLoS Comput Biol</em>, <strong>19</strong>(9), e1011369.
+</div>
+<div id="ref-Wilkinson:2025aa" class="csl-entry" role="listitem">
+Wilkinson, S. R., Aloqalaa, M., Belhajjame, K., … Goble, C. (2025). <a href="https://doi.org/10.1038/s41597-025-04451-9">Applying the FAIR principles to computational workflows</a>. <em>Sci Data</em>, <strong>12</strong>(1), 328.
+</div>
+</div>
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>The full set of scripts can be found at github.com/BetterCodeBetterScience/example-simpleworkflow/tree/main/make_workflow/scripts<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./book-data-management.html" class="pagination-link" aria-label="Data Organization and Management">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Organization and Management</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./book-validation.html" class="pagination-link" aria-label="Validating scientific software">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validating scientific software</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

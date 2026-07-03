@@ -1,8 +1,0 @@
-$ pytest --tb=short --no-header test_markers.py -m unit -v
-============================= test session starts ==============================
-collecting ... collected 3 items / 1 deselected / 2 selected
-
-test_markers.py::test_unit1 PASSED                 [ 50%]
-test_markers.py::test_unit2 PASSED                 [100%]
-
-======================= 2 passed, 1 deselected in 0.08s ========================
