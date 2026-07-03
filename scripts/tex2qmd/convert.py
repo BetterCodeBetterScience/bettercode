@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
+import argparse
+import shutil
 from pathlib import Path
 
-from tex2qmd.figures import rewrite_includegraphics
+from tex2qmd.figures import convert_pdf_to_svg, rewrite_includegraphics, svg_name
 from tex2qmd.pandoc_bridge import run_pandoc
 from tex2qmd.postprocess import reinsert_code_blocks
 from tex2qmd.preprocess import extract_listings, strip_index
+from tex2qmd.project import parse_chapter_order, qmd_name, render_quarto_yml
+
+TITLE = "Better Code, Better Science"
+AUTHOR = "Russell A. Poldrack"
 
 
 def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
@@ -18,3 +24,41 @@ def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
     md = run_pandoc(tex)
     qmd = reinsert_code_blocks(md, blocks)
     return qmd, pdfs
+
+
+def build_book(latex_dir: Path, out_dir: Path) -> None:
+    """Convert every chapter in book.tex into a Quarto project under out_dir."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    book_tex = (latex_dir / "book.tex").read_text()
+    targets = parse_chapter_order(book_tex)
+
+    chapter_files: list[str] = []
+    for i, target in enumerate(targets):
+        tex = (latex_dir / f"{target}.tex").read_text()
+        qmd, pdfs = convert_chapter(tex, latex_dir)
+        out_name = "index.qmd" if i == 0 else qmd_name(target)
+        (out_dir / out_name).write_text(qmd)
+        chapter_files.append(out_name)
+        for pdf in pdfs:
+            convert_pdf_to_svg(latex_dir / pdf, out_dir / svg_name(pdf))
+
+    (out_dir / "_quarto.yml").write_text(
+        render_quarto_yml(chapter_files, TITLE, AUTHOR)
+    )
+    shutil.copy(latex_dir / "references.bib", out_dir / "references.bib")
+    shutil.copy(
+        Path(__file__).with_name("cambridge.csl"), out_dir / "cambridge.csl"
+    )
+
+
+def main() -> None:
+    """CLI entry point for building the Quarto book."""
+    parser = argparse.ArgumentParser(description="Convert LaTeX book to Quarto")
+    parser.add_argument("--latex-dir", default="latex", type=Path)
+    parser.add_argument("--out", default="web", type=Path)
+    args = parser.parse_args()
+    build_book(args.latex_dir, args.out)
+
+
+if __name__ == "__main__":
+    main()
