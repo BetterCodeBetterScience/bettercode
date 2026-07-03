@@ -612,7 +612,7 @@ This is not an implementation failure - it's an algorithm -hardware mismatch. Th
     theta = np.linalg.inv(X_bias.T @ X_bias) @ X_bias.T @ y
     
     return theta</code></pre>
-<p>Unlike the previous examples, the code now includes type hints. It’s always a bad idea to generalize from a single result, so I ran these prompts through GPT-4o 10 times each (using the OpenAI API to generate them programmatically; see the <a href="../src/bettercode/incontext_learning_example.ipynb">notebook</a>). Here are the function signatures generated for each of the 10 runs without mentioning type hints in the prompt:</p>
+<p>Unlike the previous examples, the code now includes type hints. It’s always a bad idea to generalize from a single result, so I ran these prompts through GPT-4o 10 times each (using the OpenAI API to generate them programmatically). Here are the function signatures generated for each of the 10 runs without mentioning type hints in the prompt:</p>
 <pre class="text"><code>Run 1:  def multiple_linear_regression(X, y):
 Run 2:  def multiple_linear_regression(X, Y):
 Run 3:  def multiple_linear_regression(X, y):
