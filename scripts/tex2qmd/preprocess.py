@@ -8,6 +8,28 @@ from pathlib import Path
 from tex2qmd.listings import language_for_style
 
 _INDEX = re.compile(r"\\index\{[^{}]*\}")
+
+
+def strip_comments(tex: str) -> str:
+    """Remove full-line LaTeX comments that lie outside lstlisting environments.
+
+    Lines whose first non-whitespace character is ``%`` are dropped, so
+    commented-out commands (e.g. ``% \\lstinputlisting{...}``) are never
+    processed. Lines inside a ``lstlisting`` environment are left untouched so
+    literal ``%`` in code (such as ``%matplotlib``) survives.
+    """
+    kept: list[str] = []
+    in_listing = False
+    for line in tex.split("\n"):
+        stripped = line.lstrip()
+        if stripped.startswith("\\begin{lstlisting}"):
+            in_listing = True
+        elif stripped.startswith("\\end{lstlisting}"):
+            in_listing = False
+        elif not in_listing and stripped.startswith("%"):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
 _INPUT_LISTING = re.compile(
     r"\\lstinputlisting(?:\[(?P<opts>[^\]]*)\])?\{(?P<path>[^}]*)\}"
 )

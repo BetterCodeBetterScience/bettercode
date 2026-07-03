@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from tex2qmd.figures import convert_pdf_to_svg, rewrite_includegraphics, svg_name  # noqa: E402
 from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
 from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks  # noqa: E402
-from tex2qmd.preprocess import extract_listings, strip_index  # noqa: E402
+from tex2qmd.preprocess import extract_listings, strip_comments, strip_index  # noqa: E402
 from tex2qmd.project import (  # noqa: E402
     parse_chapter_order,
     qmd_name,
@@ -29,6 +29,7 @@ AUTHOR = "Russell A. Poldrack"
 
 def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
     """Convert chapter LaTeX to (qmd text, referenced figure PDF paths)."""
+    tex = strip_comments(tex)
     tex = strip_index(tex)
     tex, pdfs = rewrite_includegraphics(tex)
     tex, blocks = extract_listings(tex, base_dir)
