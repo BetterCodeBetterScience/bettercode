@@ -16,6 +16,7 @@ from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
 from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks  # noqa: E402
 from tex2qmd.preprocess import extract_listings, strip_comments, strip_index  # noqa: E402
 from tex2qmd.project import (  # noqa: E402
+    load_index_body,
     parse_chapter_order,
     qmd_name,
     render_cover,
@@ -47,7 +48,9 @@ def build_book(latex_dir: Path, out_dir: Path) -> None:
 
     # A generated cover page is the landing page; every \include (including
     # the preface) becomes its own chapter that follows it.
-    (out_dir / "index.qmd").write_text(render_cover(TITLE, SUBTITLE, AUTHOR))
+    (out_dir / "index.qmd").write_text(
+        render_cover(TITLE, SUBTITLE, AUTHOR, load_index_body())
+    )
     chapter_files: list[str] = ["index.qmd"]
     for target in targets:
         tex = (latex_dir / f"{target}.tex").read_text()

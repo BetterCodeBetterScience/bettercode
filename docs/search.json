@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Better Code, Better Science",
     "section": "",
-    "text": "Welcome to the web edition of Better Code, Better Science.\nThis site is generated automatically from the book’s LaTeX source. Use the sidebar to navigate the chapters, or the search box to find specific topics.",
+    "text": "Welcome to the web edition of Better Code, Better Science.\nMaking science more reproducible and transparent is key to improving public trust in science. Because science is increasingly a computational enterprise, improving the quality of scientific research code is essential to making science more reproducible. Increasingly, this code is being written with the help of AI assistants, which can increase productivity but introduces the potential for errors. This book will provide a thorough guide to using AI-assisted coding techniques to generate scientific code that is readable and robust and that can provide reproducible answers to scientific questions.\nThe book is licensed according to the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 Generic (CC BY-NC 4.0) License. Please see the terms of that license for more details. Code snippets are licensed under the MIT License. The full code is available at https://github.com/BetterCodeBetterScience/.\n\n0.0.1 Acknowledgements\nI’d like to acknowledge the following individuals for their helpful comments/suggestions/pull requests on the book: Giorgio Arcara, Steffen Bollman, Joshua Buckholtz, Kilian Cavalotti, Satchel Grant, Yaroslav Halchenko, Chris Markiewicz, Jeanette Mumford, and John Ousterhout.\n\n\n0.0.2 AI usage statement\nAll narrative text in this book was human-generated. Generative AI tools were used for research and technical review.\nCode presented in this book was generated via human-AI collaboration, using a combination of chatbots, IDE autosuggestion, and agentic coding tools.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Better Code, Better Science</span>"
     ]
@@ -14,7 +14,7 @@
     "href": "preface.html",
     "title": "Preface",
     "section": "",
-    "text": "Acknowledgments\nTBD\nI’d like to acknowledge the following individuals for their helpful comments/suggestions/pull requests on the book: Giorgio Arcara, Steffen Bollman, Joshua Buckholtz, Satchel Grant, Yaroslav Halchenko, Kilian Cavalotti Chris Markiewicz and Jeanette Mumford.",
+    "text": "Acknowledgments\nTBD\nI’d like to acknowledge the following individuals for their helpful comments/suggestions/pull requests on the book: Giorgio Arcara, Steffen Bollman, Joshua Buckholtz, Satchel Grant, Yaroslav Halchenko, Kilian Cavalotti, Chris Markiewicz and Jeanette Mumford, and John Ousterhout.",
     "crumbs": [
       "Preface"
     ]
