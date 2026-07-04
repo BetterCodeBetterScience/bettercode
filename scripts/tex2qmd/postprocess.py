@@ -80,3 +80,32 @@ def rewrite_figures(md: str) -> str:
     md = _FIGURE_BLOCK.sub(_figure_block_to_div, md)
     md = _FIGURE_REF.sub(lambda m: "@" + _fig_label(m.group("id")), md)
     return md
+
+
+# Pandoc emits captioned tables with a label whose id ends in `-table`, e.g.
+# `: Caption {#wide-data-table}`. Quarto only numbers tables whose label starts
+# with `tbl-`, so (as with figures) these are renamed and their references
+# rewritten to hand numbering to Quarto.
+_TABLE_CAPTION = re.compile(r"\{#(?P<id>[A-Za-z0-9_-]+)-table\}")
+
+_TABLE_REF = re.compile(
+    r"(?:(?:Tables?|Tab\.?)[ \u00a0~]*)?"
+    r"\[[0-9.]+\]\(#(?P<id>[A-Za-z0-9_-]+-table)\)"
+    r'\{reference-type="ref"\s+reference="(?P=id)"\}'
+)
+
+
+def _tbl_label(table_id: str) -> str:
+    """Map a pandoc table id (e.g. `wide-data-table`) to a Quarto label (`tbl-wide-data`)."""
+    return "tbl-" + re.sub(r"-table$", "", table_id)
+
+
+def rewrite_tables(md: str) -> str:
+    """Relabel pandoc table captions to Quarto `#tbl-…` labels and fix refs.
+
+    Captions `{#…-table}` become `{#tbl-…}` and in-text `Table [n.n](#…-table)`
+    references become `@tbl-…`, so Quarto owns table numbering per chapter.
+    """
+    md = _TABLE_CAPTION.sub(lambda m: f"{{#tbl-{m.group('id')}}}", md)
+    md = _TABLE_REF.sub(lambda m: "@" + _tbl_label(m.group("id")), md)
+    return md

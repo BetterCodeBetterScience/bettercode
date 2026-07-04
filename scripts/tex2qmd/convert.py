@@ -17,6 +17,7 @@ from tex2qmd.postprocess import (  # noqa: E402
     framed_to_callout,
     reinsert_code_blocks,
     rewrite_figures,
+    rewrite_tables,
 )
 from tex2qmd.preprocess import extract_listings, strip_comments, strip_index  # noqa: E402
 from tex2qmd.project import (  # noqa: E402
@@ -48,6 +49,7 @@ def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
     qmd = reinsert_code_blocks(md, blocks)
     qmd = framed_to_callout(qmd)
     qmd = rewrite_figures(qmd)
+    qmd = rewrite_tables(qmd)
     return qmd, pdfs
 
 

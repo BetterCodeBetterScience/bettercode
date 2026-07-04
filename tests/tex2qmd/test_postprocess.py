@@ -3,6 +3,7 @@ from tex2qmd.postprocess import (
     framed_to_callout,
     reinsert_code_blocks,
     rewrite_figures,
+    rewrite_tables,
 )
 
 
@@ -76,12 +77,46 @@ def test_rewrite_figures_rewrites_reference_to_crossref():
 
 
 def test_rewrite_figures_leaves_table_references_untouched():
-    """References to tables (not figures) are not rewritten."""
+    """References to tables (not figures) are not rewritten by rewrite_figures."""
     md = (
         'in Table [1.1](#data-table){reference-type="ref" '
         'reference="data-table"}.'
     )
     assert rewrite_figures(md) == md
+
+
+def test_rewrite_tables_relabels_caption_to_tbl_prefix():
+    """A pandoc table caption label `{#id-table}` becomes a Quarto `{#tbl-id}`."""
+    md = "  : Example of wide tabular data {#wide-data-table}\n"
+    out = rewrite_tables(md)
+    assert "{#tbl-wide-data}" in out
+    assert "{#wide-data-table}" not in out
+
+
+def test_rewrite_tables_relabels_multi_hyphen_id():
+    """The `-table` suffix (not every hyphen) is what gets rewritten."""
+    md = "  : Untidy data {#untidy-multiple-variables-table}\n"
+    out = rewrite_tables(md)
+    assert "{#tbl-untidy-multiple-variables}" in out
+
+
+def test_rewrite_tables_rewrites_reference_to_crossref():
+    """An in-text table reference becomes a Quarto @tbl- cross-reference."""
+    md = (
+        'shown in Table [1.1](#wide-data-table){reference-type="ref" '
+        'reference="wide-data-table"}.'
+    )
+    out = rewrite_tables(md)
+    assert out == "shown in @tbl-wide-data."
+
+
+def test_rewrite_tables_leaves_figure_references_untouched():
+    """References to figures (not tables) are not rewritten by rewrite_tables."""
+    md = (
+        'in Figure [1.1](#XPoll-fig){reference-type="ref" '
+        'reference="XPoll-fig"}.'
+    )
+    assert rewrite_tables(md) == md
 
 
 def test_reinsert_single_block():

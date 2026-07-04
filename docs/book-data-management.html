@@ -606,9 +606,14 @@ Set all original data files to read-only and store checksums for them, so that y
 <p>Tabular data are loosely defined as data stored in rows and columns, as in a spreadsheet. A <em>data frame</em> is a particular representation of tabular data, in which each column in the dataset has a label and each row has an <em>index</em> value that refers to that row. The packages supporting data frames (such as <em>pandas</em> in Python) generally provide a set of operations that can be performed on the data frame, such as filtering, sorting, merging, or pivoting.</p>
 <section id="long-wide-and-tidy-tabular-data" class="level4" data-number="7.8.1.1">
 <h4 data-number="7.8.1.1" class="anchored" data-anchor-id="long-wide-and-tidy-tabular-data"><span class="header-section-number">7.8.1.1</span> Long, wide, and tidy tabular data</h4>
-<p>There are multiple ways to organize data within a tabular dataset, reflecting what each column and row refer to. This distinction is often referred to as <em>long</em> versus <em>wide</em> data, though in reality there is really a spectrum of organization between these extremes. <em>Wide data</em> generally refers to data where each row refers to a single observational unit (such as a one site, person, or planet), and each column refers to different variables measured for that unit. For example, let’s say that we had measurements of height, weight, and blood pressure from three individuals. A wide representation of these data would have one row per individual, with an identifier column identifying the individual and separate columns for each of the measurements, as shown in Table&nbsp;<a href="#wide-data-table" data-reference-type="ref" data-reference="wide-data-table">1.1</a>.</p>
+<p>There are multiple ways to organize data within a tabular dataset, reflecting what each column and row refer to. This distinction is often referred to as <em>long</em> versus <em>wide</em> data, though in reality there is really a spectrum of organization between these extremes. <em>Wide data</em> generally refers to data where each row refers to a single observational unit (such as a one site, person, or planet), and each column refers to different variables measured for that unit. For example, let’s say that we had measurements of height, weight, and blood pressure from three individuals. A wide representation of these data would have one row per individual, with an identifier column identifying the individual and separate columns for each of the measurements, as shown in <a href="#tbl-wide-data" class="quarto-xref">Table&nbsp;<span>7.1</span></a>.</p>
+<div id="tbl-wide-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-wide-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.1: Example of wide tabular data format with individual measurements
+</figcaption>
+<div aria-describedby="tbl-wide-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of wide tabular data format with individual measurements {#wide-data-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">id</th>
@@ -638,9 +643,17 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
-<p><em>Long data</em> generally refers to data where different variables measured for a unit are spread across rows. In this case, there are separate columns that specifies the variable being measured, the value of the variable for that unit, and the identity of the unit being measured, as shown in Table <a href="#long-data-table" data-reference-type="ref" data-reference="long-data-table">1.2</a>.</p>
+</div>
+</figure>
+</div>
+<p><em>Long data</em> generally refers to data where different variables measured for a unit are spread across rows. In this case, there are separate columns that specifies the variable being measured, the value of the variable for that unit, and the identity of the unit being measured, as shown in <a href="#tbl-long-data" class="quarto-xref">Table&nbsp;<span>7.2</span></a>.</p>
+<div id="tbl-long-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-long-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.2: Example of long tabular data format with individual measurements
+</figcaption>
+<div aria-describedby="tbl-long-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of long tabular data format with individual measurements {#long-data-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">id</th>
@@ -696,6 +709,9 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 <p>A related concept is the notion of <em>tidy data</em>, popularized by Hadley Wickham who is leader in the <em>R</em> language community. While it is often associated with long data, the concept of tidy data actually refers to the meaning of the data rather than its shape. Tidy data has three features, as specified by <span class="citation" data-cites="Wickham:2014aa">(<a href="#ref-Wickham:2014aa" role="doc-biblioref">Wickham 2014</a>)</span>:</p>
 <ul>
 <li><p>each variable is a column</p></li>
@@ -704,9 +720,14 @@ Set all original data files to read-only and store checksums for them, so that y
 </ul>
 <p>It’s easiest to understand these concepts by looking at some examples of datasets that <em>are not</em> tidy, following the examples laid out by <span class="citation" data-cites="Wickham:2014aa">(<a href="#ref-Wickham:2014aa" role="doc-biblioref">Wickham 2014</a>)</span></p>
 <p><strong>Column headers are values, not variable names</strong></p>
-<p>Sometimes data are spread across columns where each column refers to a different value of the variable. For example, the following table shows cancer pathology data from three hospitals, with different columns quantifying the number of samples falling into each of four different tumor stages, as shown in Table <a href="#untidy-data-table" data-reference-type="ref" data-reference="untidy-data-table">1.3</a>.</p>
+<p>Sometimes data are spread across columns where each column refers to a different value of the variable. For example, the following table shows cancer pathology data from three hospitals, with different columns quantifying the number of samples falling into each of four different tumor stages, as shown in <a href="#tbl-untidy-data" class="quarto-xref">Table&nbsp;<span>7.3</span></a>.</p>
+<div id="tbl-untidy-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-untidy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.3: Example of untidy tabular data with column headers representing values
+</figcaption>
+<div aria-describedby="tbl-untidy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of untidy tabular data with column headers representing values {#untidy-data-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">site</th>
@@ -740,6 +761,9 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 <p>There are really three different variables represented in this table: Site, Stage, and frequency. What we really want is to have three columns, representing those three variables. We can achieve this using the <code>melt</code> function from <em>pandas</em>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_tidy <span class="op">=</span> pd.melt(df, id_vars<span class="op">=</span>[<span class="st">"site"</span>], </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    var_name<span class="op">=</span><span class="st">"Stage"</span>, value_name<span class="op">=</span><span class="st">"Frequency"</span>)</span>
@@ -747,9 +771,14 @@ Set all original data files to read-only and store checksums for them, so that y
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make stage an integer</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>df_tidy.Stage <span class="op">=</span> df_tidy.Stage.<span class="bu">str</span>.replace(<span class="st">"Stage"</span>, <span class="st">""</span>).astype(<span class="bu">int</span>)</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_tidy.to_markdown(index<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The results are shown in Table <a href="#tidy-data-table" data-reference-type="ref" data-reference="tidy-data-table">1.4</a>.</p>
+<p>The results are shown in <a href="#tbl-tidy-data" class="quarto-xref">Table&nbsp;<span>7.4</span></a>.</p>
+<div id="tbl-tidy-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-tidy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.4: Example of tidy tabular data with site, stage, and frequency
+</figcaption>
+<div aria-describedby="tbl-tidy-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of tidy tabular data with site, stage, and frequency {#tidy-data-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">site</th>
@@ -820,10 +849,18 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 <p><strong>Multiple variables are stored in one column</strong></p>
-<p>This pattern takes the previous one a step further, by defining columns based on the values of more than one variable. For example, let’s say that there data for both lung and prostate cancer, as shown in Table <a href="#untidy-multiple-variables-table" data-reference-type="ref" data-reference="untidy-multiple-variables-table">1.5</a>.</p>
+<p>This pattern takes the previous one a step further, by defining columns based on the values of more than one variable. For example, let’s say that there data for both lung and prostate cancer, as shown in <a href="#tbl-untidy-multiple-variables" class="quarto-xref">Table&nbsp;<span>7.5</span></a>.</p>
+<div id="tbl-untidy-multiple-variables" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-untidy-multiple-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.5: Example of untidy tabular data with multiple variables in column headers
+</figcaption>
+<div aria-describedby="tbl-untidy-multiple-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of untidy tabular data with multiple variables in column headers {#untidy-multiple-variables-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">site</th>
@@ -873,6 +910,9 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 <p>In this example, each value column represents a combination of stage and type of cancer. We can tidy this by first melting the data frame, and then splitting the combined column names into separate variables for Stage and Cancer type:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_tidy <span class="op">=</span> pd.melt(df, id_vars<span class="op">=</span>[<span class="st">"site"</span>], </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    var_name<span class="op">=</span><span class="st">"Stage_Cancer"</span>, value_name<span class="op">=</span><span class="st">"Freq"</span>)</span>
@@ -885,9 +925,14 @@ Set all original data files to read-only and store checksums for them, so that y
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># reorder columns to match our expectations</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>df_tidy <span class="op">=</span> df_tidy[[<span class="st">"site"</span>, <span class="st">"Stage"</span>, <span class="st">"Cancer"</span>, <span class="st">"Freq"</span>]]</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_tidy.to_markdown(index<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The results are shown in Table <a href="#tidy-multiple-variables-table" data-reference-type="ref" data-reference="tidy-multiple-variables-table">1.6</a>.</p>
+<p>The results are shown in <a href="#tbl-tidy-multiple-variables" class="quarto-xref">Table&nbsp;<span>7.6</span></a>.</p>
+<div id="tbl-tidy-multiple-variables" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-tidy-multiple-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.6: Example of tidy tabular data with site, cancer type, stage, and frequency
+</figcaption>
+<div aria-describedby="tbl-tidy-multiple-variables-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of tidy tabular data with site, cancer type, stage, and frequency {#tidy-multiple-variables-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">site</th>
@@ -1043,10 +1088,18 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 <p><strong>Variables are stored in both rows and columns</strong></p>
-<p>We could also have some variables denoted by their own column with others split across columns, as shown in Table <a href="#untidy-both-table" data-reference-type="ref" data-reference="untidy-both-table">1.7</a>.</p>
+<p>We could also have some variables denoted by their own column with others split across columns, as shown in <a href="#tbl-untidy-both" class="quarto-xref">Table&nbsp;<span>7.7</span></a>.</p>
+<div id="tbl-untidy-both" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-untidy-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.7: Example of untidy tabular data with variables stored in both rows and columns
+</figcaption>
+<div aria-describedby="tbl-untidy-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of untidy tabular data with variables stored in both rows and columns {#untidy-both-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">site</th>
@@ -1108,15 +1161,23 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 <p>Here we can melt the data frame to collect the Stage columns:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df_both_tidy <span class="op">=</span> pd.melt(df_both, id_vars<span class="op">=</span>[<span class="st">"site"</span>, <span class="st">"Cancer"</span>], </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    var_name<span class="op">=</span><span class="st">"Stage"</span>, value_name<span class="op">=</span><span class="st">"Frequency"</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df_both_tidy.Stage <span class="op">=</span> df_both_tidy.Stage.<span class="bu">str</span>.replace(<span class="st">"Stage"</span>, <span class="st">""</span>).astype(<span class="bu">int</span>)</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_both_tidy.to_markdown(index<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The results are shown in Table <a href="#tidy-both-table" data-reference-type="ref" data-reference="tidy-both-table">1.8</a>.</p>
+<p>The results are shown in <a href="#tbl-tidy-both" class="quarto-xref">Table&nbsp;<span>7.8</span></a>.</p>
+<div id="tbl-tidy-both" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-tidy-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7.8: Example of tidy tabular data with site, cancer type, stage, and frequency
+</figcaption>
+<div aria-describedby="tbl-tidy-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
-<caption>Example of tidy tabular data with site, cancer type, stage, and frequency {#tidy-both-table}</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">site</th>
@@ -1272,6 +1333,9 @@ Set all original data files to read-only and store checksums for them, so that y
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
+</div>
 <p><strong>Single type of observational unit spread across multiple tables</strong></p>
 <p>Sometimes we might have different data frames for each observation unit, such as a different data frame for each hospital in our example. To fix this we can simply merge the data frames by concatenating them:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_merged <span class="op">=</span> pd.concat([df1, df2, df3], ignore_index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
