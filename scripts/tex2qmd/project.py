@@ -45,17 +45,36 @@ def render_navbar(repo_url: str) -> str:
 """
 
 
+def render_page_footer(license_name: str, license_slug: str) -> str:
+    """Render a persistent page footer with a Creative Commons license badge.
+
+    ``license_slug`` is the CC path segment (e.g. ``by-nc-nd/4.0``) used to
+    build both the badge image and the human-readable license page.
+    """
+    license_url = f"https://creativecommons.org/licenses/{license_slug}/"
+    badge_url = f"https://licensebuttons.net/l/{license_slug}/88x31.png"
+    return f"""  page-footer:
+    center: |
+      [![{license_name}]({badge_url})]({license_url})
+"""
+
+
 def render_quarto_yml(
     chapter_files: list[str],
     title: str,
     author: str,
     subtitle: str = "",
     repo_url: str = "",
+    license_name: str = "",
+    license_slug: str = "",
 ) -> str:
     """Render the _quarto.yml contents for the HTML book."""
     chapter_lines = "\n".join(f"    - {name}" for name in chapter_files)
     subtitle_line = f'  subtitle: "{subtitle}"\n' if subtitle else ""
     navbar_block = render_navbar(repo_url) if repo_url else ""
+    footer_block = (
+        render_page_footer(license_name, license_slug) if license_slug else ""
+    )
     return f"""project:
   type: book
   output-dir: ../docs
@@ -64,7 +83,7 @@ book:
   title: "{title}"
 {subtitle_line}  author: "{author}"
   search: true
-{navbar_block}  chapters:
+{navbar_block}{footer_block}  chapters:
 {chapter_lines}
 
 bibliography: references.bib

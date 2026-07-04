@@ -83,6 +83,30 @@ def test_render_quarto_yml_omits_navbar_without_repo_url():
     assert "navbar:" not in yml
 
 
+def test_render_quarto_yml_adds_license_footer_when_license_given():
+    """A license name+slug yields a page-footer badge linking to the license."""
+    yml = render_quarto_yml(
+        ["index.qmd"],
+        "Better Code, Better Science",
+        "Russell A. Poldrack",
+        license_name="CC BY-NC-ND 4.0",
+        license_slug="by-nc-nd/4.0",
+    )
+    assert "page-footer:" in yml
+    # CC badge image and the human-readable license page
+    assert "https://licensebuttons.net/l/by-nc-nd/4.0/88x31.png" in yml
+    assert "https://creativecommons.org/licenses/by-nc-nd/4.0/" in yml
+    assert "CC BY-NC-ND 4.0" in yml
+
+
+def test_render_quarto_yml_omits_footer_without_license():
+    """No license means no page-footer block is emitted."""
+    yml = render_quarto_yml(
+        ["index.qmd"], "Better Code, Better Science", "Russell A. Poldrack"
+    )
+    assert "page-footer:" not in yml
+
+
 def test_render_quarto_yml_includes_subtitle_when_given():
     """A non-empty subtitle is emitted as a book subtitle line."""
     yml = render_quarto_yml(

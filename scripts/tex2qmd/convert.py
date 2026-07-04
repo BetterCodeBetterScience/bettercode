@@ -27,6 +27,9 @@ TITLE = "Better Code, Better Science"
 SUBTITLE = "Software Engineering for Reproducible Science in the Age of AI"
 AUTHOR = "Russell A. Poldrack"
 REPO_URL = "https://github.com/BetterCodeBetterScience/bettercode"
+# Creative Commons license shown as a persistent footer badge on every page.
+LICENSE_NAME = "CC BY-NC-ND 4.0"
+LICENSE_SLUG = "by-nc-nd/4.0"
 # Chapters to omit from the web edition (still present in the print book).
 WEB_EXCLUDE = frozenset({"preface"})
 
@@ -66,7 +69,13 @@ def build_book(latex_dir: Path, out_dir: Path) -> None:
 
     (out_dir / "_quarto.yml").write_text(
         render_quarto_yml(
-            chapter_files, TITLE, AUTHOR, subtitle=SUBTITLE, repo_url=REPO_URL
+            chapter_files,
+            TITLE,
+            AUTHOR,
+            subtitle=SUBTITLE,
+            repo_url=REPO_URL,
+            license_name=LICENSE_NAME,
+            license_slug=LICENSE_SLUG,
         )
     )
     shutil.copy(latex_dir / "references.bib", out_dir / "references.bib")

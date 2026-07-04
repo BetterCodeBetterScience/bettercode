@@ -2,7 +2,7 @@ Welcome to the web edition of *Better Code, Better Science*.
 
 Making science more reproducible and transparent is key to improving public trust in science.  Because science is increasingly a computational enterprise, improving the quality of scientific research code is essential to making science more reproducible. Increasingly, this code is being written with the help of AI assistants, which can increase productivity but introduces the potential for errors.  This book will provide a thorough guide to using AI-assisted coding techniques to generate scientific code that is readable and robust and that can provide reproducible answers to scientific questions.
 
-The book is licensed according to the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 Generic (CC BY-NC 4.0) License](https://creativecommons.org/licenses/by-nc-nd/4.0/). Please see the terms of that license for more details.  Code snippets are licensed under the [MIT License](https://mit-license.org/).  The full code is available at [https://github.com/BetterCodeBetterScience/](https://github.com/BetterCodeBetterScience/).
+The book is licensed according to the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 Generic (CC BY-NC-ND 4.0) License](https://creativecommons.org/licenses/by-nc-nd/4.0/). Please see the terms of that license for more details.  Code snippets are licensed under the [MIT License](https://mit-license.org/).  The full code is available at [https://github.com/BetterCodeBetterScience/](https://github.com/BetterCodeBetterScience/).
 
 ### Acknowledgements
 
