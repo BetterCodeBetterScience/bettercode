@@ -102,18 +102,21 @@ def load_index_body(path: Path | None = None) -> str:
     return (path or INDEX_BODY_FILE).read_text()
 
 
-def render_cover(title: str, subtitle: str, author: str, body: str) -> str:
+def render_cover(subtitle: str, author: str, body: str) -> str:
     """Render the landing-page index.qmd for the HTML book.
 
-    The title, subtitle, and author are rendered by Quarto's title block from
-    the project config; ``body`` supplies the editable prose beneath it (see
-    INDEX_BODY_FILE), so those fields are not repeated in the text.
+    The book title is rendered by Quarto's title block from the project config,
+    so no front-matter ``title`` is emitted here: a front-matter title would make
+    Quarto count the landing page as numbered chapter 1 (pushing the first real
+    chapter to 2). An explicit unnumbered heading keeps the cover out of the
+    chapter count while still displaying subtitle, author, and the editable body.
     """
     return f"""---
-title: "{title}"
 subtitle: "{subtitle}"
 author: "{author}"
 ---
+
+# Welcome {{.unnumbered}}
 
 {body.rstrip()}
 """

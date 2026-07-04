@@ -118,18 +118,21 @@ def test_render_quarto_yml_includes_subtitle_when_given():
     assert "subtitle: \"Software Engineering for Reproducible Science in the Age of AI\"" in yml
 
 
-def test_render_cover_contains_front_matter_and_body():
-    """The cover carries title/subtitle/author front matter and the given body verbatim."""
+def test_render_cover_is_unnumbered_with_subtitle_author_and_body():
+    """The cover omits a front-matter title so Quarto does not count it as a
+    numbered chapter; it stays unnumbered and carries subtitle, author, and body."""
     body = "Hello reader.\n\nEnjoy the book."
     cover = render_cover(
-        "Better Code, Better Science",
         "Software Engineering for Reproducible Science in the Age of AI",
         "Russell A. Poldrack",
         body,
     )
-    assert 'title: "Better Code, Better Science"' in cover
+    # no front-matter title -> the landing page is not numbered as chapter 1
+    assert "\ntitle:" not in cover
     assert 'subtitle: "Software Engineering for Reproducible Science in the Age of AI"' in cover
     assert 'author: "Russell A. Poldrack"' in cover
+    # an explicit unnumbered heading keeps the page out of the chapter count
+    assert "{.unnumbered}" in cover
     assert body in cover
 
 

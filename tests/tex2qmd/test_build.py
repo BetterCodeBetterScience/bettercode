@@ -25,7 +25,9 @@ def test_build_book_writes_project(tmp_path):
     assert (out / "_quarto.yml").exists()
     # index.qmd is a generated cover page, not the preface
     index = (out / "index.qmd").read_text()
-    assert 'title: "Better Code, Better Science"' in index
+    # cover is unnumbered (no front-matter title) so it isn't counted as a chapter
+    assert "\ntitle:" not in index
+    assert "{.unnumbered}" in index
     assert "Welcome to the web edition" in index
     assert "Hello." not in index
     # the preface is excluded from the web edition entirely
@@ -35,6 +37,8 @@ def test_build_book_writes_project(tmp_path):
     assert (out / "cambridge.csl").exists()
     yml = (out / "_quarto.yml").read_text()
     assert "type: book" in yml
+    # the book title now lives in the config (not the cover front matter)
+    assert 'title: "Better Code, Better Science"' in yml
     assert "preface.qmd" not in yml
     # cover is first, chapter follows
     assert yml.index("index.qmd") < yml.index("chap1.qmd")
