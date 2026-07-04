@@ -1,5 +1,87 @@
 import pytest
-from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks
+from tex2qmd.postprocess import (
+    framed_to_callout,
+    reinsert_code_blocks,
+    rewrite_figures,
+)
+
+
+FIGURE = (
+    '<figure id="XPoll-fig" data-latex-placement="!htbp">\n'
+    '<img src="figures/01/XPoll.svg" style="width:50.0%" />\n'
+    "<figcaption>A social media poll.</figcaption>\n"
+    "</figure>"
+)
+
+
+def test_rewrite_figures_emits_quarto_crossref_div():
+    """A raw <figure> becomes a Quarto crossref div with a fig- label."""
+    out = rewrite_figures(FIGURE)
+    assert "::: {#fig-XPoll}" in out
+    assert "![](figures/01/XPoll.svg){width=50.0%}" in out
+    assert "A social media poll." in out
+    assert out.rstrip().endswith(":::")
+    # the raw HTML figure is gone
+    assert "<figure" not in out
+    assert "<figcaption" not in out
+
+
+def test_rewrite_figures_preserves_inline_html_caption():
+    """Inline HTML inside a caption (code, links, citation spans) is kept."""
+    fig = (
+        '<figure id="ctx-fig" data-latex-placement="!htbp">\n'
+        '<img src="figures/05/ctx.svg" style="width:90.0%" />\n'
+        "<figcaption>The <code>/context</code> command, see "
+        '<span class="citation" data-cites="Wei:2023aa"></span>.</figcaption>\n'
+        "</figure>"
+    )
+    out = rewrite_figures(fig)
+    assert "<code>/context</code>" in out
+    assert '<span class="citation" data-cites="Wei:2023aa"></span>' in out
+
+
+def test_rewrite_figures_collapses_multiline_caption():
+    """A caption spanning several lines becomes a single caption line."""
+    fig = (
+        '<figure id="ide-fig" data-latex-placement="!htbp">\n'
+        '<img src="figures/03/ide.svg" style="width:75.0%" />\n'
+        "<figcaption>First line.\nSecond line.\nThird line.</figcaption>\n"
+        "</figure>"
+    )
+    out = rewrite_figures(fig)
+    assert "First line. Second line. Third line." in out
+
+
+def test_rewrite_figures_handles_missing_width():
+    """A figure image without a width style still converts."""
+    fig = (
+        '<figure id="plain-fig">\n'
+        '<img src="figures/x.svg" />\n'
+        "<figcaption>Cap.</figcaption>\n"
+        "</figure>"
+    )
+    out = rewrite_figures(fig)
+    assert "::: {#fig-plain}" in out
+    assert "![](figures/x.svg)" in out
+
+
+def test_rewrite_figures_rewrites_reference_to_crossref():
+    """An in-text figure reference becomes a Quarto @fig- cross-reference."""
+    md = (
+        'shown in Figure [1.1](#XPoll-fig){reference-type="ref" '
+        'reference="XPoll-fig"}.'
+    )
+    out = rewrite_figures(md)
+    assert out == "shown in @fig-XPoll."
+
+
+def test_rewrite_figures_leaves_table_references_untouched():
+    """References to tables (not figures) are not rewritten."""
+    md = (
+        'in Table [1.1](#data-table){reference-type="ref" '
+        'reference="data-table"}.'
+    )
+    assert rewrite_figures(md) == md
 
 
 def test_reinsert_single_block():

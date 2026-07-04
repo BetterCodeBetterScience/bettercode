@@ -13,7 +13,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tex2qmd.figures import emit_figure, rewrite_includegraphics  # noqa: E402
 from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
-from tex2qmd.postprocess import framed_to_callout, reinsert_code_blocks  # noqa: E402
+from tex2qmd.postprocess import (  # noqa: E402
+    framed_to_callout,
+    reinsert_code_blocks,
+    rewrite_figures,
+)
 from tex2qmd.preprocess import extract_listings, strip_comments, strip_index  # noqa: E402
 from tex2qmd.project import (  # noqa: E402
     load_index_body,
@@ -43,6 +47,7 @@ def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
     md = run_pandoc(tex)
     qmd = reinsert_code_blocks(md, blocks)
     qmd = framed_to_callout(qmd)
+    qmd = rewrite_figures(qmd)
     return qmd, pdfs
 
 

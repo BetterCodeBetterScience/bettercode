@@ -352,13 +352,17 @@ window.Quarto = {
 </header>
 
 
-<p>The computing power available to scientists has increased in a shockingly consistent way since the first microprocessors were manufactured in the 1970’s. The left panel in Figure&nbsp;<a href="#mooreslaw-fig" data-reference-type="ref" data-reference="mooreslaw-fig">1.1</a> shows that the number of transistors on commercial CPU chips has doubled about every two years since the 1970s, very close to the two year doubling time predicted by Gordon Moore in 1975 <span class="citation" data-cites="Moore:1975aa">(<a href="#ref-Moore:1975aa" role="doc-biblioref">Moore <em>et al.</em> 1975</a>)</span>. The number of transistors relates only indirectly to the computing power of the machine, and the right panel in Figure&nbsp;<a href="#mooreslaw-fig" data-reference-type="ref" data-reference="mooreslaw-fig">1.1</a> shows that the computer power of the world’s top supercomputer (measured in the number of floating point operations per second) has increased even faster, doubling roughly every 1.2 years.</p>
-<figure id="mooreslaw-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/10/mooreslaw.svg" style="width:87.5%" class="figure-img">
-<figcaption>
-A plot of increased computing power over time. Left panel shows transistor count in commercially available microprocessors over time on a log scaled axis, based on data from en.wikipedia.org/wiki/Transistor_count. The plot shows a consistent logarithmic increase in transistor count, with an estimated doubling time of about 2.16 years. Right panel shows performance of the world’s top supercomputer (in GigaFLOPS - billion floating point operations per second) on a log scaled axis, showing an even faster doubling time of about 1.2 years, based on data obtained from en.wikipedia.org/wiki/History_of_supercomputing.
+<p>The computing power available to scientists has increased in a shockingly consistent way since the first microprocessors were manufactured in the 1970’s. The left panel in <a href="#fig-mooreslaw" class="quarto-xref">Figure&nbsp;<span>11.1</span></a> shows that the number of transistors on commercial CPU chips has doubled about every two years since the 1970s, very close to the two year doubling time predicted by Gordon Moore in 1975 <span class="citation" data-cites="Moore:1975aa">(<a href="#ref-Moore:1975aa" role="doc-biblioref">Moore <em>et al.</em> 1975</a>)</span>. The number of transistors relates only indirectly to the computing power of the machine, and the right panel in <a href="#fig-mooreslaw" class="quarto-xref">Figure&nbsp;<span>11.1</span></a> shows that the computer power of the world’s top supercomputer (measured in the number of floating point operations per second) has increased even faster, doubling roughly every 1.2 years.</p>
+<div id="fig-mooreslaw" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mooreslaw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/10/mooreslaw.svg" class="img-fluid figure-img" style="width:87.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mooreslaw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.1: A plot of increased computing power over time. Left panel shows transistor count in commercially available microprocessors over time on a log scaled axis, based on data from en.wikipedia.org/wiki/Transistor_count. The plot shows a consistent logarithmic increase in transistor count, with an estimated doubling time of about 2.16 years. Right panel shows performance of the world’s top supercomputer (in GigaFLOPS - billion floating point operations per second) on a log scaled axis, showing an even faster doubling time of about 1.2 years, based on data obtained from en.wikipedia.org/wiki/History_of_supercomputing.
 </figcaption>
 </figure>
+</div>
 <p>To put this into a personal perspective, I published my first paper using computer simulations in 1996 <span class="citation" data-cites="Poldrack:1996aa">(<a href="#ref-Poldrack:1996aa" role="doc-biblioref">Poldrack 1996</a>)</span>, based on simulations I had performed in 1994-5 as a graduate student. I ran my simulations on a Power Macintosh, and I remember them taking many hours to complete, but let’s say that I had access to the top supercomputer of the day back in 1994. The top supercomputer in 2025 was more than <em>ten million</em> times faster than the top machine in 1994. If simulation time scaled directly with processor speed, this would mean that a simulation that takes one minute on the latest machine would have taken over <em>19 years</em> in 1994! This kind of scaling is not generally true; as we will discuss below and in the next chapter on high-performance computing, there are many factors beyond CPU speed that can limit the speed of computing operations. Further, taking advantage of these new systems requires the use of parallel processing, which often requires substantial changes in software architecture.</p>
 <p>I raise these comparisons to highlight the fact that any attempts to optimize the performance of our code will often be much less effective than simply finding a more powerful computer. However, it’s often the case that small changes in our code can have significant performance impacts. In this chapter I will highlight the ways in which one can judiciously optimize the performance of code without significantly impacting the quality of the code.</p>
 <section id="avoiding-premature-optimization" class="level2" data-number="11.1">
@@ -896,13 +900,17 @@ Always profile before you optimize, as our intuitions about software performance
 <li><p>Small chunks (1 x 64 x 64)</p></li>
 <li><p>Tiny chunks (1 x 32 x 32)</p></li>
 </ul>
-<p>Figure&nbsp;<a href="#hdfchunking-fig" data-reference-type="ref" data-reference="hdfchunking-fig">1.2</a> shows the loading times with each of these strategies for two different data access patterns. In one (framewise), we access a single one of the 1000 frames, whereas in the other (spatial access) pattern we extract data from a small region of interest across all frames. This shows clearly how these two factors interact; the framewise chunking strategy that is the fastest for framewise access becomes the slowest for spatial access. In some cases (like the spatial access pattern) performance with chunked data may not be much better than unchunked, but leaving the data in a <em>contiguous</em> (unchunked) state has the drawback for HDF5 files that they cannot be compressed, so it’s often common to use smaller chunks in order to obtain the advantage of compression.</p>
-<figure id="hdfchunking-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/10/hdfchunking.svg" style="width:85.0%" class="figure-img">
-<figcaption>
-A demonstration of the interaction between HDF5 chunking patterns and data access on performance. Left panel shows performance of the five chunking strategies on reading a single individual frame, while the right panel show performance on accessing a small region of interest (64 x 64) across all frames.
+<p><a href="#fig-hdfchunking" class="quarto-xref">Figure&nbsp;<span>11.2</span></a> shows the loading times with each of these strategies for two different data access patterns. In one (framewise), we access a single one of the 1000 frames, whereas in the other (spatial access) pattern we extract data from a small region of interest across all frames. This shows clearly how these two factors interact; the framewise chunking strategy that is the fastest for framewise access becomes the slowest for spatial access. In some cases (like the spatial access pattern) performance with chunked data may not be much better than unchunked, but leaving the data in a <em>contiguous</em> (unchunked) state has the drawback for HDF5 files that they cannot be compressed, so it’s often common to use smaller chunks in order to obtain the advantage of compression.</p>
+<div id="fig-hdfchunking" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hdfchunking-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/10/hdfchunking.svg" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hdfchunking-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.2: A demonstration of the interaction between HDF5 chunking patterns and data access on performance. Left panel shows performance of the five chunking strategies on reading a single individual frame, while the right panel show performance on accessing a small region of interest (64 x 64) across all frames.
 </figcaption>
 </figure>
+</div>
 </section>
 </section>
 <section id="dealing-with-large-tabular-data" class="level2" data-number="11.5">
@@ -1294,20 +1302,28 @@ z_{n+1} = z^2_n + c
 <span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    elapsed_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
 <span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result, elapsed_time</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Figure&nbsp;<a href="#scaling-fig" data-reference-type="ref" data-reference="scaling-fig">1.3</a> shows the results for these simulations using a range of image sizes. We see a couple of interesting phenomena here. First, the effectiveness of parallelization scales with the computational intensity of the problem, which is defined here by the number of pixels to be tested. With small data, the parallel implementation actually performs <em>worse</em> than the serial implementation, due to the overhead related to parallelization as well as possible throttling of the CPU speed due to heat generation. As the image size increases, the impact of parallelization increases. Second, we see that adding more cores does not linearly improve performance. This is clearest from the plot showing the parallel processing efficiency for each number of CPUs, which shows that efficiency (defined as the ratio of actual time to what would be expected if performance improved linearly with the number of cores) reaches almost 100% for 2 cores, but each increase in cores gives diminishing returns, such that 14 cores only gives about 60% improvement, again due to the overhead needed for parallelization.</p>
-<figure id="scaling-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/10/scaling.svg" style="width:85.0%" class="figure-img">
-<figcaption>
-A simulation of the parallel acceleration on the Mandelbrot set problem with a chunking factor of 1. The left panel shows performance in terms of speedup factor as a function of the difficult of the problem, where perfect acceleration would occur when the speedup factor is equal to the number of cores. The gray line shows serial performance, showing that parallelization on small problems can lead to worse performance than serial processing due to overhead of parallelization. The right panel shows efficiency (that is, the proportion of perfect acceleration) achieved, demonstrating that there are decreasing gains with increasing numbers of cores.
+<p><a href="#fig-scaling" class="quarto-xref">Figure&nbsp;<span>11.3</span></a> shows the results for these simulations using a range of image sizes. We see a couple of interesting phenomena here. First, the effectiveness of parallelization scales with the computational intensity of the problem, which is defined here by the number of pixels to be tested. With small data, the parallel implementation actually performs <em>worse</em> than the serial implementation, due to the overhead related to parallelization as well as possible throttling of the CPU speed due to heat generation. As the image size increases, the impact of parallelization increases. Second, we see that adding more cores does not linearly improve performance. This is clearest from the plot showing the parallel processing efficiency for each number of CPUs, which shows that efficiency (defined as the ratio of actual time to what would be expected if performance improved linearly with the number of cores) reaches almost 100% for 2 cores, but each increase in cores gives diminishing returns, such that 14 cores only gives about 60% improvement, again due to the overhead needed for parallelization.</p>
+<div id="fig-scaling" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scaling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/10/scaling.svg" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scaling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.3: A simulation of the parallel acceleration on the Mandelbrot set problem with a chunking factor of 1. The left panel shows performance in terms of speedup factor as a function of the difficult of the problem, where perfect acceleration would occur when the speedup factor is equal to the number of cores. The gray line shows serial performance, showing that parallelization on small problems can lead to worse performance than serial processing due to overhead of parallelization. The right panel shows efficiency (that is, the proportion of perfect acceleration) achieved, demonstrating that there are decreasing gains with increasing numbers of cores.
 </figcaption>
 </figure>
-<p>Parallelization is also more effective as the number of chunks increases. This reflects the wide distribution of finishing times in the dataset; when the number of chunks is the same as the number of cores, then each core does a single job, and the finishing time will reflect the longest job amongst the cores, such that many cores will be sitting idle for much of the time. Breaking the data into smaller chunks allows for a higher number of concurrent jobs, but also increases parallelization overhead. To see the effects of chunking, I ran a simulation of the Mandelbrot problem with a 4096 x 4096 image using chunking factors ranging from 1 (i.e.&nbsp;as many chunks as cores) to 100 (e.g.&nbsp;1400 chunks for 14 cores). Figure&nbsp;<a href="#chunking-fig" data-reference-type="ref" data-reference="chunking-fig">1.4</a> shows how parallel performance improves as a function of chunking up to a point, but at some point the overhead of parallel processing kicks in, such that speedup actually drops for high levels of chunking with many processors. This highlights the need for benchmarking to understand how parallel performance scales and what the optimal size of data chunks is for the problem at hand.</p>
-<figure id="chunking-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/10/chunking.svg" style="width:70.0%" class="figure-img">
-<figcaption>
-A simulation of the effect of data chunking on parallel performance. The Mandelbrot problem was run on a 4096 x 4096 image, varying the number of cores and the chunking factor (which is a multiplier on the number of cores to determine the number of chunks of data). The y-axis shows the relative speedup, where optimal speedup would be the number of cores (line shown on the diagonal).
+</div>
+<p>Parallelization is also more effective as the number of chunks increases. This reflects the wide distribution of finishing times in the dataset; when the number of chunks is the same as the number of cores, then each core does a single job, and the finishing time will reflect the longest job amongst the cores, such that many cores will be sitting idle for much of the time. Breaking the data into smaller chunks allows for a higher number of concurrent jobs, but also increases parallelization overhead. To see the effects of chunking, I ran a simulation of the Mandelbrot problem with a 4096 x 4096 image using chunking factors ranging from 1 (i.e.&nbsp;as many chunks as cores) to 100 (e.g.&nbsp;1400 chunks for 14 cores). <a href="#fig-chunking" class="quarto-xref">Figure&nbsp;<span>11.4</span></a> shows how parallel performance improves as a function of chunking up to a point, but at some point the overhead of parallel processing kicks in, such that speedup actually drops for high levels of chunking with many processors. This highlights the need for benchmarking to understand how parallel performance scales and what the optimal size of data chunks is for the problem at hand.</p>
+<div id="fig-chunking" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chunking-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/10/chunking.svg" class="img-fluid figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chunking-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.4: A simulation of the effect of data chunking on parallel performance. The Mandelbrot problem was run on a 4096 x 4096 image, varying the number of cores and the chunking factor (which is a multiplier on the number of cores to determine the number of chunks of data). The y-axis shows the relative speedup, where optimal speedup would be the number of cores (line shown on the diagonal).
 </figcaption>
 </figure>
+</div>
 </section>
 <section id="parallel-workflows-using-dask" class="level2" data-number="11.10">
 <h2 data-number="11.10" class="anchored" data-anchor-id="parallel-workflows-using-dask"><span class="header-section-number">11.10</span> Parallel workflows using Dask</h2>
@@ -1379,13 +1395,17 @@ A simulation of the effect of data chunking on parallel performance. The Mandelb
 <span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> TensorDataset(X_device, y_device)</span>
 <span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>    train_loader <span class="op">=</span> DataLoader(dataset, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The revised train_loader doles out batches from an object that is already on the GPU, reducing the need for copies. Figure&nbsp;<a href="#gpuspeedup-fig" data-reference-type="ref" data-reference="gpuspeedup-fig">1.5</a> shows the results of this benchmarking. We see that the GPU offers benefits compared to CPU computation regardless of the batch size, but that the benefits increase as batch size increases, with greater performance for the optimized version of the code that copies all of the data into memory before creating batches.</p>
-<figure id="gpuspeedup-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/10/gpuspeedup.svg" style="width:85.0%" class="figure-img">
-<figcaption>
-Timing results for training a neural network model using either CPU or GPU. Left panel shows how model training times decrease as a function of batch size, and the right panel shows the same data in terms of relative speedup.
+<p>The revised train_loader doles out batches from an object that is already on the GPU, reducing the need for copies. <a href="#fig-gpuspeedup" class="quarto-xref">Figure&nbsp;<span>11.5</span></a> shows the results of this benchmarking. We see that the GPU offers benefits compared to CPU computation regardless of the batch size, but that the benefits increase as batch size increases, with greater performance for the optimized version of the code that copies all of the data into memory before creating batches.</p>
+<div id="fig-gpuspeedup" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gpuspeedup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/10/gpuspeedup.svg" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gpuspeedup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11.5: Timing results for training a neural network model using either CPU or GPU. Left panel shows how model training times decrease as a function of batch size, and the right panel shows the same data in terms of relative speedup.
 </figcaption>
 </figure>
+</div>
 <p>I’ve only skimmed the surface here regarding the use of GPUs to accelerate workflows. As models and datasets get larger, there are a number of specialized techniques that can be used to further accelerate them, including sharing compute loads across multiple GPUs which requires even greater attention to memory allocation. However, even this basic level of knowledge about how to employ GPU computation can help drastically accelerate some common workflows.</p>
 
 

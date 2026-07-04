@@ -575,13 +575,17 @@ if __name__ == "__main__":
 <section id="using-a-workflow-engine" class="level2" data-number="9.6">
 <h2 data-number="9.6" class="anchored" data-anchor-id="using-a-workflow-engine"><span class="header-section-number">9.6</span> Using a workflow engine</h2>
 <p>There is a wide variety of workflow engines available for data analysis workflows, most of which are centered around the concept of an <em>execution graph</em>. This is a graph in the sense described by graph theory, which refers to a set of nodes that are connected by lines (known as <em>edges</em>). Workflow execution graphs are a particular kind of graph known as a <em>directed acyclic graph</em>, or <em>DAG</em> for short. Each node in the graph represents a single step in the workflow, and each edge represents the dependency relationships that exist between nodes. DAGs have two important features. First, the edges are directed, which means that they move in one direction that is represented graphically as an arrow. These represent the dependencies within the workflow. For example, in our workflow step 1 (obtaining the data) must occur before step 2 (filtering the data), so the graph would have an edge from step 1 with an arrow pointing at step 2. Second, the graph is <em>acyclic</em>, which means that it doesn’t have any cycles, that is, it never circles back on itself. Cycles would be problematic, since they could result in workflows that executed in an infinite loop as the cycle repeated itself.</p>
-<p>Most workflow engines provide tools to visualize a workflow as a DAG. Figure&nbsp;<a href="#simpleDAG-fig" data-reference-type="ref" data-reference="simpleDAG-fig">1.1</a> shows our example workflow visualized using the <em>Snakemake</em> tool that we will introduce below:</p>
-<figure id="simpleDAG-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/08/simpleDAG.svg" style="width:37.5%" class="figure-img">
-<figcaption>
-The execution graph for the simple example analysis workflow visualized as a DAG.
+<p>Most workflow engines provide tools to visualize a workflow as a DAG. <a href="#fig-simpleDAG" class="quarto-xref">Figure&nbsp;<span>9.1</span></a> shows our example workflow visualized using the <em>Snakemake</em> tool that we will introduce below:</p>
+<div id="fig-simpleDAG" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-simpleDAG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/08/simpleDAG.svg" class="img-fluid figure-img" style="width:37.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-simpleDAG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.1: The execution graph for the simple example analysis workflow visualized as a DAG.
 </figcaption>
 </figure>
+</div>
 <p>The use of DAGs to represent workflows provides a number of important benefits:</p>
 <ul>
 <li><p>The engine can identify independent pathways through the graph, which can then be executed in parallel</p></li>
@@ -673,7 +677,7 @@ The execution graph for the simple example analysis workflow visualized as a DAG
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/envs/simple.yml"</span></span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    script:</span>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>BASEDIR<span class="sc">}</span><span class="ss">/scripts/compute_correlation.py"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>By working backwards this way from the intended output, <em>Snakemake</em> can reconstruct the computational graph that we saw in Figure&nbsp;<a href="#simpleDAG-fig" data-reference-type="ref" data-reference="simpleDAG-fig">1.1</a>. It then uses this graph to plan the computations that will be performed.</p>
+<p>By working backwards this way from the intended output, <em>Snakemake</em> can reconstruct the computational graph that we saw in <a href="#fig-simpleDAG" class="quarto-xref">Figure&nbsp;<span>9.1</span></a>. It then uses this graph to plan the computations that will be performed.</p>
 <section id="snakemake-scripts" class="level3" data-number="9.7.1">
 <h3 data-number="9.7.1" class="anchored" data-anchor-id="snakemake-scripts"><span class="header-section-number">9.7.1</span> <em>Snakemake</em> scripts</h3>
 <p>In order for <em>Snakemake</em> to execute each of our modules, we need to wrap those modules in a script that can use the configuration information from the config file. Here is an example of what the <a href="https://github.com/BetterCodeBetterScience/example-simpleworkflow/blob/main/snakemake_workflow/scripts/generate_heatmap.py">generate_heatmap.py</a> script would look like:</p>
@@ -1063,13 +1067,17 @@ The execution graph for the simple example analysis workflow visualized as a DAG
 </section>
 <section id="managing-a-complex-workflow-with-snakemake" class="level2" data-number="9.12">
 <h2 data-number="9.12" class="anchored" data-anchor-id="managing-a-complex-workflow-with-snakemake"><span class="header-section-number">9.12</span> Managing a complex workflow with Snakemake</h2>
-<p>In this example I will focus on the <em>Snakemake</em> workflow engine. Figure&nbsp;<a href="#rnaseq-DAG-fig" data-reference-type="ref" data-reference="rnaseq-DAG-fig">1.2</a> shows the DAG generated by <em>Snakemake</em> for the RNA-seq analysis workflow.</p>
-<figure id="rnaseq-DAG-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/08/rnaseq-DAG.svg" style="width:37.5%" class="figure-img">
-<figcaption>
-The execution graph for the RNA-seq analysis workflow visualized as a DAG.
+<p>In this example I will focus on the <em>Snakemake</em> workflow engine. <a href="#fig-rnaseq-DAG" class="quarto-xref">Figure&nbsp;<span>9.2</span></a> shows the DAG generated by <em>Snakemake</em> for the RNA-seq analysis workflow.</p>
+<div id="fig-rnaseq-DAG" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rnaseq-DAG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/08/rnaseq-DAG.svg" class="img-fluid figure-img" style="width:37.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rnaseq-DAG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.2: The execution graph for the RNA-seq analysis workflow visualized as a DAG.
 </figcaption>
 </figure>
+</div>
 <p>The <code>Snakemake</code> file is substantially larger for this complex workflow; to keep it from being even longer, we can also move some of the rules into separate rules files using the following syntax within the <code>Snakemake</code> file:</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include modular rule files</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>include: <span class="st">"rules/common.smk"</span></span>

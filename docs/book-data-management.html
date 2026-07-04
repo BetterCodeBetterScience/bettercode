@@ -394,13 +394,17 @@ div.csl-indent {
 </section>
 <section id="the-data-lifecycle" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="the-data-lifecycle"><span class="header-section-number">8.2</span> The data lifecycle</h2>
-<p>An important concept in research data management is the <em>data lifecycle</em>, which describes the role of data management in each of the different stages of a research project. Figure&nbsp;<a href="#lifecycle-fig" data-reference-type="ref" data-reference="lifecycle-fig">1.1</a> shows an example of how the <a href="https://rdmkit.elixir-europe.org/data_life_cycle">RDMkit project</a> outlines the stages of the data lifecycle. This figure highlights the fact that data management should be part of the discussion at each stage in a project. In this chapter I will discuss several of the stages in the data lifecycle in detail, though I leave in-depth discussion of data processing and analysis workflows to a later chapter.</p>
-<figure id="lifecycle-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/07/lifecycle.svg" style="width:62.5%" class="figure-img">
-<figcaption>
-A depiction of the data management lifecycle, from the <a href="https://rdmkit.elixir-europe.org/data_life_cycle">RDMkit project by ELIXIR</a>, CC-BY-4.0.
+<p>An important concept in research data management is the <em>data lifecycle</em>, which describes the role of data management in each of the different stages of a research project. <a href="#fig-lifecycle" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> shows an example of how the <a href="https://rdmkit.elixir-europe.org/data_life_cycle">RDMkit project</a> outlines the stages of the data lifecycle. This figure highlights the fact that data management should be part of the discussion at each stage in a project. In this chapter I will discuss several of the stages in the data lifecycle in detail, though I leave in-depth discussion of data processing and analysis workflows to a later chapter.</p>
+<div id="fig-lifecycle" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lifecycle-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/07/lifecycle.svg" class="img-fluid figure-img" style="width:62.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lifecycle-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.1: A depiction of the data management lifecycle, from the <a href="https://rdmkit.elixir-europe.org/data_life_cycle">RDMkit project by ELIXIR</a>, CC-BY-4.0.
 </figcaption>
 </figure>
+</div>
 </section>
 <section id="planning-a-study" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="planning-a-study"><span class="header-section-number">8.3</span> Planning a study</h2>
@@ -1326,16 +1330,20 @@ Set all original data files to read-only and store checksums for them, so that y
 <p>Many forms of data are represented as multidimensional arrays. For example, many forms of microscopy data are represented as either two-dimensional (slice) or three-dimensional (volume) arrays, while dynamic imaging modalities are often represented as three- or four-dimensional data, with the first two or three dimensions representing space and the final dimension reflecting time. Within Python these are generally processed using <em>NumPy</em>, which efficiently processes large multidimensional arrays. As an example, I loaded a three-dimensional brain template. After loading the data into a <em>NumPy</em> array, we can see its shape:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> data.shape</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>(<span class="dv">91</span>, <span class="dv">109</span>, <span class="dv">91</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>In this case, the three dimensions are represent the left/right, front/back, and up/down axes of the brain. We can also use the <code>imshow</code> function from <code>matplotlib.pyplot</code> to view a two-dimensional slice of the image (in this case, the 40th slice in the array), as shown in Figure&nbsp;<a href="#MR-slice-fig" data-reference-type="ref" data-reference="MR-slice-fig">1.2</a>:</p>
+<p>In this case, the three dimensions are represent the left/right, front/back, and up/down axes of the brain. We can also use the <code>imshow</code> function from <code>matplotlib.pyplot</code> to view a two-dimensional slice of the image (in this case, the 40th slice in the array), as shown in <a href="#fig-MR-slice" class="quarto-xref">Figure&nbsp;<span>8.2</span></a>:</p>
 <pre class="text"><code>import matplotlib.pyplot as plt
 slice_z = 40
 plt.imshow(data[:, :, slice_z], cmap='gray')</code></pre>
-<figure id="MR-slice-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/07/MR-slice.svg" style="width:62.5%" class="figure-img">
-<figcaption>
-An example of a two-dimensional image extracted from a three-dimensional array.
+<div id="fig-MR-slice" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-MR-slice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/07/MR-slice.svg" class="img-fluid figure-img" style="width:62.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-MR-slice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.2: An example of a two-dimensional image extracted from a three-dimensional array.
 </figcaption>
 </figure>
+</div>
 <section id="multidimensional-array-file-formats" class="level4" data-number="8.8.2.1">
 <h4 data-number="8.8.2.1" class="anchored" data-anchor-id="multidimensional-array-file-formats"><span class="header-section-number">8.8.2.1</span> Multidimensional array file formats</h4>
 <p>A common file format for array data in Python is the native <em>NumPy</em> format, which is known by its extension, <code>.npy</code>. This file format has a number of benefits for Python users:</p>
@@ -1431,13 +1439,17 @@ An example of a two-dimensional image extracted from a three-dimensional array.
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>G.add_edges_from(friends)</span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>G.edges</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">EdgeView</span><span class="er">(</span><span class="ex">[</span><span class="er">(</span><span class="st">'Bill'</span><span class="ex">,</span> <span class="st">'Sally'</span><span class="kw">)</span><span class="ex">,</span> <span class="er">(</span><span class="st">'Bill'</span><span class="ex">,</span> <span class="st">'Mark'</span><span class="kw">)</span><span class="ex">,</span> <span class="er">(</span><span class="st">'Bill'</span><span class="ex">,</span> <span class="st">'Elise'</span><span class="kw">)</span><span class="ex">,</span> <span class="er">(</span><span class="st">'Mark'</span><span class="ex">,</span> <span class="st">'Elise'</span><span class="kw">)</span><span class="ex">,</span> <span class="er">(</span><span class="st">'Mark'</span><span class="ex">,</span> <span class="st">'Lisa'</span><span class="kw">)</span><span class="ex">]</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>We can view this as a graph using the plotting functions in <code>networkx</code>, as shown in Figure&nbsp;<a href="#graph-example-fig" data-reference-type="ref" data-reference="graph-example-fig">1.3</a></p>
-<figure id="graph-example-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/07/graph_example.svg" style="width:62.5%" class="figure-img">
-<figcaption>
-An example of a simple graph generated using <code>networkx</code>.
+<p>We can view this as a graph using the plotting functions in <code>networkx</code>, as shown in <a href="#fig-graph-example" class="quarto-xref">Figure&nbsp;<span>8.3</span></a></p>
+<div id="fig-graph-example" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-graph-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/07/graph_example.svg" class="img-fluid figure-img" style="width:62.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-graph-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.3: An example of a simple graph generated using <code>networkx</code>.
 </figcaption>
 </figure>
+</div>
 <p>Another way to represent a graph is via an <em>adjacency matrix</em>, which numerically represents the relations between nodes in the graph. We can generate this from the <code>networkx</code> graph:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>adj_matrix <span class="op">=</span> nx.adjacency_matrix(G).todense()</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> <span class="bu">list</span>(G.nodes)</span>
@@ -1551,13 +1563,17 @@ An example of a simple graph generated using <code>networkx</code>.
 <section id="metadata" class="level2" data-number="8.10">
 <h2 data-number="8.10" class="anchored" data-anchor-id="metadata"><span class="header-section-number">8.10</span> Metadata</h2>
 <p><em>Metadata</em> refers to “data about data”, and generally is meant to contain the information that is needed to interpret a dataset. In principle, someone who obtains a dataset should be able to understand and reuse the data using only the metadata provided alongside the dataset. There are many different types of metadata that might be associated with a study, and it is usually necessary to decide how comprehensive to be in providing detailed metadata. This will often rely upon the scientific expertise and judgment of the researcher, to determine which particular metadata would be essential for others to usefully interpret and reuse the data.</p>
-<p>An important concept in metadata is the <em>ontology</em>. In the context of bioinformatics, an ontology is a structured representation of the entities that exist in a domain (defined by a <em>controlled vocabulary</em>) and the relationships between these entities. One of the best known examples is the Gene Ontology, which represents classes of biological entities including Molecular Functions, Cellular Components, and Biological Processes. As an example, Figure&nbsp;<a href="#GO-fig" data-reference-type="ref" data-reference="GO-fig">1.4</a> shows a hierarchical depiction for a specific cellular component.</p>
-<figure id="GO-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/07/GO.svg" style="width:62.5%" class="figure-img">
-<figcaption>
-An example of a Gene Ontology graph for the entity “node of Ranvier”, which is a component of a neuron. Obtained from www.ebi.ac.uk/QuickGO/GTerm?id=GO:0033268.
+<p>An important concept in metadata is the <em>ontology</em>. In the context of bioinformatics, an ontology is a structured representation of the entities that exist in a domain (defined by a <em>controlled vocabulary</em>) and the relationships between these entities. One of the best known examples is the Gene Ontology, which represents classes of biological entities including Molecular Functions, Cellular Components, and Biological Processes. As an example, <a href="#fig-GO" class="quarto-xref">Figure&nbsp;<span>8.4</span></a> shows a hierarchical depiction for a specific cellular component.</p>
+<div id="fig-GO" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-GO-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/07/GO.svg" class="img-fluid figure-img" style="width:62.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-GO-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.4: An example of a Gene Ontology graph for the entity “node of Ranvier”, which is a component of a neuron. Obtained from www.ebi.ac.uk/QuickGO/GTerm?id=GO:0033268.
 </figcaption>
 </figure>
+</div>
 <p>Ontologies are very useful for specifying metadata, because they allow us to know exactly what a particular entry in the metadata means, and thus allow us to establish links between equivalent entities across datasets. For example, let’s say that a researcher wants to query a database for datasets related to insulin signaling in pancreatic beta cells in Type II diabetes, and that there are three relevant datasets in the database. Without an ontology, each of the teams might use different terms to refer to these cells (such as “pancreatic beta cells”, “insulin-producing cells”, and “islet beta cells”), making it difficult to link the datasets. However, if each of the datasets were to include metadata linked to a specific ontology (in this case, the identifier <code>CL:0000169</code> from the Cell Ontology, which refers to “type B pancreatic cell”), then it becomes much easier to find and link these datasets. There are at present a broad range of ontologies available for nearly every scientific domain; the BioPortal project (bioportal.bioontology.org) provides a tool to search across a wide range of existing ontologies.</p>
 <section id="metadata-file-formats" class="level3" data-number="8.10.1">
 <h3 data-number="8.10.1" class="anchored" data-anchor-id="metadata-file-formats"><span class="header-section-number">8.10.1</span> Metadata file formats</h3>
@@ -1676,13 +1692,17 @@ An example of a Gene Ontology graph for the entity “node of Ranvier”, which 
 <li><p><em>Activities</em>: processes that involve using, generating, or modifying entities</p></li>
 <li><p><em>Agents</em>: People, organizations, or artifacts (such as computers) that are responsible for activities</p></li>
 </ul>
-<p>In addition, the model defines a set of relationships between these concepts, as seen in Figure&nbsp;<a href="#PROV-fig" data-reference-type="ref" data-reference="PROV-fig">1.5</a>. This data model highlights the breadth of information that needs to be represented in order to accurately record provenance.</p>
-<figure id="PROV-fig" data-latex-placement="!htbp" class="figure">
-<img src="figures/07/PROV.svg" style="width:62.5%" class="figure-img">
-<figcaption>
-A depiction of the PROV data model entities and relations. Copyright ©[2013]World Wide Web Consortium.
+<p>In addition, the model defines a set of relationships between these concepts, as seen in <a href="#fig-PROV" class="quarto-xref">Figure&nbsp;<span>8.5</span></a>. This data model highlights the breadth of information that needs to be represented in order to accurately record provenance.</p>
+<div id="fig-PROV" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-PROV-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/07/PROV.svg" class="img-fluid figure-img" style="width:62.5%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-PROV-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.5: A depiction of the PROV data model entities and relations. Copyright ©[2013]World Wide Web Consortium.
 </figcaption>
 </figure>
+</div>
 <p>There are several different ways to track provenance in practice, which vary in their complexity, comprehensiveness, and ease of use. I will discuss this further in the following chapter on workflows.</p>
 </section>
 <section id="handling-of-sensitive-data" class="level2" data-number="8.13">
