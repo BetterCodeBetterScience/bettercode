@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Container
 from pathlib import Path
 
 _INCLUDE = re.compile(r"^\s*\\include\{(?P<target>[^}]+)\}", re.MULTILINE)
@@ -12,14 +13,16 @@ _INCLUDE = re.compile(r"^\s*\\include\{(?P<target>[^}]+)\}", re.MULTILINE)
 INDEX_BODY_FILE = Path(__file__).with_name("index_body.md")
 
 
-def parse_chapter_order(book_tex: str) -> list[str]:
-    """Return \\include targets in order, ignoring commented-out lines."""
+def parse_chapter_order(
+    book_tex: str, exclude: Container[str] = frozenset()
+) -> list[str]:
+    """Return \\include targets in order, ignoring comments and excluded targets."""
     targets: list[str] = []
     for line in book_tex.splitlines():
         if line.lstrip().startswith("%"):
             continue
         match = _INCLUDE.match(line)
-        if match:
+        if match and match.group("target") not in exclude:
             targets.append(match.group("target"))
     return targets
 

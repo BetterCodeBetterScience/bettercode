@@ -11,7 +11,7 @@ pytestmark = pytest.mark.integration
 
 @pytest.mark.skipif(shutil.which("pandoc") is None, reason="pandoc not installed")
 def test_build_book_writes_project(tmp_path):
-    """build_book emits a cover index.qmd, a preface chapter, chapter qmd, and copies bib."""
+    """build_book emits a cover index.qmd and chapter qmd, excludes the preface, and copies bib."""
     latex = tmp_path / "latex"
     latex.mkdir()
     (latex / "book.tex").write_text(
@@ -28,15 +28,16 @@ def test_build_book_writes_project(tmp_path):
     assert 'title: "Better Code, Better Science"' in index
     assert "Welcome to the web edition" in index
     assert "Hello." not in index
-    # the preface is its own chapter
-    assert "Hello." in (out / "preface.qmd").read_text()
+    # the preface is excluded from the web edition entirely
+    assert not (out / "preface.qmd").exists()
     assert (out / "chap1.qmd").exists()
     assert (out / "references.bib").exists()
     assert (out / "cambridge.csl").exists()
     yml = (out / "_quarto.yml").read_text()
     assert "type: book" in yml
-    # cover is first, preface follows
-    assert yml.index("index.qmd") < yml.index("preface.qmd")
+    assert "preface.qmd" not in yml
+    # cover is first, chapter follows
+    assert yml.index("index.qmd") < yml.index("chap1.qmd")
 
 
 @pytest.mark.skipif(shutil.which("pandoc") is None, reason="pandoc not installed")

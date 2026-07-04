@@ -26,6 +26,9 @@ from tex2qmd.project import (  # noqa: E402
 TITLE = "Better Code, Better Science"
 SUBTITLE = "Software Engineering for Reproducible Science in the Age of AI"
 AUTHOR = "Russell A. Poldrack"
+REPO_URL = "https://github.com/BetterCodeBetterScience/bettercode"
+# Chapters to omit from the web edition (still present in the print book).
+WEB_EXCLUDE = frozenset({"preface"})
 
 
 def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
@@ -44,7 +47,7 @@ def build_book(latex_dir: Path, out_dir: Path) -> None:
     """Convert every chapter in book.tex into a Quarto project under out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
     book_tex = (latex_dir / "book.tex").read_text()
-    targets = parse_chapter_order(book_tex)
+    targets = parse_chapter_order(book_tex, exclude=WEB_EXCLUDE)
 
     # A generated cover page is the landing page; every \include (including
     # the preface) becomes its own chapter that follows it.
@@ -62,7 +65,9 @@ def build_book(latex_dir: Path, out_dir: Path) -> None:
             emit_figure(pdf, latex_dir, out_dir)
 
     (out_dir / "_quarto.yml").write_text(
-        render_quarto_yml(chapter_files, TITLE, AUTHOR, subtitle=SUBTITLE)
+        render_quarto_yml(
+            chapter_files, TITLE, AUTHOR, subtitle=SUBTITLE, repo_url=REPO_URL
+        )
     )
     shutil.copy(latex_dir / "references.bib", out_dir / "references.bib")
     shutil.copy(

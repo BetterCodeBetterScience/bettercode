@@ -23,6 +23,20 @@ def test_parse_chapter_order():
     ]
 
 
+def test_parse_chapter_order_excludes_named_targets():
+    """Targets in the exclude set are dropped from the chapter order."""
+    book_tex = (
+        "\\begin{document}\n"
+        "\\include{preface}\n"
+        "\\include{book-introduction}\n"
+        "\\include{book-testing}\n"
+    )
+    assert parse_chapter_order(book_tex, exclude={"preface"}) == [
+        "book-introduction",
+        "book-testing",
+    ]
+
+
 def test_qmd_name():
     """An include target maps to a .qmd filename."""
     assert qmd_name("book-testing") == "book-testing.qmd"
