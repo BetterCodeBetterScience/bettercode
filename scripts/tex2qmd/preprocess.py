@@ -66,6 +66,29 @@ def strip_index(tex: str) -> str:
     return _INDEX.sub("", tex)
 
 
+# Some LaTeX listings embed `$...$` math (e.g. `%timeit` output
+# `103 $\mu$s $\pm$ 759 ns`), which a verbatim code block would show literally.
+# These unambiguous math tokens are converted back to unicode. Full-token keys
+# (not a bare `$`) mean a literal shell prompt like `$ git init` is untouched.
+_LISTING_MATH = {
+    r"$\mu$": "µ",
+    r"$\pm$": "±",
+    r"$\times$": "×",
+    r"$\cdot$": "·",
+    r"$\leq$": "≤",
+    r"$\geq$": "≥",
+    r"$\infty$": "∞",
+    r"$\ldots$": "…",
+}
+
+
+def unescape_listing_math(code: str) -> str:
+    """Convert common `$...$` LaTeX math (from a mathescape listing) to unicode."""
+    for tex, unicode_char in _LISTING_MATH.items():
+        code = code.replace(tex, unicode_char)
+    return code
+
+
 def render_code_block(code: str, language: str) -> str:
     """Wrap code in a fenced block tagged with language."""
     return f"```{language}\n{code.rstrip(chr(10))}\n```"
@@ -87,14 +110,14 @@ def extract_listings(tex: str, base_dir: Path) -> tuple[str, list[str]]:
         text = path.read_text()
         first = int(opts["firstline"]) if "firstline" in opts else None
         last = int(opts["lastline"]) if "lastline" in opts else None
-        code = slice_lines(text, first, last)
+        code = unescape_listing_math(slice_lines(text, first, last))
         blocks.append(render_code_block(code, language))
         return _token(len(blocks) - 1)
 
     def _inline_repl(match: re.Match[str]) -> str:
         opts = parse_listing_options(match.group("opts") or "")
         language = language_for_style(opts.get("style", ""))
-        code = match.group("body").rstrip("\n")
+        code = unescape_listing_math(match.group("body").rstrip("\n"))
         blocks.append(render_code_block(code, language))
         return _token(len(blocks) - 1)
 

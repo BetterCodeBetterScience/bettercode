@@ -20,6 +20,40 @@ def test_extract_input_listing_with_range(tmp_path):
     assert blocks == ["```python\nl2\nl3\nl4\n```"]
 
 
+def test_extract_mathescape_listing_converts_math(tmp_path):
+    """A `mathescape=true` listing has its $...$ math converted to unicode."""
+    tex = (
+        "\\begin{lstlisting}[style=replshort, mathescape=true]\n"
+        "446 $\\mu$s $\\pm$ 1.06 $\\mu$s per loop\n"
+        "\\end{lstlisting}"
+    )
+    _, blocks = extract_listings(tex, tmp_path)
+    assert "446 µs ± 1.06 µs per loop" in blocks[0]
+    assert "$\\mu$" not in blocks[0]
+
+
+def test_extract_converts_math_even_without_mathescape_flag(tmp_path):
+    """Math symbols convert even when a listing omits the mathescape flag.
+
+    Some source listings (e.g. `[style=repl]`) carry `$\\mu$`/`$\\pm$` output
+    without `mathescape=true`; the unambiguous math tokens are still converted.
+    """
+    tex = (
+        "\\begin{lstlisting}[style=repl]\n"
+        "103 $\\mu$s $\\pm$ 759 ns per loop\n"
+        "\\end{lstlisting}"
+    )
+    _, blocks = extract_listings(tex, tmp_path)
+    assert "103 µs ± 759 ns per loop" in blocks[0]
+
+
+def test_extract_non_mathescape_listing_preserves_dollar(tmp_path):
+    """A literal $ shell prompt is never mistaken for a math delimiter."""
+    tex = "\\begin{lstlisting}[style=shellshort]\n$ git init\n\\end{lstlisting}"
+    _, blocks = extract_listings(tex, tmp_path)
+    assert "$ git init" in blocks[0]
+
+
 def test_extract_multiple_listings_indexed(tmp_path):
     """Multiple listings get sequential tokens."""
     tex = (

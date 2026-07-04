@@ -3,6 +3,7 @@ from tex2qmd.preprocess import (
     render_code_block,
     slice_lines,
     strip_comments,
+    unescape_listing_math,
 )
 
 
@@ -71,3 +72,14 @@ def test_parse_listing_options_empty():
 def test_render_code_block():
     """A fenced block wraps code with the language tag."""
     assert render_code_block("print(1)", "python") == "```python\nprint(1)\n```"
+
+
+def test_unescape_listing_math_converts_symbols():
+    """LaTeX `$...$` math (from a mathescape listing) becomes unicode text."""
+    code = "446 $\\mu$s $\\pm$ 1.06 $\\mu$s per loop"
+    assert unescape_listing_math(code) == "446 µs ± 1.06 µs per loop"
+
+
+def test_unescape_listing_math_leaves_plain_dollars():
+    """Text without `$...$` math spans is returned unchanged."""
+    assert unescape_listing_math("$ git init\n$ echo hello") == "$ git init\n$ echo hello"
