@@ -124,3 +124,6 @@ markers = [
     "integration: mark a test as an integration test."
 ]
 norecursedirs = ["_demos", ".git", ".tox", ".venv", "dist", "build", "*.egg", ".hypothesis"]
+
+[tool.ruff.format]
+preview = true
