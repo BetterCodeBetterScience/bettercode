@@ -59,11 +59,12 @@ def get_record_from_PubMedID(pmid: str, esummary_url: str | None = None) -> dict
 
     response = requests.get(esummary_url)
 
+    # This will raise a ValueError if the response doesn't have valid JSON content
     result_json = response.json()
 
+    # Check here for additional possible error conditions in the response JSON
     if (
-        response.status_code != 200
-        or "result" not in result_json
+        "result" not in result_json
         or pmid not in result_json["result"]
         or "error" in result_json["result"][pmid]
     ):
