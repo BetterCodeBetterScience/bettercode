@@ -111,6 +111,21 @@ def strip_docstrings(text: str) -> str:
     )
 
 
+@register("strip_deselect")
+def strip_deselect(text: str) -> str:
+    """Hide `--deselect` usage from a rendered pytest run.
+
+    When an output must be generated with a test deselected (e.g. to show a
+    coverage report from before that test was written), this removes the
+    `--deselect <nodeid>` flag from the displayed command prompt and drops the
+    `, N deselected` clause from the summary line, so the listing reads as an
+    ordinary run of the tests that existed at that point.
+    """
+    text = re.sub(r" --deselect \S+", "", text)
+    text = re.sub(r", \d+ deselected", "", text)
+    return text
+
+
 @register("xdist_schedule")
 def xdist_schedule(text: str) -> str:
     """Canonicalize xdist scheduling output to make it deterministic.

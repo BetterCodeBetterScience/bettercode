@@ -172,6 +172,28 @@ def test_strip_docstrings_handles_multiple_docstrings():
     assert NORMALIZERS["strip_docstrings"](text) == expected
 
 
+def test_strip_deselect_removes_flag_and_nodeid_from_command():
+    """The --deselect flag and its nodeid argument are dropped from the prompt."""
+    text = (
+        "$ pytest --no-header -q "
+        "--deselect test_textmining.py::test_get_PubMedIDs_for_query_check_badurl\n"
+    )
+    result = NORMALIZERS["strip_deselect"](text)
+    assert result == "$ pytest --no-header -q\n"
+
+
+def test_strip_deselect_collapses_deselected_summary_count():
+    """A ', N deselected' clause is removed from the pytest summary line."""
+    text = "14 passed, 1 deselected in 3.70s\n"
+    result = NORMALIZERS["strip_deselect"](text)
+    assert result == "14 passed in 3.70s\n"
+
+
+def test_strip_deselect_leaves_unrelated_text_untouched():
+    text = "14 passed in 3.70s\n$ pytest --no-header -q\n"
+    assert NORMALIZERS["strip_deselect"](text) == text
+
+
 # --- xdist_schedule normalizer tests ---
 
 XDIST_SAMPLE_A = (
