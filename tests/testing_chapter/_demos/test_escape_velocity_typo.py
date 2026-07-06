@@ -1,6 +1,6 @@
 import numpy as np
 
-from bettercode.testing.escape_velocity_v1 import escape_velocity
+from bettercode.escape_velocity import escape_velocity
 
 
 def test_escape_velocity():

@@ -1,6 +1,6 @@
 import pytest
 
-from bettercode.testing.escape_velocity_v2 import escape_velocity
+from bettercode.escape_velocity import escape_velocity_safe as escape_velocity
 
 
 def test_escape_velocity_gpt4():
