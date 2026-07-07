@@ -281,7 +281,10 @@ div.csl-indent {
   <li><a href="#global-variables" id="toc-global-variables" class="nav-link" data-scroll-target="#global-variables"><span class="header-section-number">3.7.4</span> Global variables</a></li>
   </ul></li>
   <li><a href="#type-hints" id="toc-type-hints" class="nav-link" data-scroll-target="#type-hints"><span class="header-section-number">3.8</span> Type hints</a></li>
-  <li><a href="#defining-constants" id="toc-defining-constants" class="nav-link" data-scroll-target="#defining-constants"><span class="header-section-number">3.9</span> Defining constants</a></li>
+  <li><a href="#defining-constants" id="toc-defining-constants" class="nav-link" data-scroll-target="#defining-constants"><span class="header-section-number">3.9</span> Defining constants</a>
+  <ul class="collapse">
+  <li><a href="#creating-immutable-variables" id="toc-creating-immutable-variables" class="nav-link" data-scroll-target="#creating-immutable-variables"><span class="header-section-number">3.9.1</span> Creating immutable variables</a></li>
+  </ul></li>
   <li><a href="#when-to-use-classes-versus-functions" id="toc-when-to-use-classes-versus-functions" class="nav-link" data-scroll-target="#when-to-use-classes-versus-functions"><span class="header-section-number">3.10</span> When to use Classes Versus Functions</a>
   <ul class="collapse">
   <li><a href="#the-god-object" id="toc-the-god-object" class="nav-link" data-scroll-target="#the-god-object"><span class="header-section-number">3.10.1</span> The “God Object”</a></li>
@@ -382,10 +385,10 @@ div.csl-indent {
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_workflow(raw_data, config):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> data_setup(raw_data, config)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'trimfilt'</span>] <span class="op">=</span> run_trim_filt(data, config)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'aligned'</span>] <span class="op">=</span> run_alignment(data, config)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'quant'</span>] <span class="op">=</span> run_expression_quantification(data, config)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'normalized'</span>] <span class="op">=</span> run_normalization(data, config)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'diffexpress'</span>] <span class="op">=</span> run_differential_expression(data, config)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'aligned'</span>] <span class="op">=</span> run_alignment(data[<span class="st">'trimfilt'</span>], config)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'quant'</span>] <span class="op">=</span> run_expression_quantification(data[<span class="st">'aligned'</span>], config)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'normalized'</span>] <span class="op">=</span> run_normalization(data[<span class="st">'quant'</span>], config)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    data[<span class="st">'diffexpress'</span>] <span class="op">=</span> run_differential_expression(data[<span class="st">'normalized'</span>], config)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This function clearly performs several operations, but viewed from the appropriate level of abstraction, it does one thing: it executes the workflow. Importantly, the only thing that would cause this function to change is if the workflow changed; any changes within the components of the workflow would not require changes to this function unless they caused a change in the component function’s interface. In this way, the high level workflow manager is <em>insulated</em> from the implementation details of each of the components, interacting with them only through their inputs and outputs. Each of the different workflow components can also be insulated from the other components, as long as they rely only upon the arguments provided to the function.</p>
 <p>Having discussed how the structure of code can increase or reduce complexity, we now turn to the nature of the development process, which also plays an important role in minimizing complexity.</p>
@@ -413,7 +416,7 @@ div.csl-indent {
 </section>
 <section id="refactoring-code" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="refactoring-code"><span class="header-section-number">3.5</span> Refactoring code</h2>
-<p>Throughout the book I will regularly mention the concept of <em>refactoring</em>. When we refactor a piece of code, we modify it in a way that doesn’t change its external behavior. The idea long existed in software development but was made prominent by Martin Fowler in his book <em>Refactoring: Improving the Design of Existing Code</em> <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler &amp; Beck 1999</a>)</span>. As the title suggests, the goal of refactoring is to improve existing code rather than adding features or fixing bugs - but why would we spend time modifying code once it’s working, unless our goal is to add something new or fix something that is broken?</p>
+<p>Throughout the book I will regularly mention the concept of <em>refactoring</em>. When we refactor a piece of code, we modify it in a way that doesn’t change its external behavior. The idea long existed in software development but was made prominent by Martin Fowler in his book <em>Refactoring: Improving the Design of Existing Code</em> <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler 1999</a>)</span>. As the title suggests, the goal of refactoring is to improve existing code rather than adding features or fixing bugs - but why would we spend time modifying code once it’s working, unless our goal is to add something new or fix something that is broken?</p>
 <p>In fact, the idea of refactoring is closely aligned with the Agile development philosophy mentioned above. Rather than designing a software product in detail before coding, we can instead start with an initial design that we update as we go, understanding that this is just a first pass. As Fowler says:</p>
 <blockquote class="blockquote">
 <p>“With refactoring, we can take a bad, even chaotic, design and rework it into well-structured code. Each step is simple — even simplistic. I move a field from one class to another, pull some code out of a method to make it into its own method, or push some code up or down a hierarchy. Yet the cumulative effect of these small changes can radically improve the design.” - Fowler (p.&nbsp;xiv)</p>
@@ -430,7 +433,7 @@ div.csl-indent {
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: reformat the metadata to match the repository standard</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: combine the data and metadata</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: save the data to the required format</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>A seemingly sensible way to proceed would then be march through the steps and write a function to accomplish each one, and then test the entire package once all of the functions are created. However, this approach has a couple of drawbacks. First, since you can’t run the application until all of the code is written, you can’t know whether each component is working properly until the entire package is built. Second, it’s easy to end up writing code that you would actually need, since you haven’t specified exactly what the inputs and outputs are for each component. Finally, once you start integrating all of the components, you won’t have a way to know if you have introduced a bug.</p>
+<p>A seemingly sensible way to proceed would then be march through the steps and write a function to accomplish each one, and then test the entire package once all of the functions are created. However, this approach has a couple of drawbacks. First, since you can’t run the application until all of the code is written, you can’t know whether each component is working properly until the entire package is built. Second, it’s easy to end up writing code that you would not actually need, since you haven’t specified exactly what the inputs and outputs are for each component. Finally, once you start integrating all of the components, you won’t have a way to know if you have introduced a bug.</p>
 <p>One answer to these problems is to start the process by creating a set of <em>tests</em>, which tell us whether the code has solved our intended problems. The process of writing tests before writing code to solve the problem is known as <em>test-driven development</em> (TDD), which I think is a very useful framework to use when writing scientific code, especially if one plans to use LLMs for code generation. Test-driven development is somewhat controversial within the software engineering field, in part due to the strident rhetoric of some TDD advocates, but also due to concerns about whether it might actually result in poorer software designs<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. But I think that when it is used in a thoughtful way, TDD can be a powerful way to increase the effectiveness and accuracy of one’s code. In addition, TDD is very useful in the context of AI coding agents, where it can help keep the agent on track and ensure that it focuses on the main problem at hand.</p>
 <p>I will dive deeply into testing in the next chapter; here I will simply outline a simple test-driven development workflow for the data transformation problem described above. The TDD workflow can be summarized in a cycle involving three steps:</p>
 <ul>
@@ -443,7 +446,7 @@ div.csl-indent {
 <section id="clean-coding" class="level2" data-number="3.7">
 <h2 data-number="3.7" class="anchored" data-anchor-id="clean-coding"><span class="header-section-number">3.7</span> Clean coding</h2>
 <blockquote class="blockquote">
-<p>“Any fool can write code that a computer can understand. Good programmers write code that humans can understand.” <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler &amp; Beck 1999 p. 10</a>)</span></p>
+<p>“Any fool can write code that a computer can understand. Good programmers write code that humans can understand.” <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler 1999 p. 10</a>)</span></p>
 </blockquote>
 <p>Another idea that has emerged from the Agile community is <em>clean coding</em>, which is the idea that code should be simple, readable, and easily maintainable. This idea was codified in the book titled <em>Clean Code: A Handbook of Agile Software Craftsmanship</em> <span class="citation" data-cites="Martin:2025aa">(<a href="#ref-Martin:2025aa" role="doc-biblioref">Martin 2025</a>)</span> by Robert C. Martin (known in the community as “Uncle Bob”). One of the best ways to describe clean code is that it is <em>simple</em>. Kent Beck, another Agile founder who developed the related idea of “Extreme Programming”, laid out a set of rules for simple code:</p>
 <ol type="1">
@@ -509,7 +512,7 @@ div.csl-indent {
 <ul>
 <li><p>“Don’t comment bad code — rewrite it” <span class="citation" data-cites="Kernighan:1978aa">(<a href="#ref-Kernighan:1978aa" role="doc-biblioref">Kernighan &amp; Plauger 1978</a>)</span></p></li>
 <li><p>“Clear and expressive code with few comments is far superior to cluttered and complex code with lots of comments. Rather than spend your time writing the comments that explain the mess you’ve made, spend it cleaning that mess.” <span class="citation" data-cites="Martin:2025aa">(<a href="#ref-Martin:2025aa" role="doc-biblioref">Martin 2025</a>)</span></p></li>
-<li><p>“comments aren’t a bad smell; indeed they are a sweet smell. The reason we mention comments here is that comments are often used as a deodorant. It’s surprising how often you look at thickly commented code and notice that the comments are there because the code is bad.” <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler &amp; Beck 1999</a>)</span></p></li>
+<li><p>“comments aren’t a bad smell; indeed they are a sweet smell. The reason we mention comments here is that comments are often used as a deodorant. It’s surprising how often you look at thickly commented code and notice that the comments are there because the code is bad.” <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler 1999</a>)</span></p></li>
 </ul>
 <p>The overall goal of code comments should be to help the reader know as much as the writer knows about the code. I will start by outlining the kinds of things that do <em>not</em> warrant comments, and then turn to the legitimate uses of comments.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -551,7 +554,7 @@ What the code is doing should be clear from the code itself. Comments should exp
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    ...</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># function to create a random normal variate</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_random_normal_variate(mean, sd):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_normal_variate(mean, sd):</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>In general one should assume that the reader of code has a good understanding of the language, such that they could understand that first example involves a loop over states. An exception to this rule is when one is writing code for educational purposes; in that case, one might want to include comments that are more didactic even though they would cause clutter for an experienced programmer.</p>
 <p><strong>Historical information</strong></p>
@@ -591,7 +594,7 @@ What the code is doing should be clear from the code itself. Comments should exp
 </section>
 <section id="avoiding-code-smells-and-anti-patterns" class="level3" data-number="3.7.3">
 <h3 data-number="3.7.3" class="anchored" data-anchor-id="avoiding-code-smells-and-anti-patterns"><span class="header-section-number">3.7.3</span> Avoiding “code smells” and “anti-patterns”</h3>
-<p>There are two related concepts that are used to describe the appearance of potentially problematic code The “anti-pattern” is a riff on the concept of a <em>design pattern</em>, which is a recommended solution (i.e., a “best practice”) for a common programming problem <span class="citation" data-cites="Gamma:1995aa">(<a href="#ref-Gamma:1995aa" role="doc-biblioref">Gamma 1995</a>)</span>. An anti-pattern is conversely a commonly used but bad solution (i.e., a “worst practice”) for a common programming problem. In the Python world these are well known from “The Little Book of Python Anti-Patterns” <span class="citation" data-cites="quantifiedcode:2018">(<a href="#ref-quantifiedcode:2018" role="doc-biblioref">Code 2018</a>)</span>, which lays out many different anti-patterns common in Python coding. The second idea, that of the “code smell”, has been popularized by Martin Fowler in his well-known book on refactoring <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler &amp; Beck 1999</a>)</span>. Just as a bad smell from food can give us an intuitive sense that the good might be spoiled, code smells are intuitive reactions to code that suggest that there might be a problem that could be a target for refactoring.</p>
+<p>There are two related concepts that are used to describe the appearance of potentially problematic code The “anti-pattern” is a riff on the concept of a <em>design pattern</em>, which is a recommended solution (i.e., a “best practice”) for a common programming problem <span class="citation" data-cites="Gamma:1995aa">(<a href="#ref-Gamma:1995aa" role="doc-biblioref">Gamma 1995</a>)</span>. An anti-pattern is conversely a commonly used but bad solution (i.e., a “worst practice”) for a common programming problem. In the Python world these are well known from “The Little Book of Python Anti-Patterns” <span class="citation" data-cites="quantifiedcode:2018">(<a href="#ref-quantifiedcode:2018" role="doc-biblioref">Code 2018</a>)</span>, which lays out many different anti-patterns common in Python coding. The second idea, that of the “code smell”, has been popularized by Martin Fowler in his well-known book on refactoring <span class="citation" data-cites="Fowler:1999aa">(<a href="#ref-Fowler:1999aa" role="doc-biblioref">Fowler 1999</a>)</span>. Just as a bad smell from food can give us an intuitive sense that the good might be spoiled, code smells are intuitive reactions to code that suggest that there might be a problem that could be a target for refactoring.</p>
 <p>Here I outline several bad smells and anti-patterns commonly found in my experience with scientific code.</p>
 <section id="duplicated-code" class="level4" data-number="3.7.3.1">
 <h4 data-number="3.7.3.1" class="anchored" data-anchor-id="duplicated-code"><span class="header-section-number">3.7.3.1</span> Duplicated code</h4>
@@ -635,8 +638,8 @@ What the code is doing should be clear from the code itself. Comments should exp
 <h4 data-number="3.7.3.3" class="anchored" data-anchor-id="long-parameter-lists"><span class="header-section-number">3.7.3.3</span> Long parameter lists</h4>
 <p>A long list of parameters in a function definition can be confusing for users. One way that Python coders sometimes get around specifying long parameter lists is the use of the <code>**kwargs</code> argument, which allows the specification of arbitrary keyword arguments to a function, placing them within a dictionary. For example:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="kw">def</span> myfunc(<span class="op">**</span>kwargs):</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(kwargs)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>...     <span class="bu">print</span>(kwargs)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>...</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> myfunc(myarg<span class="op">=</span><span class="dv">1</span>, mybool<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>{<span class="st">'myarg'</span>: <span class="dv">1</span>, <span class="st">'mybool'</span>: <span class="va">True</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This can be useful in specific cases, but in general should be avoided if possible, as it makes the code less clear and prevents the use of <em>type hints</em> (described in detail later in the chapter) which allow the clear specification of the intended type for each argument.</p>
@@ -790,8 +793,8 @@ What the code is doing should be clear from the code itself. Comments should exp
 <div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> bettercode.constants <span class="im">import</span> C</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> C</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="dv">299792458</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<section id="creating-immutable-variables" class="level4" data-number="3.9.0.1">
-<h4 data-number="3.9.0.1" class="anchored" data-anchor-id="creating-immutable-variables"><span class="header-section-number">3.9.0.1</span> Creating immutable variables</h4>
+<section id="creating-immutable-variables" class="level3" data-number="3.9.1">
+<h3 data-number="3.9.1" class="anchored" data-anchor-id="creating-immutable-variables"><span class="header-section-number">3.9.1</span> Creating immutable variables</h3>
 <p>We would generally like to define constants in such a way that their value is <em>immutable</em>, i.e., it is not allowed to be modified. Unfortunately, importing a variable from a module doesn’t prevent it from being modified:</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> C <span class="op">=</span> <span class="dv">43</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> C</span>
@@ -820,7 +823,7 @@ What the code is doing should be clear from the code itself. Comments should exp
 <span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="op">---&gt;</span> <span class="dv">11</span>     <span class="cf">raise</span> <span class="pp">AttributeError</span>(<span class="st">"Constants cannot be modified"</span>)</span>
 <span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="pp">AttributeError</span>: Constants cannot be modified</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Using this method thus prevents the value of our constant from being inadvertently changed.</p>
+<p>Using this method thus prevents the value of our constant from being inadvertently changed. Note that this only works when we use an instance of the class; if we were to simply import the class without creating an instance, then the value would be mutable. Later in the chapter I will discuss dataclasses and <em>Pydantic</em> classes, which provide a more robust way to represent this kind of information in an immutable way.</p>
 </section>
 </section>
 <section id="when-to-use-classes-versus-functions" class="level2" data-number="3.10">
@@ -1078,25 +1081,27 @@ Figure&nbsp;3.2: The chat window within VSCode was used to prompt the model (Cla
 <h2 data-number="3.13" class="anchored" data-anchor-id="defensive-coding"><span class="header-section-number">3.13</span> Defensive coding</h2>
 <p>Given that even professional programmers make errors on a regular basis, it seems almost certain that researchers writing code for their scientific projects will make their fair share of errors too. <em>Defensive coding</em> means writing code in a way that tries to protect against errors. One essential aspect of defensive coding is a thorough suite of tests for all important functions; I will dive much more deeply into this in the next chapter. Here I focus on robustness to <em>runtime errors</em>; that is, errors that are not necessarily due to syntax errors in the code per se, but rather due to errors in the logic of the code or errors or invalid assumptions about the data that are being used by code.</p>
 <p>A central aspect of defensive coding is to detect errors and announce them in a loud way. For example, in a recent code review in our group, a researcher showed the following code:</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_subject_label(<span class="bu">file</span>):</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Extract the subject label from a given file path.</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co">   - file (str): The file path from which to extract the subject label.</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co">   - str or None: The extracted subject label (e.g., 's001') if found, </span></span>
-<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="co">                   otherwise returns None and prints a message.</span></span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(<span class="vs">r'/sub-(s\d</span><span class="sc">{3}</span><span class="vs">)/'</span>, <span class="bu">file</span>)</span>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_subject_label(<span class="bu">file</span>):</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Extract the subject label from a given file path.</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co">   - file (str): The file path from which to extract the subject label.</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="co">   - str or None: The extracted subject label (e.g., 's001') if found, </span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="co">                   otherwise returns None and prints a message.</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
 <span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> match:</span>
-<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>        subject_label <span class="op">=</span> match.group(<span class="dv">1</span>)</span>
-<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> subject_label</span>
-<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(<span class="vs">r'/sub-(s\d</span><span class="sc">{3}</span><span class="vs">)/'</span>, <span class="bu">file</span>)</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> match:</span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>        subject_label <span class="op">=</span> match.group(<span class="dv">1</span>)</span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> subject_label</span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>When I asked the question “Should there ever be a file path that doesn’t include a subject label?”, the answer was “No”, meaning that this code allows what amounts to an error to occur without announcing its presence. When I looked at the place where this function was used in the code, there was no check for whether the output was <code>None</code>, meaning that such an error would go unnoticed until it caused an error later when <code>subject_label</code> was assumed to be a string but turned out to be <code>None</code>. Also note that the docstring for this function is misleading, as it states that a message will be printed if the return value is <code>None</code>, but no message is actually printed. In general, printing a message is a poor way to signal the potential presence of a problem, particularly if the code has a large amount of text output in which the message might be lost.</p>
 <section id="announcing-errors-loudly-using-exceptions" class="level3" data-number="3.13.1">
 <h3 data-number="3.13.1" class="anchored" data-anchor-id="announcing-errors-loudly-using-exceptions"><span class="header-section-number">3.13.1</span> Announcing errors loudly using exceptions</h3>
@@ -1111,17 +1116,14 @@ Figure&nbsp;3.2: The chat window within VSCode was used to prompt the model (Cla
 <span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="bu">file</span> <span class="op">=</span> <span class="st">'/data/nolabel/run-1_bold.nii.gz'</span></span>
 <span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="op">---------------------------------------------------------------------------</span></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="pp">AttributeError</span>                            Traceback (most recent call last)</span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>Cell In[<span class="dv">14</span>], line <span class="dv">1</span></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="op">----&gt;</span> <span class="dv">1</span> get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>Cell In[<span class="dv">1</span>], line <span class="dv">3</span>, <span class="kw">in</span> get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span> <span class="kw">def</span> get_subject_label(<span class="bu">file</span>: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>      <span class="dv">2</span>     match <span class="op">=</span> re.search(<span class="vs">r'/sub-(s\d</span><span class="sc">{3}</span><span class="vs">)/'</span>, <span class="bu">file</span>)</span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a><span class="op">----&gt;</span> <span class="dv">3</span>     <span class="cf">return</span> match.group(<span class="dv">1</span>)</span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a><span class="pp">AttributeError</span>: <span class="st">'NoneType'</span> <span class="bu">object</span> has no attribute <span class="st">'group'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>Traceback (most recent call last):</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  File <span class="st">"&lt;stdin&gt;"</span>, line <span class="dv">1</span>, <span class="kw">in</span> <span class="op">&lt;</span>module<span class="op">&gt;</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    get_subject_label(<span class="bu">file</span>)</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">~~~~~~~~~~~~~~~~~^^^^^^</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>  File <span class="st">"&lt;stdin&gt;"</span>, line <span class="dv">3</span>, <span class="kw">in</span> get_subject_label</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> match.group(<span class="dv">1</span>)</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>           <span class="op">^^^^^^^^^^^</span></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="pp">AttributeError</span>: <span class="st">'NoneType'</span> <span class="bu">object</span> has no attribute <span class="st">'group'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This is a generic error message that is not very helpful for the user. It would be better to provide a more meaningful message by explicitly raising an error. In this case we can create a custom exception class, which allows us to provide a specific error message:</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FilenameParsingError(<span class="pp">ValueError</span>):</span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Raised when a required field cannot be parsed from a filename."""</span></span>
@@ -1139,42 +1141,38 @@ Figure&nbsp;3.2: The chat window within VSCode was used to prompt the model (Cla
 <div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> get_subject_label(<span class="st">'/data/nolabel/run-1_bold.nii.gz'</span>)</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>Traceback (most recent call last):</span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  File <span class="st">"&lt;stdin&gt;"</span>, line <span class="dv">1</span>, <span class="kw">in</span> <span class="op">&lt;</span>module<span class="op">&gt;</span></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">~~~~~~~~~~~~~~~~~^^^^^^</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    get_subject_label(<span class="st">'/data/nolabel/run-1_bold.nii.gz'</span>)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span>
 <span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  File <span class="st">"&lt;stdin&gt;"</span>, line <span class="dv">4</span>, <span class="kw">in</span> get_subject_label</span>
 <span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> FilenameParsingError(<span class="bu">file</span>)</span>
 <span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>FilenameParsingError: No subject label found <span class="kw">in</span> path: <span class="op">/</span>data<span class="op">/</span>nolabel<span class="op">/</span>run<span class="op">-</span><span class="dv">1</span><span class="er">_bold</span>.nii.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>In other cases we might want to handle the exception without halting the program, in which case we can embed the function call in a <code>try/except</code> statement that tries to run the function and then handles any exceptions that might occur. Let’s say that we simply want to skip over any files for which there is no subject label:</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> files:</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>            subject_label <span class="op">=</span> get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(subject_label)</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f'no subject label, skipping: </span><span class="sc">{</span><span class="bu">file</span><span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>s001</span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>no subject label, skipping: <span class="op">/</span>tmp<span class="op">/</span>foo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>In most cases our <code>try/except</code> statement should catch specific errors. In this case, we know that the function will return an <code>AttributeError</code> its input is a string that doesn’t contain a subject label. But what if the input is <code>None</code>?</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="bu">file</span> <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>        subject_label <span class="op">=</span> get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'no subject label, skipping: </span><span class="sc">{</span><span class="bu">file</span><span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="op">---------------------------------------------------------------------------</span></span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="pp">TypeError</span>                                 Traceback (most recent call last)</span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>Cell In[<span class="dv">14</span>], line <span class="dv">3</span></span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span> <span class="bu">file</span> <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>      <span class="dv">2</span> <span class="cf">try</span>:</span>
-<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="op">----&gt;</span> <span class="dv">3</span>     subject_label <span class="op">=</span> get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>      <span class="dv">4</span> <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
-<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>      <span class="dv">5</span>     <span class="bu">print</span>(<span class="ss">f'no subject label, skipping: </span><span class="sc">{</span><span class="bu">file</span><span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>Cell In[<span class="dv">1</span>], line <span class="dv">2</span>, <span class="kw">in</span> get_subject_label(<span class="bu">file</span>)</span>
-<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span> <span class="kw">def</span> get_subject_label(<span class="bu">file</span>: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
-<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a><span class="op">----&gt;</span> <span class="dv">2</span>     match <span class="op">=</span> re.search(<span class="vs">r'/sub-(s\d</span><span class="sc">{3}</span><span class="vs">)/'</span>, <span class="bu">file</span>)</span>
-<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>      <span class="dv">3</span>     <span class="cf">return</span> match.group(<span class="dv">1</span>)</span>
-<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>...</span>
-<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a><span class="pp">TypeError</span>: expected string <span class="kw">or</span> <span class="bu">bytes</span><span class="op">-</span>like <span class="bu">object</span>, got <span class="st">'NoneType'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Because <code>None</code> is not a string and <code>re.search()</code> expects a string, we get a <code>TypeError</code>, which is not caught by the catch statement and subsequently stops the execution. While it can be tempting to use try/except with a “bare exception” (i.e.&nbsp;catching all possible exceptions rather than specific exceptions), this should be avoided, particularly because it can make debugging very challenging by causing unexpected exceptions to be ignored.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> files <span class="op">=</span> [<span class="st">'/data/sub-s001/run-1_bold.nii.gz'</span>, <span class="st">'/tmp/foo'</span>]</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> files:</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>...         <span class="cf">try</span>:</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>...             subject_label <span class="op">=</span> get_subject_label(<span class="bu">file</span>)</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>...             <span class="bu">print</span>(subject_label)</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>...         <span class="cf">except</span> FilenameParsingError:</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>...             <span class="bu">print</span>(<span class="ss">f'no subject label, skipping: </span><span class="sc">{</span><span class="bu">file</span><span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>... </span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>s001</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>no subject label, skipping: <span class="op">/</span>tmp<span class="op">/</span>foo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In most cases our <code>try/except</code> statement should catch specific errors. In this case, we know that the function will return an <code>FilenameParsingError</code> if its input is a string that doesn’t contain a subject label. But what if the input is <code>None</code>?</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="cf">try</span>:</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>...     subject_label <span class="op">=</span> get_subject_label(<span class="bu">file</span>)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>... <span class="cf">except</span> FilenameParsingError:</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>...     <span class="bu">print</span>(<span class="ss">f'no subject label, skipping: </span><span class="sc">{</span><span class="bu">file</span><span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>... </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>Traceback (most recent call last):</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  File <span class="st">"&lt;stdin&gt;"</span>, line <span class="dv">2</span>, <span class="kw">in</span> <span class="op">&lt;</span>module<span class="op">&gt;</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    subject_label <span class="op">=</span> get_subject_label(<span class="bu">file</span>)</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  File <span class="st">"&lt;stdin&gt;"</span>, line <span class="dv">2</span>, <span class="kw">in</span> get_subject_label</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    match <span class="op">=</span> re.search(<span class="vs">r'/sub-(s\d</span><span class="sc">{3}</span><span class="vs">)/'</span>, <span class="bu">file</span>)</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>  File <span class="st">"/Users/poldrack/miniconda3/lib/python3.13/re/__init__.py"</span>, line <span class="dv">177</span>, <span class="kw">in</span> search</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> _compile(pattern, flags).search(string)</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>           <span class="op">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="pp">TypeError</span>: expected string <span class="kw">or</span> <span class="bu">bytes</span><span class="op">-</span>like <span class="bu">object</span>, got <span class="st">'NoneType'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Because <code>None</code> is not a string and <code>re.search()</code> expects a string, we get a <code>TypeError</code>, which is not caught by the catch statement and subsequently stops the execution. While it can be tempting to use try/except with a “bare exception” (i.e.&nbsp;catching all possible exceptions rather than specific exceptions), this should be avoided, particularly because it can make debugging very challenging by causing unexpected exceptions to be ignored. Instead, it’s best to let unexpected errors raise exceptions so that they will be readily detected.</p>
 </section>
 <section id="checking-assumptions-using-assertions" class="level3" data-number="3.13.2">
 <h3 data-number="3.13.2" class="anchored" data-anchor-id="checking-assumptions-using-assertions"><span class="header-section-number">3.13.2</span> Checking assumptions using assertions</h3>
@@ -1208,7 +1206,7 @@ Figure&nbsp;3.2: The chat window within VSCode was used to prompt the model (Cla
 <span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>carbon_isotope_mass_numbers <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">8</span>, <span class="dv">21</span>)) <span class="op">+</span> [<span class="dv">22</span>]</span>
 <span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> mass_number <span class="kw">in</span> carbon_isotope_mass_numbers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Where should assertions go? On the one hand, it’s a good idea to create assertions as early as possible, so as to avoid doing unnecessary computation before hitting an error. On the other hand, if it’s possible that the values of variables will be modified between their creation and use, then it makes sense to place the assertions close to where they will be accessed, to ensure that any changes don’t result in uncaught violations.</p>
-<p>Note that asserts will be skipped if python is called with the "-O" ("optimize") flag. A more robust method for validating data is to use the <em>Pydantic</em> package discussed earlier.</p>
+<p>Note that asserts will be skipped if Python is called with the "-O" ("optimize") flag. While assertions are better than no validation at all, a more robust method for validating data is to use the <em>Pydantic</em> package discussed earlier.</p>
 </section>
 </section>
 <section id="coding-portably" class="level2" data-number="3.14">
@@ -1810,7 +1808,7 @@ Botvinik-Nezer, R., Holzmeister, F., Camerer, C. F., … Schonberg, T. (2020). <
 Code, Q. (2018). The little book of python anti-patterns, https://docs.quantifiedcode.com/python-anti-patterns/.
 </div>
 <div id="ref-Fowler:1999aa" class="csl-entry" role="listitem">
-Fowler, M., &amp; Beck, K. (1999). <em>Refactoring: Improving the design of existing code</em>, Reading, MA: Addison-Wesley.
+Fowler, M. (1999). <em>Refactoring: Improving the design of existing code</em>, Reading, MA: Addison-Wesley.
 </div>
 <div id="ref-vanrossum:2001" class="csl-entry" role="listitem">
 G. Van Rossum, A. C., B. Warsaw. (2021, May). PEP 8 – style guide for python code, https://peps.python.org/pep-0008/.

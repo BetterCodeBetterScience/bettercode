@@ -405,8 +405,11 @@ window.Quarto = {
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">        Escape velocity in m/s.</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(<span class="dv">2</span> <span class="op">*</span> G <span class="op">*</span> mass <span class="op">/</span> radius)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Raises:</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">        ValueError: If mass or radius is not positive.</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(<span class="dv">2</span> <span class="op">*</span> G <span class="op">*</span> mass <span class="op">/</span> radius)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can then generate a test to determine whether the value returned by our function matches the known value for a given planet:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_escape_velocity():</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
@@ -415,7 +418,7 @@ window.Quarto = {
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    mass_earth <span class="op">=</span> <span class="fl">5.972e24</span>  <span class="co"># Earth mass in kg</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    radius_earth <span class="op">=</span> <span class="fl">6.371e6</span>  <span class="co"># Earth radius in meters</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    ev_expected <span class="op">=</span> <span class="fl">11186.0</span>  <span class="co"># Expected escape velocity for Earth in m/s</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ev_computed <span class="op">=</span> escape_velocity_v1(mass_earth, radius_earth)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ev_computed <span class="op">=</span> escape_velocity(mass_earth, radius_earth)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> np.allclose(ev_expected, ev_computed), <span class="st">"Test failed!"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="assertions" class="level3" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="assertions"><span class="header-section-number">4.3.1</span> Assertions</h3>
@@ -460,38 +463,35 @@ window.Quarto = {
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> np.allclose(<span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span>, <span class="fl">0.3</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Used this way the function uses default tolerances. There are two kinds of tolerance: <em>Absolute tolerance</em> is simply the absolute difference between the values (default: 1e-08), while <em>Relative tolerance</em> is proportional to the size of one of the items (the second one for textttnp.allclose) (default: 1e-05). This function uses a comparison that combines the relative and absolute tolerances. What’s important to keep in mind is that tolerance relates to the size of the numbers, so when working with either very small or very large numbers it’s often necessary to adjust the tolerance to prevent cases where the test fails due to floating point errors or passes even when the value is incorrect.</p>
+<p>Used this way the function uses default tolerances. There are two kinds of tolerance: <em>Absolute tolerance</em> is simply the absolute difference between the values (default: 1e-08), while <em>Relative tolerance</em> is proportional to the size of one of the items (the second one for <code>np.allclose</code>) (default: 1e-05). This function uses a comparison that combines the relative and absolute tolerances. What’s important to keep in mind is that tolerance relates to the size of the numbers, so when working with either very small or very large numbers it’s often necessary to adjust the tolerance to prevent cases where the test fails due to floating point errors or passes even when the value is incorrect.</p>
 </section>
 <section id="checking-for-exceptions" class="level3" data-number="4.3.2">
 <h3 data-number="4.3.2" class="anchored" data-anchor-id="checking-for-exceptions"><span class="header-section-number">4.3.2</span> Checking for exceptions</h3>
 <p>It’s also important to make sure that an exception is raised whenever it should be. For example, the version of the <code>escape_velocity()</code> function above did not check to make sure that the mass and radius arguments had positive values, which means that it would give nonsensical results when passed a negative mass or radius value. To address this we should add code to the function that causes it to raise an exception if either of the arguments is negative:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> escape_velocity_safe(mass: <span class="bu">float</span>, radius: <span class="bu">float</span>, G: <span class="bu">float</span> <span class="op">=</span> <span class="fl">6.67430e-11</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate the escape velocity from a celestial body.</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> escape_velocity(mass: <span class="bu">float</span>, radius: <span class="bu">float</span>, G: <span class="bu">float</span> <span class="op">=</span> <span class="fl">6.67430e-11</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Calculate the escape velocity from a celestial body.</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">        mass: Mass of the celestial body in kg.</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">        radius: Radius of the celestial body in meters.</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">        G: Gravitational constant.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">        mass: Mass of the celestial body in kg.</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">        radius: Radius of the celestial body in meters.</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">        G: Gravitational constant.</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">        Escape velocity in m/s.</span></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">        Escape velocity in m/s.</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Raises:</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">        ValueError: If mass or radius is not positive.</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> mass <span class="op">&lt;=</span> <span class="dv">0</span> <span class="kw">or</span> radius <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Mass and radius must be positive values."</span>)</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(<span class="dv">2</span> <span class="op">*</span> G <span class="op">*</span> mass <span class="op">/</span> radius)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Raises:</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">        ValueError: If mass or radius is not positive.</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> mass <span class="op">&lt;=</span> <span class="dv">0</span> <span class="kw">or</span> radius <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Mass and radius must be positive values."</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.sqrt(<span class="dv">2</span> <span class="op">*</span> G <span class="op">*</span> mass <span class="op">/</span> radius)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can then specify a test that checks whether the function properly raises an exception when passed a negative value. To do this we can use a feature of the <em>pytest</em> package (<code>pytest.raises</code>) that passes only if the specified exception is raised:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_escape_velocity_negative():</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Make sure the function raises ValueError for negative mass or radius.</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pytest.raises(<span class="pp">ValueError</span>):</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        escape_velocity(<span class="op">-</span><span class="fl">5.972e24</span>, <span class="fl">6.371e6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        escape_velocity_safe(<span class="op">-</span><span class="fl">5.972e24</span>, <span class="fl">6.371e6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="when-to-write-tests" class="level2" data-number="4.4">
@@ -601,7 +601,7 @@ window.Quarto = {
 <li><p>when something happens (such as a particular input)</p></li>
 <li><p>then something else should happen (such as a particular output or exception)</p></li>
 </ul>
-<p>Importantly, a test should only test one thing at a time. This doesn’t mean that the test should necessarily only test for one specific error at a time; rather, it means that the test should assess a specific situation (“given/when”), and then assess all of the possible outcomes that are necessary to ensure that the component functions properly (“then”). You can see this in the test for zero standard deviation that we generated in the earlier example, which actually tested for two conditions (the intended value being present in the list, and the list having a length of one) that together define the condition that we are interested in testing for.</p>
+<p>Importantly, a test should only test one thing at a time. This doesn’t mean that the test should necessarily only test for one specific error at a time; rather, it means that the test should assess a specific situation (“given/when”), and then assess all of the possible outcomes that are necessary to ensure that the component functions properly (“then”). You can see this in the test for zero standard deviation that we generated in the earlier example (<code>test_find_outliers_normal_case</code>), which actually tested for two conditions: The intended value being present in the list, and the list having a length of one) that together define the condition that we are interested in testing for.</p>
 <p>How do we test that the output of a function is correct given the input? There are different answers for different situations:</p>
 <ul>
 <li><p><em>commonly known answer</em>: Sometimes we possess inputs where the output is known. For example, if we were creating a function that computes the circumference of a circle, then we know that the output for an input radius of 1 should be 2 * pi. This is generally only the case for very simple functions.</p></li>
@@ -789,17 +789,17 @@ window.Quarto = {
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    mass_earth <span class="op">=</span> <span class="fl">5.972e24</span></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    radius_earth <span class="op">=</span> <span class="fl">6.371e6</span></span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> escape_velocity(mass_earth, radius_earth)</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(result, rel<span class="op">=</span><span class="fl">1e-3</span>) <span class="op">==</span> <span class="fl">11186.25</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> result <span class="op">==</span> pytest.approx(<span class="fl">11186.25</span>, rel<span class="op">=</span><span class="fl">1e-3</span>)</span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    mass_mars <span class="op">=</span> <span class="fl">6.4171e23</span></span>
 <span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    radius_mars <span class="op">=</span> <span class="fl">3.3895e6</span></span>
 <span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> escape_velocity(mass_mars, radius_mars)</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(result, rel<span class="op">=</span><span class="fl">1e-3</span>) <span class="op">==</span> <span class="fl">5027.34</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> result <span class="op">==</span> pytest.approx(<span class="fl">5027.34</span>, rel<span class="op">=</span><span class="fl">1e-3</span>)</span>
 <span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    mass_jupiter <span class="op">=</span> <span class="fl">1.8982e27</span></span>
 <span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    radius_jupiter <span class="op">=</span> <span class="fl">6.9911e7</span></span>
 <span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> escape_velocity(mass_jupiter, radius_jupiter)</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pytest.approx(result, rel<span class="op">=</span><span class="fl">1e-3</span>) <span class="op">==</span> <span class="fl">59564.97</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> result <span class="op">==</span> pytest.approx(<span class="fl">59564.97</span>, rel<span class="op">=</span><span class="fl">1e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>When we run this test (renaming it <code>test_escape_velocity_gpt4</code>), we see that one of the tests fails:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pytest <span class="at">--tb</span><span class="op">=</span>short <span class="at">--no-header</span> _demos/test_escape_velocity_gpt4.py</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">=============================</span> test session starts ==============================</span>
@@ -810,12 +810,12 @@ window.Quarto = {
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="ex">===================================</span> FAILURES ===================================</span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="ex">__________________________</span> test_escape_velocity_gpt4 ___________________________</span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="ex">_demos/test_escape_velocity_gpt4.py:21:</span> in test_escape_velocity_gpt4</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">assert</span> pytest.approx<span class="er">(</span><span class="ex">result,</span> rel=1e-3<span class="kw">)</span> <span class="ex">==</span> 59564.97</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>   assert 60202.716344497014 ± 60.2027 == 59564.97</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">assert</span> result == pytest.approx<span class="er">(</span><span class="ex">59564.97,</span> rel=1e-3<span class="kw">)</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>   assert 60202.716344497014 == 59564.97 ± 59.565</span>
 <span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>     </span>
 <span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>     comparison failed</span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>     Obtained: 59564.97</span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>     Expected: 60202.716344497014 ± 60.2027</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>     Obtained: 60202.716344497014</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>     Expected: 59564.97 ± 59.565</span>
 <span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="ex">===========================</span> short test summary info ============================</span>
 <span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="ex">FAILED</span> _demos/test_escape_velocity_gpt4.py::test_escape_velocity_gpt4</span>
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="ex">==============================</span> 1 failed in 0.12s ===============================</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -948,17 +948,17 @@ window.Quarto = {
 <h2 data-number="4.8" class="anchored" data-anchor-id="test-coverage"><span class="header-section-number">4.8</span> Test coverage</h2>
 <p>It can be useful to know which portions of our code are being exercised by our tests, which is known as <em>code coverage</em>. The <em>pytest-cov</em> extension for the <em>pytest</em> testing package can provide us with a report of test coverage for these tests:</p>
 <div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pytest <span class="at">--tb</span><span class="op">=</span>short test_textmining.py <span class="at">--cov</span><span class="op">=</span>bettercode.testing.textmining <span class="at">--cov-report</span><span class="op">=</span>term-missing <span class="at">--no-header</span> <span class="at">-q</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">...............</span>                                                          <span class="pp">[</span><span class="ss">100%</span><span class="pp">]</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">..............</span>                                                           <span class="pp">[</span><span class="ss">100%</span><span class="pp">]</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="ex">================================</span> tests coverage ================================</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="ex">______________</span> coverage: platform darwin, python 3.13.11-final-0 _______________</span>
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Name</span>                                   Stmts   Miss  Cover   Missing</span>
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--------------------------------------------------------------------</span></span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="ex">src/bettercode/testing/textmining.py</span>      26      0   100%</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="ex">src/bettercode/testing/textmining.py</span>      26      1    96%   52</span>
 <span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="ex">--------------------------------------------------------------------</span></span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="ex">TOTAL</span>                                     26      0   100%</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="ex">15</span> passed in 3.71s</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This report shows that of the 30 statements in our code, one of them is not covered by the tests. When we look at the missing code (denoted as being on line 70), we see that the missing line is this one from <code>get_idlist_from_response</code>:</p>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="ex">TOTAL</span>                                     26      1    96%</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="ex">14</span> passed in 3.69s</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This report shows that of the 26 statements in our code, one of them is not covered by the tests. When we look at the missing code (denoted as being on line 52), we see that the missing line is this one from <code>get_idlist_from_response</code>:</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>        <span class="co"># raise an exception if the search didn't return a usable response</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Bad request"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1072,14 +1072,15 @@ window.Quarto = {
 <span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_year_from_PubMed_record(pubmed_record: <span class="bu">dict</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
 <span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Here are the initial tests; note that writing these tests requires a bit of knowledge about the expected structure of a PubMed record. We will generate a fixture so that the valid record and PubMed ID can be reused in a later test.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> valid_pmid():</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"39312494"</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="at">@pytest.fixture</span>(scope<span class="op">=</span><span class="st">"session"</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> valid_pmid():</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"39312494"</span></span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="at">@pytest.fixture</span>(scope<span class="op">=</span><span class="st">"session"</span>)</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pmid_record(valid_pmid):</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    record <span class="op">=</span> get_record_from_PubMedID(valid_pmid)</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> record</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="at">@pytest.fixture</span>(scope<span class="op">=</span><span class="st">"session"</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pmid_record(valid_pmid):</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    record <span class="op">=</span> get_record_from_PubMedID(valid_pmid)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> record</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_get_record_from_valid_PubMedID(pmid_record, valid_pmid):</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> pmid_record <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span></span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">isinstance</span>(pmid_record, <span class="bu">dict</span>)</span>
@@ -1098,17 +1099,18 @@ window.Quarto = {
 <span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> requests.get(esummary_url)</span>
 <span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    result_json <span class="op">=</span> response.json()</span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (</span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>        response.status_code <span class="op">!=</span> <span class="dv">200</span></span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">or</span> <span class="st">"result"</span> <span class="kw">not</span> <span class="kw">in</span> result_json</span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">or</span> pmid <span class="kw">not</span> <span class="kw">in</span> result_json[<span class="st">"result"</span>]</span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">or</span> <span class="st">"error"</span> <span class="kw">in</span> result_json[<span class="st">"result"</span>][pmid]</span>
-<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    ):</span>
-<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Bad request"</span>)</span>
-<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result_json[<span class="st">"result"</span>][pmid]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This will raise a ValueError if the response doesn't have valid JSON content</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    result_json <span class="op">=</span> response.json()</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check here for additional possible error conditions in the response JSON</span></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"result"</span> <span class="kw">not</span> <span class="kw">in</span> result_json</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">or</span> pmid <span class="kw">not</span> <span class="kw">in</span> result_json[<span class="st">"result"</span>]</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">or</span> <span class="st">"error"</span> <span class="kw">in</span> result_json[<span class="st">"result"</span>][pmid]</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>    ):</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Bad request"</span>)</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result_json[<span class="st">"result"</span>][pmid]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This passes the tests, so we can now move to writing some initial tests for the year parsing function:</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_parse_year_from_PubMed_record():</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    record <span class="op">=</span> {</span>
@@ -1223,10 +1225,8 @@ window.Quarto = {
 <span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Tests that our algorithm matches a reference implementation (scipy).</span></span>
 <span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="co">    This is a smoke test that intentionally fails due to singular matrices.</span></span>
 <span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Now we can safely test the math against a reference implementation (scipy),</span></span>
-<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># knowing the input is valid.</span></span>
-<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>    params <span class="op">=</span> linear_regression(X, y, validate<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> params <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>, <span class="st">"Parameters should not be None"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>    params <span class="op">=</span> linear_regression(X, y, validate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> params <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>, <span class="st">"Parameters should not be None"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The <code>@given</code> decorator contains commands that will generate two arrays of the same size, which are then used as our X and y variables. The main purpose of the test is to see whether the function successfully executes (i.e., a smoke test), but we include a minimal assertion to make sure that it returns a value that is not None. We will turn off the validation in order to see what happens if the linear regression function is given invalid data. Running this test, we see that the test fails, with the following output:</p>
 <div class="sourceCode" id="cb57"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pytest <span class="at">--tb</span><span class="op">=</span>short <span class="at">--no-header</span> _demos/test_property_based_smoke.py</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="ex">=============================</span> test session starts ==============================</span>
@@ -1239,7 +1239,7 @@ window.Quarto = {
 <span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="ex">_demos/test_property_based_smoke.py:9:</span> in test_linear_regression_without_validation</span>
 <span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">@settings</span><span class="er">(</span><span class="va">database</span><span class="op">=</span>None<span class="kw">)</span></span>
 <span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>                   <span class="ex">^^^</span></span>
-<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="ex">_demos/test_property_based_smoke.py:21:</span> in test_linear_regression_without_validation</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="ex">_demos/test_property_based_smoke.py:19:</span> in test_linear_regression_without_validation</span>
 <span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>    <span class="ex">params</span> = linear_regression<span class="er">(</span><span class="ex">X,</span> y, validate=False<span class="kw">)</span></span>
 <span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>             <span class="ex">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span>
 <span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a><span class="ex">src/bettercode/testing/linear_regression.py:40:</span> in linear_regression</span>
@@ -1269,7 +1269,7 @@ window.Quarto = {
 <span id="cb57-39"><a href="#cb57-39" aria-hidden="true" tabindex="-1"></a><span class="ex">E</span>           .venv/lib/python3.13/site-packages/numpy/linalg/_linalg.py:163</span>
 <span id="cb57-40"><a href="#cb57-40" aria-hidden="true" tabindex="-1"></a><span class="ex">===========================</span> short test summary info ============================</span>
 <span id="cb57-41"><a href="#cb57-41" aria-hidden="true" tabindex="-1"></a><span class="ex">FAILED</span> _demos/test_property_based_smoke.py::test_linear_regression_without_validation</span>
-<span id="cb57-42"><a href="#cb57-42" aria-hidden="true" tabindex="-1"></a><span class="ex">==============================</span> 1 failed in 1.83s ===============================</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb57-42"><a href="#cb57-42" aria-hidden="true" tabindex="-1"></a><span class="ex">==============================</span> 1 failed in 1.82s ===============================</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The test has identified a specific input that will cause the code to fail - namely, when the X variable is all zeros, which leads to an error when trying to invert the singular matrix. We could get the test to pass by causing the function to return <code>None</code> when the matrix is not invertible, but this is not a great practice; we should announce problems loudly by raising an exception, rather than burying them quietly by returning <code>None</code>.</p>
 <p>Now that we have seen how <em>hypothesis</em> can identify errors, let’s develop some tests for the code that we can use to make sure that it works properly. We will first separately test the validator function, making sure that it can detect any of the potential problems that it should be able to detect:</p>
 <div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="at">@seed</span>(<span class="dv">42</span>)</span>
@@ -1347,7 +1347,7 @@ window.Quarto = {
 <span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">python-version</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">"3.12"</span><span class="kw">,</span><span class="at"> </span><span class="st">"3.13"</span><span class="kw">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The <code>runs-on</code> argument tells the workflow runner which virtual machine to use to run the workflows; in this case, we will use the default which is the latest release of Ubuntu Linux. We also tell it which versions of Python we want to test the code on, updating it to test on all current versions that are compatible with the package requirements (Python <span class="math inline">\(\geq\)</span> 3.12); this should be updated to the Python versions in common use at time of testing.</p>
 <p>We then specify the actual steps in the workflow. The first steps set up the workflow runner so that it can check out the repository, and set up the Python installation. Since this project uses <code>uv</code> to manage packages, we will use the recommended setup code from the uv documentation for multiple Python versions:</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">steps</span><span class="kw">:</span></span>
+<div class="sourceCode" id="cb62"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="at">     </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v4</span></span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="at">     </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install uv and set the python version</span></span>
@@ -1355,7 +1355,7 @@ window.Quarto = {
 <span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
 <span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">python-version</span><span class="kw">:</span><span class="at"> ${{ matrix.python-version }}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This installs uv with the appropriate Python version. We can then install the project using <code>uv sync</code>, pip install the package within the <code>uv</code> environment, and run the tests:</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install the project</span></span>
+<div class="sourceCode" id="cb63"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install the project</span></span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">run</span><span class="kw">:</span><span class="at"> uv sync --locked --all -extras --dev</span></span>
 <span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> pip install the package</span></span>
@@ -1430,7 +1430,7 @@ window.Quarto = {
 <span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test_first():</span>
 <span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""This is the first test."""</span></span>
 <span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Running this, we see that these are run in the order they are defined in the test code:</p>
+<p>Running this, we see that these are now run in the order specified by the <code>@pytest.mark.order</code> decorators:</p>
 <div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pytest <span class="at">--tb</span><span class="op">=</span>short <span class="at">--no-header</span> test_ordering.py <span class="at">-v</span></span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="ex">=============================</span> test session starts ==============================</span>
 <span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="ex">collecting</span> ... collected 2 items</span>
