@@ -259,53 +259,44 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#fundamental-principles-of-ai-assisted-coding-for-science" id="toc-fundamental-principles-of-ai-assisted-coding-for-science" class="nav-link active" data-scroll-target="#fundamental-principles-of-ai-assisted-coding-for-science"><span class="header-section-number">5.1</span> Fundamental principles of AI-assisted coding for science</a>
+  <li><a href="#concerns-regarding-large-language-models" id="toc-concerns-regarding-large-language-models" class="nav-link active" data-scroll-target="#concerns-regarding-large-language-models"><span class="header-section-number">5.1</span> Concerns regarding large language models</a></li>
+  <li><a href="#generative-versus-agentic-ai" id="toc-generative-versus-agentic-ai" class="nav-link" data-scroll-target="#generative-versus-agentic-ai"><span class="header-section-number">5.2</span> Generative versus agentic AI</a></li>
+  <li><a href="#ai-interaction-patterns-for-coding" id="toc-ai-interaction-patterns-for-coding" class="nav-link" data-scroll-target="#ai-interaction-patterns-for-coding"><span class="header-section-number">5.3</span> AI interaction patterns for coding</a></li>
+  <li><a href="#principles-for-working-with-ai-coding-tools" id="toc-principles-for-working-with-ai-coding-tools" class="nav-link" data-scroll-target="#principles-for-working-with-ai-coding-tools"><span class="header-section-number">5.4</span> Principles for working with AI coding tools</a>
   <ul class="collapse">
-  <li><a href="#human-accountability" id="toc-human-accountability" class="nav-link" data-scroll-target="#human-accountability"><span class="header-section-number">5.1.1</span> Human accountability</a></li>
-  <li><a href="#specification-as-the-human-contribution" id="toc-specification-as-the-human-contribution" class="nav-link" data-scroll-target="#specification-as-the-human-contribution"><span class="header-section-number">5.1.2</span> Specification as the human contribution</a></li>
-  <li><a href="#the-generationverification-asymmetry" id="toc-the-generationverification-asymmetry" class="nav-link" data-scroll-target="#the-generationverification-asymmetry"><span class="header-section-number">5.1.3</span> The generation/verification asymmetry</a></li>
-  <li><a href="#any-target-of-optimization-will-be-gamed" id="toc-any-target-of-optimization-will-be-gamed" class="nav-link" data-scroll-target="#any-target-of-optimization-will-be-gamed"><span class="header-section-number">5.1.4</span> Any target of optimization will be gamed</a></li>
-  <li><a href="#attention-is-finite" id="toc-attention-is-finite" class="nav-link" data-scroll-target="#attention-is-finite"><span class="header-section-number">5.1.5</span> Attention is finite</a></li>
-  <li><a href="#expertise-migrates-upwards" id="toc-expertise-migrates-upwards" class="nav-link" data-scroll-target="#expertise-migrates-upwards"><span class="header-section-number">5.1.6</span> Expertise migrates upwards</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification"><span class="header-section-number">5.4.1</span> Verification</a></li>
+  <li><a href="#context-management" id="toc-context-management" class="nav-link" data-scroll-target="#context-management"><span class="header-section-number">5.4.2</span> Context management</a></li>
+  <li><a href="#using-persistent-context-files" id="toc-using-persistent-context-files" class="nav-link" data-scroll-target="#using-persistent-context-files"><span class="header-section-number">5.4.3</span> Using persistent context files</a></li>
+  <li><a href="#managing-context-during-agentic-coding" id="toc-managing-context-during-agentic-coding" class="nav-link" data-scroll-target="#managing-context-during-agentic-coding"><span class="header-section-number">5.4.4</span> Managing context during agentic coding</a></li>
+  <li><a href="#the-importance-of-domain-expertise" id="toc-the-importance-of-domain-expertise" class="nav-link" data-scroll-target="#the-importance-of-domain-expertise"><span class="header-section-number">5.4.5</span> The importance of domain expertise</a></li>
+  <li><a href="#prompting-and-steering" id="toc-prompting-and-steering" class="nav-link" data-scroll-target="#prompting-and-steering"><span class="header-section-number">5.4.6</span> Prompting and steering</a></li>
   </ul></li>
-  <li><a href="#concerns-regarding-large-language-models" id="toc-concerns-regarding-large-language-models" class="nav-link" data-scroll-target="#concerns-regarding-large-language-models"><span class="header-section-number">5.2</span> Concerns regarding large language models</a></li>
-  <li><a href="#generative-versus-agentic-ai" id="toc-generative-versus-agentic-ai" class="nav-link" data-scroll-target="#generative-versus-agentic-ai"><span class="header-section-number">5.3</span> Generative versus agentic AI</a></li>
-  <li><a href="#ai-interaction-patterns-for-coding" id="toc-ai-interaction-patterns-for-coding" class="nav-link" data-scroll-target="#ai-interaction-patterns-for-coding"><span class="header-section-number">5.4</span> AI interaction patterns for coding</a></li>
-  <li><a href="#principles-for-working-with-ai-coding-tools" id="toc-principles-for-working-with-ai-coding-tools" class="nav-link" data-scroll-target="#principles-for-working-with-ai-coding-tools"><span class="header-section-number">5.5</span> Principles for working with AI coding tools</a>
+  <li><a href="#problem-decomposition-for-ai-coding" id="toc-problem-decomposition-for-ai-coding" class="nav-link" data-scroll-target="#problem-decomposition-for-ai-coding"><span class="header-section-number">5.5</span> Problem decomposition for AI coding</a>
   <ul class="collapse">
-  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification"><span class="header-section-number">5.5.1</span> Verification</a></li>
-  <li><a href="#context-management" id="toc-context-management" class="nav-link" data-scroll-target="#context-management"><span class="header-section-number">5.5.2</span> Context management</a></li>
-  <li><a href="#using-persistent-context-files" id="toc-using-persistent-context-files" class="nav-link" data-scroll-target="#using-persistent-context-files"><span class="header-section-number">5.5.3</span> Using persistent context files</a></li>
-  <li><a href="#managing-context-during-agentic-coding" id="toc-managing-context-during-agentic-coding" class="nav-link" data-scroll-target="#managing-context-during-agentic-coding"><span class="header-section-number">5.5.4</span> Managing context during agentic coding</a></li>
-  <li><a href="#the-importance-of-domain-expertise" id="toc-the-importance-of-domain-expertise" class="nav-link" data-scroll-target="#the-importance-of-domain-expertise"><span class="header-section-number">5.5.5</span> The importance of domain expertise</a></li>
-  <li><a href="#prompting-and-steering" id="toc-prompting-and-steering" class="nav-link" data-scroll-target="#prompting-and-steering"><span class="header-section-number">5.5.6</span> Prompting and steering</a></li>
+  <li><a href="#architecture-and-design" id="toc-architecture-and-design" class="nav-link" data-scroll-target="#architecture-and-design"><span class="header-section-number">5.5.1</span> Architecture and design</a></li>
+  <li><a href="#defining-success" id="toc-defining-success" class="nav-link" data-scroll-target="#defining-success"><span class="header-section-number">5.5.2</span> Defining success</a></li>
+  <li><a href="#recognizing-the-need-to-change-strategies" id="toc-recognizing-the-need-to-change-strategies" class="nav-link" data-scroll-target="#recognizing-the-need-to-change-strategies"><span class="header-section-number">5.5.3</span> Recognizing the need to change strategies</a></li>
   </ul></li>
-  <li><a href="#problem-decomposition-for-ai-coding" id="toc-problem-decomposition-for-ai-coding" class="nav-link" data-scroll-target="#problem-decomposition-for-ai-coding"><span class="header-section-number">5.6</span> Problem decomposition for AI coding</a>
+  <li><a href="#failure-modes-for-ai-assisted-coding" id="toc-failure-modes-for-ai-assisted-coding" class="nav-link" data-scroll-target="#failure-modes-for-ai-assisted-coding"><span class="header-section-number">5.6</span> Failure modes for AI-assisted coding</a>
   <ul class="collapse">
-  <li><a href="#architecture-and-design" id="toc-architecture-and-design" class="nav-link" data-scroll-target="#architecture-and-design"><span class="header-section-number">5.6.1</span> Architecture and design</a></li>
-  <li><a href="#defining-success" id="toc-defining-success" class="nav-link" data-scroll-target="#defining-success"><span class="header-section-number">5.6.2</span> Defining success</a></li>
-  <li><a href="#recognizing-the-need-to-change-strategies" id="toc-recognizing-the-need-to-change-strategies" class="nav-link" data-scroll-target="#recognizing-the-need-to-change-strategies"><span class="header-section-number">5.6.3</span> Recognizing the need to change strategies</a></li>
+  <li><a href="#correctness-failures" id="toc-correctness-failures" class="nav-link" data-scroll-target="#correctness-failures"><span class="header-section-number">5.6.1</span> Correctness failures</a></li>
+  <li><a href="#testing-failures" id="toc-testing-failures" class="nav-link" data-scroll-target="#testing-failures"><span class="header-section-number">5.6.2</span> Testing failures</a></li>
+  <li><a href="#feasibility-failures" id="toc-feasibility-failures" class="nav-link" data-scroll-target="#feasibility-failures"><span class="header-section-number">5.6.3</span> Feasibility failures</a></li>
+  <li><a href="#persistence-failures" id="toc-persistence-failures" class="nav-link" data-scroll-target="#persistence-failures"><span class="header-section-number">5.6.4</span> Persistence failures</a></li>
+  <li><a href="#scope-failures" id="toc-scope-failures" class="nav-link" data-scroll-target="#scope-failures"><span class="header-section-number">5.6.5</span> Scope failures</a></li>
+  <li><a href="#security-failures" id="toc-security-failures" class="nav-link" data-scroll-target="#security-failures"><span class="header-section-number">5.6.6</span> Security failures</a></li>
+  <li><a href="#instruction-violations" id="toc-instruction-violations" class="nav-link" data-scroll-target="#instruction-violations"><span class="header-section-number">5.6.7</span> Instruction violations</a></li>
+  <li><a href="#communication-failures" id="toc-communication-failures" class="nav-link" data-scroll-target="#communication-failures"><span class="header-section-number">5.6.8</span> Communication failures</a></li>
   </ul></li>
-  <li><a href="#failure-modes-for-ai-assisted-coding" id="toc-failure-modes-for-ai-assisted-coding" class="nav-link" data-scroll-target="#failure-modes-for-ai-assisted-coding"><span class="header-section-number">5.7</span> Failure modes for AI-assisted coding</a>
+  <li><a href="#code-smells-in-ai-generated-code" id="toc-code-smells-in-ai-generated-code" class="nav-link" data-scroll-target="#code-smells-in-ai-generated-code"><span class="header-section-number">5.7</span> Code smells in AI-generated code</a></li>
+  <li><a href="#version-control-for-agentic-workflows" id="toc-version-control-for-agentic-workflows" class="nav-link" data-scroll-target="#version-control-for-agentic-workflows"><span class="header-section-number">5.8</span> Version control for agentic workflows</a>
   <ul class="collapse">
-  <li><a href="#correctness-failures" id="toc-correctness-failures" class="nav-link" data-scroll-target="#correctness-failures"><span class="header-section-number">5.7.1</span> Correctness failures</a></li>
-  <li><a href="#testing-failures" id="toc-testing-failures" class="nav-link" data-scroll-target="#testing-failures"><span class="header-section-number">5.7.2</span> Testing failures</a></li>
-  <li><a href="#feasibility-failures" id="toc-feasibility-failures" class="nav-link" data-scroll-target="#feasibility-failures"><span class="header-section-number">5.7.3</span> Feasibility failures</a></li>
-  <li><a href="#persistence-failures" id="toc-persistence-failures" class="nav-link" data-scroll-target="#persistence-failures"><span class="header-section-number">5.7.4</span> Persistence failures</a></li>
-  <li><a href="#scope-failures" id="toc-scope-failures" class="nav-link" data-scroll-target="#scope-failures"><span class="header-section-number">5.7.5</span> Scope failures</a></li>
-  <li><a href="#security-failures" id="toc-security-failures" class="nav-link" data-scroll-target="#security-failures"><span class="header-section-number">5.7.6</span> Security failures</a></li>
-  <li><a href="#instruction-violations" id="toc-instruction-violations" class="nav-link" data-scroll-target="#instruction-violations"><span class="header-section-number">5.7.7</span> Instruction violations</a></li>
-  <li><a href="#communication-failures" id="toc-communication-failures" class="nav-link" data-scroll-target="#communication-failures"><span class="header-section-number">5.7.8</span> Communication failures</a></li>
+  <li><a href="#create-branches-before-major-tasks" id="toc-create-branches-before-major-tasks" class="nav-link" data-scroll-target="#create-branches-before-major-tasks"><span class="header-section-number">5.8.1</span> Create branches before major tasks</a></li>
+  <li><a href="#commit-clear-reload" id="toc-commit-clear-reload" class="nav-link" data-scroll-target="#commit-clear-reload"><span class="header-section-number">5.8.2</span> Commit-clear-reload</a></li>
   </ul></li>
-  <li><a href="#code-smells-in-ai-generated-code" id="toc-code-smells-in-ai-generated-code" class="nav-link" data-scroll-target="#code-smells-in-ai-generated-code"><span class="header-section-number">5.8</span> Code smells in AI-generated code</a></li>
-  <li><a href="#version-control-for-agentic-workflows" id="toc-version-control-for-agentic-workflows" class="nav-link" data-scroll-target="#version-control-for-agentic-workflows"><span class="header-section-number">5.9</span> Version control for agentic workflows</a>
-  <ul class="collapse">
-  <li><a href="#create-branches-before-major-tasks" id="toc-create-branches-before-major-tasks" class="nav-link" data-scroll-target="#create-branches-before-major-tasks"><span class="header-section-number">5.9.1</span> Create branches before major tasks</a></li>
-  <li><a href="#commit-clear-reload" id="toc-commit-clear-reload" class="nav-link" data-scroll-target="#commit-clear-reload"><span class="header-section-number">5.9.2</span> Commit-clear-reload</a></li>
-  </ul></li>
-  <li><a href="#translation-and-refactoring" id="toc-translation-and-refactoring" class="nav-link" data-scroll-target="#translation-and-refactoring"><span class="header-section-number">5.10</span> Translation and refactoring</a></li>
-  <li><a href="#ten-simple-tips-for-ai-assisted-scientific-programming" id="toc-ten-simple-tips-for-ai-assisted-scientific-programming" class="nav-link" data-scroll-target="#ten-simple-tips-for-ai-assisted-scientific-programming"><span class="header-section-number">5.11</span> Ten simple tips for AI-assisted scientific programming</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">5.12</span> Conclusion</a></li>
+  <li><a href="#translation-and-refactoring" id="toc-translation-and-refactoring" class="nav-link" data-scroll-target="#translation-and-refactoring"><span class="header-section-number">5.9</span> Translation and refactoring</a></li>
+  <li><a href="#ten-simple-tips-for-ai-assisted-scientific-programming" id="toc-ten-simple-tips-for-ai-assisted-scientific-programming" class="nav-link" data-scroll-target="#ten-simple-tips-for-ai-assisted-scientific-programming"><span class="header-section-number">5.10</span> Ten simple tips for AI-assisted scientific programming</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">5.11</span> Conclusion</a></li>
   <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography">References</a></li>
   </ul>
 </nav>
@@ -358,35 +349,8 @@ Figure&nbsp;5.2: A plot of time horizon at 80% success on the METR AI benchmark 
 </figure>
 </div>
 <p>The rapid growth of the capabilities of AI coding tools also makes clear that anything that I write about the state of the art at the time of writing (February 2026) is guaranteed to be outdated very rapidly. In fact, a first draft of this chapter that I wrote in mid-2025 was badly outdated by early 2026! In an attempt to futureproof this chapter to the degree possible, I will focus on outlining some of the principles that we have learned about the use of AI coding tools over the first few years of their existence, rather than focusing on specific tools that are likely to become quickly outdated.</p>
-<section id="fundamental-principles-of-ai-assisted-coding-for-science" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="fundamental-principles-of-ai-assisted-coding-for-science"><span class="header-section-number">5.1</span> Fundamental principles of AI-assisted coding for science</h2>
-<section id="human-accountability" class="level3" data-number="5.1.1">
-<h3 data-number="5.1.1" class="anchored" data-anchor-id="human-accountability"><span class="header-section-number">5.1.1</span> Human accountability</h3>
-<p>- accountability cannot be delegated - AI cannot be blamed for failures - a human must ultimately take responsibility</p>
-</section>
-<section id="specification-as-the-human-contribution" class="level3" data-number="5.1.2">
-<h3 data-number="5.1.2" class="anchored" data-anchor-id="specification-as-the-human-contribution"><span class="header-section-number">5.1.2</span> Specification as the human contribution</h3>
-<p>- what counts as "good science" is determined by scientific goals, knowledge, and standards that are defined by the human scientific community</p>
-</section>
-<section id="the-generationverification-asymmetry" class="level3" data-number="5.1.3">
-<h3 data-number="5.1.3" class="anchored" data-anchor-id="the-generationverification-asymmetry"><span class="header-section-number">5.1.3</span> The generation/verification asymmetry</h3>
-<p>- as the cost of generation falls, verification becomes the bottleneck</p>
-</section>
-<section id="any-target-of-optimization-will-be-gamed" class="level3" data-number="5.1.4">
-<h3 data-number="5.1.4" class="anchored" data-anchor-id="any-target-of-optimization-will-be-gamed"><span class="header-section-number">5.1.4</span> Any target of optimization will be gamed</h3>
-<p>- Goodhart’s law - applies to tests, task completion, etc - happy-path testing and premature claims of completion are structural consequences of model training</p>
-</section>
-<section id="attention-is-finite" class="level3" data-number="5.1.5">
-<h3 data-number="5.1.5" class="anchored" data-anchor-id="attention-is-finite"><span class="header-section-number">5.1.5</span> Attention is finite</h3>
-<p>- regardless of the size of the context window, signal must compete with noise - curation of what the model attends to remains the human’s job</p>
-</section>
-<section id="expertise-migrates-upwards" class="level3" data-number="5.1.6">
-<h3 data-number="5.1.6" class="anchored" data-anchor-id="expertise-migrates-upwards"><span class="header-section-number">5.1.6</span> Expertise migrates upwards</h3>
-<p>- knowledge of langauge syntax depreciates in value - knowledge of problem decomposition and specification, software architecture, and verification become increasingly important</p>
-</section>
-</section>
-<section id="concerns-regarding-large-language-models" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="concerns-regarding-large-language-models"><span class="header-section-number">5.2</span> Concerns regarding large language models</h2>
+<section id="concerns-regarding-large-language-models" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="concerns-regarding-large-language-models"><span class="header-section-number">5.1</span> Concerns regarding large language models</h2>
 <p>LLMs remain controversial for several reasons. First, they are known to perpetuate the biases that exist in human language. A large body of research has shown that these models tend to demonstrate bias towards gender and racial minorities, and in general to perpetuate stereotypes that are present in human language. The models have in some cases been fine-tuned to avoid this, but the biases nonetheless still persist. Second, there are ongoing arguments regarding whether some models have misused copyrighted materials, or violated the license terms of open-source software. Third, there are legitimate concerns about the substantial resource usage (including energy and water) of the massive data centers that run these models.</p>
 <p>Most importantly, there are lingering concerns regarding the tendency of LLMs to generate inaccurate material, which has come to be known as “hallucination”. I was continually amused at the inability of early versions of ChatGPT to distinguish between myself and my father, Wayne Poldrack, a retired accountant and not a neuroscientist. Given the prompt “Who is Wayne Poldrack”, GPT-4o responded:</p>
 <blockquote class="blockquote">
@@ -420,14 +384,14 @@ Figure&nbsp;5.2: A plot of time horizon at 80% success on the METR AI benchmark 
 </blockquote>
 <p>Even if they have become less frequent in newer models, the potential presence of hallucinations means that information generated by LLMs needs to be validated if it is to be used in domains where accuracy matters (like science). Fortunately, coding is a best case scenario for the use of LLMs, since we can relatively easily write tests that can verify that the solutions generated by the system are correct. This is the reason for my heavy focus on testing and test-driven development in this book, and was in fact my rationale for presenting testing prior to discussing AI-assisted coding in detail.</p>
 </section>
-<section id="generative-versus-agentic-ai" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="generative-versus-agentic-ai"><span class="header-section-number">5.3</span> Generative versus agentic AI</h2>
+<section id="generative-versus-agentic-ai" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="generative-versus-agentic-ai"><span class="header-section-number">5.2</span> Generative versus agentic AI</h2>
 <p>LLMs are often referred to as <em>generative AI</em> tools, since they generate new information based on prompts from the user. These models involve <em>open-loop</em> interaction, in which the model generates output and then waits for additional input from the human. In 2025 a new paradigm known as <em>agentic AI</em> emerged. Agentic AI allows <em>closed-loop</em> operation, in which the LLM is given access to external tools that it can use to perform actions, and then respond to the results of those actions with new actions. A coding agent can generate code, run tests on the code, process the error messages, and revise the code to address the errors, all without any human intervention. Tool use allows models to become increasingly autonomous, and a growing ecosystem of tools allows the agents to become more powerful even if the underlying LLM doesn’t change. These include tools for web search, system file access, running shell commands, installing new packages, running tests, version control, web browser interaction, and much more. In practice the distinction between generative and agentic AI is now more of a spectrum than a binary distinction, as agentic features have been integrated into many chatbots and other systems that are used in a generative manner.</p>
 <p>The ability of coding agents to access tools was accelerated by the development of a standard protocol for tool calling known as the <em>Model Context Protocol</em> (commonly referred to as <em>MCP</em>). You can think of as an API for tool use, providing a consistent way for AI agents to interact with tools; or, as the MCP documentation says, “Think of MCP like a USB-C port for AI applications”. As just one example, one particularly useful tool for web projects is the Playwright MCP, which allows the agent to interactively test the web application using a browser autonomously. This can greatly speed up development for these kinds of projects because it allows the agent to do things that would previously have required human intervention.</p>
 <p>While agentic coding tools greatly increase the power of AI coding assistants, they also change the kind of failure modes that can occur. In the generative mode, the researcher generates code (e.g.&nbsp;by prompting a chatbot or using autocompletion in an IDE) and has a chance to look at it before running it. In the agentic model, the agent can generate a large amount of code and make changes across many files in the codebase without any human oversight. In some cases this code can work well, but the agent can also end up going down rabbit holes, generating problematic code and spending a large number of tokens in the process. Throughout the chapter I will discuss strategies for dealing with these issues, so that you can maximize the benefits of agentic coding while minimizing the risks.</p>
 </section>
-<section id="ai-interaction-patterns-for-coding" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="ai-interaction-patterns-for-coding"><span class="header-section-number">5.4</span> AI interaction patterns for coding</h2>
+<section id="ai-interaction-patterns-for-coding" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="ai-interaction-patterns-for-coding"><span class="header-section-number">5.3</span> AI interaction patterns for coding</h2>
 <p>There are several common patterns of interaction with AI tools for coding. In order to maximize the impact of AI coding tools, it’s important to be aware of each of these patterns and the use cases in which they can be helpful.</p>
 <ul>
 <li><p><strong>Single-turn generation</strong>: Prompting of an LLM chatbot to generate code in a single shot. This is often the first mode of interaction for novice users of AI coding.</p></li>
@@ -436,10 +400,10 @@ Figure&nbsp;5.2: A plot of time horizon at 80% success on the METR AI benchmark 
 <li><p><strong>Autonomous execution</strong>: Using coding agents, a complicated plan can be executed by the model using tools to perform actions.</p></li>
 </ul>
 </section>
-<section id="principles-for-working-with-ai-coding-tools" class="level2" data-number="5.5">
-<h2 data-number="5.5" class="anchored" data-anchor-id="principles-for-working-with-ai-coding-tools"><span class="header-section-number">5.5</span> Principles for working with AI coding tools</h2>
-<section id="verification" class="level3" data-number="5.5.1">
-<h3 data-number="5.5.1" class="anchored" data-anchor-id="verification"><span class="header-section-number">5.5.1</span> Verification</h3>
+<section id="principles-for-working-with-ai-coding-tools" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="principles-for-working-with-ai-coding-tools"><span class="header-section-number">5.4</span> Principles for working with AI coding tools</h2>
+<section id="verification" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="verification"><span class="header-section-number">5.4.1</span> Verification</h3>
 <p>Any code generated by an AI coding tool <em>must</em> be verified to ensure that the computations are correct. As an example, I prompted ChatGPT (using GPT-4o) with the following prompt: “generate a python function to compute a multiple linear regression solution using linear algebra.”, resulting in this code:</p>
 <pre class="text"><code>def multiple_linear_regression(X, y):
     """
@@ -493,17 +457,17 @@ FAILED test_linreg.py::test_simple_lr2_noint - assert 1 == 2
 <p>The first failure reflects a linear algebra error caused by adding an intercept to the <code>X</code> matrix that already has one; this would not have have failed if a more robust implementation of the least squares estimate had been used, but fails when the normal equation is used. The second failure reflects an incorrect result due to omission of the intercept from the model.</p>
 <p>Tests are the primary means to ensure that LLM code is valid, and LLMs are quite good at generating test code. I initially used Claude Sonnet 4.5 to generate tests for the two functions above, but was surprised to see that all of the tests passed. It turned out that that the LLM realized that the two functions differed in their assumptions about the presence of an intercept, and modified the inputs within the tests to make sure that they both passed; that is, it identified and accommodated the bugs rather than exposing them. As I will discuss in more detail below and in Chapter 8, LLM-generated tests often take the “happy path”, doing everything they can to ensure that all tests pass at all costs. Thus, it is essential that LLM-generated tests are examined closely to ensure that they will actually catch problems when they exist, or to use test-driven development where the tests define the functional requirements prior to any implementation.</p>
 </section>
-<section id="context-management" class="level3" data-number="5.5.2">
-<h3 data-number="5.5.2" class="anchored" data-anchor-id="context-management"><span class="header-section-number">5.5.2</span> Context management</h3>
+<section id="context-management" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="context-management"><span class="header-section-number">5.4.2</span> Context management</h3>
 <p>Early in the development of language models, the term “prompt engineering” came to refer to the art of crafting prompts that can effectively drive an LLM to solve a particular problem. Over time, this has evolved into the idea of “context engineering”, highlighting the fact that context will generally include more than just the prompt at hand, especially when agents start to wield tools. With agentic coding tools, it’s common to provide one or more files that specify all of the relevant information for the task, which can be loaded by the model into its context every time it is run within the project. I will refer to the set of practices that one follows and resources that one uses to guide the development process as the <em>agentic coding workflow</em>.</p>
 <p>An essential tool for success with agentic coding workflows is the idea of <em>context management</em>. Even when using models with very large context windows, it generally makes sense to keep one’s context footprint as small as possible, given that important information can easily get lost when the context window fills up. It’s thus important to practice good <em>context management</em> when working with language models in general: at any point in time, the context window should contain all of the information that is relevant to the current task at hand, and as little as possible irrelevant information. In addition, context management is essential to deal with the cases when the model goes off in a bad direction or gets stuck, which happens regularly even with the best models.</p>
 <p>Context management includes two important components. First, we need to prepare the context so that the model has the relevant information to start developing, which we do using persistent <em>context files</em>. Second, we need to manage the context during the process of development, which we do using the agent’s context management tools.</p>
 </section>
-<section id="using-persistent-context-files" class="level3" data-number="5.5.3">
-<h3 data-number="5.5.3" class="anchored" data-anchor-id="using-persistent-context-files"><span class="header-section-number">5.5.3</span> Using persistent context files</h3>
+<section id="using-persistent-context-files" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="using-persistent-context-files"><span class="header-section-number">5.4.3</span> Using persistent context files</h3>
 <p>An essential aspect of context management is having important information contained in a set of files that can be read in by the agent to place important project information in the current context. There are two types of files to consider here, which play different roles and have different lifespans: <em>constitution files</em>, and <em>memory files</em>. Most coding agents combine these into a single <em>instructions file</em> (such as <code>AGENTS.md</code> or <code>CLAUDE.md</code>), but it’s useful to distinguish them.</p>
-<section id="constitution-files" class="level4" data-number="5.5.3.1">
-<h4 data-number="5.5.3.1" class="anchored" data-anchor-id="constitution-files"><span class="header-section-number">5.5.3.1</span> Constitution files</h4>
+<section id="constitution-files" class="level4" data-number="5.4.3.1">
+<h4 data-number="5.4.3.1" class="anchored" data-anchor-id="constitution-files"><span class="header-section-number">5.4.3.1</span> Constitution files</h4>
 <p>Constitution files define the general coding and development practices that you want the agent to follow. Here are the contents of a constitution file that I used in an agentic coding project:</p>
 <pre class="text"><code>**Code style (NON -NEGOTIABLE)**:
  - Write code that is clean and modular
@@ -528,8 +492,8 @@ FAILED test_linreg.py::test_simple_lr2_noint - assert 1 == 2
 <p>Most coding agents have a hierarchical configuration system, in which there is a user-level instructions file (e.g.<code>``~``/.claude/CLAUDE.md</code>) along with a project-level instructions file within the project directory. The user-level instructions file is a good place to define your general coding practices that will be consistent across all projects.</p>
 <p>The user-level constitution file is very useful as a running document of one’s development preferences and policies. Any time a coding agent behaves in a way that you wish to avoid in the future, it’s useful to add a relevant directive to the user-level file.</p>
 </section>
-<section id="memory-files" class="level4" data-number="5.5.3.2">
-<h4 data-number="5.5.3.2" class="anchored" data-anchor-id="memory-files"><span class="header-section-number">5.5.3.2</span> Memory files</h4>
+<section id="memory-files" class="level4" data-number="5.4.3.2">
+<h4 data-number="5.4.3.2" class="anchored" data-anchor-id="memory-files"><span class="header-section-number">5.4.3.2</span> Memory files</h4>
 <p>Whereas constitution files specify a global definition for your coding practices and preferences, memory files specify details that are specific to the particular project. These are often contained in a single instructions file (AGENTS.md or CLAUDE.md) at the project level. For simple projects it’s usually fine to just work with that single instructions file, but for more complex projects I often prefer to break them into several different files that define different aspects of the project; in this case, I would include a directive at the top of the main instructions file (which is automatically read by the agent) to also read those other files:</p>
 <pre class="text"><code>Please read PLANNING.md, TASKS.md, and SCRATCHPAD.md to understand the project.</code></pre>
 <p>For coding agents that allow definition of custom commands, it can also be useful to define a command with this prompt, which can be easily run whenever the context is cleared; I used this prompt to create a custom command called <code>/freshstart</code> within Claude Code.</p>
@@ -571,8 +535,8 @@ FAILED test_linreg.py::test_simple_lr2_noint - assert 1 == 2
 <p>Once a problem is solved to one’s satisfaction it is useful to remove it from the scratchpad, in order to keep the context as clean as possible; to keep a running log of solved problems one can commit the file to version control each time before removing the solved problems.</p>
 </section>
 </section>
-<section id="managing-context-during-agentic-coding" class="level3" data-number="5.5.4">
-<h3 data-number="5.5.4" class="anchored" data-anchor-id="managing-context-during-agentic-coding"><span class="header-section-number">5.5.4</span> Managing context during agentic coding</h3>
+<section id="managing-context-during-agentic-coding" class="level3" data-number="5.4.4">
+<h3 data-number="5.4.4" class="anchored" data-anchor-id="managing-context-during-agentic-coding"><span class="header-section-number">5.4.4</span> Managing context during agentic coding</h3>
 <p>During coding it is important to keep the context as clean as possible, meaning that it should only contain the information that is relevant to solving the problem at hand. This is important even for models with very large context windows. LLM researchers have identified a phenomenon that has come to be called <em>context rot</em>, in which performance of the model is degraded as the amount of information in context grows. Analyses of performance as a function of context <span class="citation" data-cites="hong:2025">(<a href="#ref-hong:2025" role="doc-biblioref">K. Hong 2025</a>)</span> have shown that model performance can begin to degrade on some benchmarks when the context extends beyond 1000 tokens and can sometimes degrade very badly as the context goes beyond 100,000 tokens. It is thus important to keep track of the context during an agentic coding session, and use the tools provided by the agent to manage the context.</p>
 <p>Using Claude Code as an example, the current state of the context can be viewed by using the <code>/context</code> command, as shown in <a href="#fig-claude_context" class="quarto-xref">Figure&nbsp;<span>5.3</span></a>.</p>
 <div id="fig-claude_context" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -587,13 +551,13 @@ Figure&nbsp;5.3: The current state of the context in Claude Code, as viewed usin
 </div>
 <p>Claude Code will automatically <em>compact</em> the context (meaning that it replaces the current context with an automatically generated summary) when the context window is close to being full, but by this point performance may have started to suffer, so it’s often best to manually compact (<code>/compact</code>) or clear (<code>/clear</code>) the context when one reaches a natural breakpoint in the development process. I find that compacting is useful in the middle of a problem, but if I am at a breakpoint between problems I will often clear the context completely. It’s then essential to reload the memory files, which is why I created a custom command to make this easy. In addition, it will often be more effective to guide the summary to focus on the important aspects for the current workflow, rather than letting the LLM choose what to summarize.</p>
 <p>It’s also important to gain an understanding of which tasks are more sensitive to the contents within the context window and which are less sensitive (and thus can allow more frequent clearing of the context). Tasks that require integration across a large codebase or understanding of large-scale architecture will require more information in the context window, while tasks focused on a specific element of the code (such as a single line or function) can be accomplished with relatively little information in the context window.</p>
-<section id="choosing-the-right-task-size-for-ai-coding-tools" class="level4" data-number="5.5.4.1">
-<h4 data-number="5.5.4.1" class="anchored" data-anchor-id="choosing-the-right-task-size-for-ai-coding-tools"><span class="header-section-number">5.5.4.1</span> Choosing the right task size for AI coding tools</h4>
+<section id="choosing-the-right-task-size-for-ai-coding-tools" class="level4" data-number="5.4.4.1">
+<h4 data-number="5.4.4.1" class="anchored" data-anchor-id="choosing-the-right-task-size-for-ai-coding-tools"><span class="header-section-number">5.4.4.1</span> Choosing the right task size for AI coding tools</h4>
 <p>Choosing the right size of tasks for the AI model is essential to maximizing the success of AI-assisted coding. If the task is too large, then it can suffer from context rot, resulting in inconsistent or incompatible code across different parts of the task codebase. If the task is too small, then the user can spend more time prompting than the model does coding, and the smaller tasks may not be well integrated at the next level up in the hierarchy. It takes a degree of practice to understand how to right-size problems for any particular coding tool or agent.</p>
 </section>
 </section>
-<section id="the-importance-of-domain-expertise" class="level3" data-number="5.5.5">
-<h3 data-number="5.5.5" class="anchored" data-anchor-id="the-importance-of-domain-expertise"><span class="header-section-number">5.5.5</span> The importance of domain expertise</h3>
+<section id="the-importance-of-domain-expertise" class="level3" data-number="5.4.5">
+<h3 data-number="5.4.5" class="anchored" data-anchor-id="the-importance-of-domain-expertise"><span class="header-section-number">5.4.5</span> The importance of domain expertise</h3>
 <p>AI coding agents can make it possible for researchers to develop code that is far outside of their domain expertise, but this can often go awry. I saw this first hand when I attempted to implement a project using GPU acceleration to accelerate a commonly used data analysis procedure known as <em>permutation testing</em>. This method requires running many iterations of a statistical model fitting procedure using random permutations of the data, in order to obtain a null distribution that can be used to generate p-values that are corrected for multiple comparisons. I initially asked an LLM whether this was a good candidate for GPU acceleration, and received a resounding “Yes”, so I forged ahead trying to create a pure Python version of a commonly used tool in neuroimaging (the <code>randomise</code> tool from the FSL software package) that could leverage GPU acceleration on my Mac laptop. I have very little prior experience with GPU acceleration, so I trusted the LLM that it was possible, which in retrospect turned out to be a recipe for many wasted hours of work.</p>
 <p>I subsequently spent several days going back and forth with Claude Code in an attempt to get a working version of the project; if you are interested in the gory details, you can see the entire set of Claude Code transcripts in the project repository at bettercodebetterscience.github.io/example-accelperm/transcripts. Getting it to create a working command-line interface was not particularly difficult; however, the initial implementation did not successfully leverage the GPU and was incredibly slow. Claude finally diagnosed the problem as being related to the use of <code>scipy.ndimage.label</code> for a specific operation, but the agent didn’t seem to be able to figure out on its own how to fix the problem. I ultimately asked it to create an optimized C++ module that could be called from within Python, using the FSL randomise code as a guide. It was able to do this, but this still didn’t work well, and it continued to break other parts of the code as it tried to fix the problem.</p>
 <p>After a few days of thrashing around, I decided to try and simplify the problem by focusing on the single task of creating a GPU-accelerated version of <code>scipy.ndimage.label</code>. In this case there was a paper outlining algorithms for GPU-accelerated connected components identification, which I provided to Claude Opus when generating my PRD. It dutifully generated code, but again the GPU-enabled code was always much slower than CPU-only code. After I provided Claude with a link to the example code that accompanied the paper, it helped me arrive at a useful realization:</p>
@@ -645,11 +609,11 @@ This is not an implementation failure - it's an algorithm -hardware mismatch. Th
 <li><p>When the model is going in circles, treat it as a signal that the fundamental approach should be reconsidered, rather than simply trying a simpler version of the problem.</p></li>
 </ul>
 </section>
-<section id="prompting-and-steering" class="level3" data-number="5.5.6">
-<h3 data-number="5.5.6" class="anchored" data-anchor-id="prompting-and-steering"><span class="header-section-number">5.5.6</span> Prompting and steering</h3>
+<section id="prompting-and-steering" class="level3" data-number="5.4.6">
+<h3 data-number="5.4.6" class="anchored" data-anchor-id="prompting-and-steering"><span class="header-section-number">5.4.6</span> Prompting and steering</h3>
 <p>When interacting with both chatbots and agents, we often need to prompt the model to guide its behavior. Here I discuss some strategies that can be useful.</p>
-<section id="leveraging-in-context-learning" class="level4" data-number="5.5.6.1">
-<h4 data-number="5.5.6.1" class="anchored" data-anchor-id="leveraging-in-context-learning"><span class="header-section-number">5.5.6.1</span> Leveraging in-context learning</h4>
+<section id="leveraging-in-context-learning" class="level4" data-number="5.4.6.1">
+<h4 data-number="5.4.6.1" class="anchored" data-anchor-id="leveraging-in-context-learning"><span class="header-section-number">5.4.6.1</span> Leveraging in-context learning</h4>
 <p>As I discussed in Chapter 2, <em>in-context learning</em> is a form of learning that occurs within a single chat session, through the buildup of information across the session that is used to condition the output at each point. The idea is that the output of the model at every step is conditioned on all of the tokens that have come before it in the session. We can take advantage of in-context learning to steer the behavior of the model.</p>
 <p>As an example, I started a new chat window, in which I first give the following prompts: “why are type hints important when creating a python function?”, followed by “Please give an example of how to use type hints effectively”. I then provided the same prompt as above for a linear algebra function, with the following result:</p>
 <pre class="text"><code>def linear_regression_normal_eq(X: np.ndarray, y: np.ndarray) -&gt; np.ndarray:
@@ -709,8 +673,8 @@ Python: ?</code></pre>
 <pre class="text"><code>def filter_user_names(users: list[User], min_age: int, active_only: bool) -&gt; list[str]:</code></pre>
 <p>Few-shot prompting is particularly useful for driving the model to use a particular format or style; if a model is having trouble following instructions, then providing a few examples is often a useful strategy.</p>
 </section>
-<section id="encouraging-thinking-judiciously" class="level4" data-number="5.5.6.2">
-<h4 data-number="5.5.6.2" class="anchored" data-anchor-id="encouraging-thinking-judiciously"><span class="header-section-number">5.5.6.2</span> Encouraging thinking (judiciously)</h4>
+<section id="encouraging-thinking-judiciously" class="level4" data-number="5.4.6.2">
+<h4 data-number="5.4.6.2" class="anchored" data-anchor-id="encouraging-thinking-judiciously"><span class="header-section-number">5.4.6.2</span> Encouraging thinking (judiciously)</h4>
 <p>One of the important discoveries about LLMs is that there are prompting strategies that can result in a greater degree of “thinking”, by which we mean the generation of additional rounds of computation that are meant to result in a deeper reasoning about the problem. A well known example of this is <em>chain of thought</em> prompting <span class="citation" data-cites="Wei:2023aa">(<a href="#ref-Wei:2023aa" role="doc-biblioref">Wei <em>et al.</em> 2023</a>)</span>, in which the model is explicitly prompted to generate intermediate steps in its reasoning process. <a href="#fig-chainofthought" class="quarto-xref">Figure&nbsp;<span>5.4</span></a> shows an example from the <span class="citation" data-cites="Wei:2023aa">(<a href="#ref-Wei:2023aa" role="doc-biblioref">Wei <em>et al.</em> 2023</a>)</span> paper, in which giving an example of producing intermediate results causes the model to do so in subsequent outputs.</p>
 <div id="fig-chainofthought" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -727,11 +691,11 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 </section>
 </section>
 </section>
-<section id="problem-decomposition-for-ai-coding" class="level2" data-number="5.6">
-<h2 data-number="5.6" class="anchored" data-anchor-id="problem-decomposition-for-ai-coding"><span class="header-section-number">5.6</span> Problem decomposition for AI coding</h2>
+<section id="problem-decomposition-for-ai-coding" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="problem-decomposition-for-ai-coding"><span class="header-section-number">5.5</span> Problem decomposition for AI coding</h2>
 <p>The ability to decompose a problem is one of the fundamental skills of computer programming. While coding models excel at generating code once a problem is clearly described, then can struggle to decompose a problem, particularly when the decomposition requires significant scientific domain expertise. There are several points where human expertise and judgment are essential to successful AI-assisted coding.</p>
-<section id="architecture-and-design" class="level3" data-number="5.6.1">
-<h3 data-number="5.6.1" class="anchored" data-anchor-id="architecture-and-design"><span class="header-section-number">5.6.1</span> Architecture and design</h3>
+<section id="architecture-and-design" class="level3" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="architecture-and-design"><span class="header-section-number">5.5.1</span> Architecture and design</h3>
 <blockquote class="blockquote">
 <p>To create architecture is to put it in order. Put what in order? Function and objects. - Le Corbusier (supposedly from <em>Precisions on the Present State of Architecture and City Planning</em>, need to confirm)</p>
 </blockquote>
@@ -743,20 +707,20 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 </ul>
 <p>Many of the clean coding practices discussed in Chapter 3 are also focused on improving software design at the microscopic level, whereas software architecture focuses on the macroscopic organization of the software. This primarily involves defining the modular structure of the code and the interfaces by which those modules will interact. One particularly useful suggestion that Ousterhout makes in his book is “design it twice”: That is, think through multiple ways that the modular structure might be laid out and the interactions between the modules. This can often help bring greater clarity about the problem.</p>
 </section>
-<section id="defining-success" class="level3" data-number="5.6.2">
-<h3 data-number="5.6.2" class="anchored" data-anchor-id="defining-success"><span class="header-section-number">5.6.2</span> Defining success</h3>
+<section id="defining-success" class="level3" data-number="5.5.2">
+<h3 data-number="5.5.2" class="anchored" data-anchor-id="defining-success"><span class="header-section-number">5.5.2</span> Defining success</h3>
 <p>Ultimately it is up to us as project owners to define what the project requirements are for any particular coding project. Any functional requirements should be specified in terms of tests, such that the passing of all tests means that the project is complete. In the context of scientific coding, defining these tests generally requires substantial domain expertise to ensure that the tests assess all of the possibly relevant failure modes and edge cases.</p>
 </section>
-<section id="recognizing-the-need-to-change-strategies" class="level3" data-number="5.6.3">
-<h3 data-number="5.6.3" class="anchored" data-anchor-id="recognizing-the-need-to-change-strategies"><span class="header-section-number">5.6.3</span> Recognizing the need to change strategies</h3>
+<section id="recognizing-the-need-to-change-strategies" class="level3" data-number="5.5.3">
+<h3 data-number="5.5.3" class="anchored" data-anchor-id="recognizing-the-need-to-change-strategies"><span class="header-section-number">5.5.3</span> Recognizing the need to change strategies</h3>
 <p>As agentic coding tools become increasingly able to work autonomously, it is not uncommon for them to spend long periods working on their own. Often these sessions can be remarkably productive, but in some cases agent can end up going in circles or digging too deeply into unproductive rabbit-holes. Expert human judgment is essential to determine when to stop the model and change direction.</p>
 </section>
 </section>
-<section id="failure-modes-for-ai-assisted-coding" class="level2" data-number="5.7">
-<h2 data-number="5.7" class="anchored" data-anchor-id="failure-modes-for-ai-assisted-coding"><span class="header-section-number">5.7</span> Failure modes for AI-assisted coding</h2>
+<section id="failure-modes-for-ai-assisted-coding" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="failure-modes-for-ai-assisted-coding"><span class="header-section-number">5.6</span> Failure modes for AI-assisted coding</h2>
 <p>AI coding tools and agents are increasingly powerful, but as of the time of writing (February 2026) they still make a significant number of mistakes on difficult problems, especially novel problems that are outside the domain of their training data. It’s essential to know what kinds of failures to look for, so here I will outline a taxonomy of the kinds of failures that can occur in AI assisted coding. The taxonomy starts with the easiest problems to catch, and progresses to problems that increasingly require human judgment and coding expertise to identify and solve.</p>
-<section id="correctness-failures" class="level3" data-number="5.7.1">
-<h3 data-number="5.7.1" class="anchored" data-anchor-id="correctness-failures"><span class="header-section-number">5.7.1</span> Correctness failures</h3>
+<section id="correctness-failures" class="level3" data-number="5.6.1">
+<h3 data-number="5.6.1" class="anchored" data-anchor-id="correctness-failures"><span class="header-section-number">5.6.1</span> Correctness failures</h3>
 <p>These are failures where the code is clearly wrong, in a way that will cause outright errors or produce incorrect results. These are thus catchable by testing.</p>
 <ul>
 <li><p><em>Outright syntax errors</em>: It’s quite rare for coding agents to generate code that fails with a syntax error, but when they occur these are easily caught.</p></li>
@@ -765,8 +729,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Incorrect implementation of an algorithm</em>: As in the linear regression example above, the AI may generate code that runs but either generates incorrect results or crashes under certain cases. Property-based testing can help identify these.</p></li>
 </ul>
 </section>
-<section id="testing-failures" class="level3" data-number="5.7.2">
-<h3 data-number="5.7.2" class="anchored" data-anchor-id="testing-failures"><span class="header-section-number">5.7.2</span> Testing failures</h3>
+<section id="testing-failures" class="level3" data-number="5.6.2">
+<h3 data-number="5.6.2" class="anchored" data-anchor-id="testing-failures"><span class="header-section-number">5.6.2</span> Testing failures</h3>
 <p>AI tools can easily generate tests for existing code. However, I have found that AI-generated tests commonly have problems, which I think primarily arise from the fact that the models are trained to create tests that pass at any cost.</p>
 <ul>
 <li><p><em>Modifying the test to pass the code</em>: Faced with tests that fail, it is very common for AI assistants to modify the test code to accommodate or effectively ignore the bug, rather than actually fixing the problematic code. This is sometimes referred to as <em>Happy-path testing</em>. It is seen in the regression example above, and I will show more examples in Chapter 8 when testing workflows.</p></li>
@@ -778,8 +742,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Failing to check for critical dependencies</em>: A test should fail if a critical dependency is missing, but in some cases AI may generate tests that modify their behavior depending on the presence or absence of a particular dependency. This can be particularly problematic when using packages that modify their behavior depending on the existence of a particular dependency (as I show in an example in Chapter 8). If the use of a particular dependency is critical to the workflow then it’s important to check for those dependencies and make sure that they work properly, rather than simply passing the test if they aren’t installed.</p></li>
 </ul>
 </section>
-<section id="feasibility-failures" class="level3" data-number="5.7.3">
-<h3 data-number="5.7.3" class="anchored" data-anchor-id="feasibility-failures"><span class="header-section-number">5.7.3</span> Feasibility failures</h3>
+<section id="feasibility-failures" class="level3" data-number="5.6.3">
+<h3 data-number="5.6.3" class="anchored" data-anchor-id="feasibility-failures"><span class="header-section-number">5.6.3</span> Feasibility failures</h3>
 <p>These are cases where the approach taken by the model is fundamentally broken.</p>
 <ul>
 <li><p><em>Incorrect feasibility assessment</em>: As seen in the GPU acceleration example above, AI models will sometimes claim with confidence that an implementation is feasible when it is not.</p></li>
@@ -788,8 +752,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Hallucination of capabilities</em>: The model may assume that a library has capabilities that it doesn’t have; this is a more general example of the <em>halluciniated API</em> failure described above.</p></li>
 </ul>
 </section>
-<section id="persistence-failures" class="level3" data-number="5.7.4">
-<h3 data-number="5.7.4" class="anchored" data-anchor-id="persistence-failures"><span class="header-section-number">5.7.4</span> Persistence failures</h3>
+<section id="persistence-failures" class="level3" data-number="5.6.4">
+<h3 data-number="5.6.4" class="anchored" data-anchor-id="persistence-failures"><span class="header-section-number">5.6.4</span> Persistence failures</h3>
 <p>AI agents can either be too persistent, refusing to rethink a problem after multiple failures, or not persistent enough, resorting to quick fixes or oversimplification. It is essential to have a human in the loop to avoid these issues.</p>
 <p>Overpersistence manifests in AI agents through repeated failed actions:</p>
 <ul>
@@ -802,8 +766,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Workarounds</em>: The model implements quick fixes that result in problems later.</p></li>
 </ul>
 </section>
-<section id="scope-failures" class="level3" data-number="5.7.5">
-<h3 data-number="5.7.5" class="anchored" data-anchor-id="scope-failures"><span class="header-section-number">5.7.5</span> Scope failures</h3>
+<section id="scope-failures" class="level3" data-number="5.6.5">
+<h3 data-number="5.6.5" class="anchored" data-anchor-id="scope-failures"><span class="header-section-number">5.6.5</span> Scope failures</h3>
 <p>Because an AI model can’t (yet) read the programmer’s mind, they often end up generating code that does either too much or too little work. These are generally cases where explicit instruction in the constitution or memory files can be helpful in guiding the work towards the intended level.</p>
 <ul>
 <li><p><em>Gold-plating</em>: AI agents have a tendency to solve more problems than are explicitly stated.</p></li>
@@ -812,8 +776,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Premature declaration of success</em>: An example of the agent doing too little work, this occurs when the agent declares success based on an implementation that doesn’t actually solve the problem.</p></li>
 </ul>
 </section>
-<section id="security-failures" class="level3" data-number="5.7.6">
-<h3 data-number="5.7.6" class="anchored" data-anchor-id="security-failures"><span class="header-section-number">5.7.6</span> Security failures</h3>
+<section id="security-failures" class="level3" data-number="5.6.6">
+<h3 data-number="5.6.6" class="anchored" data-anchor-id="security-failures"><span class="header-section-number">5.6.6</span> Security failures</h3>
 <p>Security is very important for any web-facing development projects, but also can become an important concern in scientific software engineering. In addition, there are unique security issues raised by autonomous coding agents.</p>
 <ul>
 <li><p><em>Credential exposure</em>: I’ve already noted in a previous section the potential for credentials to be leaked by AI-generated code. This is essential to check any time one is working with sensitive credentials.</p></li>
@@ -823,8 +787,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Unsafe agent modes</em>: Coding agents generally ask for permissions to perform actions that could be dangerous, but usually have the ability to enable an “unsafe” (or <em>YOLO</em>) mode for fully autonomous execution; for example, the current Claude Code has a <code>--dangerously-skip-permissions</code> flag that allows this. This mode is very dangerous on a user machine, since it can wreak havoc by deleting or changing files across the system, or by uploading arbitrary information to the network; agents can do these things in normal mode, but not without human approval. Unsafe mode should only be used on an isolated system with no network access, or within a <em>sandbox</em> container with no network access.</p></li>
 </ul>
 </section>
-<section id="instruction-violations" class="level3" data-number="5.7.7">
-<h3 data-number="5.7.7" class="anchored" data-anchor-id="instruction-violations"><span class="header-section-number">5.7.7</span> Instruction violations</h3>
+<section id="instruction-violations" class="level3" data-number="5.6.7">
+<h3 data-number="5.6.7" class="anchored" data-anchor-id="instruction-violations"><span class="header-section-number">5.6.7</span> Instruction violations</h3>
 <p>AI agents may sometimes forget or ignore the instructions present in the constitution or memory files. This often reflects context rot, and can be reduced through good context management.</p>
 <ul>
 <li><p><em>Ignoring explicit instructions</em>: I have regularly seen cases where the agent ignores explicit instructions from the constitution or memory files.</p></li>
@@ -833,8 +797,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Overwriting existing content</em>: Agents will sometimes overwrite or delete existing content without being asked to do so. This is preventable in workflows with a human in the loop, but difficult to control in fully autonomous agentic workflows.</p></li>
 </ul>
 </section>
-<section id="communication-failures" class="level3" data-number="5.7.8">
-<h3 data-number="5.7.8" class="anchored" data-anchor-id="communication-failures"><span class="header-section-number">5.7.8</span> Communication failures</h3>
+<section id="communication-failures" class="level3" data-number="5.6.8">
+<h3 data-number="5.6.8" class="anchored" data-anchor-id="communication-failures"><span class="header-section-number">5.6.8</span> Communication failures</h3>
 <p>The model may sometimes miscommunicate the state of affairs.</p>
 <ul>
 <li><p><em>Premature completion claims</em>: It is very common for current models to claim to have solved a problem when the problem has not been truly solved, or claim that all tests pass when they do not.</p></li>
@@ -843,8 +807,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 </ul>
 </section>
 </section>
-<section id="code-smells-in-ai-generated-code" class="level2" data-number="5.8">
-<h2 data-number="5.8" class="anchored" data-anchor-id="code-smells-in-ai-generated-code"><span class="header-section-number">5.8</span> Code smells in AI-generated code</h2>
+<section id="code-smells-in-ai-generated-code" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="code-smells-in-ai-generated-code"><span class="header-section-number">5.7</span> Code smells in AI-generated code</h2>
 <p>In Chapter 3 I discussed common code smells, focusing primarily on human-generated code. Given that AI models are trained on human-written code, they can also sometimes demonstrate these smells, although AI-generated code is generally quite well-written and usually avoids obvious smells. However, there is also a set of code smells that are specific to AI-generated code. The AI-assisted programmer needs to be particularly attentive to these issues when reviewing AI-generated code. In many ways AI coding shifts code review from detecting obviously incorrect code to identifying more subtle problems.</p>
 <ul>
 <li><p><em>Silent error swallowing</em>: AI agents often write code that includes <code>try/except</code> clauses that catch bare exceptions (i.e.&nbsp;without specifying an exception type) and silence them rather than raising an exception or giving a warning. This can result in malfunctioning code that is impossible to identify without appropriate tests on the output.</p></li>
@@ -856,15 +820,15 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p><em>Inappropriate function names</em>: AI agents can sometimes generate function names that don’t correctly describe the intended function. Catching these requires human judgment and understanding.</p></li>
 </ul>
 </section>
-<section id="version-control-for-agentic-workflows" class="level2" data-number="5.9">
-<h2 data-number="5.9" class="anchored" data-anchor-id="version-control-for-agentic-workflows"><span class="header-section-number">5.9</span> Version control for agentic workflows</h2>
+<section id="version-control-for-agentic-workflows" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="version-control-for-agentic-workflows"><span class="header-section-number">5.8</span> Version control for agentic workflows</h2>
 <p>As powerful as they are, AI coding agents can often go down the wrong road, and they are not very good at figuring out that they need to stop and rethink their strategy. This is why it’s important to watch what the agent is doing and make sure that it’s not just chasing its tail, as I experienced in my first attempt to create a GPU-accelerated permutation tool (discussed above). Good version control practices are key to dealing with these kinds of issues, and there are several version control strategies that are specifically useful for agentic workflows.</p>
-<section id="create-branches-before-major-tasks" class="level3" data-number="5.9.1">
-<h3 data-number="5.9.1" class="anchored" data-anchor-id="create-branches-before-major-tasks"><span class="header-section-number">5.9.1</span> Create branches before major tasks</h3>
+<section id="create-branches-before-major-tasks" class="level3" data-number="5.8.1">
+<h3 data-number="5.8.1" class="anchored" data-anchor-id="create-branches-before-major-tasks"><span class="header-section-number">5.8.1</span> Create branches before major tasks</h3>
 <p>When undertaking a task where there is a significant risk of problems or uncertainty about the ability of the model to complete the task, it’s useful to create a new branch to work in. This makes reverting the changes as easy as checking out the main branch and deleting the test branch. Use good branch naming practices (as described in Chapter 2) to make it easy to understand what’s been done.</p>
 </section>
-<section id="commit-clear-reload" class="level3" data-number="5.9.2">
-<h3 data-number="5.9.2" class="anchored" data-anchor-id="commit-clear-reload"><span class="header-section-number">5.9.2</span> Commit-clear-reload</h3>
+<section id="commit-clear-reload" class="level3" data-number="5.8.2">
+<h3 data-number="5.8.2" class="anchored" data-anchor-id="commit-clear-reload"><span class="header-section-number">5.8.2</span> Commit-clear-reload</h3>
 <p>Committing to version control after every successful set of changes makes it very easy to simply revert to the last commit when the model gets lost.</p>
 <p>A useful pattern is the <em>commit-clear-reload</em> cycle:</p>
 <ol type="1">
@@ -883,14 +847,14 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 </ol>
 </section>
 </section>
-<section id="translation-and-refactoring" class="level2" data-number="5.10">
-<h2 data-number="5.10" class="anchored" data-anchor-id="translation-and-refactoring"><span class="header-section-number">5.10</span> Translation and refactoring</h2>
+<section id="translation-and-refactoring" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="translation-and-refactoring"><span class="header-section-number">5.9</span> Translation and refactoring</h2>
 <p>I have focused here primarily on the generation of new code, but AI coding assistants can also be very useful in working with existing code. Two important use cases are refactoring and/or modification of existing code, and translation between coding languages. In both of these cases, the cleanliness of the original code has a major impact on the ability of the language model to infer the intention of the code and thus to effectively work with it. For poorly written existing code, it may be useful to first add comments manually (if you already understand the code), or to ask an LLM to add comments, followed by an examination of those comments to ensure that they seem reasonable. The presence of comments can help the coding agent do a better job of understanding and working with the code.</p>
 <p>The availability of well-designed tests for the original code also provides a much stronger baseline for refactoring, modification, or translation. If tests don’t already exists then there are two potential approaches. The preferable approach is to first generate tests for the original code; if it’s Python then you already know how to do this, but this could be challenging for other languages that don’t have a robust testing framework like Python does. When modifying a poorly designed existing Python codebase, it may also be useful to perform one round of refactoring using these tests prior to making any functional modifications. Another approach that is more relevant for translation is to save intermediate outputs from the original code and then compare those outputs to the equivalent outputs from the translated code using Python tests. I found this useful recently when translating a large MATLAB codebase for a particular kind of brain imaging analysis into Python.</p>
 <p>The effectiveness of translation will also depend heavily upon the familiarity of the LLM with the specific programming languages involved. Most current models are very familiar with common languages like Python, Java, and C++, but may struggle when working with more obscure languages.</p>
 </section>
-<section id="ten-simple-tips-for-ai-assisted-scientific-programming" class="level2" data-number="5.11">
-<h2 data-number="5.11" class="anchored" data-anchor-id="ten-simple-tips-for-ai-assisted-scientific-programming"><span class="header-section-number">5.11</span> Ten simple tips for AI-assisted scientific programming</h2>
+<section id="ten-simple-tips-for-ai-assisted-scientific-programming" class="level2" data-number="5.10">
+<h2 data-number="5.10" class="anchored" data-anchor-id="ten-simple-tips-for-ai-assisted-scientific-programming"><span class="header-section-number">5.10</span> Ten simple tips for AI-assisted scientific programming</h2>
 <p>Based on our experiences with AI coding agents, in 2026 a group of us led by Eric Bridgeford published a set of “simple tips” for scientists who use AI-assisted coding tools <span class="citation" data-cites="Bridgeford:2025aa">(<a href="#ref-Bridgeford:2025aa" role="doc-biblioref">Bridgeford <em>et al.</em> 2025</a>)</span>. These synthesize much of what I discussed above, and can serve as a checklist for scientists who wish to approach AI-assisted coding:</p>
 <ol type="1">
 <li><p>Gather Domain Knowledge Before Implementation</p></li>
@@ -905,8 +869,8 @@ Figure&nbsp;5.4: An example of chain-of-thought prompting, reprinted from <span 
 <li><p>Refine Code Incrementally with Focused Objectives</p></li>
 </ol>
 </section>
-<section id="conclusion" class="level2" data-number="5.12">
-<h2 data-number="5.12" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">5.12</span> Conclusion</h2>
+<section id="conclusion" class="level2" data-number="5.11">
+<h2 data-number="5.11" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">5.11</span> Conclusion</h2>
 <p>In 2025, the term “vibe coding” became viral, referring to the use of coding agents to generate applications without ever touching actual code or even knowing how to code. A multitude of Youtube videos quickly appeared touting the ability to generate full-fledged applications without any coding knowledge. However, this initial froth of enthusiasm was soon replaced by a realization that while vibe coding might work for simple applications solving common problems (like web sites), it will generally create software that is at best useful for a prototype but is likely to be difficult to maintain and full of security holes.</p>
 <p>Scientists have a particular responsibility to ensure the validity and correctness of the code that they generate using AI. When we publish a scientific result, we must take full responsibility for the work that establishes the reported results <span class="citation" data-cites="Bridgeford:2025aa">(<a href="#ref-Bridgeford:2025aa" role="doc-biblioref">Bridgeford <em>et al.</em> 2025</a>)</span>. This means that we <em>must</em> do everything possible to test and validate the code that we generate, either as human coders or using AI. Vibe coding may be fine for developing useful tools or web sites, but scientists should <em>never</em> publish a result based on code that they have not reviewed and tested.</p>
 <p>It is impossible to predict how AI coding abilities will change in the future, and some of the principles laid out in this chapter will certainly be made obsolete by future advances in AI coding tools. But what seems to be clear from the first few years of experience with AI coding tools and agents is that these tools do no make programming expertise obsolete. Instead, AI tools can improve the productivity of skilled programmers, and they change the importance of different skills: Knowledge of specific coding constructs becomes less important, while the ability to decompose problems, understand and guide the design of software architectures, and review AI-generated code all become increasingly important.</p>
