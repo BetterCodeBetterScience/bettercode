@@ -212,7 +212,7 @@ print(f"Sample mean: {sample_mean:0.5f}, Population sd: {pop_sd:0.5f}, loglik: {
 
 
 # %%
-# create a version with boundaries on sd parameter in the optimzation
+# create a version with boundaries on sd parameter in the optimization
 from scipy.optimize import Bounds
 
 # Define bounds: mean unbounded, sd must be positive
