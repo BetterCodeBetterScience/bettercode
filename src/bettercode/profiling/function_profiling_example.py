@@ -21,12 +21,12 @@ from numpy.typing import NDArray
 
 def fibonacci_recursive(n: int) -> int:
     """Inefficient recursive implementation of fibonacci.
-    
+
     Parameters
     ----------
     n : int
         The Fibonacci number to compute
-    
+
     Returns
     -------
     int
@@ -39,12 +39,12 @@ def fibonacci_recursive(n: int) -> int:
 
 def fibonacci_iterative(n: int) -> int:
     """Efficient iterative implementation of fibonacci.
-    
+
     Parameters
     ----------
     n : int
         The Fibonacci number to compute
-    
+
     Returns
     -------
     int
@@ -60,7 +60,7 @@ def fibonacci_iterative(n: int) -> int:
 
 def matrix_operations() -> tuple[NDArray, NDArray, NDArray]:
     """Perform various matrix operations.
-    
+
     Returns
     -------
     tuple[NDArray, NDArray, NDArray]
@@ -85,7 +85,7 @@ def matrix_operations() -> tuple[NDArray, NDArray, NDArray]:
 
 def data_processing() -> List[float]:
     """Simulate data processing with loops.
-    
+
     Returns
     -------
     List[float]
@@ -107,15 +107,15 @@ def data_processing() -> List[float]:
 
 def find_duplicates_inefficient(data: List) -> List:
     """Secretly expensive: repeated list membership checks.
-    
+
     Using 'in' operator on lists is O(n), making this O(n²) overall.
     This is a common pattern that looks innocent but scales poorly.
-    
+
     Parameters
     ----------
     data : List
         List of items to check for duplicates
-    
+
     Returns
     -------
     List
@@ -123,27 +123,27 @@ def find_duplicates_inefficient(data: List) -> List:
     """
     duplicates = []
     seen = []
-    
+
     for item in data:
         if item in seen:  # O(n) operation on a list!
             if item not in duplicates:  # Another O(n) operation!
                 duplicates.append(item)
         else:
             seen.append(item)
-    
+
     return duplicates
 
 
 def find_duplicates_efficient(data: List) -> List:
     """Efficient version using set for O(1) lookups.
-    
+
     Using sets for membership testing is O(1), making this O(n) overall.
-    
+
     Parameters
     ----------
     data : List
         List of items to check for duplicates
-    
+
     Returns
     -------
     List
@@ -151,32 +151,32 @@ def find_duplicates_efficient(data: List) -> List:
     """
     duplicates = set()
     seen = set()
-    
+
     for item in data:
         if item in seen:  # O(1) operation on a set!
             duplicates.add(item)
         else:
             seen.add(item)
-    
+
     return list(duplicates)
 
 
 def process_json_files_inefficient(num_files=100):
     """I/O bound: reading and parsing JSON files one at a time.
-    
+
     The performance bottleneck here isn't obvious - it's the
     repeated file open/close operations and JSON parsing.
     """
     # Create temporary directory and files
     temp_dir = tempfile.mkdtemp()
-    
+
     # Write test data
     for i in range(num_files):
         data = {"id": i, "values": list(range(100)), "metadata": {"count": 100}}
         filepath = os.path.join(temp_dir, f"data_{i}.json")
         with open(filepath, "w") as f:
             json.dump(data, f)
-    
+
     # Read files one by one (inefficient I/O pattern)
     results = []
     for i in range(num_files):
@@ -184,31 +184,31 @@ def process_json_files_inefficient(num_files=100):
         with open(filepath, "r") as f:
             data = json.load(f)
             results.append(sum(data["values"]))
-    
+
     # Cleanup
     for i in range(num_files):
         os.remove(os.path.join(temp_dir, f"data_{i}.json"))
     os.rmdir(temp_dir)
-    
+
     return results
 
 
 def process_json_files_efficient(num_files=100):
     """More efficient: minimize I/O operations and use efficient parsing.
-    
+
     Batching operations and keeping files open longer can help,
     but the real lesson is that I/O is often the bottleneck.
     """
     # Create temporary directory and files
     temp_dir = tempfile.mkdtemp()
-    
+
     # Write test data (same as inefficient version)
     for i in range(num_files):
         data = {"id": i, "values": list(range(100)), "metadata": {"count": 100}}
         filepath = os.path.join(temp_dir, f"data_{i}.json")
         with open(filepath, "w") as f:
             json.dump(data, f)
-    
+
     # Read files - same pattern but the point is to show I/O impact
     results = []
     for i in range(num_files):
@@ -216,12 +216,12 @@ def process_json_files_efficient(num_files=100):
         with open(filepath, "r") as f:
             data = json.load(f)
             results.append(sum(data["values"]))
-    
+
     # Cleanup
     for i in range(num_files):
         os.remove(os.path.join(temp_dir, f"data_{i}.json"))
     os.rmdir(temp_dir)
-    
+
     return results
 
 
@@ -236,7 +236,7 @@ def run_function_profiling():
 
     # Run data processing
     processed_data = data_processing()
-    
+
     # Run JSON I/O (I/O bound)
     json_results = process_json_files_inefficient(50)
 
@@ -311,11 +311,11 @@ def compare_duplicate_finding(data_size=10000):
 
     # Profile inefficient version with list
     print(f"\nProfiling duplicate finding with list (data_size={data_size}):")
-    print("(Using 'if item in seen_list' is O(n) each time)")
+    print("(Using 'if item in seen' is O(n) each time)")
     print("-" * 80)
     data = list(range(data_size)) + list(range(data_size // 2))
     np.random.shuffle(data)
-    
+
     profiler = cProfile.Profile()
     profiler.enable()
     result = find_duplicates_inefficient(data)
@@ -341,7 +341,7 @@ def compare_duplicate_finding(data_size=10000):
     ps.print_stats(10)
     print(s.getvalue())
     print(f"Found {len(result)} duplicates")
-    
+
     print("\n" + "-" * 80)
     print("KEY LESSON: Choosing the right data structure matters enormously!")
     print("  - List membership check: O(n) - must scan entire list")
@@ -422,10 +422,10 @@ def main():
 
     # Compare fibonacci implementations
     # compare_fibonacci_implementations()
-    
+
     # Compare data structures (list vs set - subtle performance trap)
     compare_duplicate_finding()
-    
+
     # Compare I/O operations (I/O bound example)
     compare_io_operations()
 
@@ -443,7 +443,9 @@ def main():
     print("  percall - cumtime / ncalls")
     print("\nKey lessons:")
     print("  1. Obvious slowness (fibonacci): Recursive calls create huge overhead")
-    print("  2. Subtle slowness (list vs set): Wrong data structure = O(n²) instead of O(n)")
+    print(
+        "  2. Subtle slowness (list vs set): Wrong data structure = O(n²) instead of O(n)"
+    )
     print("  3. I/O bound (JSON files): File operations dominate execution time")
     print("  4. Always profile - don't assume you know where the bottleneck is!")
     print("=" * 80)

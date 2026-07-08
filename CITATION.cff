@@ -12,7 +12,7 @@ authors:
     affiliation: Stanford University
     orcid: '0000-0001-6755-0259'
 repository-code: 'https://github.com/BetterCodeBetterScience/bettercode'
-url: 'https://bettercodebetterscience.github.io/book/'
+url: 'https://bettercode-book.org'
 abstract: >-
   This is code used to generate examples for the book Better
   Code, Better Science.
