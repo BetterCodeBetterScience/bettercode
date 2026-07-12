@@ -9,6 +9,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 import pytest
 from PIL import Image
 
@@ -22,7 +23,9 @@ from build_gray_figures import (
     verify_complete,
 )
 
-needs_gs = pytest.mark.skipif(shutil.which("gs") is None, reason="ghostscript not installed")
+needs_gs = pytest.mark.skipif(
+    shutil.which("gs") is None, reason="ghostscript not installed"
+)
 
 
 @pytest.fixture
@@ -37,7 +40,9 @@ def latex_dir(tmp_path):
     fig.savefig(tmp_path / "figures" / "01" / "colorplot.pdf")
     plt.close(fig)
 
-    Image.new("RGB", (32, 32), color=(200, 30, 30)).save(tmp_path / "files" / "photo.png")
+    Image.new("RGB", (32, 32), color=(200, 30, 30)).save(
+        tmp_path / "files" / "photo.png"
+    )
 
     (tmp_path / "book-demo.tex").write_text(
         "Some prose.\n"
@@ -66,7 +71,9 @@ def test_convert_pdf_to_gray_removes_all_color(latex_dir, tmp_path):
     assert dest.exists()
     out = subprocess.run(
         ["gs", "-o", "-", "-sDEVICE=inkcov", str(dest)],
-        capture_output=True, text=True, check=True,
+        capture_output=True,
+        text=True,
+        check=True,
     ).stdout
     coverage = [line.split() for line in out.splitlines() if "CMYK OK" in line]
     assert coverage, f"no inkcov output in: {out}"
@@ -78,9 +85,9 @@ def test_convert_png_to_gray_produces_achromatic_image(latex_dir, tmp_path):
     """Every pixel of the converted PNG has equal RGB channels."""
     dest = tmp_path / "gray.png"
     convert_png_to_gray(latex_dir / "files" / "photo.png", dest)
-    img = Image.open(dest).convert("RGB")
-    r, g, b = img.split()
-    assert list(r.getdata()) == list(g.getdata()) == list(b.getdata())
+    pixels = np.asarray(Image.open(dest).convert("RGB"))
+    assert (pixels[..., 0] == pixels[..., 1]).all()
+    assert (pixels[..., 1] == pixels[..., 2]).all()
 
 
 @needs_gs
