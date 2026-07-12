@@ -21,9 +21,13 @@ from __future__ import annotations
 from itertools import combinations
 from pathlib import Path
 from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
 
 Edge = tuple[str, str]
 
@@ -188,15 +192,18 @@ def run_signal_threshold_sweep(
     return pd.DataFrame(rows)
 
 
-def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
-    """Plot recall (solid) and FDR (dashed) vs. signal level, one color per q-threshold.
+def draw_sweep_lines(df: pd.DataFrame, ax: "Axes", grayscale: bool = False) -> None:
+    """Draw recall (solid) and FDR (dashed) vs. signal on ``ax``, one style per q-threshold.
 
-    When the sweep contains multiple runs per (signal, q_threshold) cell, the
-    line shows the mean across runs and the shaded band shows a 95% bootstrap
-    confidence interval.
+    Recall and FDR are distinguished by line style and marker, while the
+    q-threshold levels are distinguished by color. In color mode the seaborn
+    ``colorblind`` palette is used; in grayscale mode an achromatic palette
+    keeps the q-threshold levels distinguishable in print, with the metric's
+    dash and marker providing redundant encoding.
     """
-    import matplotlib.pyplot as plt
     import seaborn as sns
+
+    from bettercode.figstyle import gray_palette
 
     long_df = df.melt(
         id_vars=["signal", "q_threshold"],
@@ -204,7 +211,8 @@ def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
         var_name="metric",
         value_name="rate",
     )
-    fig, ax = plt.subplots(figsize=(8, 5))
+    n_levels = df["q_threshold"].nunique()
+    palette = gray_palette(n_levels) if grayscale else "colorblind"
     sns.lineplot(
         data=long_df,
         x="signal",
@@ -214,10 +222,26 @@ def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
         style_order=["recall", "fdr"],
         markers={"recall": "o", "fdr": "X"},
         dashes={"recall": "", "fdr": (3, 2)},
-        palette="colorblind",
+        palette=palette,
         errorbar=("ci", 95),
         ax=ax,
     )
+
+
+def plot_sweep_results(
+    df: pd.DataFrame, save_path: Path, grayscale: bool = False
+) -> None:
+    """Plot recall (solid) and FDR (dashed) vs. signal level, one color per q-threshold.
+
+    When the sweep contains multiple runs per (signal, q_threshold) cell, the
+    line shows the mean across runs and the shaded band shows a 95% bootstrap
+    confidence interval. Set ``grayscale=True`` for a print-ready achromatic
+    variant.
+    """
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    draw_sweep_lines(df, ax, grayscale=grayscale)
     ax.set_xlabel("signal (true partial-correlation magnitude)")
     ax.set_ylabel("rate (recall/FDR)")
     ax.set_ylim(-0.02, 1.02)
