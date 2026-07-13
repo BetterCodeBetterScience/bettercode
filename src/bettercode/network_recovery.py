@@ -193,17 +193,19 @@ def run_signal_threshold_sweep(
 
 
 def draw_sweep_lines(df: pd.DataFrame, ax: "Axes", grayscale: bool = False) -> None:
-    """Draw recall (solid) and FDR (dashed) vs. signal on ``ax``, one style per q-threshold.
+    """Draw recall (solid) and FDR (dashed) vs. signal on ``ax``.
 
-    Recall and FDR are distinguished by line style and marker, while the
-    q-threshold levels are distinguished by color. In color mode the seaborn
-    ``colorblind`` palette is used; in grayscale mode an achromatic palette
-    keeps the q-threshold levels distinguishable in print, with the metric's
-    dash and marker providing redundant encoding.
+    A distinct marker identifies each q-threshold and the line style alone
+    distinguishes the two metrics (recall solid, FDR dashed), so the three
+    FDR (and three recall) curves stay separable even in grayscale where the
+    color channel is unavailable. Color mode additionally tints thresholds
+    with the seaborn ``colorblind`` palette; grayscale mode uses achromatic
+    shades.
     """
     import seaborn as sns
+    from matplotlib.lines import Line2D
 
-    from bettercode.figstyle import gray_palette
+    from bettercode.figstyle import MARKERS, gray_palette
 
     long_df = df.melt(
         id_vars=["signal", "q_threshold"],
@@ -211,21 +213,42 @@ def draw_sweep_lines(df: pd.DataFrame, ax: "Axes", grayscale: bool = False) -> N
         var_name="metric",
         value_name="rate",
     )
-    n_levels = df["q_threshold"].nunique()
-    palette = gray_palette(n_levels) if grayscale else "colorblind"
-    sns.lineplot(
-        data=long_df,
-        x="signal",
-        y="rate",
-        hue="q_threshold",
-        style="metric",
-        style_order=["recall", "fdr"],
-        markers={"recall": "o", "fdr": "X"},
-        dashes={"recall": "", "fdr": (3, 2)},
-        palette=palette,
-        errorbar=("ci", 95),
-        ax=ax,
-    )
+    thresholds = sorted(df["q_threshold"].unique())
+    n_levels = len(thresholds)
+    palette = gray_palette(n_levels) if grayscale else sns.color_palette("colorblind", n_levels)
+    color_by = dict(zip(thresholds, palette))
+    marker_by = {t: MARKERS[i % len(MARKERS)] for i, t in enumerate(thresholds)}
+
+    # One seaborn pass per metric keeps the bootstrap CI band; the metric sets
+    # the line style, the q-threshold sets the marker (and color).
+    for metric, dash in [("recall", ""), ("fdr", (3, 2))]:
+        sub = long_df[long_df["metric"] == metric]
+        sns.lineplot(
+            data=sub,
+            x="signal",
+            y="rate",
+            hue="q_threshold",
+            hue_order=thresholds,
+            style="q_threshold",
+            style_order=thresholds,
+            markers=marker_by,
+            dashes={t: dash for t in thresholds},
+            palette=[color_by[t] for t in thresholds],
+            errorbar=("ci", 95),
+            ax=ax,
+            legend=False,
+        )
+
+    threshold_handles = [
+        Line2D([0], [0], color=color_by[t], marker=marker_by[t], linestyle="",
+               label=f"q = {t}")
+        for t in thresholds
+    ]
+    metric_handles = [
+        Line2D([0], [0], color="0.3", linestyle="-", label="recall"),
+        Line2D([0], [0], color="0.3", linestyle="--", label="FDR"),
+    ]
+    ax.legend(handles=threshold_handles + metric_handles, title="q-threshold / metric")
 
 
 def plot_sweep_results(
