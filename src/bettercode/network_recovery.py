@@ -21,9 +21,13 @@ from __future__ import annotations
 from itertools import combinations
 from pathlib import Path
 from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    from matplotlib.axes import Axes
 
 Edge = tuple[str, str]
 
@@ -188,15 +192,20 @@ def run_signal_threshold_sweep(
     return pd.DataFrame(rows)
 
 
-def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
-    """Plot recall (solid) and FDR (dashed) vs. signal level, one color per q-threshold.
+def draw_sweep_lines(df: pd.DataFrame, ax: "Axes", grayscale: bool = False) -> None:
+    """Draw recall (solid) and FDR (dashed) vs. signal on ``ax``.
 
-    When the sweep contains multiple runs per (signal, q_threshold) cell, the
-    line shows the mean across runs and the shaded band shows a 95% bootstrap
-    confidence interval.
+    A distinct marker identifies each q-threshold and the line style alone
+    distinguishes the two metrics (recall solid, FDR dashed), so the three
+    FDR (and three recall) curves stay separable even in grayscale where the
+    color channel is unavailable. Color mode additionally tints thresholds
+    with the seaborn ``colorblind`` palette; grayscale mode uses achromatic
+    shades.
     """
-    import matplotlib.pyplot as plt
     import seaborn as sns
+    from matplotlib.lines import Line2D
+
+    from bettercode.figstyle import MARKERS, gray_palette
 
     long_df = df.melt(
         id_vars=["signal", "q_threshold"],
@@ -204,20 +213,58 @@ def plot_sweep_results(df: pd.DataFrame, save_path: Path) -> None:
         var_name="metric",
         value_name="rate",
     )
+    thresholds = sorted(df["q_threshold"].unique())
+    n_levels = len(thresholds)
+    palette = gray_palette(n_levels) if grayscale else sns.color_palette("colorblind", n_levels)
+    color_by = dict(zip(thresholds, palette))
+    marker_by = {t: MARKERS[i % len(MARKERS)] for i, t in enumerate(thresholds)}
+
+    # One seaborn pass per metric keeps the bootstrap CI band; the metric sets
+    # the line style, the q-threshold sets the marker (and color).
+    for metric, dash in [("recall", ""), ("fdr", (3, 2))]:
+        sub = long_df[long_df["metric"] == metric]
+        sns.lineplot(
+            data=sub,
+            x="signal",
+            y="rate",
+            hue="q_threshold",
+            hue_order=thresholds,
+            style="q_threshold",
+            style_order=thresholds,
+            markers=marker_by,
+            dashes={t: dash for t in thresholds},
+            palette=[color_by[t] for t in thresholds],
+            errorbar=("ci", 95),
+            ax=ax,
+            legend=False,
+        )
+
+    threshold_handles = [
+        Line2D([0], [0], color=color_by[t], marker=marker_by[t], linestyle="",
+               label=f"q = {t}")
+        for t in thresholds
+    ]
+    metric_handles = [
+        Line2D([0], [0], color="0.3", linestyle="-", label="recall"),
+        Line2D([0], [0], color="0.3", linestyle="--", label="FDR"),
+    ]
+    ax.legend(handles=threshold_handles + metric_handles, title="q-threshold / metric")
+
+
+def plot_sweep_results(
+    df: pd.DataFrame, save_path: Path, grayscale: bool = False
+) -> None:
+    """Plot recall (solid) and FDR (dashed) vs. signal level, one color per q-threshold.
+
+    When the sweep contains multiple runs per (signal, q_threshold) cell, the
+    line shows the mean across runs and the shaded band shows a 95% bootstrap
+    confidence interval. Set ``grayscale=True`` for a print-ready achromatic
+    variant.
+    """
+    import matplotlib.pyplot as plt
+
     fig, ax = plt.subplots(figsize=(8, 5))
-    sns.lineplot(
-        data=long_df,
-        x="signal",
-        y="rate",
-        hue="q_threshold",
-        style="metric",
-        style_order=["recall", "fdr"],
-        markers={"recall": "o", "fdr": "X"},
-        dashes={"recall": "", "fdr": (3, 2)},
-        palette="colorblind",
-        errorbar=("ci", 95),
-        ax=ax,
-    )
+    draw_sweep_lines(df, ax, grayscale=grayscale)
     ax.set_xlabel("signal (true partial-correlation magnitude)")
     ax.set_ylabel("rate (recall/FDR)")
     ax.set_ylim(-0.02, 1.02)

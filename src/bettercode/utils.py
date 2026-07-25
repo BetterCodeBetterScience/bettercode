@@ -1,5 +1,10 @@
+from collections.abc import Callable
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+
+from bettercode.figstyle import variant_dirs
 
 
 def save_fig(
@@ -25,6 +30,36 @@ def save_fig(
         outpath = outdir / f"{name}.{filetype}"
         fig.savefig(outpath.as_posix(), format=filetype, dpi=dpi, bbox_inches="tight")
     return str(outpath)
+
+
+def save_fig_variants(
+    make_fig: Callable[[str], Figure],
+    name: str,
+    chapter: int,
+    image_dir: str | Path,
+    dpi: int = 300,
+) -> dict[str, str]:
+    """Render and save color and grayscale variants of a figure.
+
+    Calls make_fig("color") and make_fig("gray") and saves each into the
+    matching tree from variant_dirs; color as pdf+svg, gray as pdf only.
+    Returns the saved path per variant.
+    """
+    dirs = variant_dirs(Path(image_dir))
+    filetypes = {"color": ["pdf", "svg"], "gray": ["pdf"]}
+    paths = {}
+    for variant in ("color", "gray"):
+        fig = make_fig(variant)
+        paths[variant] = save_fig(
+            fig,
+            name,
+            chapter,
+            filetypes=filetypes[variant],
+            dpi=dpi,
+            basedir=dirs[variant],
+        )
+        plt.close(fig)
+    return paths
 
 
 def get_size(path: str | Path, units: str = "M") -> float:
