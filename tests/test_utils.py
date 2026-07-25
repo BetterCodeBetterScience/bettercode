@@ -17,25 +17,27 @@ def figure():
 
 
 def test_save_fig_writes_to_zero_padded_chapter_dir(figure, tmp_path):
-    """The figure is written to basedir/chapternum(zero-padded)/name.pdf."""
+    """The figure is written to basedir/chapternum(zero-padded)/name.<type>."""
     result = save_fig(figure, "scatter", 3, basedir=str(tmp_path))
-    expected = tmp_path / "03" / "scatter.pdf"
-    assert expected.exists()
-    assert str(expected) == str(result)
+    assert (tmp_path / "03" / "scatter.pdf").exists()
+    assert (tmp_path / "03" / "scatter.svg").exists()
+    assert str(tmp_path / "03" / "scatter.svg") == str(result)
 
 
-def test_save_fig_defaults_to_pdf_and_300_dpi(figure, tmp_path):
-    """Default file type is PDF."""
+def test_save_fig_defaults_to_pdf_and_svg(figure, tmp_path):
+    """Default file types are PDF and SVG; the returned path is the last written."""
     result = save_fig(figure, "lines", 12, basedir=str(tmp_path))
-    assert str(result).endswith("12/lines.pdf")
     assert (tmp_path / "12" / "lines.pdf").exists()
+    assert (tmp_path / "12" / "lines.svg").exists()
+    assert str(result).endswith("12/lines.svg")
 
 
-def test_save_fig_respects_custom_filetype(figure, tmp_path):
-    """A custom file type changes the extension and format."""
-    result = save_fig(figure, "bars", 1, filetype="png", basedir=str(tmp_path))
+def test_save_fig_respects_custom_filetypes(figure, tmp_path):
+    """A custom file-type list changes the extensions and format written."""
+    result = save_fig(figure, "bars", 1, filetypes=["png"], basedir=str(tmp_path))
     expected = tmp_path / "01" / "bars.png"
     assert expected.exists()
+    assert not (tmp_path / "01" / "bars.pdf").exists()
     assert str(expected) == str(result)
 
 
