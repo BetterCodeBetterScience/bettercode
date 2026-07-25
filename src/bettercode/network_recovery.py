@@ -28,6 +28,7 @@ import pandas as pd
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
+    from matplotlib.lines import Line2D
 
 Edge = tuple[str, str]
 
@@ -192,15 +193,25 @@ def run_signal_threshold_sweep(
     return pd.DataFrame(rows)
 
 
-def draw_sweep_lines(df: pd.DataFrame, ax: "Axes", grayscale: bool = False) -> None:
+LINEWIDTH = 2.5
+MARKERSIZE = 9
+
+
+def draw_sweep_lines(
+    df: pd.DataFrame, ax: "Axes", grayscale: bool = False
+) -> list["Line2D"]:
     """Draw recall (solid) and FDR (dashed) vs. signal on ``ax``.
 
-    A distinct marker identifies each q-threshold and the line style alone
-    distinguishes the two metrics (recall solid, FDR dashed), so the three
-    FDR (and three recall) curves stay separable even in grayscale where the
-    color channel is unavailable. Color mode additionally tints thresholds
-    with the seaborn ``colorblind`` palette; grayscale mode uses achromatic
-    shades.
+    Only the mean curve across runs is drawn (no confidence band), with thick
+    lines and large markers so the curves stay legible in print. A distinct
+    marker identifies each q-threshold and the line style alone distinguishes
+    the two metrics (recall solid, FDR dashed), so the three FDR (and three
+    recall) curves stay separable even in grayscale where the color channel is
+    unavailable. Color mode additionally tints thresholds with the seaborn
+    ``colorblind`` palette; grayscale mode uses achromatic shades.
+
+    A legend keyed to those encodings is attached to ``ax``; the legend handles
+    are also returned so callers can re-place the legend.
     """
     import seaborn as sns
     from matplotlib.lines import Line2D
@@ -234,21 +245,27 @@ def draw_sweep_lines(df: pd.DataFrame, ax: "Axes", grayscale: bool = False) -> N
             markers=marker_by,
             dashes={t: dash for t in thresholds},
             palette=[color_by[t] for t in thresholds],
-            errorbar=("ci", 95),
+            errorbar=None,
+            linewidth=LINEWIDTH,
+            markersize=MARKERSIZE,
             ax=ax,
             legend=False,
         )
 
     threshold_handles = [
         Line2D([0], [0], color=color_by[t], marker=marker_by[t], linestyle="",
-               label=f"q = {t}")
+               markersize=MARKERSIZE, label=f"q = {t}")
         for t in thresholds
     ]
     metric_handles = [
-        Line2D([0], [0], color="0.3", linestyle="-", label="recall"),
-        Line2D([0], [0], color="0.3", linestyle="--", label="FDR"),
+        Line2D([0], [0], color="0.3", linestyle="-", linewidth=LINEWIDTH,
+               label="recall"),
+        Line2D([0], [0], color="0.3", linestyle="--", linewidth=LINEWIDTH,
+               label="FDR"),
     ]
-    ax.legend(handles=threshold_handles + metric_handles, title="q-threshold / metric")
+    handles = threshold_handles + metric_handles
+    ax.legend(handles=handles, title="q-threshold / metric")
+    return handles
 
 
 def plot_sweep_results(
@@ -257,18 +274,23 @@ def plot_sweep_results(
     """Plot recall (solid) and FDR (dashed) vs. signal level, one color per q-threshold.
 
     When the sweep contains multiple runs per (signal, q_threshold) cell, the
-    line shows the mean across runs and the shaded band shows a 95% bootstrap
-    confidence interval. Set ``grayscale=True`` for a print-ready achromatic
-    variant.
+    line shows the mean across runs. Set ``grayscale=True`` for a print-ready
+    achromatic variant.
     """
     import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    draw_sweep_lines(df, ax, grayscale=grayscale)
+    handles = draw_sweep_lines(df, ax, grayscale=grayscale)
     ax.set_xlabel("signal (true partial-correlation magnitude)")
     ax.set_ylabel("rate (recall/FDR)")
     ax.set_ylim(-0.02, 1.02)
-    ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)
+    ax.legend(
+        handles=handles,
+        title="q-threshold / metric",
+        bbox_to_anchor=(1.02, 1),
+        loc="upper left",
+        fontsize=9,
+    )
     fig.tight_layout()
     save_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(save_path, dpi=150, bbox_inches="tight")

@@ -1,6 +1,12 @@
 """Tests for network_recovery module."""
 
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import pytest
 
 from bettercode import network_recovery as nr
@@ -126,3 +132,60 @@ def test_run_signal_threshold_sweep_shape():
     }
     assert sorted(df["signal"].unique().tolist()) == signals
     assert sorted(df["q_threshold"].unique().tolist()) == q_thresholds
+
+
+@pytest.fixture
+def sweep_df():
+    """A sweep result with several runs per cell, so bands would appear if drawn."""
+    rows = []
+    for signal in [0.05, 0.10, 0.15]:
+        for q in [0.001, 0.01, 0.05]:
+            for run in range(4):
+                rows.append({
+                    "signal": signal,
+                    "q_threshold": q,
+                    "recall": min(1.0, signal * 5 + 0.02 * run),
+                    "fdr": min(1.0, q * 2 + 0.01 * run),
+                })
+    return pd.DataFrame(rows)
+
+
+@pytest.fixture
+def sweep_axes(sweep_df):
+    """Axes with the sweep drawn on it, plus the handles draw_sweep_lines returns."""
+    fig, ax = plt.subplots()
+    handles = nr.draw_sweep_lines(sweep_df, ax)
+    yield ax, handles
+    plt.close(fig)
+
+
+def test_draw_sweep_lines_draws_no_error_bands(sweep_axes):
+    """Confidence bands are filled collections; the plot should show lines only."""
+    ax, _ = sweep_axes
+    assert len(ax.collections) == 0
+
+
+def test_draw_sweep_lines_uses_thick_lines_and_large_markers(sweep_axes):
+    """Lines and markers are enlarged for legibility in print."""
+    ax, _ = sweep_axes
+    assert ax.lines
+    for line in ax.lines:
+        assert line.get_linewidth() >= 2.0
+        assert line.get_markersize() >= 8.0
+
+
+def test_draw_sweep_lines_labels_thresholds_and_metrics(sweep_axes):
+    """Returned handles cover every q-threshold plus both metrics."""
+    _, handles = sweep_axes
+    labels = [h.get_label() for h in handles]
+    assert labels == ["q = 0.001", "q = 0.01", "q = 0.05", "recall", "FDR"]
+
+
+def test_draw_sweep_lines_adds_legend(sweep_axes):
+    """A legend is attached to the axes with one entry per handle."""
+    ax, handles = sweep_axes
+    legend = ax.get_legend()
+    assert legend is not None
+    assert [t.get_text() for t in legend.get_texts()] == [
+        h.get_label() for h in handles
+    ]
