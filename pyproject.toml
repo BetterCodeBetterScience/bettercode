@@ -91,6 +91,7 @@ dependencies = [
     "pydantic[email]>=2.12.5",
     "sbi>=0.26.1",
     "hdf5plugin>=7.0.0",
+    "jupyter>=1.1.1",
 ]
 
 [build-system]
