@@ -1,9 +1,14 @@
+import pytest
+
 from tex2qmd.preprocess import (
+    mark_box_titles,
     parse_listing_options,
     render_code_block,
+    resolve_inputs,
     slice_lines,
     strip_comments,
     unescape_listing_math,
+    unwrap_noindent,
 )
 
 
@@ -83,3 +88,97 @@ def test_unescape_listing_math_converts_symbols():
 def test_unescape_listing_math_leaves_plain_dollars():
     """Text without `$...$` math spans is returned unchanged."""
     assert unescape_listing_math("$ git init\n$ echo hello") == "$ git init\n$ echo hello"
+
+
+def test_resolve_inputs_inlines_fragment(tmp_path):
+    """An \\input file's content replaces the command, so pandoc never sees it."""
+    (tmp_path / "fragments").mkdir()
+    (tmp_path / "fragments" / "box.tex").write_text("Boxed prose.\n")
+    tex = "Before.\n\\input{fragments/box}\nAfter."
+    assert resolve_inputs(tex, tmp_path) == "Before.\nBoxed prose.\n\nAfter."
+
+
+def test_resolve_inputs_accepts_explicit_tex_suffix(tmp_path):
+    """An \\input target that already ends in .tex is not given a second suffix."""
+    (tmp_path / "box.tex").write_text("Boxed.")
+    assert resolve_inputs("\\input{box.tex}", tmp_path) == "Boxed."
+
+
+def test_resolve_inputs_is_recursive(tmp_path):
+    """An \\input inside an included file is resolved too."""
+    (tmp_path / "outer.tex").write_text("outer\n\\input{inner}")
+    (tmp_path / "inner.tex").write_text("inner")
+    assert resolve_inputs("\\input{outer}", tmp_path) == "outer\ninner"
+
+
+def test_resolve_inputs_ignores_trailing_whitespace(tmp_path):
+    """Trailing spaces after \\input{...} (as in the chapters) do not break resolution."""
+    (tmp_path / "box.tex").write_text("Boxed.")
+    assert resolve_inputs("\\input{box}    \n", tmp_path) == "Boxed.    \n"
+
+
+def test_resolve_inputs_leaves_text_without_input(tmp_path):
+    """Text with no \\input command is returned unchanged."""
+    assert resolve_inputs("Just prose.", tmp_path) == "Just prose."
+
+
+def test_resolve_inputs_missing_file_raises(tmp_path):
+    """A missing \\input target is an error, not silently dropped content."""
+    with pytest.raises(FileNotFoundError):
+        resolve_inputs("\\input{nope}", tmp_path)
+
+
+def test_unwrap_noindent_unwraps_braced_group():
+    """`\\noindent{...}` becomes bare text; pandoc would otherwise swallow the group."""
+    assert unwrap_noindent("\\noindent{Note that the symbol matters.}") == (
+        "Note that the symbol matters."
+    )
+
+
+def test_unwrap_noindent_handles_nested_braces():
+    """Brace matching (not the first `}`) delimits the group being unwrapped."""
+    tex = "\\noindent{The \\textit{hash} is {\\textasciitilde}8 chars.}"
+    assert unwrap_noindent(tex) == "The \\textit{hash} is {\\textasciitilde}8 chars."
+
+
+def test_unwrap_noindent_handles_multiple_occurrences():
+    """Every `\\noindent{...}` in the text is unwrapped."""
+    tex = "\\noindent{One.}\n\n\\noindent{Two.}"
+    assert unwrap_noindent(tex) == "One.\n\nTwo."
+
+
+def test_unwrap_noindent_drops_bare_command():
+    """A bare `\\noindent` with no group is removed and its text left in place."""
+    assert unwrap_noindent("\\bigskip\\noindent\nFollowing text.") == (
+        "\\bigskip\nFollowing text."
+    )
+
+
+def test_unwrap_noindent_ignores_escaped_brace():
+    """An escaped `\\{` inside the group does not confuse brace matching."""
+    tex = "\\noindent{A \\{literal\\} brace.}"
+    assert unwrap_noindent(tex) == "A \\{literal\\} brace."
+
+
+def test_mark_box_titles_moves_optional_title_into_body():
+    """A fullbox's `[title]` becomes a tokenized paragraph pandoc will render."""
+    tex = "\\begin{fullbox}[\\textit{GPT-4}'s hurdle]\nBody.\n\\end{fullbox}"
+    out = mark_box_titles(tex)
+    assert "\\begin{fullbox}\n" in out
+    assert "TEX2QMDBOXTITLE{\\textit{GPT-4}'s hurdle}" in out
+    assert "[\\textit{GPT-4}'s hurdle]" not in out
+    assert "Body." in out
+
+
+def test_mark_box_titles_leaves_untitled_box_alone():
+    """A fullbox with no optional title gets no title token."""
+    tex = "\\begin{fullbox}\nBody.\n\\end{fullbox}"
+    out = mark_box_titles(tex)
+    assert "TEX2QMDBOXTITLE" not in out
+    assert "\\begin{fullbox}" in out
+
+
+def test_mark_box_titles_leaves_other_environments_untouched():
+    """Only fullbox openings are rewritten."""
+    tex = "\\begin{figure}[htbp]\nstuff\n\\end{figure}"
+    assert mark_box_titles(tex) == tex

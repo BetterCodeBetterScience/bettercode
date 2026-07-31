@@ -1,6 +1,8 @@
 import pytest
 from tex2qmd.postprocess import (
+    boxes_to_callouts,
     framed_to_callout,
+    modelquotes_to_blockquotes,
     reinsert_code_blocks,
     rewrite_figures,
     rewrite_tables,
@@ -162,3 +164,66 @@ def test_framed_to_callout_leaves_other_divs_untouched():
     """Non-framed fenced divs are not altered."""
     md = "::: {.column-margin}\nAside.\n:::"
     assert framed_to_callout(md) == md
+
+
+def test_boxes_to_callouts_converts_fullbox_div():
+    """A pandoc `::: fullbox` div becomes a Quarto note callout."""
+    md = "::: fullbox\nBody.\n:::"
+    out = boxes_to_callouts(md)
+    assert "::: {.callout-note}" in out
+    assert "fullbox" not in out
+    assert "Body." in out
+
+
+def test_boxes_to_callouts_renders_title_token_as_heading():
+    """The title token planted by mark_box_titles becomes the callout's heading."""
+    md = ":::: fullbox\nTEX2QMDBOXTITLE*GPT-4*'s hurdle\n\nBody.\n::::"
+    out = boxes_to_callouts(md)
+    assert "## *GPT-4*'s hurdle" in out
+    assert "TEX2QMDBOXTITLE" not in out
+
+
+def test_boxes_to_callouts_preserves_fence_length():
+    """A nested box keeps its longer opening fence so it still matches its closer."""
+    md = ":::: fullbox\nBody.\n\n::: modelquote\nQuoted.\n:::\n::::"
+    out = boxes_to_callouts(md)
+    assert ":::: {.callout-note}" in out
+    assert "::: modelquote" in out  # inner div is left for its own rewriter
+
+
+def test_boxes_to_callouts_leaves_other_divs_untouched():
+    """Non-fullbox fenced divs are not altered."""
+    md = "::: framed\nTip.\n:::"
+    assert boxes_to_callouts(md) == md
+
+
+def test_modelquotes_to_blockquotes_prefixes_body():
+    """A `::: modelquote` div becomes a markdown blockquote."""
+    md = "::: modelquote\nFirst line.\nSecond line.\n:::"
+    assert modelquotes_to_blockquotes(md) == "> First line.\n> Second line."
+
+
+def test_modelquotes_to_blockquotes_keeps_blank_lines_quoted():
+    """A blank line inside the quote stays inside the blockquote."""
+    md = "::: modelquote\nPara one.\n\nPara two.\n:::"
+    assert modelquotes_to_blockquotes(md) == "> Para one.\n>\n> Para two."
+
+
+def test_modelquotes_to_blockquotes_converts_each_of_several():
+    """Several model quotes in one chapter are each converted."""
+    md = "::: modelquote\nA.\n:::\n\nBetween.\n\n::: modelquote\nB.\n:::"
+    out = modelquotes_to_blockquotes(md)
+    assert out == "> A.\n\nBetween.\n\n> B."
+
+
+def test_modelquotes_to_blockquotes_survives_inside_longer_fence():
+    """A model quote nested in a box is converted without eating the outer fence."""
+    md = ":::: fullbox\nIntro.\n\n::: modelquote\nQuoted.\n:::\n::::"
+    out = modelquotes_to_blockquotes(md)
+    assert out == ":::: fullbox\nIntro.\n\n> Quoted.\n::::"
+
+
+def test_modelquotes_to_blockquotes_leaves_other_divs_untouched():
+    """Non-modelquote fenced divs are not altered."""
+    md = "::: framed\nTip.\n:::"
+    assert modelquotes_to_blockquotes(md) == md
