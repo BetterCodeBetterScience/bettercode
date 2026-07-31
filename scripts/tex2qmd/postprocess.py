@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 
+from tex2qmd.preprocess import BOX_TITLE_TOKEN
+
 _TOKEN = re.compile(r"TEX2QMDCODEBLOCK(?P<index>\d+)")
 
 
@@ -28,6 +30,38 @@ def reinsert_code_blocks(md: str, blocks: list[str]) -> str:
 def framed_to_callout(md: str) -> str:
     """Convert pandoc `::: framed` fenced divs to Quarto note callouts."""
     return re.sub(r"^::: +framed\s*$", "::: {.callout-note}", md, flags=re.MULTILINE)
+
+
+# A `fullbox` div may enclose other divs, in which case pandoc lengthens its
+# fence (`::::`); the opening fence is rewritten in place so it still matches its
+# own closer. Quarto reads the first heading in a callout as its title.
+_BOX_OPEN = re.compile(r"^(?P<fence>:{3,}) +fullbox[ \t]*$", re.MULTILINE)
+_BOX_TITLE = re.compile(rf"^{BOX_TITLE_TOKEN}(?P<title>.*)$", re.MULTILINE)
+
+
+def boxes_to_callouts(md: str) -> str:
+    """Convert pandoc `::: fullbox` divs to Quarto callouts with their titles."""
+    md = _BOX_OPEN.sub(r"\g<fence> {.callout-note}", md)
+    return _BOX_TITLE.sub(r"## \g<title>", md)
+
+
+# `modelquote` sets quoted model output apart from the author's prose in print; a
+# markdown blockquote is the web equivalent (a bare div would render as plain
+# text). The fence backreference keeps a nested quote from eating its container.
+_MODELQUOTE = re.compile(
+    r"^(?P<fence>:{3,}) +modelquote[ \t]*\n(?P<body>.*?)\n^(?P=fence)[ \t]*$",
+    re.MULTILINE | re.DOTALL,
+)
+
+
+def _quote_lines(body: str) -> str:
+    """Prefix every line with a blockquote marker, leaving blank lines bare `>`."""
+    return "\n".join(f"> {line}" if line else ">" for line in body.split("\n"))
+
+
+def modelquotes_to_blockquotes(md: str) -> str:
+    """Convert pandoc `::: modelquote` divs to markdown blockquotes."""
+    return _MODELQUOTE.sub(lambda m: _quote_lines(m.group("body")), md)
 
 
 # Pandoc renders LaTeX figure environments as raw HTML <figure> blocks whose

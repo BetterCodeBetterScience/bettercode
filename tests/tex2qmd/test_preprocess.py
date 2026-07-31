@@ -163,22 +163,38 @@ def test_unwrap_noindent_ignores_escaped_brace():
 def test_mark_box_titles_moves_optional_title_into_body():
     """A fullbox's `[title]` becomes a tokenized paragraph pandoc will render."""
     tex = "\\begin{fullbox}[\\textit{GPT-4}'s hurdle]\nBody.\n\\end{fullbox}"
-    out = mark_box_titles(tex)
+    out = mark_box_titles(tex, 5)
     assert "\\begin{fullbox}\n" in out
-    assert "TEX2QMDBOXTITLE{\\textit{GPT-4}'s hurdle}" in out
+    assert "TEX2QMDBOXTITLE{Box 5.1 --- \\textit{GPT-4}'s hurdle}" in out
     assert "[\\textit{GPT-4}'s hurdle]" not in out
     assert "Body." in out
 
 
-def test_mark_box_titles_leaves_untitled_box_alone():
-    """A fullbox with no optional title gets no title token."""
+def test_mark_box_titles_separates_token_from_following_prose():
+    """A blank line follows the token so it is always its own block."""
+    tex = "\\begin{fullbox}[Title]\nBody.\n\\end{fullbox}"
+    assert "TEX2QMDBOXTITLE{Box 3.1 --- Title}\n\nBody." in mark_box_titles(tex, 3)
+
+
+def test_mark_box_titles_numbers_boxes_within_the_chapter():
+    """Box numbers count up within a chapter, matching the LaTeX counter."""
+    tex = (
+        "\\begin{fullbox}[First]\na\n\\end{fullbox}\n"
+        "\\begin{fullbox}[Second]\nb\n\\end{fullbox}\n"
+    )
+    out = mark_box_titles(tex, 2)
+    assert "{Box 2.1 --- First}" in out
+    assert "{Box 2.2 --- Second}" in out
+
+
+def test_mark_box_titles_numbers_untitled_box():
+    """A fullbox with no optional title still gets its number as the title."""
     tex = "\\begin{fullbox}\nBody.\n\\end{fullbox}"
-    out = mark_box_titles(tex)
-    assert "TEX2QMDBOXTITLE" not in out
-    assert "\\begin{fullbox}" in out
+    out = mark_box_titles(tex, 4)
+    assert "TEX2QMDBOXTITLE{Box 4.1}" in out
 
 
 def test_mark_box_titles_leaves_other_environments_untouched():
     """Only fullbox openings are rewritten."""
     tex = "\\begin{figure}[htbp]\nstuff\n\\end{figure}"
-    assert mark_box_titles(tex) == tex
+    assert mark_box_titles(tex, 1) == tex

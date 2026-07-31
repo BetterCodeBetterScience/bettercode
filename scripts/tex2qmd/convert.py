@@ -14,12 +14,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from tex2qmd.figures import emit_figure, rewrite_includegraphics  # noqa: E402
 from tex2qmd.pandoc_bridge import run_pandoc  # noqa: E402
 from tex2qmd.postprocess import (  # noqa: E402
+    boxes_to_callouts,
     framed_to_callout,
+    modelquotes_to_blockquotes,
     reinsert_code_blocks,
     rewrite_figures,
     rewrite_tables,
 )
-from tex2qmd.preprocess import extract_listings, strip_comments, strip_index  # noqa: E402
+from tex2qmd.preprocess import (  # noqa: E402
+    extract_listings,
+    mark_box_titles,
+    resolve_inputs,
+    strip_comments,
+    strip_index,
+    unwrap_noindent,
+)
 from tex2qmd.project import (  # noqa: E402
     load_index_body,
     parse_chapter_order,
@@ -39,15 +48,24 @@ LICENSE_SLUG = "by-nc-nd/4.0"
 WEB_EXCLUDE = frozenset({"preface"})
 
 
-def convert_chapter(tex: str, base_dir: Path) -> tuple[str, list[str]]:
-    """Convert chapter LaTeX to (qmd text, referenced figure PDF paths)."""
+def convert_chapter(tex: str, base_dir: Path, chapter: int) -> tuple[str, list[str]]:
+    """Convert chapter LaTeX to (qmd text, referenced figure PDF paths).
+
+    ``chapter`` is the chapter's 1-based position in the book, used to number
+    its boxes exactly as the print edition does.
+    """
+    tex = resolve_inputs(tex, base_dir)
     tex = strip_comments(tex)
     tex = strip_index(tex)
     tex, pdfs = rewrite_includegraphics(tex)
     tex, blocks = extract_listings(tex, base_dir)
+    tex = unwrap_noindent(tex)
+    tex = mark_box_titles(tex, chapter)
     md = run_pandoc(tex)
     qmd = reinsert_code_blocks(md, blocks)
     qmd = framed_to_callout(qmd)
+    qmd = modelquotes_to_blockquotes(qmd)
+    qmd = boxes_to_callouts(qmd)
     qmd = rewrite_figures(qmd)
     qmd = rewrite_tables(qmd)
     return qmd, pdfs
@@ -65,9 +83,9 @@ def build_book(latex_dir: Path, out_dir: Path) -> None:
         render_cover(SUBTITLE, AUTHOR, load_index_body())
     )
     chapter_files: list[str] = ["index.qmd"]
-    for target in targets:
+    for chapter, target in enumerate(targets, start=1):
         tex = (latex_dir / f"{target}.tex").read_text()
-        qmd, pdfs = convert_chapter(tex, latex_dir)
+        qmd, pdfs = convert_chapter(tex, latex_dir, chapter)
         out_name = qmd_name(target)
         (out_dir / out_name).write_text(qmd)
         chapter_files.append(out_name)

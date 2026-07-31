@@ -9,6 +9,92 @@ from tex2qmd.listings import language_for_style
 
 _INDEX = re.compile(r"\\index\{[^{}]*\}")
 
+#: Marks a `fullbox` title so it survives pandoc as ordinary paragraph text;
+#: `postprocess.boxes_to_callouts` turns it back into the callout's heading.
+BOX_TITLE_TOKEN = "TEX2QMDBOXTITLE"
+
+_INPUT = re.compile(r"\\input\{(?P<path>[^}]+)\}")
+
+
+def resolve_inputs(tex: str, base_dir: Path) -> str:
+    """Inline every ``\\input{...}`` file, recursively, relative to base_dir.
+
+    Pandoc reads the chapter from stdin and so cannot resolve ``\\input`` itself;
+    left alone the command (and the whole fragment behind it) is dropped
+    silently. A missing target raises rather than losing content.
+    """
+
+    def _repl(match: re.Match[str]) -> str:
+        name = match.group("path")
+        path = base_dir / (name if name.endswith(".tex") else f"{name}.tex")
+        return resolve_inputs(path.read_text(), base_dir)
+
+    return _INPUT.sub(_repl, tex)
+
+
+# Pandoc parses `\noindent` as taking one argument, so `\noindent{prose}` eats
+# the entire paragraph. Indentation control is meaningless in markdown, so the
+# command is dropped and any group it was holding is unwrapped.
+_NOINDENT_GROUP = re.compile(r"\\noindent[ \t]*\{")
+_NOINDENT_BARE = re.compile(r"\\noindent(?![a-zA-Z])[ \t]*")
+
+
+def _matching_brace(text: str, start: int) -> int:
+    """Return the index of the `}` matching the `{` at start, or -1 if unbalanced."""
+    depth = 0
+    index = start
+    while index < len(text):
+        char = text[index]
+        if char == "\\":
+            index += 2
+            continue
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return index
+        index += 1
+    return -1
+
+
+def unwrap_noindent(tex: str) -> str:
+    """Remove every ``\\noindent``, unwrapping the braced group it wrapped."""
+    pos = 0
+    while (match := _NOINDENT_GROUP.search(tex, pos)) is not None:
+        close = _matching_brace(tex, match.end() - 1)
+        if close < 0:  # unbalanced braces: leave this occurrence to the bare pass
+            pos = match.end()
+            continue
+        tex = tex[: match.start()] + tex[match.end() : close] + tex[close + 1 :]
+        pos = match.start()
+    return _NOINDENT_BARE.sub("", tex)
+
+
+# `fullbox` is a book-specific environment, so pandoc keeps it as a `::: fullbox`
+# div and discards its optional `[title]`. Moving the title into the body as a
+# tokenized paragraph lets pandoc render its markup (`\textit{...}`, `\texttt{...}`).
+_BOX_OPEN = re.compile(r"\\begin\{fullbox\}(?:\[(?P<title>.*)\])?[ \t]*$", re.MULTILINE)
+
+
+def mark_box_titles(tex: str, chapter: int) -> str:
+    """Move each ``fullbox`` title into the box body as a numbered token.
+
+    Boxes are numbered ``chapter.n`` as the LaTeX ``fullbox`` counter does, so
+    chapter prose referring to "Box 5.1" still resolves in the web edition.
+    """
+    counter = 0
+
+    def _repl(match: re.Match[str]) -> str:
+        nonlocal counter
+        counter += 1
+        label = f"Box {chapter}.{counter}"
+        title = match.group("title")
+        heading = f"{label} --- {title}" if title else label
+        return f"\\begin{{fullbox}}\n\n{BOX_TITLE_TOKEN}{{{heading}}}\n"
+
+    return _BOX_OPEN.sub(_repl, tex)
+
 
 def strip_comments(tex: str) -> str:
     """Remove full-line LaTeX comments that lie outside lstlisting environments.

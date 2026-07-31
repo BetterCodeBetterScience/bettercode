@@ -15,7 +15,7 @@ def test_convert_chapter_end_to_end(tmp_path):
         "\\includegraphics[width=0.5\\linewidth]{figures/01/x.pdf}\n"
         "\\lstinputlisting[style=Python]{sample.py}\n"
     )
-    qmd, pdfs = convert_chapter(tex, tmp_path)
+    qmd, pdfs = convert_chapter(tex, tmp_path, 1)
     assert "# Demo" in qmd
     assert "[@ref1]" in qmd
     assert "\\index" not in qmd
@@ -37,9 +37,10 @@ def test_convert_chapter_renders_input_fragment_box(tmp_path):
         "\\end{fullbox}\n"
     )
     tex = "\\section{Demo}\n\\input{fragments/box}\n"
-    qmd, _ = convert_chapter(tex, tmp_path)
+    qmd, _ = convert_chapter(tex, tmp_path, 5)
     assert "{.callout-note}" in qmd
-    assert "## *GPT-4*'s coding hurdle" in qmd
+    # numbered as in print, so the chapters' "see Box 5.1" prose still resolves
+    assert "## Box 5.1 --- *GPT-4*'s coding hurdle" in qmd
     assert "Box prose here." in qmd
     assert "> The model said this." in qmd
     assert "fullbox" not in qmd
@@ -50,5 +51,5 @@ def test_convert_chapter_renders_input_fragment_box(tmp_path):
 def test_convert_chapter_keeps_noindent_prose(tmp_path):
     """Prose wrapped in `\\noindent{...}` survives conversion (pandoc alone drops it)."""
     tex = "\\noindent{The \\textit{hash} uniquely names the commit.}\n"
-    qmd, _ = convert_chapter(tex, tmp_path)
+    qmd, _ = convert_chapter(tex, tmp_path, 1)
     assert "The *hash* uniquely names the commit." in qmd
