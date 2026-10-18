@@ -65,3 +65,38 @@ def test_convert_cli_runs_as_script(tmp_path):
     assert result.returncode == 0, result.stderr
     assert (out / "_quarto.yml").exists()
     assert (out / "index.qmd").exists()
+
+
+@pytest.mark.skipif(shutil.which("pandoc") is None, reason="pandoc not installed")
+def test_build_book_references_png_for_oversized_svg(tmp_path, monkeypatch):
+    """A figure whose SVG exceeds the size limit is referenced as .png in the qmd."""
+    from tex2qmd.figures import MAX_SVG_BYTES
+
+    latex = tmp_path / "latex"
+    (latex / "figures" / "01").mkdir(parents=True)
+    (latex / "book.tex").write_text(
+        "\\begin{document}\n\\include{chap1}\n\\end{document}\n"
+    )
+    (latex / "chap1.tex").write_text(
+        "\\chapter{One}\n"
+        "\\begin{figure}\n\\includegraphics{figures/01/big.pdf}\n"
+        "\\caption{Big.}\n\\label{big-fig}\n\\end{figure}\n"
+        "\\begin{figure}\n\\includegraphics{figures/01/small.pdf}\n"
+        "\\caption{Small.}\n\\label{small-fig}\n\\end{figure}\n"
+    )
+    (latex / "references.bib").write_text("@book{k, title={T}, year={2020}}\n")
+    for name in ("big", "small"):
+        (latex / "figures" / "01" / f"{name}.pdf").write_text("%PDF-fake")
+    with open(latex / "figures" / "01" / "big.svg", "wb") as f:
+        f.truncate(MAX_SVG_BYTES + 1)
+    (latex / "figures" / "01" / "small.svg").write_text("<svg/>")
+    monkeypatch.setattr(
+        "tex2qmd.figures.convert_pdf_to_png", lambda pdf, png: png.write_bytes(b"PNG")
+    )
+    out = tmp_path / "web"
+    build_book(latex, out)
+    qmd = (out / "chap1.qmd").read_text()
+    assert "(figures/01/big.png)" in qmd
+    assert "big.svg" not in qmd
+    assert "(figures/01/small.svg)" in qmd
+    assert (out / "figures" / "01" / "big.png").exists()

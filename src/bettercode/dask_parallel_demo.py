@@ -96,7 +96,9 @@ def get_cluster_config() -> dict[str, int | str]:
 
     logger.info(f"System: {total_memory_gb:.1f}GB RAM, {cpu_count} CPUs")
     logger.info(f"Available: {available_memory_gb:.1f}GB RAM")
-    logger.info(f"Cluster: {n_workers} workers × {threads_per_worker} thread, {memory_limit} each")
+    logger.info(
+        f"Cluster: {n_workers} workers × {threads_per_worker} thread, {memory_limit} each"
+    )
 
     return {
         "n_workers": n_workers,
@@ -112,9 +114,8 @@ def compute_trip_stats(df: pd.DataFrame) -> pd.DataFrame:
     This is key for memory efficiency - input is large, output is small.
     """
     duration_minutes = (
-        (df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]).dt.total_seconds()
-        / 60
-    )
+        df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]
+    ).dt.total_seconds() / 60
 
     valid = (
         (duration_minutes > 0) & (duration_minutes < 180) & (df["trip_distance"] > 0)
@@ -132,19 +133,17 @@ def compute_trip_stats(df: pd.DataFrame) -> pd.DataFrame:
     fare_per_mile = fare_valid / distance_valid
     tip_pct = (tip_valid / fare_valid * 100).replace([np.inf, -np.inf], np.nan)
 
-    return pd.DataFrame(
-        [
-            {
-                "n_valid_trips": valid.sum(),
-                "mean_duration": duration_valid.mean(),
-                "mean_speed": speed_mph.mean(),
-                "median_speed": speed_mph.median(),
-                "mean_fare_per_mile": fare_per_mile.mean(),
-                "mean_tip_pct": tip_pct.mean(),
-                "pct_tipped": (tip_valid > 0).mean() * 100,
-            }
-        ]
-    )
+    return pd.DataFrame([
+        {
+            "n_valid_trips": valid.sum(),
+            "mean_duration": duration_valid.mean(),
+            "mean_speed": speed_mph.mean(),
+            "median_speed": speed_mph.median(),
+            "mean_fare_per_mile": fare_per_mile.mean(),
+            "mean_tip_pct": tip_pct.mean(),
+            "pct_tipped": (tip_valid > 0).mean() * 100,
+        }
+    ])
 
 
 def bootstrap_zone_ci(zone_data: pd.DataFrame, n_bootstrap: int = 1000) -> dict | None:
@@ -223,17 +222,15 @@ def example_map_partitions(client: Client, ddf: dd.DataFrame) -> dict:
 
     start_time = time.time()
 
-    meta = pd.DataFrame(
-        {
-            "n_valid_trips": pd.Series(dtype="int64"),
-            "mean_duration": pd.Series(dtype="float64"),
-            "mean_speed": pd.Series(dtype="float64"),
-            "median_speed": pd.Series(dtype="float64"),
-            "mean_fare_per_mile": pd.Series(dtype="float64"),
-            "mean_tip_pct": pd.Series(dtype="float64"),
-            "pct_tipped": pd.Series(dtype="float64"),
-        }
-    )
+    meta = pd.DataFrame({
+        "n_valid_trips": pd.Series(dtype="int64"),
+        "mean_duration": pd.Series(dtype="float64"),
+        "mean_speed": pd.Series(dtype="float64"),
+        "median_speed": pd.Series(dtype="float64"),
+        "mean_fare_per_mile": pd.Series(dtype="float64"),
+        "mean_tip_pct": pd.Series(dtype="float64"),
+        "pct_tipped": pd.Series(dtype="float64"),
+    })
 
     partition_stats = ddf.map_partitions(compute_trip_stats, meta=meta).compute()
 
@@ -273,19 +270,20 @@ def example_groupby_aggregations(client: Client, ddf: dd.DataFrame) -> pd.DataFr
     start_time = time.time()
 
     location_stats = (
-        ddf.groupby("PULocationID")
-        .agg(
-            {
-                "trip_distance": ["count", "mean"],
-                "fare_amount": "mean",
-                "tip_amount": "mean",
-            }
-        )
+        ddf
+        .groupby("PULocationID")
+        .agg({
+            "trip_distance": ["count", "mean"],
+            "fare_amount": "mean",
+            "tip_amount": "mean",
+        })
         .compute()
     )
 
     location_stats.columns = ["_".join(col).strip() for col in location_stats.columns]
-    location_stats = location_stats.rename(columns={"trip_distance_count": "trip_count"})
+    location_stats = location_stats.rename(
+        columns={"trip_distance_count": "trip_count"}
+    )
 
     elapsed = time.time() - start_time
 
@@ -320,16 +318,18 @@ def example_time_series(client: Client, ddf: dd.DataFrame) -> pd.DataFrame:
         df = df.copy()
         df["year"] = df["tpep_pickup_datetime"].dt.year
         df["month"] = df["tpep_pickup_datetime"].dt.month
-        result = (
-            df.groupby(["year", "month"])
-            .agg({
-                "trip_distance": ["count", "sum"],
-                "fare_amount": "sum",
-                "total_amount": "sum",
-            })
-        )
+        result = df.groupby(["year", "month"]).agg({
+            "trip_distance": ["count", "sum"],
+            "fare_amount": "sum",
+            "total_amount": "sum",
+        })
         # Flatten MultiIndex columns
-        result.columns = ["trip_count", "trip_distance_sum", "fare_sum", "total_revenue"]
+        result.columns = [
+            "trip_count",
+            "trip_distance_sum",
+            "fare_sum",
+            "total_revenue",
+        ]
         return result.reset_index()
 
     # Define output schema (with flattened columns)
@@ -347,7 +347,8 @@ def example_time_series(client: Client, ddf: dd.DataFrame) -> pd.DataFrame:
 
     # Combine partition results
     monthly_stats = (
-        partition_stats.groupby(["year", "month"])
+        partition_stats
+        .groupby(["year", "month"])
         .agg({
             "trip_count": "sum",
             "trip_distance_sum": "sum",
@@ -358,7 +359,9 @@ def example_time_series(client: Client, ddf: dd.DataFrame) -> pd.DataFrame:
     )
 
     # Compute averages
-    monthly_stats["avg_distance"] = monthly_stats["trip_distance_sum"] / monthly_stats["trip_count"]
+    monthly_stats["avg_distance"] = (
+        monthly_stats["trip_distance_sum"] / monthly_stats["trip_count"]
+    )
     monthly_stats["avg_fare"] = monthly_stats["fare_sum"] / monthly_stats["trip_count"]
     monthly_stats = monthly_stats.sort_values(["year", "month"])
 
@@ -391,7 +394,9 @@ def example_bootstrap(client: Client, ddf: dd.DataFrame) -> pd.DataFrame:
         """Count trips per zone per day within a partition."""
         df = df.copy()
         df["date"] = df["tpep_pickup_datetime"].dt.date
-        return df.groupby(["PULocationID", "date"]).size().reset_index(name="trip_count")
+        return (
+            df.groupby(["PULocationID", "date"]).size().reset_index(name="trip_count")
+        )
 
     meta = pd.DataFrame({
         "PULocationID": pd.Series(dtype="int64"),
@@ -402,7 +407,8 @@ def example_bootstrap(client: Client, ddf: dd.DataFrame) -> pd.DataFrame:
     # Aggregate per partition, then combine
     partition_counts = ddf.map_partitions(partition_daily_counts, meta=meta).compute()
     daily_zone_stats = (
-        partition_counts.groupby(["PULocationID", "date"])["trip_count"]
+        partition_counts
+        .groupby(["PULocationID", "date"])["trip_count"]
         .sum()
         .reset_index()
     )
@@ -460,7 +466,8 @@ def example_comparison(client: Client, ddf: dd.DataFrame, preproc_dir: Path) -> 
         logger.info("Running Polars (lazy)...")
         start_time = time.time()
         _ = (
-            pl.scan_parquet(str(preproc_dir / "*.parquet"))
+            pl
+            .scan_parquet(str(preproc_dir / "*.parquet"))
             .group_by("PULocationID")
             .agg(pl.col("trip_distance").mean().alias("mean_trip_distance"))
             .collect()
@@ -504,10 +511,10 @@ def main():
     # See: https://distributed.dask.org/en/stable/worker-memory.html
     dask.config.set({
         # Memory thresholds (fraction of worker memory limit)
-        "distributed.worker.memory.target": 0.60,      # Start spilling at 60%
-        "distributed.worker.memory.spill": 0.70,       # Spill more at 70%
-        "distributed.worker.memory.pause": 0.80,       # Pause worker at 80%
-        "distributed.worker.memory.terminate": 0.95,   # Kill worker at 95%
+        "distributed.worker.memory.target": 0.60,  # Start spilling at 60%
+        "distributed.worker.memory.spill": 0.70,  # Spill more at 70%
+        "distributed.worker.memory.pause": 0.80,  # Pause worker at 80%
+        "distributed.worker.memory.terminate": 0.95,  # Kill worker at 95%
         # Don't count recent memory as "unmanaged" (reduces false warnings)
         "distributed.worker.memory.recent-to-old-time": "30s",
         # Allow some tolerance for memory spikes
@@ -562,5 +569,52 @@ def main():
         logger.info("Done")
 
 
-if __name__ == "__main__":
-    main()
+# this is reduced down just to the code for the ch 10 dask performance demo
+
+import dask
+import psutil
+
+available_gb = psutil.virtual_memory().available / (1024**3)
+partition_size_gb = (
+    1.0  # Conservative estimate of in-memory partition size (dataset dependent)
+)
+safe_threads = max(
+    1, int(available_gb / partition_size_gb / 2)
+)  # Use half of what we could
+max_threads = 8
+safe_threads = min(
+    safe_threads, psutil.cpu_count(), max_threads
+)  # Cap at max_threads for safety
+
+print(f"Available memory: {available_gb:.1f} GB")
+print(f"Using {safe_threads} threads (to limit concurrent partitions in memory)")
+
+# Load environment and configure paths
+load_dotenv()
+datadir_env = os.getenv("DATADIR")
+if not datadir_env:
+    logger.error("DATADIR environment variable not set")
+    sys.exit(1)
+
+datadir = Path(datadir_env)
+orig_dir, preproc_dir = get_data_dirs(datadir)
+
+import dask.dataframe as dd
+
+ddf = dd.read_parquet(preproc_dir / "*.parquet")
+
+# Parallel
+start_time = time.time()
+with dask.config.set(num_workers=safe_threads):
+    _ = ddf.groupby("PULocationID")["trip_distance"].mean().compute()
+parallel_time = time.time() - start_time
+print(f"Parallel ({safe_threads} threads): {parallel_time:.2f} seconds")
+
+# Single-threaded
+start_time = time.time()
+with dask.config.set(scheduler="synchronous"):
+    _ = ddf.groupby("PULocationID")["trip_distance"].mean().compute()
+single_time = time.time() - start_time
+print(f"Single-threaded:         {single_time:.2f} seconds")
+
+print(f"\nSpeedup: {single_time / parallel_time:.2f}x")

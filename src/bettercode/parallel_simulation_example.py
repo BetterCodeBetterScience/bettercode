@@ -9,6 +9,7 @@ This example demonstrates:
 Uses Mandelbrot set calculation as a CPU-intensive, pure Python computation.
 """
 
+import math
 import multiprocessing as mp
 import sys
 from pathlib import Path
@@ -16,7 +17,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from bettercode.parallel_base import run_parallel, run_serial
+from bettercode.parallel_base import get_n_chunks, run_parallel, run_serial
 from bettercode.utils import save_fig
 
 IMAGE_DIR = Path("../../latex/figures")
@@ -65,7 +66,7 @@ def main(chunking_factor: int = 1) -> None:
         print(f"{grid_desc}: {time_serial:6.2f} seconds")
 
         # Add serial result to CSV
-        complexity = width * height * max_iter
+        n_pixels = width * height
         all_results.append(
             {
                 "n_cores": 1,
@@ -74,8 +75,8 @@ def main(chunking_factor: int = 1) -> None:
                 "grid_width": width,
                 "grid_height": height,
                 "max_iterations": max_iter,
-                "complexity": complexity,
-                "log_complexity": int(complexity).bit_length(),
+                "n_pixels": n_pixels,
+                "log2_pixels": math.log2(n_pixels),
                 "serial_time": time_serial,
                 "parallel_time": time_serial,
                 "speedup": 1.0,
@@ -91,7 +92,7 @@ def main(chunking_factor: int = 1) -> None:
         for grid_size in difficulty_levels:
             width, height, max_iter = grid_size
             grid_desc = f"{width}x{height} grid, {max_iter} iterations"
-            complexity = width * height * max_iter
+            n_pixels = width * height
 
             print(f"\n{grid_desc}:")
             print("-" * 70)
@@ -104,7 +105,7 @@ def main(chunking_factor: int = 1) -> None:
             result_parallel, time_parallel, _ = run_parallel(
                 grid_size, ncores=n_cores, chunking_factor=chunking_factor
             )
-            n_chunks = chunking_factor * n_cores
+            n_chunks = get_n_chunks(height, n_cores, chunking_factor)
             print(
                 f"Parallel: {time_parallel:6.2f} seconds (split into {n_chunks} chunks)"
             )
@@ -123,10 +124,8 @@ def main(chunking_factor: int = 1) -> None:
                     "grid_width": width,
                     "grid_height": height,
                     "max_iterations": max_iter,
-                    "complexity": complexity,
-                    "log_complexity": int(
-                        complexity
-                    ).bit_length(),  # Log2 approximation
+                    "n_pixels": n_pixels,
+                    "log2_pixels": math.log2(n_pixels),
                     "serial_time": time_serial,
                     "parallel_time": time_parallel,
                     "speedup": speedup,
@@ -152,11 +151,11 @@ def main(chunking_factor: int = 1) -> None:
     # Create plot with two panels
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
-    # Panel 1: Speedup vs Log Complexity
+    # Panel 1: Speedup vs log2(number of pixels)
     for n_cores in ncores_list:
         df_subset = df[df["n_cores"] == n_cores]
         ax1.plot(
-            df_subset["log_complexity"],
+            df_subset["log2_pixels"],
             df_subset["speedup"],
             "o-",
             linewidth=2,
@@ -178,17 +177,17 @@ def main(chunking_factor: int = 1) -> None:
     for n_cores in ncores_list:
         ax1.axhline(y=n_cores, color="gray", linestyle="--", alpha=0.3, linewidth=0.8)
 
-    ax1.set_xlabel("Log₂(Computational Complexity)", fontsize=12)
+    ax1.set_xlabel("Log₂(Number of Pixels)", fontsize=12)
     ax1.set_ylabel("Speedup (Serial Time / Parallel Time)", fontsize=12)
     ax1.set_title("Parallel Processing Speedup", fontsize=14, fontweight="bold")
     ax1.grid(True, alpha=0.3)
     ax1.legend(title="Cores Used")
 
-    # Panel 2: Efficiency vs Log Image Size (using log_complexity as proxy)
+    # Panel 2: Efficiency vs log2(number of pixels)
     for n_cores in ncores_list:
         df_subset = df[df["n_cores"] == n_cores]
         ax2.plot(
-            df_subset["log_complexity"],
+            df_subset["log2_pixels"],
             df_subset["efficiency_percent"],
             "o-",
             linewidth=2,
@@ -206,7 +205,7 @@ def main(chunking_factor: int = 1) -> None:
         label="100% efficiency",
     )
 
-    ax2.set_xlabel("Log₂(Image Size)", fontsize=12)
+    ax2.set_xlabel("Log₂(Number of Pixels)", fontsize=12)
     ax2.set_ylabel("Parallel Efficiency (%)", fontsize=12)
     ax2.set_title("Parallel Processing Efficiency", fontsize=14, fontweight="bold")
     ax2.grid(True, alpha=0.3)
