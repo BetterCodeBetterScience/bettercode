@@ -20,3 +20,11 @@ def test_run_pandoc_preserves_placeholder_token():
     latex = "Before.\n\nTEX2QMDCODEBLOCK0\n\nAfter."
     md = run_pandoc(latex)
     assert "TEX2QMDCODEBLOCK0" in md
+
+
+@pytest.mark.skipif(shutil.which("pandoc") is None, reason="pandoc not installed")
+def test_run_pandoc_failure_reports_pandoc_stderr():
+    """A pandoc parse failure surfaces pandoc's own error message."""
+    latex = "\\noindent{An unclosed group.\n\nMore text."
+    with pytest.raises(RuntimeError, match="unexpected end of input"):
+        run_pandoc(latex)
